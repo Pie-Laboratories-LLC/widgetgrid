@@ -1,0 +1,46 @@
+# Companion to service-defaults.yaml's localRequestTimeoutMs -- that field
+# only covers HALF of the round trip through the mesh. The full path a
+# stream takes for envoy-gateway -> widgetgrid-server is:
+#
+#   1. envoy-gateway's sidecar's OWN outbound/upstream route to
+#      widgetgrid-server (this file)
+#   2. widgetgrid-server's sidecar's INBOUND "public_listener" route to the
+#      app itself (service-defaults.yaml's localRequestTimeoutMs)
+#
+# Both defaulted to Envoy's built-in 15s route timeout with no explicit
+# "timeout" key set -- confirmed directly via each sidecar's own Envoy
+# admin API (GET :19000/config_dump, RoutesConfigDump): fixing only #2
+# (localRequestTimeoutMs) still left long-lived streams (SubscribeNewPosts,
+# SubscribeOwnerPresence, SubscribeChatEvents) getting cut around ~15-22s,
+# just from the other hop instead. ServiceDefaults has no field for #1 --
+# that's the CONSUMER's (envoy-gateway's) own outbound route, not something
+# the DESTINATION service's ServiceDefaults controls. ServiceRouter's
+# Destination.RequestTimeout is the actual knob for that side.
+#
+# Also worth knowing: this route showed up as Envoy's `dynamic_route_configs`
+# (pushed live via xDS) once this ServiceRouter existed, unlike the
+# INBOUND "public_listener" route in service-defaults.yaml's case, which is
+# baked into that sidecar's *static* bootstrap config and only picks up a
+# Consul-side change after a pod restart. This route may behave the same
+# way on first creation (it did when this was added: the running
+# envoy-gateway pod needed `kubectl rollout restart deployment/envoy-gateway
+# -n widgetgrid` before its route showed the new timeout) -- restart both
+# deployments after applying this on an already-running cluster to be safe.
+#
+# Same "kubectl apply only reliably reaches Consul's catalog on first
+# create, not on an update to an already-applied resource" caveat as
+# service-defaults.yaml applies here too -- see that file's comment for the
+# `consul config write` fallback if you need to change this on a cluster
+# that already has it applied.
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceRouter
+metadata:
+  name: widgetgrid-server
+  namespace: widgetgrid
+spec:
+  routes:
+    - match:
+        http:
+          pathPrefix: /
+      destination:
+        requestTimeout: 24h

@@ -1,12 +1,10 @@
 {
-  "name": "@widgetgrid/widget-topbar",
+  "name": "@widgetgrid/widget-login",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "postbuild": "node scripts/copy-assets.mjs",
-    "predev": "node scripts/copy-assets.mjs",
     "dev": "vite build --watch"
   },
   "dependencies": {

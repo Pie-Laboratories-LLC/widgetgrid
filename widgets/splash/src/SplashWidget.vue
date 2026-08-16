@@ -1,6 +1,11 @@
 <template>
   <section class="widget widget-splash">
-    <div class="splash-stage">
+    <!-- Single handler on the stage, not the logo/overlay separately: the
+         overlay has pointer-events: none (see its own comment) so it never
+         receives its own click, and the stage is the logo+overlay's exact
+         footprint anyway, so this is "clicking the logo or svg" in
+         practice without fighting that. -->
+    <div class="splash-stage" @click="dismiss">
       <picture>
         <source :srcset="srcset" sizes="(min-width: 1024px) 1024px, 100vw" />
         <img :src="assetUrl('logo-1024.png')" :alt="data?.alt || 'Pie Laboratories LLC'" class="splash-logo" width="1024" height="769" />
@@ -38,6 +43,13 @@ export default {
     assetUrl(name) {
       return ASSET_BASE + name;
     },
+    // packages/web-app/src/views/PageView.vue listens for this on window --
+    // this widget has no router access of its own (independently built/
+    // deployed, same reasoning as every other cross-widget window event in
+    // this app), so it can't just navigate to home itself.
+    dismiss() {
+      window.dispatchEvent(new CustomEvent('widgetgrid:splash-dismissed'));
+    },
   },
 };
 </script>
@@ -59,6 +71,7 @@ export default {
   width: 100%;
   max-width: 1024px;
   aspect-ratio: 1024 / 769;
+  cursor: pointer;
 }
 
 .splash-stage picture,

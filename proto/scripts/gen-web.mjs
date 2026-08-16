@@ -27,15 +27,38 @@ async function main() {
   const args = [
     '-I', PROTO_ROOT,
     `--js_out=import_style=commonjs,binary:${OUT_DIR}`,
-    // mode=grpcweb (binary framing over fetch/streams), not grpcwebtext --
-    // behaves better for server-streaming, relevant once
-    // SubscribeWidgetUpdates is implemented. Envoy's grpc_web filter
-    // supports both.
-    `--grpc-web_out=import_style=commonjs,mode=grpcweb:${OUT_DIR}`,
+    // mode=grpcwebtext (base64-over-XHR framing), NOT grpcweb. This used to
+    // be grpcweb (binary/arraybuffer) on the theory that binary framing
+    // "behaves better for server-streaming" -- backwards, at least for this
+    // JS client (grpc-web npm package, GrpcWebClientBase): binary mode sets
+    // xhr.responseType = 'arraybuffer', and per the XHR spec, arraybuffer/
+    // blob/json response types only populate `.response` once the request
+    // reaches readyState 4 (DONE) -- there is no incremental access during
+    // readyState 3 (LOADING) the way there is for responseText. So every
+    // server-streaming call (SubscribeNewPosts, SubscribeOwnerPresence,
+    // SubscribeChatEvents) silently delivered nothing to any 'data'
+    // listener until the whole response completed -- which a long-lived
+    // subscription never does on its own. This produced a misleading
+    // symptom that looked exactly like local-k8s's separate, real ~12-15s
+    // mesh-hop cutoff (see blogSubscriptionClient.js's comment on that) --
+    // easy to conflate, since both manifest as "nothing arrives, then
+    // ERR_INCOMPLETE_CHUNKED_ENCODING" -- but confirmed as a distinct root
+    // cause by reading the raw bytes off the wire with `fetch()` +
+    // ReadableStream directly in Chromium: the server's first message
+    // arrives in ~50ms, well before any mesh cutoff, and well before the
+    // grpc-web client ever surfaces it. grpcwebtext's base64 response is
+    // read via plain `xhr.responseText`, which *does* update incrementally
+    // during readyState 3, and the client parses newly-arrived base64
+    // chunks as they come in (see grpc-web's own XhrIo readystatechange
+    // handler) -- that's what actually gets live pushes to a 'data'
+    // listener before the connection ends.
+    `--grpc-web_out=import_style=commonjs,mode=grpcwebtext:${OUT_DIR}`,
     `--plugin=protoc-gen-grpc-web=${GRPC_WEB_PLUGIN}`,
     path.join(PROTO_ROOT, 'widgetgrid/v1/page.proto'),
     path.join(PROTO_ROOT, 'widgetgrid/v1/widget.proto'),
     path.join(PROTO_ROOT, 'widgetgrid/v1/blog.proto'),
+    path.join(PROTO_ROOT, 'widgetgrid/v1/auth.proto'),
+    path.join(PROTO_ROOT, 'widgetgrid/v1/chat.proto'),
   ];
 
   console.log(`${PROTOC} ${args.join(' ')}`);

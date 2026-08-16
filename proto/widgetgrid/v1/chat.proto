@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package widgetgrid.v1;
+
+// Who's calling isn't in any of these messages -- it's in gRPC-Web request
+// metadata instead (see chatService.js): a visitor sends a "visitor-id"
+// header (their localStorage UUID, no account behind it), the owner sends
+// an "authorization: Bearer <token>" header (see auth.proto). chat_id is
+// always explicit even for visitor calls (rather than only the owner
+// passing it, visitors implicitly meaning "my chat") so every RPC has one
+// uniform shape -- the server still checks a visitor-supplied chat_id
+// actually belongs to their visitor_id before allowing it.
+message Chat {
+  string id = 1;
+  string label = 2;
+  // Only meaningful in ListChatsResponse (the owner's chat list) -- unset
+  // elsewhere.
+  bool has_unread = 3;
+  string created_at = 4;
+}
+
+message ChatMessage {
+  string id = 1;
+  string chat_id = 2;
+  string sender = 3; // "owner" | "visitor"
+  string body = 4;
+  string created_at = 5;
+}
+
+message StartOrGetChatRequest {}
+message StartOrGetChatResponse {
+  Chat chat = 1;
+}
+
+message SendMessageRequest {
+  string chat_id = 1;
+  string body = 2;
+}
+message SendMessageResponse {
+  ChatMessage message = 1;
+}
+
+message ListMessagesRequest {
+  string chat_id = 1;
+}
+message ListMessagesResponse {
+  // Oldest to newest.
+  repeated ChatMessage messages = 1;
+}
+
+// Owner-only.
+message ListChatsRequest {}
+message ListChatsResponse {
+  // Newest activity first.
+  repeated Chat chats = 1;
+}
+
+// Owner-only.
+message RenameChatRequest {
+  string chat_id = 1;
+  string label = 2;
+}
+message RenameChatResponse {}
+
+message MarkReadRequest {
+  string chat_id = 1;
+}
+message MarkReadResponse {}
+
+message SubscribeChatEventsRequest {}
+
+message ChatEvent {
+  string chat_id = 1;
+  ChatMessage message = 2;
+  // True only for the first event about a chat the subscriber hasn't seen
+  // before -- lets the owner's live chat list insert a new row rather
+  // than needing a full ListChats refetch every time someone starts a
+  // fresh conversation.
+  bool is_new_chat = 3;
+  string chat_label = 4;
+}
+
+service ChatService {
+  rpc StartOrGetChat(StartOrGetChatRequest) returns (StartOrGetChatResponse);
+  rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
+  rpc ListMessages(ListMessagesRequest) returns (ListMessagesResponse);
+  rpc ListChats(ListChatsRequest) returns (ListChatsResponse);
+  rpc RenameChat(RenameChatRequest) returns (RenameChatResponse);
+  rpc MarkRead(MarkReadRequest) returns (MarkReadResponse);
+  // Pushes messages/new chats directly (not just a "go refetch" ping,
+  // unlike BlogService.NewPostEvent) -- chat wants to feel live, and the
+  // payload's small enough that the extra round trip isn't worth saving.
+  // Owner subscribers get events for every chat; visitor subscribers
+  // (identified the same way as other calls, via the visitor-id header)
+  // only ever get events for their own.
+  rpc SubscribeChatEvents(SubscribeChatEventsRequest) returns (stream ChatEvent);
+}

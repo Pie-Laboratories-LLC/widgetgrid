@@ -25,6 +25,23 @@ message ListBlogPostsResponse {
   repeated BlogPost posts = 1;
 }
 
+message SubscribeNewPostsRequest {}
+
+// One of these per newly-detected post -- just enough for the client to
+// show a notice and know to refetch, not the full BlogPost (that's what
+// the follow-up ListBlogPosts call after the reload is for).
+message NewPostEvent {
+  string slug = 1;
+  string title = 2;
+  string published_at = 3;
+}
+
 service BlogService {
   rpc ListBlogPosts(ListBlogPostsRequest) returns (ListBlogPostsResponse);
+  // Server push for "a new post appeared in the content source" (see
+  // packages/server/src/blogChangeNotifier.js for what actually detects
+  // that). grpc-web supports server-streaming in-browser fine -- no
+  // transport rework needed, same as WidgetService.SubscribeWidgetUpdates
+  // was already reserved for elsewhere.
+  rpc SubscribeNewPosts(SubscribeNewPostsRequest) returns (stream NewPostEvent);
 }

@@ -10,6 +10,10 @@ import { createPageService } from './services/pageService.js';
 import { createWidgetService } from './services/widgetService.js';
 import { createBlogService } from './services/blogService.js';
 import { createLocalBlogSource } from './blogSource.js';
+import { createPollingBlogNotifier } from './blogChangeNotifier.js';
+import { createAuthService } from './services/authService.js';
+import { createChatService } from './services/chatService.js';
+import { createConsoleOtpSender } from './otpSender.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const HOST = process.env.GRPC_SERVER_HOST ?? '127.0.0.1';
@@ -23,16 +27,33 @@ const BLOG_CONTENT_DIR = process.env.BLOG_CONTENT_DIR ?? path.resolve(__dirname,
 // assemble-static.mjs for the built bundle; in production: wherever the S3
 // bucket/CDN publicly serves the same postDir prefix from).
 const BLOG_ASSETS_BASE_URL = process.env.BLOG_ASSETS_BASE_URL ?? '/blog-assets';
+// How often the local "did a new post show up" poll runs (see
+// blogChangeNotifier.js) -- irrelevant once a real S3-event-driven
+// notifier replaces it, since that's push, not poll.
+const BLOG_POLL_INTERVAL_MS = Number(process.env.BLOG_POLL_INTERVAL_MS ?? 20_000);
+// The one phone number a login code ever goes to -- there's no signup,
+// this is a single-owner login, not a general accounts system.
+const OWNER_PHONE_NUMBER = process.env.OWNER_PHONE_NUMBER ?? '';
 
 export function startServer() {
   const pool = getPool();
   const proto = loadProto();
   const blogSource = createLocalBlogSource({ dir: BLOG_CONTENT_DIR, assetsBaseUrl: BLOG_ASSETS_BASE_URL });
+  // Injected, not hardcoded into blogService.js: swapping in a real
+  // S3-event-driven notifier later (see that file's header comment) is a
+  // one-line change here, same seam as blogSource above.
+  const blogChangeNotifier = createPollingBlogNotifier({ blogSource, intervalMs: BLOG_POLL_INTERVAL_MS });
+  // Logs the code instead of texting it -- see otpSender.js's header
+  // comment for why a real SMS provider isn't wired up here, same
+  // reasoning as blogSource's unbuilt S3 half.
+  const otpSender = createConsoleOtpSender();
 
   const server = new grpc.Server();
   server.addService(proto.PageService.service, createPageService({ pool, pagesRepo, layoutNodesRepo }));
   server.addService(proto.WidgetService.service, createWidgetService({ pool, widgetsRepo }));
-  server.addService(proto.BlogService.service, createBlogService({ blogSource }));
+  server.addService(proto.BlogService.service, createBlogService({ blogSource, blogChangeNotifier }));
+  server.addService(proto.AuthService.service, createAuthService({ pool, ownerPhoneNumber: OWNER_PHONE_NUMBER, otpSender }));
+  server.addService(proto.ChatService.service, createChatService({ pool }));
 
   return new Promise((resolve, reject) => {
     server.bindAsync(`${HOST}:${PORT}`, grpc.ServerCredentials.createInsecure(), (err, boundPort) => {

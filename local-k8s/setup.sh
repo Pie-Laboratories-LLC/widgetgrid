@@ -58,6 +58,14 @@ kind load docker-image widgetgrid-server:local --name "$CLUSTER_NAME"
 echo
 echo "== applying manifests =="
 kubectl apply -f local-k8s/manifests/namespace.yaml
+# Tells Consul's connect-inject webhook widgetgrid-server speaks gRPC, and
+# (via localRequestTimeoutMs) disables the INBOUND route timeout on
+# widgetgrid-server's own sidecar -- see the file's own header comment.
+kubectl apply -f local-k8s/manifests/service-defaults.yaml
+# Companion to the above: disables the timeout on the OTHER half of the
+# mesh hop, envoy-gateway's own OUTBOUND route to widgetgrid-server -- see
+# this file's header comment for why both are needed.
+kubectl apply -f local-k8s/manifests/service-router.yaml
 # Generated from the file rather than duplicated inline -- see
 # local-k8s/manifests/envoy-gateway.yaml's header comment for why.
 kubectl create configmap envoy-gateway-config \

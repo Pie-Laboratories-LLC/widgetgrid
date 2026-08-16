@@ -17,7 +17,7 @@
     "dev:server": "npm run dev --workspace packages/server",
     "dev:web": "npm run dev --workspace packages/web-app",
     "build:web": "npm run build --workspace packages/web-app",
-    "build:widgets": "npm run build --workspace widgets/richtext --workspace widgets/table --workspace widgets/splash --workspace widgets/topbar --workspace widgets/rightrail --workspace widgets/blog --workspace widgets/main --workspace widgets/solitaire",
+    "build:widgets": "npm run build --workspace widgets/richtext --workspace widgets/table --workspace widgets/splash --workspace widgets/topbar --workspace widgets/rightrail --workspace widgets/blog --workspace widgets/main --workspace widgets/solitaire --workspace widgets/chat --workspace widgets/login",
     "build:all": "npm run build --workspaces --if-present",
     "assemble-static": "node scripts/assemble-static.mjs",
     "serve:static": "npm run start --workspace packages/static-server"

@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package widgetgrid.v1;
+
+// Single-owner auth -- there's no username, no signup, just "text the one
+// configured phone number a code". See authService.js/otpSender.js.
+message RequestLoginCodeRequest {}
+message RequestLoginCodeResponse {}
+
+message VerifyLoginCodeRequest {
+  string code = 1;
+}
+
+message VerifyLoginCodeResponse {
+  // Empty if verification failed -- callers check for that, not a
+  // separate ok/error field, to keep this a plain unary RPC rather than
+  // needing gRPC status-code branching for an expected-to-sometimes-fail
+  // case (a wrong code isn't exceptional, it's just resolving to "no").
+  string token = 1;
+}
+
+message LogoutRequest {
+  string token = 1;
+}
+message LogoutResponse {}
+
+message SubscribeOwnerPresenceRequest {}
+
+message OwnerPresenceEvent {
+  bool online = 1;
+}
+
+service AuthService {
+  rpc RequestLoginCode(RequestLoginCodeRequest) returns (RequestLoginCodeResponse);
+  rpc VerifyLoginCode(VerifyLoginCodeRequest) returns (VerifyLoginCodeResponse);
+  rpc Logout(LogoutRequest) returns (LogoutResponse);
+  // Pushes on login/logout so every visitor's chat-icon greyed state
+  // updates live, not just on their next page load. Same server-streaming
+  // pattern as BlogService.SubscribeNewPosts.
+  rpc SubscribeOwnerPresence(SubscribeOwnerPresenceRequest) returns (stream OwnerPresenceEvent);
+}

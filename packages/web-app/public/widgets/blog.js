@@ -4157,13 +4157,17 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 	var t = require_google_protobuf(), n = t, r = function() {
 		return this ? this : typeof window < "u" ? window : r === void 0 ? typeof self < "u" ? self : Function("return this")() : r;
 	}.call(null);
-	n.exportSymbol("proto.widgetgrid.v1.BlogPost", null, r), n.exportSymbol("proto.widgetgrid.v1.ListBlogPostsRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.ListBlogPostsResponse", null, r), proto.widgetgrid.v1.BlogPost = function(e) {
+	n.exportSymbol("proto.widgetgrid.v1.BlogPost", null, r), n.exportSymbol("proto.widgetgrid.v1.ListBlogPostsRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.ListBlogPostsResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.NewPostEvent", null, r), n.exportSymbol("proto.widgetgrid.v1.SubscribeNewPostsRequest", null, r), proto.widgetgrid.v1.BlogPost = function(e) {
 		t.Message.initialize(this, e, 0, -1, null, null);
 	}, n.inherits(proto.widgetgrid.v1.BlogPost, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.BlogPost.displayName = "proto.widgetgrid.v1.BlogPost"), proto.widgetgrid.v1.ListBlogPostsRequest = function(e) {
 		t.Message.initialize(this, e, 0, -1, null, null);
 	}, n.inherits(proto.widgetgrid.v1.ListBlogPostsRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ListBlogPostsRequest.displayName = "proto.widgetgrid.v1.ListBlogPostsRequest"), proto.widgetgrid.v1.ListBlogPostsResponse = function(e) {
 		t.Message.initialize(this, e, 0, -1, proto.widgetgrid.v1.ListBlogPostsResponse.repeatedFields_, null);
-	}, n.inherits(proto.widgetgrid.v1.ListBlogPostsResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ListBlogPostsResponse.displayName = "proto.widgetgrid.v1.ListBlogPostsResponse"), t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.BlogPost.prototype.toObject = function(e) {
+	}, n.inherits(proto.widgetgrid.v1.ListBlogPostsResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ListBlogPostsResponse.displayName = "proto.widgetgrid.v1.ListBlogPostsResponse"), proto.widgetgrid.v1.SubscribeNewPostsRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.SubscribeNewPostsRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.SubscribeNewPostsRequest.displayName = "proto.widgetgrid.v1.SubscribeNewPostsRequest"), proto.widgetgrid.v1.NewPostEvent = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.NewPostEvent, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.NewPostEvent.displayName = "proto.widgetgrid.v1.NewPostEvent"), t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.BlogPost.prototype.toObject = function(e) {
 		return proto.widgetgrid.v1.BlogPost.toObject(e, this);
 	}, proto.widgetgrid.v1.BlogPost.toObject = function(e, n) {
 		var r = {
@@ -4273,6 +4277,67 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 		return t.Message.addToRepeatedWrapperField(this, 1, e, proto.widgetgrid.v1.BlogPost, n);
 	}, proto.widgetgrid.v1.ListBlogPostsResponse.prototype.clearPostsList = function() {
 		return this.setPostsList([]);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.SubscribeNewPostsRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.toObject = function(e, t) {
+		var n = {};
+		return e && (n.$jspbMessageInstance = t), n;
+	}), proto.widgetgrid.v1.SubscribeNewPostsRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.SubscribeNewPostsRequest();
+		return proto.widgetgrid.v1.SubscribeNewPostsRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		return e;
+	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.SubscribeNewPostsRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.NewPostEvent.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.NewPostEvent.toObject(e, this);
+	}, proto.widgetgrid.v1.NewPostEvent.toObject = function(e, n) {
+		var r = {
+			slug: t.Message.getFieldWithDefault(n, 1, ""),
+			title: t.Message.getFieldWithDefault(n, 2, ""),
+			publishedAt: t.Message.getFieldWithDefault(n, 3, "")
+		};
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.NewPostEvent.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.NewPostEvent();
+		return proto.widgetgrid.v1.NewPostEvent.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.NewPostEvent.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setSlug(n);
+				break;
+			case 2:
+				var n = t.readString();
+				e.setTitle(n);
+				break;
+			case 3:
+				var n = t.readString();
+				e.setPublishedAt(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.NewPostEvent.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.NewPostEvent.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.NewPostEvent.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getSlug(), n.length > 0 && t.writeString(1, n), n = e.getTitle(), n.length > 0 && t.writeString(2, n), n = e.getPublishedAt(), n.length > 0 && t.writeString(3, n);
+	}, proto.widgetgrid.v1.NewPostEvent.prototype.getSlug = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.NewPostEvent.prototype.setSlug = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, proto.widgetgrid.v1.NewPostEvent.prototype.getTitle = function() {
+		return t.Message.getFieldWithDefault(this, 2, "");
+	}, proto.widgetgrid.v1.NewPostEvent.prototype.setTitle = function(e) {
+		return t.Message.setProto3StringField(this, 2, e);
+	}, proto.widgetgrid.v1.NewPostEvent.prototype.getPublishedAt = function() {
+		return t.Message.getFieldWithDefault(this, 3, "");
+	}, proto.widgetgrid.v1.NewPostEvent.prototype.setPublishedAt = function(e) {
+		return t.Message.setProto3StringField(this, 3, e);
 	}, n.object.extend(e, proto.widgetgrid.v1);
 })), require_grpc_web = /* @__PURE__ */ __commonJSMin(((e, t) => {
 	var n, r = r || {}, i = e || self;
@@ -5339,9 +5404,9 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 	n.web = require_grpc_web();
 	var r = {};
 	r.widgetgrid = {}, r.widgetgrid.v1 = require_blog_pb(), r.widgetgrid.v1.BlogServiceClient = function(e, t, r) {
-		r ||= {}, r.format = "binary", this.client_ = new n.web.GrpcWebClientBase(r), this.hostname_ = e.replace(/\/+$/, "");
+		r ||= {}, r.format = "text", this.client_ = new n.web.GrpcWebClientBase(r), this.hostname_ = e.replace(/\/+$/, "");
 	}, r.widgetgrid.v1.BlogServicePromiseClient = function(e, t, r) {
-		r ||= {}, r.format = "binary", this.client_ = new n.web.GrpcWebClientBase(r), this.hostname_ = e.replace(/\/+$/, "");
+		r ||= {}, r.format = "text", this.client_ = new n.web.GrpcWebClientBase(r), this.hostname_ = e.replace(/\/+$/, "");
 	};
 	var i = new n.web.MethodDescriptor("/widgetgrid.v1.BlogService/ListBlogPosts", n.web.MethodType.UNARY, r.widgetgrid.v1.ListBlogPostsRequest, r.widgetgrid.v1.ListBlogPostsResponse, function(e) {
 		return e.serializeBinary();
@@ -5350,6 +5415,14 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.BlogService/ListBlogPosts", e, t || {}, i, n);
 	}, r.widgetgrid.v1.BlogServicePromiseClient.prototype.listBlogPosts = function(e, t) {
 		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.BlogService/ListBlogPosts", e, t || {}, i);
+	};
+	var o = new n.web.MethodDescriptor("/widgetgrid.v1.BlogService/SubscribeNewPosts", n.web.MethodType.SERVER_STREAMING, r.widgetgrid.v1.SubscribeNewPostsRequest, r.widgetgrid.v1.NewPostEvent, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.NewPostEvent.deserializeBinary);
+	r.widgetgrid.v1.BlogServiceClient.prototype.subscribeNewPosts = function(e, t) {
+		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.BlogService/SubscribeNewPosts", e, t || {}, o);
+	}, r.widgetgrid.v1.BlogServicePromiseClient.prototype.subscribeNewPosts = function(e, t) {
+		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.BlogService/SubscribeNewPosts", e, t || {}, o);
 	}, t.exports = r.widgetgrid.v1;
 })), import_blog_pb = require_blog_pb(), import_blog_grpc_web_pb = require_blog_grpc_web_pb(), client = new import_blog_grpc_web_pb.BlogServicePromiseClient("http://localhost:8080"), blogClient = { async listBlogPosts() {
 	return { posts: (await client.listBlogPosts(new import_blog_pb.ListBlogPostsRequest(), {})).toObject().postsList };

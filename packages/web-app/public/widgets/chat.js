@@ -1,5 +1,5 @@
-(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-main[data-v-73e92f31]{box-sizing:border-box;height:calc(100vh - 255px);margin-top:255px;margin-right:160px;transition:margin-top .25s,height .25s;overflow-y:auto}.widget-main.main-collapsed[data-v-73e92f31]{height:calc(100vh - 64px);margin-top:64px}.main-status[data-v-73e92f31]{color:#666;padding:32px}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
-import { createBlock, createCommentVNode, createElementBlock, normalizeClass, openBlock, resolveDynamicComponent } from "vue";
+(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-chat[data-v-97112f78]{box-sizing:border-box;height:100%}.chat-status[data-v-97112f78]{color:#666;padding:24px}.chat-shell[data-v-97112f78]{height:100%;display:flex}.chat-list[data-v-97112f78]{box-sizing:border-box;border-right:1px solid #ddd;flex:none;width:220px;overflow-y:auto}.chat-list-item[data-v-97112f78]{cursor:pointer;border-bottom:1px solid #eee;justify-content:space-between;align-items:center;gap:8px;padding:12px 16px;display:flex}.chat-list-item[data-v-97112f78]:hover{background:#f7f5fa}.chat-list-item-active[data-v-97112f78]{background:#efe9f7}.chat-list-label[data-v-97112f78]{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.chat-list-label-unread[data-v-97112f78]{font-weight:700}.chat-rename-btn[data-v-97112f78]{color:#999;cursor:pointer;background:0 0;border:none;flex:none;padding:2px 4px}.chat-rename-btn[data-v-97112f78]:hover{color:#333}.chat-rename-input[data-v-97112f78]{box-sizing:border-box;width:100%;padding:4px 6px}.chat-thread[data-v-97112f78]{flex-direction:column;flex:1;min-width:0;display:flex}.chat-thread-visitor[data-v-97112f78]{height:100%}.chat-messages[data-v-97112f78]{flex-direction:column;flex:1;gap:10px;padding:24px;display:flex;overflow-y:auto}.chat-message[data-v-97112f78]{background:#f0f0f0;border-radius:12px;max-width:70%;padding:8px 12px}.chat-message-body[data-v-97112f78]{white-space:pre-wrap;word-break:break-word;margin:0}.chat-message-mine[data-v-97112f78]{color:#f4ead9;background:#150a2e;align-self:flex-end}.chat-message-theirs[data-v-97112f78]{align-self:flex-start}.chat-composer[data-v-97112f78]{border-top:1px solid #ddd;flex:none;gap:8px;padding:16px 24px;display:flex}.chat-input[data-v-97112f78]{border:1px solid #ccc;border-radius:6px;flex:1;padding:10px 12px;font-size:1rem}.chat-send[data-v-97112f78]{color:#f4ead9;cursor:pointer;background:#150a2e;border:none;border-radius:6px;padding:10px 16px;font-weight:600}.chat-send[data-v-97112f78]:disabled{opacity:.5;cursor:default}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
+import { Fragment, createCommentVNode, createElementBlock, createElementVNode, normalizeClass, openBlock, renderList, toDisplayString, vModelText, withDirectives, withKeys, withModifiers } from "vue";
 //#region \0rolldown/runtime.js
 var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t.exports), require_google_protobuf = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var COMPILED = !0, goog = goog || {};
@@ -4153,191 +4153,547 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 		});
 	}
 	jspb.internal.public_for_gencode.deserializeMapFromBinary = module$contents$jspb$internal$public_for_gencode_deserializeMapFromBinary, jspb.internal.public_for_gencode.serializeMapToBinary = module$contents$jspb$internal$public_for_gencode_serializeMapToBinary, jspb.Export = {}, typeof exports == "object" && (exports.debug = jspb.debug, exports.Map = module$contents$jspb$Map_Map, exports.Message = module$contents$jspb$Message_Message, exports.BinaryReader = module$contents$jspb$binary$reader_BinaryReader, exports.BinaryWriter = module$contents$jspb$binary$writer_BinaryWriter, exports.ExtensionFieldInfo = module$contents$jspb$ExtensionFieldInfo_ExtensionFieldInfo, exports.ExtensionFieldBinaryInfo = module$contents$jspb$ExtensionFieldBinaryInfo_ExtensionFieldBinaryInfo, exports.internal = { public_for_gencode: jspb.internal.public_for_gencode }, exports.exportSymbol = goog.exportSymbol, exports.inherits = goog.inherits, exports.object = { extend: module$contents$goog$object_extend }, exports.typeOf = goog.typeOf);
-})), require_blog_pb = /* @__PURE__ */ __commonJSMin(((e) => {
+})), require_chat_pb = /* @__PURE__ */ __commonJSMin(((e) => {
 	var t = require_google_protobuf(), n = t, r = function() {
 		return this ? this : typeof window < "u" ? window : r === void 0 ? typeof self < "u" ? self : Function("return this")() : r;
 	}.call(null);
-	n.exportSymbol("proto.widgetgrid.v1.BlogPost", null, r), n.exportSymbol("proto.widgetgrid.v1.ListBlogPostsRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.ListBlogPostsResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.NewPostEvent", null, r), n.exportSymbol("proto.widgetgrid.v1.SubscribeNewPostsRequest", null, r), proto.widgetgrid.v1.BlogPost = function(e) {
+	n.exportSymbol("proto.widgetgrid.v1.Chat", null, r), n.exportSymbol("proto.widgetgrid.v1.ChatEvent", null, r), n.exportSymbol("proto.widgetgrid.v1.ChatMessage", null, r), n.exportSymbol("proto.widgetgrid.v1.ListChatsRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.ListChatsResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.ListMessagesRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.ListMessagesResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.MarkReadRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.MarkReadResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.RenameChatRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.RenameChatResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.SendMessageRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.SendMessageResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.StartOrGetChatRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.StartOrGetChatResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.SubscribeChatEventsRequest", null, r), proto.widgetgrid.v1.Chat = function(e) {
 		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.BlogPost, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.BlogPost.displayName = "proto.widgetgrid.v1.BlogPost"), proto.widgetgrid.v1.ListBlogPostsRequest = function(e) {
+	}, n.inherits(proto.widgetgrid.v1.Chat, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.Chat.displayName = "proto.widgetgrid.v1.Chat"), proto.widgetgrid.v1.ChatMessage = function(e) {
 		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.ListBlogPostsRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ListBlogPostsRequest.displayName = "proto.widgetgrid.v1.ListBlogPostsRequest"), proto.widgetgrid.v1.ListBlogPostsResponse = function(e) {
-		t.Message.initialize(this, e, 0, -1, proto.widgetgrid.v1.ListBlogPostsResponse.repeatedFields_, null);
-	}, n.inherits(proto.widgetgrid.v1.ListBlogPostsResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ListBlogPostsResponse.displayName = "proto.widgetgrid.v1.ListBlogPostsResponse"), proto.widgetgrid.v1.SubscribeNewPostsRequest = function(e) {
+	}, n.inherits(proto.widgetgrid.v1.ChatMessage, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ChatMessage.displayName = "proto.widgetgrid.v1.ChatMessage"), proto.widgetgrid.v1.StartOrGetChatRequest = function(e) {
 		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.SubscribeNewPostsRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.SubscribeNewPostsRequest.displayName = "proto.widgetgrid.v1.SubscribeNewPostsRequest"), proto.widgetgrid.v1.NewPostEvent = function(e) {
+	}, n.inherits(proto.widgetgrid.v1.StartOrGetChatRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.StartOrGetChatRequest.displayName = "proto.widgetgrid.v1.StartOrGetChatRequest"), proto.widgetgrid.v1.StartOrGetChatResponse = function(e) {
 		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.NewPostEvent, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.NewPostEvent.displayName = "proto.widgetgrid.v1.NewPostEvent"), t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.BlogPost.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.BlogPost.toObject(e, this);
-	}, proto.widgetgrid.v1.BlogPost.toObject = function(e, n) {
+	}, n.inherits(proto.widgetgrid.v1.StartOrGetChatResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.StartOrGetChatResponse.displayName = "proto.widgetgrid.v1.StartOrGetChatResponse"), proto.widgetgrid.v1.SendMessageRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.SendMessageRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.SendMessageRequest.displayName = "proto.widgetgrid.v1.SendMessageRequest"), proto.widgetgrid.v1.SendMessageResponse = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.SendMessageResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.SendMessageResponse.displayName = "proto.widgetgrid.v1.SendMessageResponse"), proto.widgetgrid.v1.ListMessagesRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.ListMessagesRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ListMessagesRequest.displayName = "proto.widgetgrid.v1.ListMessagesRequest"), proto.widgetgrid.v1.ListMessagesResponse = function(e) {
+		t.Message.initialize(this, e, 0, -1, proto.widgetgrid.v1.ListMessagesResponse.repeatedFields_, null);
+	}, n.inherits(proto.widgetgrid.v1.ListMessagesResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ListMessagesResponse.displayName = "proto.widgetgrid.v1.ListMessagesResponse"), proto.widgetgrid.v1.ListChatsRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.ListChatsRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ListChatsRequest.displayName = "proto.widgetgrid.v1.ListChatsRequest"), proto.widgetgrid.v1.ListChatsResponse = function(e) {
+		t.Message.initialize(this, e, 0, -1, proto.widgetgrid.v1.ListChatsResponse.repeatedFields_, null);
+	}, n.inherits(proto.widgetgrid.v1.ListChatsResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ListChatsResponse.displayName = "proto.widgetgrid.v1.ListChatsResponse"), proto.widgetgrid.v1.RenameChatRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.RenameChatRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RenameChatRequest.displayName = "proto.widgetgrid.v1.RenameChatRequest"), proto.widgetgrid.v1.RenameChatResponse = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.RenameChatResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RenameChatResponse.displayName = "proto.widgetgrid.v1.RenameChatResponse"), proto.widgetgrid.v1.MarkReadRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.MarkReadRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.MarkReadRequest.displayName = "proto.widgetgrid.v1.MarkReadRequest"), proto.widgetgrid.v1.MarkReadResponse = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.MarkReadResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.MarkReadResponse.displayName = "proto.widgetgrid.v1.MarkReadResponse"), proto.widgetgrid.v1.SubscribeChatEventsRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.SubscribeChatEventsRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.SubscribeChatEventsRequest.displayName = "proto.widgetgrid.v1.SubscribeChatEventsRequest"), proto.widgetgrid.v1.ChatEvent = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.ChatEvent, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ChatEvent.displayName = "proto.widgetgrid.v1.ChatEvent"), t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.Chat.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.Chat.toObject(e, this);
+	}, proto.widgetgrid.v1.Chat.toObject = function(e, n) {
 		var r = {
-			slug: t.Message.getFieldWithDefault(n, 1, ""),
-			title: t.Message.getFieldWithDefault(n, 2, ""),
-			synopsisHtml: t.Message.getFieldWithDefault(n, 3, ""),
-			contentHtml: t.Message.getFieldWithDefault(n, 4, ""),
-			publishedAt: t.Message.getFieldWithDefault(n, 5, "")
+			id: t.Message.getFieldWithDefault(n, 1, ""),
+			label: t.Message.getFieldWithDefault(n, 2, ""),
+			hasUnread: t.Message.getBooleanFieldWithDefault(n, 3, !1),
+			createdAt: t.Message.getFieldWithDefault(n, 4, "")
 		};
 		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.BlogPost.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.BlogPost();
-		return proto.widgetgrid.v1.BlogPost.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.BlogPost.deserializeBinaryFromReader = function(e, t) {
+	}), proto.widgetgrid.v1.Chat.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.Chat();
+		return proto.widgetgrid.v1.Chat.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.Chat.deserializeBinaryFromReader = function(e, t) {
 		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
 			case 1:
 				var n = t.readString();
-				e.setSlug(n);
+				e.setId(n);
 				break;
 			case 2:
 				var n = t.readString();
-				e.setTitle(n);
+				e.setLabel(n);
 				break;
 			case 3:
-				var n = t.readString();
-				e.setSynopsisHtml(n);
+				var n = t.readBool();
+				e.setHasUnread(n);
 				break;
 			case 4:
 				var n = t.readString();
-				e.setContentHtml(n);
-				break;
-			case 5:
-				var n = t.readString();
-				e.setPublishedAt(n);
+				e.setCreatedAt(n);
 				break;
 			default: t.skipField();
 		}
 		return e;
-	}, proto.widgetgrid.v1.BlogPost.prototype.serializeBinary = function() {
+	}, proto.widgetgrid.v1.Chat.prototype.serializeBinary = function() {
 		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.BlogPost.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.BlogPost.serializeBinaryToWriter = function(e, t) {
+		return proto.widgetgrid.v1.Chat.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.Chat.serializeBinaryToWriter = function(e, t) {
 		var n = void 0;
-		n = e.getSlug(), n.length > 0 && t.writeString(1, n), n = e.getTitle(), n.length > 0 && t.writeString(2, n), n = e.getSynopsisHtml(), n.length > 0 && t.writeString(3, n), n = e.getContentHtml(), n.length > 0 && t.writeString(4, n), n = e.getPublishedAt(), n.length > 0 && t.writeString(5, n);
-	}, proto.widgetgrid.v1.BlogPost.prototype.getSlug = function() {
+		n = e.getId(), n.length > 0 && t.writeString(1, n), n = e.getLabel(), n.length > 0 && t.writeString(2, n), n = e.getHasUnread(), n && t.writeBool(3, n), n = e.getCreatedAt(), n.length > 0 && t.writeString(4, n);
+	}, proto.widgetgrid.v1.Chat.prototype.getId = function() {
 		return t.Message.getFieldWithDefault(this, 1, "");
-	}, proto.widgetgrid.v1.BlogPost.prototype.setSlug = function(e) {
+	}, proto.widgetgrid.v1.Chat.prototype.setId = function(e) {
 		return t.Message.setProto3StringField(this, 1, e);
-	}, proto.widgetgrid.v1.BlogPost.prototype.getTitle = function() {
+	}, proto.widgetgrid.v1.Chat.prototype.getLabel = function() {
 		return t.Message.getFieldWithDefault(this, 2, "");
-	}, proto.widgetgrid.v1.BlogPost.prototype.setTitle = function(e) {
+	}, proto.widgetgrid.v1.Chat.prototype.setLabel = function(e) {
 		return t.Message.setProto3StringField(this, 2, e);
-	}, proto.widgetgrid.v1.BlogPost.prototype.getSynopsisHtml = function() {
-		return t.Message.getFieldWithDefault(this, 3, "");
-	}, proto.widgetgrid.v1.BlogPost.prototype.setSynopsisHtml = function(e) {
-		return t.Message.setProto3StringField(this, 3, e);
-	}, proto.widgetgrid.v1.BlogPost.prototype.getContentHtml = function() {
+	}, proto.widgetgrid.v1.Chat.prototype.getHasUnread = function() {
+		return t.Message.getBooleanFieldWithDefault(this, 3, !1);
+	}, proto.widgetgrid.v1.Chat.prototype.setHasUnread = function(e) {
+		return t.Message.setProto3BooleanField(this, 3, e);
+	}, proto.widgetgrid.v1.Chat.prototype.getCreatedAt = function() {
 		return t.Message.getFieldWithDefault(this, 4, "");
-	}, proto.widgetgrid.v1.BlogPost.prototype.setContentHtml = function(e) {
+	}, proto.widgetgrid.v1.Chat.prototype.setCreatedAt = function(e) {
 		return t.Message.setProto3StringField(this, 4, e);
-	}, proto.widgetgrid.v1.BlogPost.prototype.getPublishedAt = function() {
-		return t.Message.getFieldWithDefault(this, 5, "");
-	}, proto.widgetgrid.v1.BlogPost.prototype.setPublishedAt = function(e) {
-		return t.Message.setProto3StringField(this, 5, e);
-	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ListBlogPostsRequest.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.ListBlogPostsRequest.toObject(e, this);
-	}, proto.widgetgrid.v1.ListBlogPostsRequest.toObject = function(e, t) {
-		var n = {};
-		return e && (n.$jspbMessageInstance = t), n;
-	}), proto.widgetgrid.v1.ListBlogPostsRequest.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ListBlogPostsRequest();
-		return proto.widgetgrid.v1.ListBlogPostsRequest.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.ListBlogPostsRequest.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
-		return e;
-	}, proto.widgetgrid.v1.ListBlogPostsRequest.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.ListBlogPostsRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.ListBlogPostsRequest.serializeBinaryToWriter = function(e, t) {}, proto.widgetgrid.v1.ListBlogPostsResponse.repeatedFields_ = [1], t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ListBlogPostsResponse.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.ListBlogPostsResponse.toObject(e, this);
-	}, proto.widgetgrid.v1.ListBlogPostsResponse.toObject = function(e, n) {
-		var r = { postsList: t.Message.toObjectList(n.getPostsList(), proto.widgetgrid.v1.BlogPost.toObject, e) };
-		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.ListBlogPostsResponse.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ListBlogPostsResponse();
-		return proto.widgetgrid.v1.ListBlogPostsResponse.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.ListBlogPostsResponse.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
-			case 1:
-				var n = new proto.widgetgrid.v1.BlogPost();
-				t.readMessage(n, proto.widgetgrid.v1.BlogPost.deserializeBinaryFromReader), e.addPosts(n);
-				break;
-			default: t.skipField();
-		}
-		return e;
-	}, proto.widgetgrid.v1.ListBlogPostsResponse.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.ListBlogPostsResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.ListBlogPostsResponse.serializeBinaryToWriter = function(e, t) {
-		var n = void 0;
-		n = e.getPostsList(), n.length > 0 && t.writeRepeatedMessage(1, n, proto.widgetgrid.v1.BlogPost.serializeBinaryToWriter);
-	}, proto.widgetgrid.v1.ListBlogPostsResponse.prototype.getPostsList = function() {
-		return t.Message.getRepeatedWrapperField(this, proto.widgetgrid.v1.BlogPost, 1);
-	}, proto.widgetgrid.v1.ListBlogPostsResponse.prototype.setPostsList = function(e) {
-		return t.Message.setRepeatedWrapperField(this, 1, e);
-	}, proto.widgetgrid.v1.ListBlogPostsResponse.prototype.addPosts = function(e, n) {
-		return t.Message.addToRepeatedWrapperField(this, 1, e, proto.widgetgrid.v1.BlogPost, n);
-	}, proto.widgetgrid.v1.ListBlogPostsResponse.prototype.clearPostsList = function() {
-		return this.setPostsList([]);
-	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.SubscribeNewPostsRequest.toObject(e, this);
-	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.toObject = function(e, t) {
-		var n = {};
-		return e && (n.$jspbMessageInstance = t), n;
-	}), proto.widgetgrid.v1.SubscribeNewPostsRequest.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.SubscribeNewPostsRequest();
-		return proto.widgetgrid.v1.SubscribeNewPostsRequest.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
-		return e;
-	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.SubscribeNewPostsRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.NewPostEvent.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.NewPostEvent.toObject(e, this);
-	}, proto.widgetgrid.v1.NewPostEvent.toObject = function(e, n) {
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ChatMessage.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.ChatMessage.toObject(e, this);
+	}, proto.widgetgrid.v1.ChatMessage.toObject = function(e, n) {
 		var r = {
-			slug: t.Message.getFieldWithDefault(n, 1, ""),
-			title: t.Message.getFieldWithDefault(n, 2, ""),
-			publishedAt: t.Message.getFieldWithDefault(n, 3, "")
+			id: t.Message.getFieldWithDefault(n, 1, ""),
+			chatId: t.Message.getFieldWithDefault(n, 2, ""),
+			sender: t.Message.getFieldWithDefault(n, 3, ""),
+			body: t.Message.getFieldWithDefault(n, 4, ""),
+			createdAt: t.Message.getFieldWithDefault(n, 5, "")
 		};
 		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.NewPostEvent.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.NewPostEvent();
-		return proto.widgetgrid.v1.NewPostEvent.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.NewPostEvent.deserializeBinaryFromReader = function(e, t) {
+	}), proto.widgetgrid.v1.ChatMessage.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ChatMessage();
+		return proto.widgetgrid.v1.ChatMessage.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.ChatMessage.deserializeBinaryFromReader = function(e, t) {
 		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
 			case 1:
 				var n = t.readString();
-				e.setSlug(n);
+				e.setId(n);
 				break;
 			case 2:
 				var n = t.readString();
-				e.setTitle(n);
+				e.setChatId(n);
 				break;
 			case 3:
 				var n = t.readString();
-				e.setPublishedAt(n);
+				e.setSender(n);
+				break;
+			case 4:
+				var n = t.readString();
+				e.setBody(n);
+				break;
+			case 5:
+				var n = t.readString();
+				e.setCreatedAt(n);
 				break;
 			default: t.skipField();
 		}
 		return e;
-	}, proto.widgetgrid.v1.NewPostEvent.prototype.serializeBinary = function() {
+	}, proto.widgetgrid.v1.ChatMessage.prototype.serializeBinary = function() {
 		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.NewPostEvent.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.NewPostEvent.serializeBinaryToWriter = function(e, t) {
+		return proto.widgetgrid.v1.ChatMessage.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.ChatMessage.serializeBinaryToWriter = function(e, t) {
 		var n = void 0;
-		n = e.getSlug(), n.length > 0 && t.writeString(1, n), n = e.getTitle(), n.length > 0 && t.writeString(2, n), n = e.getPublishedAt(), n.length > 0 && t.writeString(3, n);
-	}, proto.widgetgrid.v1.NewPostEvent.prototype.getSlug = function() {
+		n = e.getId(), n.length > 0 && t.writeString(1, n), n = e.getChatId(), n.length > 0 && t.writeString(2, n), n = e.getSender(), n.length > 0 && t.writeString(3, n), n = e.getBody(), n.length > 0 && t.writeString(4, n), n = e.getCreatedAt(), n.length > 0 && t.writeString(5, n);
+	}, proto.widgetgrid.v1.ChatMessage.prototype.getId = function() {
 		return t.Message.getFieldWithDefault(this, 1, "");
-	}, proto.widgetgrid.v1.NewPostEvent.prototype.setSlug = function(e) {
+	}, proto.widgetgrid.v1.ChatMessage.prototype.setId = function(e) {
 		return t.Message.setProto3StringField(this, 1, e);
-	}, proto.widgetgrid.v1.NewPostEvent.prototype.getTitle = function() {
+	}, proto.widgetgrid.v1.ChatMessage.prototype.getChatId = function() {
 		return t.Message.getFieldWithDefault(this, 2, "");
-	}, proto.widgetgrid.v1.NewPostEvent.prototype.setTitle = function(e) {
+	}, proto.widgetgrid.v1.ChatMessage.prototype.setChatId = function(e) {
 		return t.Message.setProto3StringField(this, 2, e);
-	}, proto.widgetgrid.v1.NewPostEvent.prototype.getPublishedAt = function() {
+	}, proto.widgetgrid.v1.ChatMessage.prototype.getSender = function() {
 		return t.Message.getFieldWithDefault(this, 3, "");
-	}, proto.widgetgrid.v1.NewPostEvent.prototype.setPublishedAt = function(e) {
+	}, proto.widgetgrid.v1.ChatMessage.prototype.setSender = function(e) {
 		return t.Message.setProto3StringField(this, 3, e);
+	}, proto.widgetgrid.v1.ChatMessage.prototype.getBody = function() {
+		return t.Message.getFieldWithDefault(this, 4, "");
+	}, proto.widgetgrid.v1.ChatMessage.prototype.setBody = function(e) {
+		return t.Message.setProto3StringField(this, 4, e);
+	}, proto.widgetgrid.v1.ChatMessage.prototype.getCreatedAt = function() {
+		return t.Message.getFieldWithDefault(this, 5, "");
+	}, proto.widgetgrid.v1.ChatMessage.prototype.setCreatedAt = function(e) {
+		return t.Message.setProto3StringField(this, 5, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.StartOrGetChatRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.StartOrGetChatRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.StartOrGetChatRequest.toObject = function(e, t) {
+		var n = {};
+		return e && (n.$jspbMessageInstance = t), n;
+	}), proto.widgetgrid.v1.StartOrGetChatRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.StartOrGetChatRequest();
+		return proto.widgetgrid.v1.StartOrGetChatRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.StartOrGetChatRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		return e;
+	}, proto.widgetgrid.v1.StartOrGetChatRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.StartOrGetChatRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.StartOrGetChatRequest.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.StartOrGetChatResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.StartOrGetChatResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.StartOrGetChatResponse.toObject = function(e, t) {
+		var n, r = { chat: (n = t.getChat()) && proto.widgetgrid.v1.Chat.toObject(e, n) };
+		return e && (r.$jspbMessageInstance = t), r;
+	}), proto.widgetgrid.v1.StartOrGetChatResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.StartOrGetChatResponse();
+		return proto.widgetgrid.v1.StartOrGetChatResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.StartOrGetChatResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = new proto.widgetgrid.v1.Chat();
+				t.readMessage(n, proto.widgetgrid.v1.Chat.deserializeBinaryFromReader), e.setChat(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.StartOrGetChatResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.StartOrGetChatResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.StartOrGetChatResponse.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getChat(), n != null && t.writeMessage(1, n, proto.widgetgrid.v1.Chat.serializeBinaryToWriter);
+	}, proto.widgetgrid.v1.StartOrGetChatResponse.prototype.getChat = function() {
+		return t.Message.getWrapperField(this, proto.widgetgrid.v1.Chat, 1);
+	}, proto.widgetgrid.v1.StartOrGetChatResponse.prototype.setChat = function(e) {
+		return t.Message.setWrapperField(this, 1, e);
+	}, proto.widgetgrid.v1.StartOrGetChatResponse.prototype.clearChat = function() {
+		return this.setChat(void 0);
+	}, proto.widgetgrid.v1.StartOrGetChatResponse.prototype.hasChat = function() {
+		return t.Message.getField(this, 1) != null;
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.SendMessageRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.SendMessageRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.SendMessageRequest.toObject = function(e, n) {
+		var r = {
+			chatId: t.Message.getFieldWithDefault(n, 1, ""),
+			body: t.Message.getFieldWithDefault(n, 2, "")
+		};
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.SendMessageRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.SendMessageRequest();
+		return proto.widgetgrid.v1.SendMessageRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.SendMessageRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setChatId(n);
+				break;
+			case 2:
+				var n = t.readString();
+				e.setBody(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.SendMessageRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.SendMessageRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.SendMessageRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getChatId(), n.length > 0 && t.writeString(1, n), n = e.getBody(), n.length > 0 && t.writeString(2, n);
+	}, proto.widgetgrid.v1.SendMessageRequest.prototype.getChatId = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.SendMessageRequest.prototype.setChatId = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, proto.widgetgrid.v1.SendMessageRequest.prototype.getBody = function() {
+		return t.Message.getFieldWithDefault(this, 2, "");
+	}, proto.widgetgrid.v1.SendMessageRequest.prototype.setBody = function(e) {
+		return t.Message.setProto3StringField(this, 2, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.SendMessageResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.SendMessageResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.SendMessageResponse.toObject = function(e, t) {
+		var n, r = { message: (n = t.getMessage()) && proto.widgetgrid.v1.ChatMessage.toObject(e, n) };
+		return e && (r.$jspbMessageInstance = t), r;
+	}), proto.widgetgrid.v1.SendMessageResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.SendMessageResponse();
+		return proto.widgetgrid.v1.SendMessageResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.SendMessageResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = new proto.widgetgrid.v1.ChatMessage();
+				t.readMessage(n, proto.widgetgrid.v1.ChatMessage.deserializeBinaryFromReader), e.setMessage(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.SendMessageResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.SendMessageResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.SendMessageResponse.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getMessage(), n != null && t.writeMessage(1, n, proto.widgetgrid.v1.ChatMessage.serializeBinaryToWriter);
+	}, proto.widgetgrid.v1.SendMessageResponse.prototype.getMessage = function() {
+		return t.Message.getWrapperField(this, proto.widgetgrid.v1.ChatMessage, 1);
+	}, proto.widgetgrid.v1.SendMessageResponse.prototype.setMessage = function(e) {
+		return t.Message.setWrapperField(this, 1, e);
+	}, proto.widgetgrid.v1.SendMessageResponse.prototype.clearMessage = function() {
+		return this.setMessage(void 0);
+	}, proto.widgetgrid.v1.SendMessageResponse.prototype.hasMessage = function() {
+		return t.Message.getField(this, 1) != null;
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ListMessagesRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.ListMessagesRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.ListMessagesRequest.toObject = function(e, n) {
+		var r = { chatId: t.Message.getFieldWithDefault(n, 1, "") };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.ListMessagesRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ListMessagesRequest();
+		return proto.widgetgrid.v1.ListMessagesRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.ListMessagesRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setChatId(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.ListMessagesRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.ListMessagesRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.ListMessagesRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getChatId(), n.length > 0 && t.writeString(1, n);
+	}, proto.widgetgrid.v1.ListMessagesRequest.prototype.getChatId = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.ListMessagesRequest.prototype.setChatId = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, proto.widgetgrid.v1.ListMessagesResponse.repeatedFields_ = [1], t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ListMessagesResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.ListMessagesResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.ListMessagesResponse.toObject = function(e, n) {
+		var r = { messagesList: t.Message.toObjectList(n.getMessagesList(), proto.widgetgrid.v1.ChatMessage.toObject, e) };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.ListMessagesResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ListMessagesResponse();
+		return proto.widgetgrid.v1.ListMessagesResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.ListMessagesResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = new proto.widgetgrid.v1.ChatMessage();
+				t.readMessage(n, proto.widgetgrid.v1.ChatMessage.deserializeBinaryFromReader), e.addMessages(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.ListMessagesResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.ListMessagesResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.ListMessagesResponse.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getMessagesList(), n.length > 0 && t.writeRepeatedMessage(1, n, proto.widgetgrid.v1.ChatMessage.serializeBinaryToWriter);
+	}, proto.widgetgrid.v1.ListMessagesResponse.prototype.getMessagesList = function() {
+		return t.Message.getRepeatedWrapperField(this, proto.widgetgrid.v1.ChatMessage, 1);
+	}, proto.widgetgrid.v1.ListMessagesResponse.prototype.setMessagesList = function(e) {
+		return t.Message.setRepeatedWrapperField(this, 1, e);
+	}, proto.widgetgrid.v1.ListMessagesResponse.prototype.addMessages = function(e, n) {
+		return t.Message.addToRepeatedWrapperField(this, 1, e, proto.widgetgrid.v1.ChatMessage, n);
+	}, proto.widgetgrid.v1.ListMessagesResponse.prototype.clearMessagesList = function() {
+		return this.setMessagesList([]);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ListChatsRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.ListChatsRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.ListChatsRequest.toObject = function(e, t) {
+		var n = {};
+		return e && (n.$jspbMessageInstance = t), n;
+	}), proto.widgetgrid.v1.ListChatsRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ListChatsRequest();
+		return proto.widgetgrid.v1.ListChatsRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.ListChatsRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		return e;
+	}, proto.widgetgrid.v1.ListChatsRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.ListChatsRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.ListChatsRequest.serializeBinaryToWriter = function(e, t) {}, proto.widgetgrid.v1.ListChatsResponse.repeatedFields_ = [1], t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ListChatsResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.ListChatsResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.ListChatsResponse.toObject = function(e, n) {
+		var r = { chatsList: t.Message.toObjectList(n.getChatsList(), proto.widgetgrid.v1.Chat.toObject, e) };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.ListChatsResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ListChatsResponse();
+		return proto.widgetgrid.v1.ListChatsResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.ListChatsResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = new proto.widgetgrid.v1.Chat();
+				t.readMessage(n, proto.widgetgrid.v1.Chat.deserializeBinaryFromReader), e.addChats(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.ListChatsResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.ListChatsResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.ListChatsResponse.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getChatsList(), n.length > 0 && t.writeRepeatedMessage(1, n, proto.widgetgrid.v1.Chat.serializeBinaryToWriter);
+	}, proto.widgetgrid.v1.ListChatsResponse.prototype.getChatsList = function() {
+		return t.Message.getRepeatedWrapperField(this, proto.widgetgrid.v1.Chat, 1);
+	}, proto.widgetgrid.v1.ListChatsResponse.prototype.setChatsList = function(e) {
+		return t.Message.setRepeatedWrapperField(this, 1, e);
+	}, proto.widgetgrid.v1.ListChatsResponse.prototype.addChats = function(e, n) {
+		return t.Message.addToRepeatedWrapperField(this, 1, e, proto.widgetgrid.v1.Chat, n);
+	}, proto.widgetgrid.v1.ListChatsResponse.prototype.clearChatsList = function() {
+		return this.setChatsList([]);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RenameChatRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.RenameChatRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.RenameChatRequest.toObject = function(e, n) {
+		var r = {
+			chatId: t.Message.getFieldWithDefault(n, 1, ""),
+			label: t.Message.getFieldWithDefault(n, 2, "")
+		};
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.RenameChatRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RenameChatRequest();
+		return proto.widgetgrid.v1.RenameChatRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.RenameChatRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setChatId(n);
+				break;
+			case 2:
+				var n = t.readString();
+				e.setLabel(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.RenameChatRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.RenameChatRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.RenameChatRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getChatId(), n.length > 0 && t.writeString(1, n), n = e.getLabel(), n.length > 0 && t.writeString(2, n);
+	}, proto.widgetgrid.v1.RenameChatRequest.prototype.getChatId = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.RenameChatRequest.prototype.setChatId = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, proto.widgetgrid.v1.RenameChatRequest.prototype.getLabel = function() {
+		return t.Message.getFieldWithDefault(this, 2, "");
+	}, proto.widgetgrid.v1.RenameChatRequest.prototype.setLabel = function(e) {
+		return t.Message.setProto3StringField(this, 2, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RenameChatResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.RenameChatResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.RenameChatResponse.toObject = function(e, t) {
+		var n = {};
+		return e && (n.$jspbMessageInstance = t), n;
+	}), proto.widgetgrid.v1.RenameChatResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RenameChatResponse();
+		return proto.widgetgrid.v1.RenameChatResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.RenameChatResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		return e;
+	}, proto.widgetgrid.v1.RenameChatResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.RenameChatResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.RenameChatResponse.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.MarkReadRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.MarkReadRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.MarkReadRequest.toObject = function(e, n) {
+		var r = { chatId: t.Message.getFieldWithDefault(n, 1, "") };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.MarkReadRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.MarkReadRequest();
+		return proto.widgetgrid.v1.MarkReadRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.MarkReadRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setChatId(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.MarkReadRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.MarkReadRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.MarkReadRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getChatId(), n.length > 0 && t.writeString(1, n);
+	}, proto.widgetgrid.v1.MarkReadRequest.prototype.getChatId = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.MarkReadRequest.prototype.setChatId = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.MarkReadResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.MarkReadResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.MarkReadResponse.toObject = function(e, t) {
+		var n = {};
+		return e && (n.$jspbMessageInstance = t), n;
+	}), proto.widgetgrid.v1.MarkReadResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.MarkReadResponse();
+		return proto.widgetgrid.v1.MarkReadResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.MarkReadResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		return e;
+	}, proto.widgetgrid.v1.MarkReadResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.MarkReadResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.MarkReadResponse.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.SubscribeChatEventsRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.SubscribeChatEventsRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.SubscribeChatEventsRequest.toObject = function(e, t) {
+		var n = {};
+		return e && (n.$jspbMessageInstance = t), n;
+	}), proto.widgetgrid.v1.SubscribeChatEventsRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.SubscribeChatEventsRequest();
+		return proto.widgetgrid.v1.SubscribeChatEventsRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.SubscribeChatEventsRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		return e;
+	}, proto.widgetgrid.v1.SubscribeChatEventsRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.SubscribeChatEventsRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.SubscribeChatEventsRequest.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ChatEvent.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.ChatEvent.toObject(e, this);
+	}, proto.widgetgrid.v1.ChatEvent.toObject = function(e, n) {
+		var r, i = {
+			chatId: t.Message.getFieldWithDefault(n, 1, ""),
+			message: (r = n.getMessage()) && proto.widgetgrid.v1.ChatMessage.toObject(e, r),
+			isNewChat: t.Message.getBooleanFieldWithDefault(n, 3, !1),
+			chatLabel: t.Message.getFieldWithDefault(n, 4, "")
+		};
+		return e && (i.$jspbMessageInstance = n), i;
+	}), proto.widgetgrid.v1.ChatEvent.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ChatEvent();
+		return proto.widgetgrid.v1.ChatEvent.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.ChatEvent.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setChatId(n);
+				break;
+			case 2:
+				var n = new proto.widgetgrid.v1.ChatMessage();
+				t.readMessage(n, proto.widgetgrid.v1.ChatMessage.deserializeBinaryFromReader), e.setMessage(n);
+				break;
+			case 3:
+				var n = t.readBool();
+				e.setIsNewChat(n);
+				break;
+			case 4:
+				var n = t.readString();
+				e.setChatLabel(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.ChatEvent.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.ChatEvent.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.ChatEvent.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getChatId(), n.length > 0 && t.writeString(1, n), n = e.getMessage(), n != null && t.writeMessage(2, n, proto.widgetgrid.v1.ChatMessage.serializeBinaryToWriter), n = e.getIsNewChat(), n && t.writeBool(3, n), n = e.getChatLabel(), n.length > 0 && t.writeString(4, n);
+	}, proto.widgetgrid.v1.ChatEvent.prototype.getChatId = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.ChatEvent.prototype.setChatId = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, proto.widgetgrid.v1.ChatEvent.prototype.getMessage = function() {
+		return t.Message.getWrapperField(this, proto.widgetgrid.v1.ChatMessage, 2);
+	}, proto.widgetgrid.v1.ChatEvent.prototype.setMessage = function(e) {
+		return t.Message.setWrapperField(this, 2, e);
+	}, proto.widgetgrid.v1.ChatEvent.prototype.clearMessage = function() {
+		return this.setMessage(void 0);
+	}, proto.widgetgrid.v1.ChatEvent.prototype.hasMessage = function() {
+		return t.Message.getField(this, 2) != null;
+	}, proto.widgetgrid.v1.ChatEvent.prototype.getIsNewChat = function() {
+		return t.Message.getBooleanFieldWithDefault(this, 3, !1);
+	}, proto.widgetgrid.v1.ChatEvent.prototype.setIsNewChat = function(e) {
+		return t.Message.setProto3BooleanField(this, 3, e);
+	}, proto.widgetgrid.v1.ChatEvent.prototype.getChatLabel = function() {
+		return t.Message.getFieldWithDefault(this, 4, "");
+	}, proto.widgetgrid.v1.ChatEvent.prototype.setChatLabel = function(e) {
+		return t.Message.setProto3StringField(this, 4, e);
 	}, n.object.extend(e, proto.widgetgrid.v1);
 })), require_grpc_web = /* @__PURE__ */ __commonJSMin(((e, t) => {
 	var n, r = r || {}, i = e || self;
@@ -5399,580 +5755,6 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 		SERVER_STREAMING: "server_streaming",
 		BIDI_STREAMING: "bidi_streaming"
 	}, R = typeof globalThis < "u" && globalThis || self;
-})), require_blog_grpc_web_pb = /* @__PURE__ */ __commonJSMin(((e, t) => {
-	var n = {};
-	n.web = require_grpc_web();
-	var r = {};
-	r.widgetgrid = {}, r.widgetgrid.v1 = require_blog_pb(), r.widgetgrid.v1.BlogServiceClient = function(e, t, r) {
-		r ||= {}, r.format = "text", this.client_ = new n.web.GrpcWebClientBase(r), this.hostname_ = e.replace(/\/+$/, "");
-	}, r.widgetgrid.v1.BlogServicePromiseClient = function(e, t, r) {
-		r ||= {}, r.format = "text", this.client_ = new n.web.GrpcWebClientBase(r), this.hostname_ = e.replace(/\/+$/, "");
-	};
-	var i = new n.web.MethodDescriptor("/widgetgrid.v1.BlogService/ListBlogPosts", n.web.MethodType.UNARY, r.widgetgrid.v1.ListBlogPostsRequest, r.widgetgrid.v1.ListBlogPostsResponse, function(e) {
-		return e.serializeBinary();
-	}, r.widgetgrid.v1.ListBlogPostsResponse.deserializeBinary);
-	r.widgetgrid.v1.BlogServiceClient.prototype.listBlogPosts = function(e, t, n) {
-		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.BlogService/ListBlogPosts", e, t || {}, i, n);
-	}, r.widgetgrid.v1.BlogServicePromiseClient.prototype.listBlogPosts = function(e, t) {
-		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.BlogService/ListBlogPosts", e, t || {}, i);
-	};
-	var o = new n.web.MethodDescriptor("/widgetgrid.v1.BlogService/SubscribeNewPosts", n.web.MethodType.SERVER_STREAMING, r.widgetgrid.v1.SubscribeNewPostsRequest, r.widgetgrid.v1.NewPostEvent, function(e) {
-		return e.serializeBinary();
-	}, r.widgetgrid.v1.NewPostEvent.deserializeBinary);
-	r.widgetgrid.v1.BlogServiceClient.prototype.subscribeNewPosts = function(e, t) {
-		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.BlogService/SubscribeNewPosts", e, t || {}, o);
-	}, r.widgetgrid.v1.BlogServicePromiseClient.prototype.subscribeNewPosts = function(e, t) {
-		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.BlogService/SubscribeNewPosts", e, t || {}, o);
-	}, t.exports = r.widgetgrid.v1;
-})), import_blog_pb = require_blog_pb(), import_blog_grpc_web_pb = require_blog_grpc_web_pb(), client$1 = new import_blog_grpc_web_pb.BlogServicePromiseClient("http://localhost:8080");
-function subscribeNewPosts(e) {
-	let t = client$1.subscribeNewPosts(new import_blog_pb.SubscribeNewPostsRequest(), {});
-	return t.on("data", (t) => e(t.toObject())), () => t.cancel();
-}
-//#endregion
-//#region ../../packages/proto-gen-web/widgetgrid/v1/chat_pb.js
-var require_chat_pb = /* @__PURE__ */ __commonJSMin(((e) => {
-	var t = require_google_protobuf(), n = t, r = function() {
-		return this ? this : typeof window < "u" ? window : r === void 0 ? typeof self < "u" ? self : Function("return this")() : r;
-	}.call(null);
-	n.exportSymbol("proto.widgetgrid.v1.Chat", null, r), n.exportSymbol("proto.widgetgrid.v1.ChatEvent", null, r), n.exportSymbol("proto.widgetgrid.v1.ChatMessage", null, r), n.exportSymbol("proto.widgetgrid.v1.ListChatsRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.ListChatsResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.ListMessagesRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.ListMessagesResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.MarkReadRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.MarkReadResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.RenameChatRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.RenameChatResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.SendMessageRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.SendMessageResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.StartOrGetChatRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.StartOrGetChatResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.SubscribeChatEventsRequest", null, r), proto.widgetgrid.v1.Chat = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.Chat, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.Chat.displayName = "proto.widgetgrid.v1.Chat"), proto.widgetgrid.v1.ChatMessage = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.ChatMessage, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ChatMessage.displayName = "proto.widgetgrid.v1.ChatMessage"), proto.widgetgrid.v1.StartOrGetChatRequest = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.StartOrGetChatRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.StartOrGetChatRequest.displayName = "proto.widgetgrid.v1.StartOrGetChatRequest"), proto.widgetgrid.v1.StartOrGetChatResponse = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.StartOrGetChatResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.StartOrGetChatResponse.displayName = "proto.widgetgrid.v1.StartOrGetChatResponse"), proto.widgetgrid.v1.SendMessageRequest = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.SendMessageRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.SendMessageRequest.displayName = "proto.widgetgrid.v1.SendMessageRequest"), proto.widgetgrid.v1.SendMessageResponse = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.SendMessageResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.SendMessageResponse.displayName = "proto.widgetgrid.v1.SendMessageResponse"), proto.widgetgrid.v1.ListMessagesRequest = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.ListMessagesRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ListMessagesRequest.displayName = "proto.widgetgrid.v1.ListMessagesRequest"), proto.widgetgrid.v1.ListMessagesResponse = function(e) {
-		t.Message.initialize(this, e, 0, -1, proto.widgetgrid.v1.ListMessagesResponse.repeatedFields_, null);
-	}, n.inherits(proto.widgetgrid.v1.ListMessagesResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ListMessagesResponse.displayName = "proto.widgetgrid.v1.ListMessagesResponse"), proto.widgetgrid.v1.ListChatsRequest = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.ListChatsRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ListChatsRequest.displayName = "proto.widgetgrid.v1.ListChatsRequest"), proto.widgetgrid.v1.ListChatsResponse = function(e) {
-		t.Message.initialize(this, e, 0, -1, proto.widgetgrid.v1.ListChatsResponse.repeatedFields_, null);
-	}, n.inherits(proto.widgetgrid.v1.ListChatsResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ListChatsResponse.displayName = "proto.widgetgrid.v1.ListChatsResponse"), proto.widgetgrid.v1.RenameChatRequest = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.RenameChatRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RenameChatRequest.displayName = "proto.widgetgrid.v1.RenameChatRequest"), proto.widgetgrid.v1.RenameChatResponse = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.RenameChatResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RenameChatResponse.displayName = "proto.widgetgrid.v1.RenameChatResponse"), proto.widgetgrid.v1.MarkReadRequest = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.MarkReadRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.MarkReadRequest.displayName = "proto.widgetgrid.v1.MarkReadRequest"), proto.widgetgrid.v1.MarkReadResponse = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.MarkReadResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.MarkReadResponse.displayName = "proto.widgetgrid.v1.MarkReadResponse"), proto.widgetgrid.v1.SubscribeChatEventsRequest = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.SubscribeChatEventsRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.SubscribeChatEventsRequest.displayName = "proto.widgetgrid.v1.SubscribeChatEventsRequest"), proto.widgetgrid.v1.ChatEvent = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.ChatEvent, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ChatEvent.displayName = "proto.widgetgrid.v1.ChatEvent"), t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.Chat.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.Chat.toObject(e, this);
-	}, proto.widgetgrid.v1.Chat.toObject = function(e, n) {
-		var r = {
-			id: t.Message.getFieldWithDefault(n, 1, ""),
-			label: t.Message.getFieldWithDefault(n, 2, ""),
-			hasUnread: t.Message.getBooleanFieldWithDefault(n, 3, !1),
-			createdAt: t.Message.getFieldWithDefault(n, 4, "")
-		};
-		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.Chat.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.Chat();
-		return proto.widgetgrid.v1.Chat.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.Chat.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
-			case 1:
-				var n = t.readString();
-				e.setId(n);
-				break;
-			case 2:
-				var n = t.readString();
-				e.setLabel(n);
-				break;
-			case 3:
-				var n = t.readBool();
-				e.setHasUnread(n);
-				break;
-			case 4:
-				var n = t.readString();
-				e.setCreatedAt(n);
-				break;
-			default: t.skipField();
-		}
-		return e;
-	}, proto.widgetgrid.v1.Chat.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.Chat.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.Chat.serializeBinaryToWriter = function(e, t) {
-		var n = void 0;
-		n = e.getId(), n.length > 0 && t.writeString(1, n), n = e.getLabel(), n.length > 0 && t.writeString(2, n), n = e.getHasUnread(), n && t.writeBool(3, n), n = e.getCreatedAt(), n.length > 0 && t.writeString(4, n);
-	}, proto.widgetgrid.v1.Chat.prototype.getId = function() {
-		return t.Message.getFieldWithDefault(this, 1, "");
-	}, proto.widgetgrid.v1.Chat.prototype.setId = function(e) {
-		return t.Message.setProto3StringField(this, 1, e);
-	}, proto.widgetgrid.v1.Chat.prototype.getLabel = function() {
-		return t.Message.getFieldWithDefault(this, 2, "");
-	}, proto.widgetgrid.v1.Chat.prototype.setLabel = function(e) {
-		return t.Message.setProto3StringField(this, 2, e);
-	}, proto.widgetgrid.v1.Chat.prototype.getHasUnread = function() {
-		return t.Message.getBooleanFieldWithDefault(this, 3, !1);
-	}, proto.widgetgrid.v1.Chat.prototype.setHasUnread = function(e) {
-		return t.Message.setProto3BooleanField(this, 3, e);
-	}, proto.widgetgrid.v1.Chat.prototype.getCreatedAt = function() {
-		return t.Message.getFieldWithDefault(this, 4, "");
-	}, proto.widgetgrid.v1.Chat.prototype.setCreatedAt = function(e) {
-		return t.Message.setProto3StringField(this, 4, e);
-	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ChatMessage.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.ChatMessage.toObject(e, this);
-	}, proto.widgetgrid.v1.ChatMessage.toObject = function(e, n) {
-		var r = {
-			id: t.Message.getFieldWithDefault(n, 1, ""),
-			chatId: t.Message.getFieldWithDefault(n, 2, ""),
-			sender: t.Message.getFieldWithDefault(n, 3, ""),
-			body: t.Message.getFieldWithDefault(n, 4, ""),
-			createdAt: t.Message.getFieldWithDefault(n, 5, "")
-		};
-		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.ChatMessage.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ChatMessage();
-		return proto.widgetgrid.v1.ChatMessage.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.ChatMessage.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
-			case 1:
-				var n = t.readString();
-				e.setId(n);
-				break;
-			case 2:
-				var n = t.readString();
-				e.setChatId(n);
-				break;
-			case 3:
-				var n = t.readString();
-				e.setSender(n);
-				break;
-			case 4:
-				var n = t.readString();
-				e.setBody(n);
-				break;
-			case 5:
-				var n = t.readString();
-				e.setCreatedAt(n);
-				break;
-			default: t.skipField();
-		}
-		return e;
-	}, proto.widgetgrid.v1.ChatMessage.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.ChatMessage.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.ChatMessage.serializeBinaryToWriter = function(e, t) {
-		var n = void 0;
-		n = e.getId(), n.length > 0 && t.writeString(1, n), n = e.getChatId(), n.length > 0 && t.writeString(2, n), n = e.getSender(), n.length > 0 && t.writeString(3, n), n = e.getBody(), n.length > 0 && t.writeString(4, n), n = e.getCreatedAt(), n.length > 0 && t.writeString(5, n);
-	}, proto.widgetgrid.v1.ChatMessage.prototype.getId = function() {
-		return t.Message.getFieldWithDefault(this, 1, "");
-	}, proto.widgetgrid.v1.ChatMessage.prototype.setId = function(e) {
-		return t.Message.setProto3StringField(this, 1, e);
-	}, proto.widgetgrid.v1.ChatMessage.prototype.getChatId = function() {
-		return t.Message.getFieldWithDefault(this, 2, "");
-	}, proto.widgetgrid.v1.ChatMessage.prototype.setChatId = function(e) {
-		return t.Message.setProto3StringField(this, 2, e);
-	}, proto.widgetgrid.v1.ChatMessage.prototype.getSender = function() {
-		return t.Message.getFieldWithDefault(this, 3, "");
-	}, proto.widgetgrid.v1.ChatMessage.prototype.setSender = function(e) {
-		return t.Message.setProto3StringField(this, 3, e);
-	}, proto.widgetgrid.v1.ChatMessage.prototype.getBody = function() {
-		return t.Message.getFieldWithDefault(this, 4, "");
-	}, proto.widgetgrid.v1.ChatMessage.prototype.setBody = function(e) {
-		return t.Message.setProto3StringField(this, 4, e);
-	}, proto.widgetgrid.v1.ChatMessage.prototype.getCreatedAt = function() {
-		return t.Message.getFieldWithDefault(this, 5, "");
-	}, proto.widgetgrid.v1.ChatMessage.prototype.setCreatedAt = function(e) {
-		return t.Message.setProto3StringField(this, 5, e);
-	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.StartOrGetChatRequest.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.StartOrGetChatRequest.toObject(e, this);
-	}, proto.widgetgrid.v1.StartOrGetChatRequest.toObject = function(e, t) {
-		var n = {};
-		return e && (n.$jspbMessageInstance = t), n;
-	}), proto.widgetgrid.v1.StartOrGetChatRequest.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.StartOrGetChatRequest();
-		return proto.widgetgrid.v1.StartOrGetChatRequest.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.StartOrGetChatRequest.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
-		return e;
-	}, proto.widgetgrid.v1.StartOrGetChatRequest.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.StartOrGetChatRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.StartOrGetChatRequest.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.StartOrGetChatResponse.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.StartOrGetChatResponse.toObject(e, this);
-	}, proto.widgetgrid.v1.StartOrGetChatResponse.toObject = function(e, t) {
-		var n, r = { chat: (n = t.getChat()) && proto.widgetgrid.v1.Chat.toObject(e, n) };
-		return e && (r.$jspbMessageInstance = t), r;
-	}), proto.widgetgrid.v1.StartOrGetChatResponse.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.StartOrGetChatResponse();
-		return proto.widgetgrid.v1.StartOrGetChatResponse.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.StartOrGetChatResponse.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
-			case 1:
-				var n = new proto.widgetgrid.v1.Chat();
-				t.readMessage(n, proto.widgetgrid.v1.Chat.deserializeBinaryFromReader), e.setChat(n);
-				break;
-			default: t.skipField();
-		}
-		return e;
-	}, proto.widgetgrid.v1.StartOrGetChatResponse.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.StartOrGetChatResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.StartOrGetChatResponse.serializeBinaryToWriter = function(e, t) {
-		var n = void 0;
-		n = e.getChat(), n != null && t.writeMessage(1, n, proto.widgetgrid.v1.Chat.serializeBinaryToWriter);
-	}, proto.widgetgrid.v1.StartOrGetChatResponse.prototype.getChat = function() {
-		return t.Message.getWrapperField(this, proto.widgetgrid.v1.Chat, 1);
-	}, proto.widgetgrid.v1.StartOrGetChatResponse.prototype.setChat = function(e) {
-		return t.Message.setWrapperField(this, 1, e);
-	}, proto.widgetgrid.v1.StartOrGetChatResponse.prototype.clearChat = function() {
-		return this.setChat(void 0);
-	}, proto.widgetgrid.v1.StartOrGetChatResponse.prototype.hasChat = function() {
-		return t.Message.getField(this, 1) != null;
-	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.SendMessageRequest.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.SendMessageRequest.toObject(e, this);
-	}, proto.widgetgrid.v1.SendMessageRequest.toObject = function(e, n) {
-		var r = {
-			chatId: t.Message.getFieldWithDefault(n, 1, ""),
-			body: t.Message.getFieldWithDefault(n, 2, "")
-		};
-		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.SendMessageRequest.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.SendMessageRequest();
-		return proto.widgetgrid.v1.SendMessageRequest.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.SendMessageRequest.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
-			case 1:
-				var n = t.readString();
-				e.setChatId(n);
-				break;
-			case 2:
-				var n = t.readString();
-				e.setBody(n);
-				break;
-			default: t.skipField();
-		}
-		return e;
-	}, proto.widgetgrid.v1.SendMessageRequest.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.SendMessageRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.SendMessageRequest.serializeBinaryToWriter = function(e, t) {
-		var n = void 0;
-		n = e.getChatId(), n.length > 0 && t.writeString(1, n), n = e.getBody(), n.length > 0 && t.writeString(2, n);
-	}, proto.widgetgrid.v1.SendMessageRequest.prototype.getChatId = function() {
-		return t.Message.getFieldWithDefault(this, 1, "");
-	}, proto.widgetgrid.v1.SendMessageRequest.prototype.setChatId = function(e) {
-		return t.Message.setProto3StringField(this, 1, e);
-	}, proto.widgetgrid.v1.SendMessageRequest.prototype.getBody = function() {
-		return t.Message.getFieldWithDefault(this, 2, "");
-	}, proto.widgetgrid.v1.SendMessageRequest.prototype.setBody = function(e) {
-		return t.Message.setProto3StringField(this, 2, e);
-	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.SendMessageResponse.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.SendMessageResponse.toObject(e, this);
-	}, proto.widgetgrid.v1.SendMessageResponse.toObject = function(e, t) {
-		var n, r = { message: (n = t.getMessage()) && proto.widgetgrid.v1.ChatMessage.toObject(e, n) };
-		return e && (r.$jspbMessageInstance = t), r;
-	}), proto.widgetgrid.v1.SendMessageResponse.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.SendMessageResponse();
-		return proto.widgetgrid.v1.SendMessageResponse.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.SendMessageResponse.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
-			case 1:
-				var n = new proto.widgetgrid.v1.ChatMessage();
-				t.readMessage(n, proto.widgetgrid.v1.ChatMessage.deserializeBinaryFromReader), e.setMessage(n);
-				break;
-			default: t.skipField();
-		}
-		return e;
-	}, proto.widgetgrid.v1.SendMessageResponse.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.SendMessageResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.SendMessageResponse.serializeBinaryToWriter = function(e, t) {
-		var n = void 0;
-		n = e.getMessage(), n != null && t.writeMessage(1, n, proto.widgetgrid.v1.ChatMessage.serializeBinaryToWriter);
-	}, proto.widgetgrid.v1.SendMessageResponse.prototype.getMessage = function() {
-		return t.Message.getWrapperField(this, proto.widgetgrid.v1.ChatMessage, 1);
-	}, proto.widgetgrid.v1.SendMessageResponse.prototype.setMessage = function(e) {
-		return t.Message.setWrapperField(this, 1, e);
-	}, proto.widgetgrid.v1.SendMessageResponse.prototype.clearMessage = function() {
-		return this.setMessage(void 0);
-	}, proto.widgetgrid.v1.SendMessageResponse.prototype.hasMessage = function() {
-		return t.Message.getField(this, 1) != null;
-	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ListMessagesRequest.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.ListMessagesRequest.toObject(e, this);
-	}, proto.widgetgrid.v1.ListMessagesRequest.toObject = function(e, n) {
-		var r = { chatId: t.Message.getFieldWithDefault(n, 1, "") };
-		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.ListMessagesRequest.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ListMessagesRequest();
-		return proto.widgetgrid.v1.ListMessagesRequest.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.ListMessagesRequest.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
-			case 1:
-				var n = t.readString();
-				e.setChatId(n);
-				break;
-			default: t.skipField();
-		}
-		return e;
-	}, proto.widgetgrid.v1.ListMessagesRequest.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.ListMessagesRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.ListMessagesRequest.serializeBinaryToWriter = function(e, t) {
-		var n = void 0;
-		n = e.getChatId(), n.length > 0 && t.writeString(1, n);
-	}, proto.widgetgrid.v1.ListMessagesRequest.prototype.getChatId = function() {
-		return t.Message.getFieldWithDefault(this, 1, "");
-	}, proto.widgetgrid.v1.ListMessagesRequest.prototype.setChatId = function(e) {
-		return t.Message.setProto3StringField(this, 1, e);
-	}, proto.widgetgrid.v1.ListMessagesResponse.repeatedFields_ = [1], t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ListMessagesResponse.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.ListMessagesResponse.toObject(e, this);
-	}, proto.widgetgrid.v1.ListMessagesResponse.toObject = function(e, n) {
-		var r = { messagesList: t.Message.toObjectList(n.getMessagesList(), proto.widgetgrid.v1.ChatMessage.toObject, e) };
-		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.ListMessagesResponse.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ListMessagesResponse();
-		return proto.widgetgrid.v1.ListMessagesResponse.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.ListMessagesResponse.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
-			case 1:
-				var n = new proto.widgetgrid.v1.ChatMessage();
-				t.readMessage(n, proto.widgetgrid.v1.ChatMessage.deserializeBinaryFromReader), e.addMessages(n);
-				break;
-			default: t.skipField();
-		}
-		return e;
-	}, proto.widgetgrid.v1.ListMessagesResponse.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.ListMessagesResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.ListMessagesResponse.serializeBinaryToWriter = function(e, t) {
-		var n = void 0;
-		n = e.getMessagesList(), n.length > 0 && t.writeRepeatedMessage(1, n, proto.widgetgrid.v1.ChatMessage.serializeBinaryToWriter);
-	}, proto.widgetgrid.v1.ListMessagesResponse.prototype.getMessagesList = function() {
-		return t.Message.getRepeatedWrapperField(this, proto.widgetgrid.v1.ChatMessage, 1);
-	}, proto.widgetgrid.v1.ListMessagesResponse.prototype.setMessagesList = function(e) {
-		return t.Message.setRepeatedWrapperField(this, 1, e);
-	}, proto.widgetgrid.v1.ListMessagesResponse.prototype.addMessages = function(e, n) {
-		return t.Message.addToRepeatedWrapperField(this, 1, e, proto.widgetgrid.v1.ChatMessage, n);
-	}, proto.widgetgrid.v1.ListMessagesResponse.prototype.clearMessagesList = function() {
-		return this.setMessagesList([]);
-	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ListChatsRequest.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.ListChatsRequest.toObject(e, this);
-	}, proto.widgetgrid.v1.ListChatsRequest.toObject = function(e, t) {
-		var n = {};
-		return e && (n.$jspbMessageInstance = t), n;
-	}), proto.widgetgrid.v1.ListChatsRequest.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ListChatsRequest();
-		return proto.widgetgrid.v1.ListChatsRequest.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.ListChatsRequest.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
-		return e;
-	}, proto.widgetgrid.v1.ListChatsRequest.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.ListChatsRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.ListChatsRequest.serializeBinaryToWriter = function(e, t) {}, proto.widgetgrid.v1.ListChatsResponse.repeatedFields_ = [1], t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ListChatsResponse.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.ListChatsResponse.toObject(e, this);
-	}, proto.widgetgrid.v1.ListChatsResponse.toObject = function(e, n) {
-		var r = { chatsList: t.Message.toObjectList(n.getChatsList(), proto.widgetgrid.v1.Chat.toObject, e) };
-		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.ListChatsResponse.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ListChatsResponse();
-		return proto.widgetgrid.v1.ListChatsResponse.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.ListChatsResponse.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
-			case 1:
-				var n = new proto.widgetgrid.v1.Chat();
-				t.readMessage(n, proto.widgetgrid.v1.Chat.deserializeBinaryFromReader), e.addChats(n);
-				break;
-			default: t.skipField();
-		}
-		return e;
-	}, proto.widgetgrid.v1.ListChatsResponse.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.ListChatsResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.ListChatsResponse.serializeBinaryToWriter = function(e, t) {
-		var n = void 0;
-		n = e.getChatsList(), n.length > 0 && t.writeRepeatedMessage(1, n, proto.widgetgrid.v1.Chat.serializeBinaryToWriter);
-	}, proto.widgetgrid.v1.ListChatsResponse.prototype.getChatsList = function() {
-		return t.Message.getRepeatedWrapperField(this, proto.widgetgrid.v1.Chat, 1);
-	}, proto.widgetgrid.v1.ListChatsResponse.prototype.setChatsList = function(e) {
-		return t.Message.setRepeatedWrapperField(this, 1, e);
-	}, proto.widgetgrid.v1.ListChatsResponse.prototype.addChats = function(e, n) {
-		return t.Message.addToRepeatedWrapperField(this, 1, e, proto.widgetgrid.v1.Chat, n);
-	}, proto.widgetgrid.v1.ListChatsResponse.prototype.clearChatsList = function() {
-		return this.setChatsList([]);
-	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RenameChatRequest.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.RenameChatRequest.toObject(e, this);
-	}, proto.widgetgrid.v1.RenameChatRequest.toObject = function(e, n) {
-		var r = {
-			chatId: t.Message.getFieldWithDefault(n, 1, ""),
-			label: t.Message.getFieldWithDefault(n, 2, "")
-		};
-		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.RenameChatRequest.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RenameChatRequest();
-		return proto.widgetgrid.v1.RenameChatRequest.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.RenameChatRequest.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
-			case 1:
-				var n = t.readString();
-				e.setChatId(n);
-				break;
-			case 2:
-				var n = t.readString();
-				e.setLabel(n);
-				break;
-			default: t.skipField();
-		}
-		return e;
-	}, proto.widgetgrid.v1.RenameChatRequest.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.RenameChatRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.RenameChatRequest.serializeBinaryToWriter = function(e, t) {
-		var n = void 0;
-		n = e.getChatId(), n.length > 0 && t.writeString(1, n), n = e.getLabel(), n.length > 0 && t.writeString(2, n);
-	}, proto.widgetgrid.v1.RenameChatRequest.prototype.getChatId = function() {
-		return t.Message.getFieldWithDefault(this, 1, "");
-	}, proto.widgetgrid.v1.RenameChatRequest.prototype.setChatId = function(e) {
-		return t.Message.setProto3StringField(this, 1, e);
-	}, proto.widgetgrid.v1.RenameChatRequest.prototype.getLabel = function() {
-		return t.Message.getFieldWithDefault(this, 2, "");
-	}, proto.widgetgrid.v1.RenameChatRequest.prototype.setLabel = function(e) {
-		return t.Message.setProto3StringField(this, 2, e);
-	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RenameChatResponse.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.RenameChatResponse.toObject(e, this);
-	}, proto.widgetgrid.v1.RenameChatResponse.toObject = function(e, t) {
-		var n = {};
-		return e && (n.$jspbMessageInstance = t), n;
-	}), proto.widgetgrid.v1.RenameChatResponse.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RenameChatResponse();
-		return proto.widgetgrid.v1.RenameChatResponse.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.RenameChatResponse.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
-		return e;
-	}, proto.widgetgrid.v1.RenameChatResponse.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.RenameChatResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.RenameChatResponse.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.MarkReadRequest.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.MarkReadRequest.toObject(e, this);
-	}, proto.widgetgrid.v1.MarkReadRequest.toObject = function(e, n) {
-		var r = { chatId: t.Message.getFieldWithDefault(n, 1, "") };
-		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.MarkReadRequest.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.MarkReadRequest();
-		return proto.widgetgrid.v1.MarkReadRequest.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.MarkReadRequest.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
-			case 1:
-				var n = t.readString();
-				e.setChatId(n);
-				break;
-			default: t.skipField();
-		}
-		return e;
-	}, proto.widgetgrid.v1.MarkReadRequest.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.MarkReadRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.MarkReadRequest.serializeBinaryToWriter = function(e, t) {
-		var n = void 0;
-		n = e.getChatId(), n.length > 0 && t.writeString(1, n);
-	}, proto.widgetgrid.v1.MarkReadRequest.prototype.getChatId = function() {
-		return t.Message.getFieldWithDefault(this, 1, "");
-	}, proto.widgetgrid.v1.MarkReadRequest.prototype.setChatId = function(e) {
-		return t.Message.setProto3StringField(this, 1, e);
-	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.MarkReadResponse.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.MarkReadResponse.toObject(e, this);
-	}, proto.widgetgrid.v1.MarkReadResponse.toObject = function(e, t) {
-		var n = {};
-		return e && (n.$jspbMessageInstance = t), n;
-	}), proto.widgetgrid.v1.MarkReadResponse.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.MarkReadResponse();
-		return proto.widgetgrid.v1.MarkReadResponse.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.MarkReadResponse.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
-		return e;
-	}, proto.widgetgrid.v1.MarkReadResponse.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.MarkReadResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.MarkReadResponse.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.SubscribeChatEventsRequest.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.SubscribeChatEventsRequest.toObject(e, this);
-	}, proto.widgetgrid.v1.SubscribeChatEventsRequest.toObject = function(e, t) {
-		var n = {};
-		return e && (n.$jspbMessageInstance = t), n;
-	}), proto.widgetgrid.v1.SubscribeChatEventsRequest.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.SubscribeChatEventsRequest();
-		return proto.widgetgrid.v1.SubscribeChatEventsRequest.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.SubscribeChatEventsRequest.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
-		return e;
-	}, proto.widgetgrid.v1.SubscribeChatEventsRequest.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.SubscribeChatEventsRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.SubscribeChatEventsRequest.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ChatEvent.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.ChatEvent.toObject(e, this);
-	}, proto.widgetgrid.v1.ChatEvent.toObject = function(e, n) {
-		var r, i = {
-			chatId: t.Message.getFieldWithDefault(n, 1, ""),
-			message: (r = n.getMessage()) && proto.widgetgrid.v1.ChatMessage.toObject(e, r),
-			isNewChat: t.Message.getBooleanFieldWithDefault(n, 3, !1),
-			chatLabel: t.Message.getFieldWithDefault(n, 4, "")
-		};
-		return e && (i.$jspbMessageInstance = n), i;
-	}), proto.widgetgrid.v1.ChatEvent.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ChatEvent();
-		return proto.widgetgrid.v1.ChatEvent.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.ChatEvent.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
-			case 1:
-				var n = t.readString();
-				e.setChatId(n);
-				break;
-			case 2:
-				var n = new proto.widgetgrid.v1.ChatMessage();
-				t.readMessage(n, proto.widgetgrid.v1.ChatMessage.deserializeBinaryFromReader), e.setMessage(n);
-				break;
-			case 3:
-				var n = t.readBool();
-				e.setIsNewChat(n);
-				break;
-			case 4:
-				var n = t.readString();
-				e.setChatLabel(n);
-				break;
-			default: t.skipField();
-		}
-		return e;
-	}, proto.widgetgrid.v1.ChatEvent.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.ChatEvent.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.ChatEvent.serializeBinaryToWriter = function(e, t) {
-		var n = void 0;
-		n = e.getChatId(), n.length > 0 && t.writeString(1, n), n = e.getMessage(), n != null && t.writeMessage(2, n, proto.widgetgrid.v1.ChatMessage.serializeBinaryToWriter), n = e.getIsNewChat(), n && t.writeBool(3, n), n = e.getChatLabel(), n.length > 0 && t.writeString(4, n);
-	}, proto.widgetgrid.v1.ChatEvent.prototype.getChatId = function() {
-		return t.Message.getFieldWithDefault(this, 1, "");
-	}, proto.widgetgrid.v1.ChatEvent.prototype.setChatId = function(e) {
-		return t.Message.setProto3StringField(this, 1, e);
-	}, proto.widgetgrid.v1.ChatEvent.prototype.getMessage = function() {
-		return t.Message.getWrapperField(this, proto.widgetgrid.v1.ChatMessage, 2);
-	}, proto.widgetgrid.v1.ChatEvent.prototype.setMessage = function(e) {
-		return t.Message.setWrapperField(this, 2, e);
-	}, proto.widgetgrid.v1.ChatEvent.prototype.clearMessage = function() {
-		return this.setMessage(void 0);
-	}, proto.widgetgrid.v1.ChatEvent.prototype.hasMessage = function() {
-		return t.Message.getField(this, 2) != null;
-	}, proto.widgetgrid.v1.ChatEvent.prototype.getIsNewChat = function() {
-		return t.Message.getBooleanFieldWithDefault(this, 3, !1);
-	}, proto.widgetgrid.v1.ChatEvent.prototype.setIsNewChat = function(e) {
-		return t.Message.setProto3BooleanField(this, 3, e);
-	}, proto.widgetgrid.v1.ChatEvent.prototype.getChatLabel = function() {
-		return t.Message.getFieldWithDefault(this, 4, "");
-	}, proto.widgetgrid.v1.ChatEvent.prototype.setChatLabel = function(e) {
-		return t.Message.setProto3StringField(this, 4, e);
-	}, n.object.extend(e, proto.widgetgrid.v1);
 })), require_chat_grpc_web_pb = /* @__PURE__ */ __commonJSMin(((e, t) => {
 	var n = {};
 	n.web = require_grpc_web();
@@ -6039,27 +5821,46 @@ var require_chat_pb = /* @__PURE__ */ __commonJSMin(((e) => {
 		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.ChatService/SubscribeChatEvents", e, t || {}, d);
 	}, t.exports = r.widgetgrid.v1;
 })), import_chat_pb = require_chat_pb(), import_chat_grpc_web_pb = require_chat_grpc_web_pb(), client = new import_chat_grpc_web_pb.ChatServicePromiseClient("http://localhost:8080"), TOKEN_KEY = "widgetgrid:ownerToken", VISITOR_ID_KEY = "widgetgrid:visitorId";
+function getOwnerToken() {
+	return localStorage.getItem(TOKEN_KEY);
+}
+function getOrCreateVisitorId() {
+	let e = localStorage.getItem(VISITOR_ID_KEY);
+	return e || (e = crypto.randomUUID(), localStorage.setItem(VISITOR_ID_KEY, e)), e;
+}
 function identityMetadata() {
-	let e = localStorage.getItem(TOKEN_KEY);
-	if (e) return { authorization: `Bearer ${e}` };
-	let t = localStorage.getItem(VISITOR_ID_KEY);
-	return t || (t = crypto.randomUUID(), localStorage.setItem(VISITOR_ID_KEY, t)), { "visitor-id": t };
+	let e = getOwnerToken();
+	return e ? { authorization: `Bearer ${e}` } : { "visitor-id": getOrCreateVisitorId() };
 }
-function subscribeChatEvents(e) {
-	let t = client.subscribeChatEvents(new import_chat_pb.SubscribeChatEventsRequest(), identityMetadata());
-	return t.on("data", (t) => e(t.toObject())), () => t.cancel();
-}
-//#endregion
-//#region \0plugin-vue:export-helper
-var _plugin_vue_export_helper_default = (e, t) => {
+var chatClient = {
+	async startOrGetChat() {
+		return (await client.startOrGetChat(new import_chat_pb.StartOrGetChatRequest(), identityMetadata())).toObject().chat;
+	},
+	async sendMessage(e, t) {
+		let n = new import_chat_pb.SendMessageRequest();
+		return n.setChatId(e), n.setBody(t), (await client.sendMessage(n, identityMetadata())).toObject().message;
+	},
+	async listMessages(e) {
+		let t = new import_chat_pb.ListMessagesRequest();
+		return t.setChatId(e), (await client.listMessages(t, identityMetadata())).toObject().messagesList;
+	},
+	async listChats() {
+		return (await client.listChats(new import_chat_pb.ListChatsRequest(), identityMetadata())).toObject().chatsList;
+	},
+	async renameChat(e, t) {
+		let n = new import_chat_pb.RenameChatRequest();
+		n.setChatId(e), n.setLabel(t), await client.renameChat(n, identityMetadata());
+	},
+	async markRead(e) {
+		let t = new import_chat_pb.MarkReadRequest();
+		t.setChatId(e), await client.markRead(t, identityMetadata());
+	}
+}, _plugin_vue_export_helper_default = (e, t) => {
 	let n = e.__vccOpts || e;
 	for (let [e, r] of t) n[e] = r;
 	return n;
-}, SCROLL_THRESHOLD = 10, TOPBAR_MODE = {
-	solitaire: "collapsed",
-	chat: "collapsed"
 }, _sfc_main = {
-	name: "MainWidget",
+	name: "ChatWidget",
 	props: {
 		data: {
 			type: Object,
@@ -6072,85 +5873,163 @@ var _plugin_vue_export_helper_default = (e, t) => {
 	},
 	data() {
 		return {
-			view: "blog",
-			blogComponent: null,
-			solitaireComponent: null,
-			chatComponent: null,
-			collapsed: !1,
-			blogReloadKey: 0
+			isOwner: !!getOwnerToken(),
+			status: "loading",
+			chats: [],
+			selectedChatId: null,
+			myChatId: null,
+			messages: [],
+			newMessageBody: "",
+			renamingChatId: null,
+			renameValue: ""
 		};
 	},
 	created() {
-		window.addEventListener("widgetgrid:navigate", this.onNavigate), import(
-			/* @vite-ignore */
-			"/widgets/blog.js"
-).then((e) => {
-			this.blogComponent = e.default ?? e;
-		}), this.unsubscribeNewPosts = subscribeNewPosts(() => {
-			window.dispatchEvent(new CustomEvent("widgetgrid:new-post"));
-		}), this.unsubscribeChatEvents = subscribeChatEvents((e) => {
-			window.dispatchEvent(new CustomEvent("widgetgrid:chat-event", { detail: e }));
-		}), this.onIdentityChanged = () => {
-			this.unsubscribeChatEvents(), this.unsubscribeChatEvents = subscribeChatEvents((e) => {
-				window.dispatchEvent(new CustomEvent("widgetgrid:chat-event", { detail: e }));
-			});
-		}, window.addEventListener("widgetgrid:identity-changed", this.onIdentityChanged);
+		window.addEventListener("widgetgrid:chat-event", this.onChatEvent), this.isOwner ? this.loadChats() : chatClient.startOrGetChat().then((e) => (this.myChatId = e.id, this.loadMessages(e.id))).then(() => {
+			this.status = "ready";
+		}).catch(() => {
+			this.status = "error";
+		});
 	},
 	beforeUnmount() {
-		window.removeEventListener("widgetgrid:navigate", this.onNavigate), window.removeEventListener("widgetgrid:identity-changed", this.onIdentityChanged), this.unsubscribeNewPosts(), this.unsubscribeChatEvents();
+		window.removeEventListener("widgetgrid:chat-event", this.onChatEvent);
 	},
-	computed: { topbarMode() {
-		return TOPBAR_MODE[this.view] ?? "scroll";
-	} },
+	updated() {
+		this.scrollToBottom();
+	},
 	methods: {
-		onNavigate(e) {
-			this.view = e.detail.view, this.view === "solitaire" && !this.solitaireComponent && import(
-				/* @vite-ignore */
-				"/widgets/solitaire.js"
-).then((e) => {
-				this.solitaireComponent = e.default ?? e;
-			}), this.view === "chat" && !this.chatComponent && import(
-				/* @vite-ignore */
-				"/widgets/chat.js"
-).then((e) => {
-				this.chatComponent = e.default ?? e;
-			}), e.detail.forceReload && (this.blogReloadKey += 1), this.$el.scrollTop = 0, this.setCollapsed(this.topbarMode === "collapsed");
+		async loadChats() {
+			try {
+				let e = await chatClient.listChats();
+				this.chats = e, this.status = "ready", !this.selectedChatId && e.length > 0 && this.selectChat(e[0].id);
+			} catch {
+				this.status = "error";
+			}
 		},
-		onScroll(e) {
-			this.topbarMode === "scroll" && this.setCollapsed(e.target.scrollTop > SCROLL_THRESHOLD);
+		async loadMessages(e) {
+			this.messages = await chatClient.listMessages(e);
 		},
-		setCollapsed(e) {
-			e !== this.collapsed && (this.collapsed = e, window.dispatchEvent(new CustomEvent("widgetgrid:scroll", { detail: { collapsed: e } })));
+		selectChat(e) {
+			this.selectedChatId = e, this.loadMessages(e), chatClient.markRead(e);
+			let t = this.chats.find((t) => t.id === e);
+			t && (t.hasUnread = !1);
+		},
+		startRename(e) {
+			this.renamingChatId = e.id, this.renameValue = e.label;
+		},
+		async confirmRename() {
+			let e = this.renamingChatId, t = this.renameValue.trim();
+			if (this.renamingChatId = null, !e || !t) return;
+			await chatClient.renameChat(e, t);
+			let n = this.chats.find((t) => t.id === e);
+			n && (n.label = t);
+		},
+		cancelRename() {
+			this.renamingChatId = null;
+		},
+		async sendMessage() {
+			let e = this.newMessageBody.trim(), t = this.isOwner ? this.selectedChatId : this.myChatId;
+			if (!e || !t) return;
+			this.newMessageBody = "";
+			let n = await chatClient.sendMessage(t, e);
+			this.messages.push(n);
+		},
+		async onChatEvent(e) {
+			if (this.isOwner) {
+				if (await this.loadChats(), e.detail.chatId === this.selectedChatId) {
+					await this.loadMessages(this.selectedChatId), await chatClient.markRead(this.selectedChatId);
+					let e = this.chats.find((e) => e.id === this.selectedChatId);
+					e && (e.hasUnread = !1);
+				}
+			} else {
+				if (!this.myChatId) return;
+				await this.loadMessages(this.myChatId), await chatClient.markRead(this.myChatId);
+			}
+		},
+		scrollToBottom() {
+			let e = this.$refs.messagesEl;
+			e && (e.scrollTop = e.scrollHeight);
 		}
 	}
-}, _hoisted_1 = {
+}, _hoisted_1 = { class: "widget widget-chat" }, _hoisted_2 = {
 	key: 0,
-	class: "main-status"
-}, _hoisted_2 = {
-	key: 2,
-	class: "main-status"
-}, _hoisted_3 = {
-	key: 4,
-	class: "main-status"
-};
+	class: "chat-shell"
+}, _hoisted_3 = { class: "chat-list" }, _hoisted_4 = {
+	key: 0,
+	class: "chat-status"
+}, _hoisted_5 = {
+	key: 1,
+	class: "chat-status"
+}, _hoisted_6 = ["onClick"], _hoisted_7 = ["onClick"], _hoisted_8 = { class: "chat-thread" }, _hoisted_9 = {
+	ref: "messagesEl",
+	class: "chat-messages"
+}, _hoisted_10 = { class: "chat-message-body" }, _hoisted_11 = ["disabled"], _hoisted_12 = {
+	key: 1,
+	class: "chat-status"
+}, _hoisted_13 = {
+	key: 1,
+	class: "chat-thread chat-thread-visitor"
+}, _hoisted_14 = {
+	key: 0,
+	class: "chat-status"
+}, _hoisted_15 = {
+	ref: "messagesEl",
+	class: "chat-messages"
+}, _hoisted_16 = {
+	key: 0,
+	class: "chat-status"
+}, _hoisted_17 = { class: "chat-message-body" }, _hoisted_18 = ["disabled"];
 function _sfc_render(e, t, n, r, i, o) {
-	return openBlock(), createElementBlock("div", {
-		class: normalizeClass(["widget widget-main", { "main-collapsed": i.collapsed }]),
-		onScroll: t[0] ||= (...e) => o.onScroll && o.onScroll(...e)
-	}, [i.view === "blog" && !i.blogComponent ? (openBlock(), createElementBlock("p", _hoisted_1, "Loading…")) : i.view === "blog" ? (openBlock(), createBlock(resolveDynamicComponent(i.blogComponent), {
-		key: i.blogReloadKey,
-		data: {},
-		title: ""
-	})) : i.view === "solitaire" && !i.solitaireComponent ? (openBlock(), createElementBlock("p", _hoisted_2, "Loading…")) : i.view === "solitaire" ? (openBlock(), createBlock(resolveDynamicComponent(i.solitaireComponent), {
-		key: 3,
-		data: {},
-		title: ""
-	})) : createCommentVNode("", !0), i.view === "chat" && !i.chatComponent ? (openBlock(), createElementBlock("p", _hoisted_3, "Loading…")) : i.view === "chat" ? (openBlock(), createBlock(resolveDynamicComponent(i.chatComponent), {
-		key: 5,
-		data: {},
-		title: ""
-	})) : createCommentVNode("", !0)], 34);
+	return openBlock(), createElementBlock("div", _hoisted_1, [i.isOwner ? (openBlock(), createElementBlock("div", _hoisted_2, [createElementVNode("aside", _hoisted_3, [i.status === "loading" ? (openBlock(), createElementBlock("p", _hoisted_4, "Loading…")) : i.chats.length === 0 ? (openBlock(), createElementBlock("p", _hoisted_5, "No conversations yet.")) : createCommentVNode("", !0), (openBlock(!0), createElementBlock(Fragment, null, renderList(i.chats, (e) => (openBlock(), createElementBlock("div", {
+		key: e.id,
+		class: normalizeClass(["chat-list-item", { "chat-list-item-active": e.id === i.selectedChatId }]),
+		onClick: (t) => o.selectChat(e.id)
+	}, [i.renamingChatId === e.id ? withDirectives((openBlock(), createElementBlock("input", {
+		key: 0,
+		"onUpdate:modelValue": t[0] ||= (e) => i.renameValue = e,
+		class: "chat-rename-input",
+		autofocus: "",
+		onClick: t[1] ||= withModifiers(() => {}, ["stop"]),
+		onKeyup: [t[2] ||= withKeys((...e) => o.confirmRename && o.confirmRename(...e), ["enter"]), t[3] ||= withKeys((...e) => o.cancelRename && o.cancelRename(...e), ["esc"])],
+		onBlur: t[4] ||= (...e) => o.confirmRename && o.confirmRename(...e)
+	}, null, 544)), [[vModelText, i.renameValue]]) : (openBlock(), createElementBlock(Fragment, { key: 1 }, [createElementVNode("span", { class: normalizeClass(["chat-list-label", { "chat-list-label-unread": e.hasUnread }]) }, toDisplayString(e.label), 3), createElementVNode("button", {
+		type: "button",
+		class: "chat-rename-btn",
+		title: "Rename",
+		"aria-label": "Rename",
+		onClick: withModifiers((t) => o.startRename(e), ["stop"])
+	}, "✎", 8, _hoisted_7)], 64))], 10, _hoisted_6))), 128))]), createElementVNode("section", _hoisted_8, [i.selectedChatId ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [createElementVNode("div", _hoisted_9, [(openBlock(!0), createElementBlock(Fragment, null, renderList(i.messages, (e) => (openBlock(), createElementBlock("div", {
+		key: e.id,
+		class: normalizeClass(["chat-message", e.sender === "owner" ? "chat-message-mine" : "chat-message-theirs"])
+	}, [createElementVNode("p", _hoisted_10, toDisplayString(e.body), 1)], 2))), 128))], 512), createElementVNode("form", {
+		class: "chat-composer",
+		onSubmit: t[6] ||= withModifiers((...e) => o.sendMessage && o.sendMessage(...e), ["prevent"])
+	}, [withDirectives(createElementVNode("input", {
+		"onUpdate:modelValue": t[5] ||= (e) => i.newMessageBody = e,
+		type: "text",
+		class: "chat-input",
+		placeholder: "Type a message…"
+	}, null, 512), [[vModelText, i.newMessageBody]]), createElementVNode("button", {
+		type: "submit",
+		class: "chat-send",
+		disabled: !i.newMessageBody.trim()
+	}, "Send", 8, _hoisted_11)], 32)], 64)) : (openBlock(), createElementBlock("p", _hoisted_12, "Select a conversation."))])])) : (openBlock(), createElementBlock("div", _hoisted_13, [i.status === "loading" ? (openBlock(), createElementBlock("p", _hoisted_14, "Connecting…")) : (openBlock(), createElementBlock(Fragment, { key: 1 }, [createElementVNode("div", _hoisted_15, [i.messages.length === 0 ? (openBlock(), createElementBlock("p", _hoisted_16, "Say hello — Matt will get back to you here.")) : createCommentVNode("", !0), (openBlock(!0), createElementBlock(Fragment, null, renderList(i.messages, (e) => (openBlock(), createElementBlock("div", {
+		key: e.id,
+		class: normalizeClass(["chat-message", e.sender === "visitor" ? "chat-message-mine" : "chat-message-theirs"])
+	}, [createElementVNode("p", _hoisted_17, toDisplayString(e.body), 1)], 2))), 128))], 512), createElementVNode("form", {
+		class: "chat-composer",
+		onSubmit: t[8] ||= withModifiers((...e) => o.sendMessage && o.sendMessage(...e), ["prevent"])
+	}, [withDirectives(createElementVNode("input", {
+		"onUpdate:modelValue": t[7] ||= (e) => i.newMessageBody = e,
+		type: "text",
+		class: "chat-input",
+		placeholder: "Type a message…"
+	}, null, 512), [[vModelText, i.newMessageBody]]), createElementVNode("button", {
+		type: "submit",
+		class: "chat-send",
+		disabled: !i.newMessageBody.trim()
+	}, "Send", 8, _hoisted_18)], 32)], 64))]))]);
 }
-var MainWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-73e92f31"]]);
+var ChatWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-97112f78"]]);
 //#endregion
-export { MainWidget_default as default };
+export { ChatWidget_default as default };
