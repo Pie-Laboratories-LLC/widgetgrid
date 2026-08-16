@@ -6,7 +6,9 @@ import { GetPageLayoutRequest } from '@widgetgrid/proto-gen-web/widgetgrid/v1/pa
 import { PageServicePromiseClient } from '@widgetgrid/proto-gen-web/widgetgrid/v1/page_grpc_web_pb.js';
 import { GetWidgetContentRequest } from '@widgetgrid/proto-gen-web/widgetgrid/v1/widget_pb.js';
 import { WidgetServicePromiseClient } from '@widgetgrid/proto-gen-web/widgetgrid/v1/widget_grpc_web_pb.js';
-import { normalizeLayoutResponse, normalizeWidgetContentResponse } from './normalize.js';
+import { ListBlogPostsRequest } from '@widgetgrid/proto-gen-web/widgetgrid/v1/blog_pb.js';
+import { BlogServicePromiseClient } from '@widgetgrid/proto-gen-web/widgetgrid/v1/blog_grpc_web_pb.js';
+import { normalizeLayoutResponse, normalizeWidgetContentResponse, normalizeBlogPostsResponse } from './normalize.js';
 
 // Defaults to same-origin as the app itself -- the production topology has
 // Envoy as the single public origin, routing this path prefix to the
@@ -20,6 +22,7 @@ const GRPC_WEB_ORIGIN = import.meta.env.VITE_GRPC_WEB_ORIGIN ?? '';
 
 const pageServiceClient = new PageServicePromiseClient(GRPC_WEB_ORIGIN);
 const widgetServiceClient = new WidgetServicePromiseClient(GRPC_WEB_ORIGIN);
+const blogServiceClient = new BlogServicePromiseClient(GRPC_WEB_ORIGIN);
 
 export const pageClient = {
   async getPageLayout(slug) {
@@ -36,5 +39,12 @@ export const widgetClient = {
     request.setWidgetIdsList(widgetIds);
     const response = await widgetServiceClient.getWidgetContent(request, {});
     return normalizeWidgetContentResponse(response.toObject());
+  },
+};
+
+export const blogClient = {
+  async listBlogPosts() {
+    const response = await blogServiceClient.listBlogPosts(new ListBlogPostsRequest(), {});
+    return normalizeBlogPostsResponse(response.toObject());
   },
 };

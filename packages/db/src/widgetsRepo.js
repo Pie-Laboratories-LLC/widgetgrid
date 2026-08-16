@@ -17,3 +17,8 @@ export async function findByIds(pool, ids) {
   );
   return new Map(rows.map((row) => [row.id, row]));
 }
+
+export async function remove(pool, ids) {
+  if (ids.length === 0) return;
+  await pool.query('DELETE FROM widgets WHERE id = ANY($1::uuid[])', [ids]);
+}

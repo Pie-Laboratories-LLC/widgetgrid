@@ -22,6 +22,10 @@ COPY packages/vite-widget-lib/package.json packages/vite-widget-lib/package.json
 COPY packages/web-app/package.json packages/web-app/package.json
 COPY widgets/richtext/package.json widgets/richtext/package.json
 COPY widgets/table/package.json widgets/table/package.json
+COPY widgets/splash/package.json widgets/splash/package.json
+COPY widgets/topbar/package.json widgets/topbar/package.json
+COPY widgets/rightrail/package.json widgets/rightrail/package.json
+COPY widgets/blog/package.json widgets/blog/package.json
 
 # --ignore-scripts: nothing packages/server or packages/db depend on needs
 # install-time scripts (that requirement -- grpc-tools' protoc binary,
@@ -41,6 +45,10 @@ COPY --chown=node:node packages/db/src packages/db/src
 COPY --chown=node:node packages/server/package.json packages/server/package.json
 COPY --chown=node:node packages/server/src packages/server/src
 COPY --chown=node:node proto proto
+# Local stand-in for the S3 bucket the blog reads from in production (see
+# blogSource.js) -- content/blog's default resolution path assumes it's
+# here, relative to this image's WORKDIR.
+COPY --chown=node:node content/blog content/blog
 
 # Migrations are NOT run from this image -- run `npm run db:migrate` from
 # your host against the same Postgres (see local-k8s/README.md). This image

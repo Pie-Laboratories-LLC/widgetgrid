@@ -1,0 +1,20 @@
+{
+  "name": "@widgetgrid/widget-blog",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  },
+  "dependencies": {
+    "@widgetgrid/vite-widget-lib": "*",
+    "@widgetgrid/proto-gen-web": "*",
+    "google-protobuf": "4.0.2",
+    "grpc-web": "2.0.2"
+  },
+  "devDependencies": {
+    "vite": "8.2.1",
+    "vue": "3.5.41"
+  }
+}

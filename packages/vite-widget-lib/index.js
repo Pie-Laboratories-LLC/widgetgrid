@@ -9,6 +9,13 @@ import { externalizeVue } from './externalizeVue.js';
 // widget never needs a second, separately-tracked .css URL.
 export function defineWidgetConfig({ widgetType, entry, root }) {
   return {
+    // Repo root (widgets/<name> is always two levels down), not each
+    // widget's own directory: a widget that needs VITE_GRPC_WEB_ORIGIN
+    // (e.g. widgets/blog, which makes its own gRPC-Web calls rather than
+    // going through the generic WidgetContent pass-2 mechanism) should
+    // pick up the same .env.local override packages/web-app/README
+    // documents, not need its own separate copy per widget.
+    envDir: resolve(root, '../..'),
     plugins: [vue(), externalizeVue(), cssInjectedByJsPlugin()],
     optimizeDeps: { exclude: ['vue'] },
     build: {

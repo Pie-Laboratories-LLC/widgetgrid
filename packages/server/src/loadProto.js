@@ -11,6 +11,7 @@ export function loadProto() {
     [
       path.join(PROTO_ROOT, 'widgetgrid/v1/page.proto'),
       path.join(PROTO_ROOT, 'widgetgrid/v1/widget.proto'),
+      path.join(PROTO_ROOT, 'widgetgrid/v1/blog.proto'),
     ],
     {
       keepCase: false,

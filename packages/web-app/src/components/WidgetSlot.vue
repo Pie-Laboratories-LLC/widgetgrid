@@ -3,7 +3,7 @@
     <component
       v-if="isReady"
       :is="resolvedComponent"
-      :data="content.content"
+      :data="parsedContent"
       :title="content.title"
       :widget-id="widgetId"
     />
@@ -28,6 +28,14 @@ export default {
     ...mapState(usePageStore, ['widgetContent']),
     content() {
       return this.widgetContent[this.widgetId] ?? null;
+    },
+    // widget.proto's WidgetContent carries content as contentJson (a JSON
+    // string), not a nested message -- see widget.proto's comment on that
+    // field for why (google.protobuf.Struct doesn't round-trip through
+    // @grpc/proto-loader's dynamic path). Parsed once here rather than in
+    // each widget component.
+    parsedContent() {
+      return JSON.parse(this.content.contentJson);
     },
     // The .loading class only ever drops once BOTH the widget's JS module
     // has loaded AND its pass-2 content has arrived -- whichever finishes

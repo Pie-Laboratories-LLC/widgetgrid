@@ -30,3 +30,9 @@ export function normalizeWidgetContentResponse(obj) {
     notFoundWidgetIds: obj.notFoundWidgetIdsList,
   };
 }
+
+export function normalizeBlogPostsResponse(obj) {
+  return {
+    posts: obj.postsList,
+  };
+}

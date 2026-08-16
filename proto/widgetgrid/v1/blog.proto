@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package widgetgrid.v1;
+
+message BlogPost {
+  string slug = 1;
+  string title = 2;
+  // Rendered HTML of the file's "# SYNOPSIS" section only.
+  string synopsis_html = 3;
+  // Rendered HTML of the rest of the file (everything after the title
+  // heading that follows "# SYNOPSIS"). Sent for every post, not just the
+  // most recent -- which post is displayed in full vs. as a synopsis is a
+  // client-side toggle (see widgets/blog/src/BlogWidget.vue), not
+  // something fixed server-side, so any post may need to expand without a
+  // round-trip.
+  string content_html = 4;
+  // ISO 8601 date, parsed from the source file's "YYYY-MM-DD-slug.md" name.
+  string published_at = 5;
+}
+
+message ListBlogPostsRequest {}
+
+message ListBlogPostsResponse {
+  // Newest to oldest.
+  repeated BlogPost posts = 1;
+}
+
+service BlogService {
+  rpc ListBlogPosts(ListBlogPostsRequest) returns (ListBlogPostsResponse);
+}

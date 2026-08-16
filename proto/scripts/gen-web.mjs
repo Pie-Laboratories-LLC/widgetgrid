@@ -35,6 +35,7 @@ async function main() {
     `--plugin=protoc-gen-grpc-web=${GRPC_WEB_PLUGIN}`,
     path.join(PROTO_ROOT, 'widgetgrid/v1/page.proto'),
     path.join(PROTO_ROOT, 'widgetgrid/v1/widget.proto'),
+    path.join(PROTO_ROOT, 'widgetgrid/v1/blog.proto'),
   ];
 
   console.log(`${PROTOC} ${args.join(' ')}`);

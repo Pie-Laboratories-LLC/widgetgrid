@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "@widgetgrid/vite-widget-lib": "*",
+    "sirv": "3.0.2",
     "vite": "8.2.1"
   }
 }

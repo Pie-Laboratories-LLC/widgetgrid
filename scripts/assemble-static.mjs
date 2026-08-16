@@ -20,6 +20,7 @@ import path from 'node:path';
 const REPO_ROOT = path.resolve(import.meta.dirname, '..');
 const WEB_APP_DIST = path.join(REPO_ROOT, 'packages/web-app/dist');
 const WIDGETS_ROOT = path.join(REPO_ROOT, 'widgets');
+const CONTENT_BLOG_DIR = path.join(REPO_ROOT, 'content/blog');
 const OUT_DIR = path.join(REPO_ROOT, 'dist-static');
 
 async function main() {
@@ -46,7 +47,25 @@ async function main() {
     widgetsCopied += 1;
   }
 
-  console.log(`assembled ${OUT_DIR} (web-app + ${widgetsCopied} widget package(s), freshly re-copied)`);
+  // Each post's own image subdirectory (content/blog/<post-file-without-
+  // .md>/, matching blogSource.js's rewriteImageHref) -- not the .md files
+  // themselves, which packages/server reads directly, never through this
+  // static path. Served at /blog-assets/ locally by web-app's dev server
+  // middleware (see vite.config.js); here that's the same prefix under
+  // dist-static/.
+  const blogAssetsOut = path.join(OUT_DIR, 'blog-assets');
+  let blogAssetDirsCopied = 0;
+  if (await exists(CONTENT_BLOG_DIR)) {
+    const contentEntries = await readdir(CONTENT_BLOG_DIR, { withFileTypes: true });
+    for (const entry of contentEntries) {
+      if (!entry.isDirectory()) continue;
+      await mkdir(blogAssetsOut, { recursive: true });
+      await cp(path.join(CONTENT_BLOG_DIR, entry.name), path.join(blogAssetsOut, entry.name), { recursive: true });
+      blogAssetDirsCopied += 1;
+    }
+  }
+
+  console.log(`assembled ${OUT_DIR} (web-app + ${widgetsCopied} widget package(s) + ${blogAssetDirsCopied} blog post asset dir(s), freshly re-copied)`);
 }
 
 async function exists(p) {
