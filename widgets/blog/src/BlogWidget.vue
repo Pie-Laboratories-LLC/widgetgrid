@@ -59,18 +59,13 @@ export default {
 </script>
 
 <style scoped>
-/* This page's topbar (255px) and right rail (160px -- see
-   RightRailWidget.vue) are both position:fixed, so this widget owns
-   clearing them itself: margin-top/margin-right, plus its own scroll --
-   the whole point of "main content scrolls while the rail stays fixed" is
-   that this element, not the page body, is the scrolling container. */
+/* Clearing the fixed topbar/right rail and owning the scroll container is
+   widgets/main's job now, not this widget's -- this only ever mounts as a
+   child of MainWidget (see its own comment for why), never placed directly
+   by the page layout itself anymore. */
 .widget-blog {
-  margin-top: 255px;
-  margin-right: 160px;
-  height: calc(100vh - 255px);
-  overflow-y: auto;
-  box-sizing: border-box;
   padding: 32px;
+  box-sizing: border-box;
 }
 
 .blog-status {

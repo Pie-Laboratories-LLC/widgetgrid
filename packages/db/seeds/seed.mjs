@@ -36,11 +36,21 @@ async function seedHomePage(pool) {
   const page = await pagesRepo.upsert(pool, { slug: 'home', title: 'Pie Laboratories LLC' });
 
   const topbarWidget = await widgetsRepo.insert(pool, { type: 'topbar', content: {} });
-  // Fetches its own content directly from content/blog (see blogSource.js)
-  // rather than through the generic WidgetContent pass-2 mechanism -- the
-  // "content" jsonb column here is unused for this widget type.
-  const mainWidget = await widgetsRepo.insert(pool, { type: 'blog', content: {} });
-  const rightrailWidget = await widgetsRepo.insert(pool, { type: 'rightrail', content: {} });
+  // 'main', not 'blog': widgets/main is what the page layout actually
+  // places here now -- it internally switches between the blog widget and
+  // (eventually) solitaire based on which topbar icon was clicked, rather
+  // than the layout hardcoding one or the other. See MainWidget.vue.
+  const mainWidget = await widgetsRepo.insert(pool, { type: 'main', content: {} });
+  const rightrailWidget = await widgetsRepo.insert(pool, {
+    type: 'rightrail',
+    content: {
+      links: {
+        youtube: 'https://www.youtube.com/@PieLaboratoriesLLC',
+        github: 'https://github.com/Pie-Laboratories-LLC',
+        nuget: 'https://www.nuget.org/profiles/PieLaboratoriesLLC',
+      },
+    },
+  });
 
   const rootId = await layoutNodesRepo.insert(pool, {
     pageId: page.id, nodeType: 'row', bootstrapClasses: 'container-fluid p-0', sortOrder: 0,

@@ -1,5 +1,5 @@
 <template>
-  <aside class="widget widget-rightrail">
+  <aside class="widget widget-rightrail" :class="{ 'rail-collapsed': collapsed }">
     <a
       v-for="item in items"
       :key="item.key"
@@ -47,12 +47,28 @@ export default {
     data: { type: Object, required: true },
     title: { type: String, default: '' },
   },
+  data() {
+    return { collapsed: false };
+  },
   computed: {
     // data.links.<key> lets the real destination URLs be set later via the
     // widget's DB content without a widget rebuild -- '#' until then.
     items() {
       const links = this.data?.links ?? {};
       return ICONS.map((icon) => ({ ...icon, url: links[icon.key] || '#' }));
+    },
+  },
+  created() {
+    // MainWidget.vue's own scroll container is what actually knows this --
+    // see its comment for why this is a window event, not a shared store.
+    window.addEventListener('widgetgrid:scroll', this.onScroll);
+  },
+  beforeUnmount() {
+    window.removeEventListener('widgetgrid:scroll', this.onScroll);
+  },
+  methods: {
+    onScroll(event) {
+      this.collapsed = event.detail.collapsed;
     },
   },
 };
@@ -72,6 +88,11 @@ export default {
   align-items: center;
   gap: 28px;
   background: #fff;
+  transition: top 0.25s ease;
+}
+
+.widget-rightrail.rail-collapsed {
+  top: 64px;
 }
 
 .rail-item {

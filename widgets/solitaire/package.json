@@ -1,0 +1,19 @@
+{
+  "name": "@widgetgrid/widget-solitaire",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "postbuild": "node scripts/vendor-solitaire.mjs",
+    "predev": "node scripts/vendor-solitaire.mjs",
+    "dev": "vite build --watch"
+  },
+  "dependencies": {
+    "@widgetgrid/vite-widget-lib": "*"
+  },
+  "devDependencies": {
+    "vite": "8.2.1",
+    "vue": "3.5.41"
+  }
+}
