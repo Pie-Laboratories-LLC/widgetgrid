@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package widgetgrid.v1;
+
+// A node in the Bootstrap row/col tree. node_type is structural/authoring
+// metadata only -- bootstrap_classes is the single source of truth for the
+// rendered class string, and the frontend never hardcodes a Bootstrap class
+// name of its own.
+message LayoutNode {
+  string id = 1;
+  string node_type = 2;            // "row" | "col"
+  string bootstrap_classes = 3;
+  int32 sort_order = 4;
+  repeated LayoutNode children = 5;
+  string widget_id = 6;             // empty string if this node holds no widget
+  string widget_type = 7;           // empty string if this node holds no widget
+}
+
+message WidgetPlaceholder {
+  string widget_id = 1;
+  string widget_type = 2;
+}
+
+message GetPageLayoutRequest {
+  string slug = 1;
+}
+
+message GetPageLayoutResponse {
+  string page_id = 1;
+  string title = 2;
+  LayoutNode root = 3;
+  // Flattened for pass-2 batching. Derived from the same row set as `root`
+  // (not a second DB round trip), so the two can never drift apart -- see
+  // layoutTreeMapper.js on the server.
+  repeated WidgetPlaceholder widgets = 4;
+}
+
+service PageService {
+  rpc GetPageLayout(GetPageLayoutRequest) returns (GetPageLayoutResponse);
+}

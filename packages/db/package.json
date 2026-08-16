@@ -1,0 +1,20 @@
+{
+  "name": "@widgetgrid/db",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/pool.js",
+  "scripts": {
+    "migrate": "node-pg-migrate --envPath ../../.env up",
+    "migrate:up": "node-pg-migrate --envPath ../../.env up",
+    "migrate:down": "node-pg-migrate --envPath ../../.env down",
+    "migrate:create": "node-pg-migrate create"
+  },
+  "dependencies": {
+    "dotenv": "17.4.2",
+    "pg": "8.23.0"
+  },
+  "devDependencies": {
+    "node-pg-migrate": "9.0.0"
+  }
+}

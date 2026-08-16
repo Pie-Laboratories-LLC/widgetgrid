@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WidgetGrid</title>
+    <!--
+      Declared before the app's own module script so it's registered well
+      before any widget's dynamic import() fires (those only happen later,
+      on demand, as pass-1 layout data reveals which widget types are
+      needed) -- this is the mechanism that makes the host app and every
+      independently-built widget bundle resolve to the SAME Vue module
+      instance. See packages/vite-widget-lib/externalizeVue.js.
+    -->
+    <script type="importmap">
+      { "imports": { "vue": "/vendor/vue.esm-browser.prod.js" } }
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

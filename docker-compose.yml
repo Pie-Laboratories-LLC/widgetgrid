@@ -1,0 +1,17 @@
+# Local dev dependency: Postgres only. Envoy and Consul are NOT included here --
+# see docs/LOCAL_DEV_PREREQUISITES.md for why (they need real config tied to
+# your actual Consul Connect setup, not a one-size-fits-all compose service).
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: widgetgrid
+      POSTGRES_PASSWORD: widgetgrid
+      POSTGRES_DB: widgetgrid
+    ports:
+      - "5432:5432"
+    volumes:
+      - widgetgrid-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  widgetgrid-postgres-data:

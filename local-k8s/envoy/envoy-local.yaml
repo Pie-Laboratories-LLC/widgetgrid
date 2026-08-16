@@ -1,0 +1,87 @@
+# Local-test-only Envoy config -- deliberately NOT the same file as
+# infra/envoy/envoy.yaml (the production reference). Two real differences:
+#
+# 1. No static-asset routing here. This setup exists to prove the Consul
+#    Connect + gRPC-Web wiring specifically; the SPA/widget bundles are a
+#    separate concern (S3/CloudFront in production, `npm run dev:web` or
+#    `npm run serve:static` locally) and adding them here would just be
+#    more surface area unrelated to what's being tested.
+# 2. Permissive CORS. In production, Envoy is the single public origin for
+#    both the API and the static assets, so no CORS is needed at all (see
+#    infra/envoy/envoy.yaml's comments). Here, the SPA dev server
+#    (localhost:5173) and this gateway (localhost:8080) are genuinely
+#    different origins, so the browser needs an explicit allow. The
+#    wildcard regex below is fine for a local throwaway cluster; it is NOT
+#    what infra/envoy/envoy.yaml does or should do.
+#
+# The backend cluster below (127.0.0.1:50051) is NOT a placeholder the way
+# infra/envoy/envoy.yaml's is -- it's correct as-is. This pod is
+# Consul-Connect-injected with an upstream on widgetgrid-server (see
+# local-k8s/manifests/envoy-gateway.yaml's
+# consul.hashicorp.com/connect-service-upstreams annotation), so the
+# injected sidecar -- sharing this pod's network namespace -- binds
+# 127.0.0.1:50051 locally and securely (mTLS) forwards to the real
+# widgetgrid-server service elsewhere in the mesh. Same pattern
+# packages/server/src/index.js itself relies on for its own plaintext
+# localhost bind; see the comment there.
+static_resources:
+  listeners:
+    - name: public_listener
+      address:
+        socket_address: { address: 0.0.0.0, port_value: 8080 }
+      filter_chains:
+        - filters:
+            - name: envoy.filters.network.http_connection_manager
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                stat_prefix: ingress_http
+                codec_type: AUTO
+                route_config:
+                  name: local_route
+                  virtual_hosts:
+                    - name: widgetgrid
+                      domains: ["*"]
+                      routes:
+                        - match: { prefix: "/" }
+                          route:
+                            cluster: widgetgrid_backend
+                            timeout: 30s
+                            cors:
+                              allow_origin_string_match:
+                                - safe_regex: { regex: ".*" }
+                              allow_methods: "GET, PUT, DELETE, POST, OPTIONS"
+                              allow_headers: "keep-alive,user-agent,cache-control,content-type,content-transfer-encoding,x-accept-content-transfer-encoding,x-accept-response-streaming,x-user-agent,x-grpc-web,grpc-timeout"
+                              expose_headers: "grpc-status,grpc-message"
+                              max_age: "1728000"
+                http_filters:
+                  - name: envoy.filters.http.grpc_web
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.grpc_web.v3.GrpcWeb
+                  - name: envoy.filters.http.cors
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.cors.v3.Cors
+                  - name: envoy.filters.http.router
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+
+  clusters:
+    - name: widgetgrid_backend
+      connect_timeout: 5s
+      type: STATIC
+      lb_policy: ROUND_ROBIN
+      typed_extension_protocol_options:
+        envoy.extensions.upstreams.http.v3.HttpProtocolOptions:
+          "@type": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions
+          explicit_http_config:
+            http2_protocol_options: {} # gRPC requires HTTP/2 to the backend
+      load_assignment:
+        cluster_name: widgetgrid_backend
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address: { address: 127.0.0.1, port_value: 50051 }
+
+admin:
+  address:
+    socket_address: { address: 127.0.0.1, port_value: 9901 }

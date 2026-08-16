@@ -1,0 +1,76 @@
+# The envoy-gateway-config ConfigMap (wrapping local-k8s/envoy/envoy-local.yaml)
+# is created by local-k8s/setup.sh via `kubectl create configmap --from-file`,
+# not defined here -- avoids duplicating that file's content inside a `data: |`
+# block, which is easy to get subtly wrong (indentation, drift between the
+# two copies). This file is just the Deployment + Service.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: envoy-gateway
+  namespace: widgetgrid
+  labels:
+    app: envoy-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: envoy-gateway
+  template:
+    metadata:
+      labels:
+        app: envoy-gateway
+      annotations:
+        consul.hashicorp.com/connect-inject: "true"
+        # This is the piece that makes 127.0.0.1:50051 in envoy-local.yaml
+        # correct: the sidecar Consul injects into *this* pod binds that
+        # address locally and securely forwards to the real
+        # widgetgrid-server service over the mesh.
+        consul.hashicorp.com/connect-service-upstreams: "widgetgrid-server:50051"
+        # Transparent proxy is cluster-default (connectInject.transparentProxy
+        # in local-k8s/consul-values.yaml), which also intercepts *inbound*
+        # traffic on this pod's port and requires mesh mTLS -- fine for
+        # widgetgrid-server (only ever called from inside the mesh) but wrong
+        # here: this pod is the public edge, and host/NodePort traffic on
+        # :8080 arrives as plain HTTP, not mTLS. Disabling it entirely is
+        # safe since the outbound upstream above is explicit, not
+        # transparent-proxy-routed.
+        consul.hashicorp.com/transparent-proxy: "false"
+    spec:
+      containers:
+        - name: envoy
+          image: envoyproxy/envoy:v1.38.3
+          args: ["-c", "/etc/envoy/envoy.yaml"]
+          ports:
+            - containerPort: 8080
+              name: public
+          volumeMounts:
+            - name: envoy-config
+              mountPath: /etc/envoy
+              readOnly: true
+          readinessProbe:
+            tcpSocket: { port: 8080 }
+            initialDelaySeconds: 2
+            periodSeconds: 5
+      volumes:
+        - name: envoy-config
+          configMap:
+            name: envoy-gateway-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: envoy-gateway
+  namespace: widgetgrid
+spec:
+  type: NodePort
+  selector:
+    app: envoy-gateway
+  ports:
+    - port: 8080
+      targetPort: 8080
+      # Fixed rather than auto-assigned: local-k8s/kind-config.yaml's
+      # extraPortMappings maps a specific kind-node port (30080) to
+      # localhost:8080 on your machine, so this needs to be a known,
+      # stable value, not whatever k8s would pick from the NodePort range.
+      nodePort: 30080
+      name: public

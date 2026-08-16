@@ -1,0 +1,27 @@
+{
+  "name": "@widgetgrid/web-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "predev": "node scripts/vendor-vue.mjs && node scripts/copy-widgets.mjs",
+    "dev": "vite",
+    "prebuild": "node scripts/vendor-vue.mjs && node scripts/copy-widgets.mjs",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node --test src/**/*.test.js"
+  },
+  "dependencies": {
+    "@widgetgrid/proto-gen-web": "*",
+    "bootstrap": "5.3.8",
+    "google-protobuf": "4.0.2",
+    "grpc-web": "2.0.2",
+    "pinia": "4.0.3",
+    "vue": "3.5.41",
+    "vue-router": "5.2.0"
+  },
+  "devDependencies": {
+    "@widgetgrid/vite-widget-lib": "*",
+    "vite": "8.2.1"
+  }
+}

@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package widgetgrid.v1;
+
+message WidgetContent {
+  string widget_id = 1;
+  string widget_type = 2;
+  string title = 3;
+  // jsonb passthrough, JSON-encoded. google.protobuf.Struct was tried first
+  // (widgets.content is already a plain JS object once `pg` parses it) but
+  // doesn't round-trip through @grpc/proto-loader's dynamic serialize/
+  // deserialize path -- confirmed empirically: Struct.fields comes back
+  // empty. protobufjs' wrapper-type fromObject/toObject patching (which is
+  // what would make that work) isn't reachable through proto-loader's
+  // generated serialize()/deserialize() wrappers, only through calling a
+  // protobufjs Type's own fromObject/toObject directly, which needs
+  // internals that aren't cleanly exposed here. JSON.stringify/parse at
+  // each end is simple and just works.
+  string content_json = 4;
+}
+
+message GetWidgetContentRequest {
+  repeated string widget_ids = 1;
+}
+
+message GetWidgetContentResponse {
+  repeated WidgetContent widgets = 1;
+  // Defensive: a layout can reference a widget that's since been deleted.
+  repeated string not_found_widget_ids = 2;
+}
+
+// Reserved shape for future server-streaming push. Not implemented this
+// phase -- the server returns UNIMPLEMENTED. Server-streaming is all classic
+// grpc-web supports in-browser anyway (no client-streaming/bidi), which is
+// exactly what push needs, so no transport rework will be needed later.
+message SubscribeWidgetUpdatesRequest {
+  repeated string widget_ids = 1;
+}
+
+message WidgetUpdateEvent {
+  string widget_id = 1;
+  WidgetContent content = 2;
+}
+
+service WidgetService {
+  rpc GetWidgetContent(GetWidgetContentRequest) returns (GetWidgetContentResponse);
+  rpc SubscribeWidgetUpdates(SubscribeWidgetUpdatesRequest) returns (stream WidgetUpdateEvent);
+}

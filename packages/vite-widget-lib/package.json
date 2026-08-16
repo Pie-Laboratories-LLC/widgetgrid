@@ -1,0 +1,14 @@
+{
+  "name": "@widgetgrid/vite-widget-lib",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "@vitejs/plugin-vue": "6.0.8",
+    "vite-plugin-css-injected-by-js": "5.0.2"
+  },
+  "peerDependencies": {
+    "vite": "8.2.1"
+  }
+}

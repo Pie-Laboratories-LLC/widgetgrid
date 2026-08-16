@@ -1,0 +1,8 @@
+node_modules
+dist
+dist-static
+.env
+*.log
+.git
+.tools
+local-k8s

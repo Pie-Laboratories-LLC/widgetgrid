@@ -1,0 +1,17 @@
+# kind create cluster --config local-k8s/kind-config.yaml
+#
+# Single control-plane node (which also schedules workloads by default in
+# kind -- fine for local testing). extraPortMappings exposes the envoy
+# gateway's NodePort on a stable localhost port, so you don't need
+# `kubectl port-forward` running just to reach it.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: widgetgrid
+nodes:
+  - role: control-plane
+    extraPortMappings:
+      # local-k8s/manifests/envoy-gateway.yaml's Service NodePort -- this is
+      # the address the SPA dev server (or curl/grpcurl) hits.
+      - containerPort: 30080
+        hostPort: 8080
+        protocol: TCP

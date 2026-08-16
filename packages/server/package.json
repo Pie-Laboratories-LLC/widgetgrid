@@ -1,0 +1,19 @@
+{
+  "name": "@widgetgrid/server",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "smoke-test:proto": "node src/smokeTestProto.js",
+    "test": "node --test",
+    "test:e2e": "node src/e2eClientTest.js"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "1.14.4",
+    "@grpc/proto-loader": "0.8.1",
+    "@widgetgrid/db": "*"
+  }
+}

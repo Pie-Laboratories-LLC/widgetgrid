@@ -1,0 +1,62 @@
+# The widgetgrid-server-config ConfigMap (DATABASE_URL) is created by
+# local-k8s/setup.sh, not defined here -- it needs the host's kind-network
+# gateway IP computed at apply time (see setup.sh's comment on why
+# host.docker.internal doesn't work). This file is just the Deployment +
+# Service.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: widgetgrid-server
+  namespace: widgetgrid
+  labels:
+    app: widgetgrid-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: widgetgrid-server
+  template:
+    metadata:
+      labels:
+        app: widgetgrid-server
+      annotations:
+        # The mechanism under test: Consul's mutating webhook injects an
+        # Envoy sidecar into this pod and registers "widgetgrid-server"
+        # (from the Service name below) in Consul's catalog.
+        consul.hashicorp.com/connect-inject: "true"
+    spec:
+      containers:
+        - name: widgetgrid-server
+          image: widgetgrid-server:local
+          imagePullPolicy: IfNotPresent # loaded via `kind load docker-image`, never pulled from a registry
+          ports:
+            - containerPort: 50051
+              name: grpc
+          envFrom:
+            - configMapRef:
+                name: widgetgrid-server-config
+          # No application-level health endpoint exists yet (would need the
+          # standard grpc.health.v1.Health service implemented server-side
+          # for a native k8s grpc: probe) -- a bare TCP check is a
+          # reasonable stand-in that needs no server code changes.
+          readinessProbe:
+            tcpSocket: { port: 50051 }
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket: { port: 50051 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: widgetgrid-server
+  namespace: widgetgrid
+spec:
+  selector:
+    app: widgetgrid-server
+  ports:
+    - port: 50051
+      targetPort: 50051
+      name: grpc

@@ -1,0 +1,37 @@
+# helm install consul hashicorp/consul --namespace consul --create-namespace \
+#   --values local-k8s/consul-values.yaml --version 2.0.3
+#
+# Single-server, single-datacenter -- a local dev/test topology, not a
+# reference for production sizing (real deployments typically run 3 or 5
+# server replicas for quorum). See local-k8s/README.md.
+global:
+  name: consul
+  datacenter: dc1
+
+server:
+  replicas: 1
+  bootstrapExpect: 1
+
+# The mutating webhook that injects an Envoy sidecar into annotated pods --
+# this is the whole mechanism being tested here.
+connectInject:
+  enabled: true
+  # Opt-in per pod via the consul.hashicorp.com/connect-inject: "true"
+  # annotation (set on both local-k8s/manifests/widgetgrid-server.yaml and
+  # envoy-gateway.yaml), rather than injecting into every pod in the
+  # namespace by default -- safer default for a cluster you might also use
+  # for other experiments later.
+  default: false
+
+# CRD-based service configuration (ServiceDefaults, ServiceIntentions,
+# etc.) -- not strictly required for this test (no CRDs are applied here),
+# but worth having enabled since it's the standard way to configure
+# intentions/routing if you extend this setup later.
+controller:
+  enabled: true
+
+# kubectl port-forward -n consul svc/consul-ui 8500:80, then
+# http://localhost:8500 -- not exposed via a NodePort here since it's a
+# nice-to-have for poking around, not something the test itself depends on.
+ui:
+  enabled: true
