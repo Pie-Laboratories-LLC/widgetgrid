@@ -13,6 +13,10 @@
       class="topbar-logo"
       @click="onLogoClick"
     />
+    <div class="topbar-brand">
+      <span class="topbar-brand-name">Pie Laboratories, LLC.</span>
+      <a class="topbar-brand-email" href="mailto:webmaster@pie-laboratories.com">webmaster@pie-laboratories.com</a>
+    </div>
     <nav class="topbar-menu-slot">
       <!-- Active = outline ("empty"), inactive = filled -- the user's own
            convention, not the more common filled-means-active. -->
@@ -41,7 +45,7 @@
       </button>
       <button
         type="button" class="topbar-icon" title="Chat with management" aria-label="Chat with management"
-        :disabled="!ownerOnline" @click="navigate('chat')"
+        @click="navigate('chat')"
       >
         <svg v-if="activeView === 'chat'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M8 9h8" />
@@ -59,17 +63,10 @@
 </template>
 
 <script>
-import { subscribeOwnerPresence } from './presenceSubscriptionClient.js';
-
 // Runtime URL string, not an ES import -- see SplashWidget.vue's <script>
 // comment (same reason: Vite's build.lib mode would base64-inline this
 // image into the JS bundle otherwise).
 const ASSET_BASE = '/widgets/topbar-assets/';
-
-// Same localStorage key LoginWidget.vue writes on a successful login --
-// see its comment on TOKEN_KEY for why there's no shared module to hold
-// this constant in instead.
-const OWNER_TOKEN_KEY = 'widgetgrid:ownerToken';
 
 // Icon paths are from Tabler Icons (MIT) -- "home", "cards" and "message",
 // each in both outline and filled variants (see template for how they're
@@ -83,12 +80,6 @@ export default {
   data() {
     return {
       activeView: 'blog', collapsed: false, hasNewPost: false,
-      // Global "is the owner logged in anywhere" signal, not "is this my
-      // browser" -- pushed live via SubscribeOwnerPresence so every
-      // visitor's icon updates together. Starts disabled until the first
-      // presence event arrives (SubscribeOwnerPresence always sends
-      // current state immediately on subscribe, so this resolves fast).
-      ownerOnline: false,
       hasNewChatMessage: false,
       loginComponent: null,
     };
@@ -107,13 +98,6 @@ export default {
     window.addEventListener('widgetgrid:new-post', this.onNewPost);
     window.addEventListener('widgetgrid:chat-event', this.onChatEvent);
 
-    // Owned directly here, not relayed through MainWidget like blog/chat
-    // events are: presence isn't tied to which main-content view is
-    // showing, it belongs to the topbar itself (see presenceSubscriptionClient.js).
-    this.unsubscribePresence = subscribeOwnerPresence((online) => {
-      this.ownerOnline = online;
-    });
-
     // Preloaded like blog is in MainWidget.vue, not lazy on first click:
     // this widget needs to render a "log out" link immediately if the
     // owner's browser already holds a session (see LoginWidget.vue), not
@@ -127,7 +111,6 @@ export default {
     window.removeEventListener('widgetgrid:scroll', this.onScroll);
     window.removeEventListener('widgetgrid:new-post', this.onNewPost);
     window.removeEventListener('widgetgrid:chat-event', this.onChatEvent);
-    this.unsubscribePresence();
   },
   methods: {
     assetUrl(name) {
@@ -136,9 +119,7 @@ export default {
     onNavigate(event) {
       this.activeView = event.detail.view;
       // Opening the chat view is what "reads" it, same idea as the home
-      // icon's badge clearing on click -- see onChatEvent below for why
-      // the owner's badge can still flip back on right after this if a
-      // new event arrives while they're already looking at it.
+      // icon's badge clearing on click.
       if (this.activeView === 'chat') this.hasNewChatMessage = false;
     },
     onScroll(event) {
@@ -148,16 +129,20 @@ export default {
       this.hasNewPost = true;
     },
     // MainWidget.vue owns the actual ChatService subscription and relays
-    // "something changed" here, same reasoning as onNewPost above. Owner
-    // vs visitor badge rules differ (feature spec, verbatim): a visitor
-    // only gets the badge "if [they aren't] on the chat window"; the owner
-    // gets it unconditionally, "if a user starts a chat with me or types a
-    // new message" -- regardless of whether they're already looking at
-    // chat, since it might be a different conversation than the one
-    // they're reading.
+    // "something changed" here, same reasoning as onNewPost above.
+    //
+    // Same rule for owner and visitor now: badge only if not currently on
+    // the chat page at all -- revised from an earlier "owner gets it
+    // unconditionally, even while already on chat, since it might be a
+    // different conversation" spec, which in practice just meant the badge
+    // kept lighting up for messages the owner was already looking at (or
+    // had just sent themselves). A different conversation getting a new
+    // message while the owner is already on the chat page is instead
+    // surfaced by that chat going bold in ChatWidget's own list (its
+    // hasUnread flag, refreshed via loadChats() on every event) -- no
+    // separate top-level badge needed for that case.
     onChatEvent() {
-      const isOwner = !!localStorage.getItem(OWNER_TOKEN_KEY);
-      if (isOwner || this.activeView !== 'chat') this.hasNewChatMessage = true;
+      if (this.activeView !== 'chat') this.hasNewChatMessage = true;
     },
     // LoginWidget.vue listens for this on window to run its own 5-clicks-
     // within-2-seconds detection -- it owns that state machine (and the
@@ -191,12 +176,22 @@ export default {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 10;
+  /* Higher than RightRailWidget's own z-index: 10 -- both are
+     position: fixed, so each is its OWN stacking context; LoginWidget's
+     login-overlay (z-index: 100) mounts as a child of this element (it's
+     loaded by TopBarWidget), so its z-index only ever competes against
+     other elements *inside* this stacking context, never directly against
+     the rail's separate one. With both contexts tied at z-index: 10, the
+     rail's icons stayed clickable underneath the overlay's visual dimming
+     -- confirmed against a real report. Bumping this context above the
+     rail's is what actually lets the overlay win, since the whole context
+     (login-overlay included) now paints above it.  */
+  z-index: 20;
   height: 255px;
   display: flex;
   align-items: center;
   padding-left: 40px;
-  background: #150a2e;
+  background: rgb(5, 5, 5);
   transition: height 0.25s ease;
 }
 
@@ -214,6 +209,35 @@ export default {
 
 .topbar-collapsed .topbar-logo {
   height: 64px;
+}
+
+/* No explicit vertical-centering rule needed -- .widget-topbar is already
+   `display: flex; align-items: center`, so this sits centered against the
+   logo (and shrinks with it) for free as a flex sibling. */
+.topbar-brand {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 16px;
+  color: #f4ead9;
+  line-height: 1.3;
+}
+
+.topbar-brand-name {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.topbar-brand-email {
+  font-size: 0.8rem;
+  opacity: 0.75;
+  color: inherit;
+  text-decoration: none;
+}
+
+.topbar-brand-email:hover {
+  opacity: 1;
+  text-decoration: underline;
 }
 
 .topbar-menu-slot {
@@ -246,15 +270,6 @@ export default {
   height: 30px;
 }
 
-.topbar-icon:disabled {
-  opacity: 0.35;
-  cursor: default;
-}
-
-.topbar-icon:disabled:hover {
-  background: none;
-}
-
 .topbar-badge {
   position: absolute;
   bottom: 2px;
@@ -270,5 +285,29 @@ export default {
   font-weight: 700;
   text-align: center;
   box-shadow: 0 0 0 2px #150a2e;
+}
+
+/* Kept in sync with RightRailWidget.vue's own identical breakpoint (see
+   its comment) -- the uncollapsed 255px height (matching the logo's full
+   339x255 image) is sized for desktop; on a phone-width viewport it eats
+   most of the screen for what's still just a banner. 128px keeps the logo
+   readable without dominating the page. The already-collapsed height
+   (64px, reached by scrolling) was already fine on mobile -- untouched
+   here, and doesn't need its own override since this block only changes
+   the uncollapsed height. padding-left dropped to 0: the logo should sit
+   flush against the screen edge on a phone, where the 40px of breathing
+   room desktop affords is space this layout can't spare. Applies
+   regardless of collapsed state (this is the base .widget-topbar rule,
+   not one scoped to .topbar-collapsed), since the logo needs to be flush
+   left in both the 128px and 64px states on mobile. */
+@media (max-width: 640px) {
+  .widget-topbar {
+    height: 128px;
+    padding-left: 0;
+  }
+
+  .topbar-logo {
+    height: 128px;
+  }
 }
 </style>

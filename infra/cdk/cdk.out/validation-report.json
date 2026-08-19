@@ -1,0 +1,46 @@
+{
+  "version": "54.0.0",
+  "title": "Validation Report",
+  "pluginReports": [
+    {
+      "pluginName": "CloudFormation Validate",
+      "pluginVersion": "1.7.0",
+      "conclusion": "success",
+      "violations": [],
+      "suppressedViolations": [
+        {
+          "ruleName": "W2506",
+          "description": "Parameters/SsmParameterValueawsserviceeksoptimizedami132amazonlinux2recommendedimageidC96584B6F00A464EAD1953AFF4B05118Parameter: Parameter 'SsmParameterValueawsserviceeksoptimizedami132amazonlinux2recommendedimageidC96584B6F00A464EAD1953AFF4B05118Parameter' is used as an ImageId but has Type 'AWS::SSM::Parameter::Value<String>' - consider using 'AWS::EC2::Image::Id'",
+          "severity": "warning",
+          "ruleMetadata": {
+            "category": "Best Practice"
+          },
+          "violatingConstructs": [
+            {
+              "constructPath": "WidgetgridProdEksStack",
+              "constructFqn": "aws-cdk-lib.Stack",
+              "libraryVersion": "2.265.0",
+              "stackTraces": [
+                "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:45: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:45:1)",
+                "...node internals..."
+              ]
+            },
+            {
+              "constructPath": "WidgetgridEksStack",
+              "constructFqn": "aws-cdk-lib.Stack",
+              "libraryVersion": "2.265.0",
+              "stackTraces": [
+                "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
+                "...node internals..."
+              ]
+            }
+          ],
+          "acknowledgedId": "CloudFormation-Validate::W2506",
+          "reason": "SSM parameter is typed as String instead of AWS::SSM::Parameter::Value<AWS::EC2::Image::Id> for historical reasons.",
+          "acknowledgedAt": "WidgetgridProdEksStack/Cluster/NodeGroup/LaunchTemplate",
+          "acknowledgedStackTrace": "    ...WrappedClass.<anonymous> in aws-cdk-lib...\n    at new ProdEksStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/prod-eks-stack.js:75:31)"
+        }
+      ]
+    }
+  ]
+}

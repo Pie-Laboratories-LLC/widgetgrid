@@ -39,8 +39,15 @@
     <div v-else class="chat-thread chat-thread-visitor">
       <p v-if="status === 'loading'" class="chat-status">Connecting…</p>
       <template v-else>
+        <div class="chat-name-prompt">
+          <label for="chat-visitor-name">Your messages appear from:</label>
+          <input
+            id="chat-visitor-name" v-model="visitorName" type="text" class="chat-name-input"
+            placeholder="optional" @blur="saveVisitorName" @keyup.enter="saveVisitorName"
+          />
+        </div>
         <div ref="messagesEl" class="chat-messages">
-          <p v-if="messages.length === 0" class="chat-status">Say hello — Matt will get back to you here.</p>
+          <p v-if="messages.length === 0" class="chat-status">{{ emptyThreadMessage }}</p>
           <div
             v-for="m in messages" :key="m.id" class="chat-message"
             :class="m.sender === 'visitor' ? 'chat-message-mine' : 'chat-message-theirs'"
@@ -57,6 +64,13 @@
 
 <script>
 import { chatClient, getOwnerToken } from './chatClient.js';
+import { subscribeOwnerPresence } from './presenceSubscriptionClient.js';
+
+// Chats still get this auto-generated label at creation time (see
+// chatRepo.js's findOrCreateByVisitorId) -- used here only to decide
+// whether to prefill the "Your messages appear from:" field with it (we
+// don't want to prefill with a name the visitor never actually chose).
+const AUTO_LABEL = /^chat\d+$/;
 
 export default {
   name: 'ChatWidget',
@@ -75,7 +89,18 @@ export default {
       newMessageBody: '',
       renamingChatId: null,
       renameValue: '',
+      visitorName: '', // visitor only
+      // Whether the owner is currently logged in anywhere -- chat works
+      // either way now, this only picks which empty-thread copy to show
+      // (see emptyThreadMessage below). Visitor only; the owner obviously
+      // doesn't need to be told their own online status.
+      ownerOnline: false,
     };
+  },
+  computed: {
+    emptyThreadMessage() {
+      return this.ownerOnline ? 'Say hello — Matt will get back to you here.' : 'Leave a message for Matt.';
+    },
   },
   created() {
     // MainWidget.vue owns the actual SubscribeChatEvents stream for the
@@ -85,25 +110,82 @@ export default {
     // back to 'chat', which would drop a subscription owned here.
     window.addEventListener('widgetgrid:chat-event', this.onChatEvent);
 
-    if (this.isOwner) {
-      this.loadChats();
-    } else {
-      chatClient.startOrGetChat()
-        .then((chat) => {
-          this.myChatId = chat.id;
-          return this.loadMessages(chat.id);
-        })
-        .then(() => { this.status = 'ready'; })
-        .catch(() => { this.status = 'error'; });
-    }
+    // isOwner (data(), above) is only read once at creation -- without
+    // this, logging in/out while the chat view is already showing (rather
+    // than navigating away and back, which remounts this widget fresh)
+    // left isOwner stuck on whatever it was, so the widget kept rendering
+    // the old owner/visitor layout and calling the old-mode RPCs even
+    // though the server was already honoring the new identity on every
+    // request. Same trap MainWidget.vue's own identity-changed handler
+    // already documents for its subscription -- this is the other half of
+    // that fix, for this widget's own render mode.
+    window.addEventListener('widgetgrid:identity-changed', this.onIdentityChanged);
+
+    // Safety net for a live SubscribeChatEvents 'data' event arriving while
+    // this tab is backgrounded: Chrome deprioritizes task processing for
+    // background tabs, which can delay the stream's JS callback running
+    // well after the underlying connection already has the data (the
+    // message is never lost -- it's already committed server-side -- just
+    // slow to paint). Re-fetching on refocus catches that up without
+    // relying on the live event ever firing promptly. Cheap no-op the vast
+    // majority of the time (nothing missed), so unconditional on every
+    // visibility change is fine.
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
+
+    this.initForIdentity();
   },
   beforeUnmount() {
     window.removeEventListener('widgetgrid:chat-event', this.onChatEvent);
+    window.removeEventListener('widgetgrid:identity-changed', this.onIdentityChanged);
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
+    this.unsubscribePresence?.();
   },
   updated() {
     this.scrollToBottom();
   },
   methods: {
+    // Shared by created() and onIdentityChanged() below -- the actual
+    // owner/visitor branch used to live directly in created(), duplicated
+    // here would drift the two paths apart.
+    initForIdentity() {
+      if (this.isOwner) {
+        this.loadChats();
+      } else {
+        this.unsubscribePresence = subscribeOwnerPresence((online) => {
+          this.ownerOnline = online;
+        });
+        chatClient.startOrGetChat()
+          .then((chat) => {
+            this.myChatId = chat.id;
+            if (!AUTO_LABEL.test(chat.label)) this.visitorName = chat.label;
+            return this.loadMessages(chat.id);
+          })
+          .then(() => { this.status = 'ready'; })
+          .catch(() => { this.status = 'error'; });
+      }
+    },
+    // Logging in/out dispatches this without a page reload (see
+    // LoginWidget.vue) -- re-derive isOwner and reset every piece of state
+    // the owner/visitor branches populate differently, then re-run
+    // initForIdentity() as if this were a fresh mount. Presence is
+    // resubscribed from scratch since switching TO owner doesn't need it
+    // (isOwner is checked before ever subscribing) and switching TO visitor
+    // needs a subscription that was never opened while isOwner was true.
+    onIdentityChanged() {
+      this.unsubscribePresence?.();
+      this.unsubscribePresence = null;
+      this.isOwner = !!getOwnerToken();
+      this.status = 'loading';
+      this.chats = [];
+      this.selectedChatId = null;
+      this.myChatId = null;
+      this.messages = [];
+      this.renamingChatId = null;
+      this.renameValue = '';
+      this.visitorName = '';
+      this.ownerOnline = false;
+      this.initForIdentity();
+    },
     async loadChats() {
       try {
         const chats = await chatClient.listChats();
@@ -145,6 +227,16 @@ export default {
     cancelRename() {
       this.renamingChatId = null;
     },
+    // "Your messages appear from:" -- optional, and reuses the same
+    // RenameChat RPC the owner's own rename pencil uses (see
+    // chatService.js's RenameChat, now scoped to allow a visitor to rename
+    // their own chat), rather than being a separate mechanism. The owner
+    // can still overwrite it afterward via their own rename control.
+    async saveVisitorName() {
+      const label = this.visitorName.trim();
+      if (!label || !this.myChatId) return;
+      await chatClient.renameChat(this.myChatId, label);
+    },
     async sendMessage() {
       const body = this.newMessageBody.trim();
       const chatId = this.isOwner ? this.selectedChatId : this.myChatId;
@@ -169,6 +261,18 @@ export default {
         if (!this.myChatId) return; // startOrGetChat hasn't resolved yet
         await this.loadMessages(this.myChatId);
         await chatClient.markRead(this.myChatId);
+      }
+    },
+    // See the 'created' hook comment for why this exists. visibilitychange
+    // fires on both hide and show -- only refetch on the latter, hiding
+    // needs no reaction.
+    async onVisibilityChange() {
+      if (document.visibilityState !== 'visible') return;
+      if (this.isOwner) {
+        await this.loadChats();
+        if (this.selectedChatId) await this.loadMessages(this.selectedChatId);
+      } else if (this.myChatId) {
+        await this.loadMessages(this.myChatId);
       }
     },
     scrollToBottom() {
@@ -259,6 +363,26 @@ export default {
 
 .chat-thread-visitor {
   height: 100%;
+}
+
+.chat-name-prompt {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-bottom: 1px solid #ddd;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.chat-name-input {
+  flex: 1;
+  max-width: 220px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
 }
 
 .chat-messages {

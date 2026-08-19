@@ -1,0 +1,88 @@
+# EKS variant of local-k8s/manifests/envoy-gateway.yaml. Real differences:
+#
+# 1. connect-service-upstreams lists TWO upstreams (Consul's annotation
+#    syntax supports a comma-separated list): widgetgrid-server:50051 (as
+#    before) AND static-server:8081 (new -- see
+#    infra/eks/manifests/static-server.yaml and
+#    infra/eks/envoy/envoy-eks.yaml's widgetgrid_static cluster).
+# 2. The envoy-gateway-config ConfigMap (still created by
+#    infra/eks/deploy.sh, not this file, same reasoning as the local-k8s
+#    version) wraps infra/eks/envoy/envoy-eks.yaml, which routes gRPC-Web
+#    paths to the backend and everything else to static -- the production
+#    routing table (infra/envoy/envoy.yaml), not local-k8s/envoy/envoy-local.yaml's
+#    mesh-only/permissive-CORS local variant.
+# 3. Service is NodePort with a fixed nodePort matching
+#    WidgetgridEksStack's ALB target group (infra/cdk/lib/eks-stack.js's
+#    ENVOY_GATEWAY_NODE_PORT) -- the ALB reaches node IPs on the VPC
+#    directly, so no kind-specific extraPortMappings equivalent is needed.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: envoy-gateway
+  namespace: widgetgrid
+  labels:
+    app: envoy-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: envoy-gateway
+  template:
+    metadata:
+      labels:
+        app: envoy-gateway
+      annotations:
+        consul.hashicorp.com/connect-inject: "true"
+        consul.hashicorp.com/connect-service-upstreams: "widgetgrid-server:50051,static-server:8081"
+        # Transparent proxy is cluster-default (connectInject.transparentProxy
+        # in infra/eks/consul-values.yaml), which also intercepts *inbound*
+        # traffic on this pod's port and requires mesh mTLS -- fine for
+        # widgetgrid-server/static-server (only ever called from inside the
+        # mesh) but wrong here: this pod is the public edge, and NodePort
+        # traffic on :8080 arrives as plain HTTP, not mTLS. Disabling it
+        # entirely is safe since both outbound upstreams above are
+        # explicit, not transparent-proxy-routed -- same fix
+        # local-k8s/README.md's "Verified end-to-end" section already
+        # confirmed necessary once.
+        consul.hashicorp.com/transparent-proxy: "false"
+    spec:
+      # Defensive, same reasoning as widgetgrid-server.yaml/static-server.yaml
+      # -- no current collision (Envoy's own config is a mounted file, not
+      # env-var-driven), but no reason to leave Kubernetes' Docker-links-style
+      # env var injection enabled when Consul Connect is the actual service
+      # discovery mechanism here.
+      enableServiceLinks: false
+      containers:
+        - name: envoy
+          image: envoyproxy/envoy:v1.38.3
+          args: ["-c", "/etc/envoy/envoy.yaml"]
+          ports:
+            - containerPort: 8080
+              name: public
+          volumeMounts:
+            - name: envoy-config
+              mountPath: /etc/envoy
+              readOnly: true
+          readinessProbe:
+            tcpSocket: { port: 8080 }
+            initialDelaySeconds: 2
+            periodSeconds: 5
+      volumes:
+        - name: envoy-config
+          configMap:
+            name: envoy-gateway-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: envoy-gateway
+  namespace: widgetgrid
+spec:
+  type: NodePort
+  selector:
+    app: envoy-gateway
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30080
+      name: public

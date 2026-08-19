@@ -1,7 +1,14 @@
 import grpc from '@grpc/grpc-js';
 import * as chatRepo from '@widgetgrid/db/src/chatRepo.js';
+import * as authRepo from '@widgetgrid/db/src/authRepo.js';
+import * as chatNotificationRepo from '@widgetgrid/db/src/chatNotificationRepo.js';
 import { isOwnerRequest, getVisitorId } from '../authContext.js';
 import { publishChatEvent, subscribeChatEvents } from '../chatBus.js';
+
+// "not more than once an hour" -- a global throttle (not per-chat): the
+// point is protecting the owner's phone from being spammed, not making
+// sure every individual conversation gets its own text.
+const NOTIFICATION_THROTTLE_MS = 60 * 60 * 1000;
 
 function toProtoChat(row) {
   return {
@@ -30,7 +37,7 @@ function permissionDenied(callback, message) {
   callback({ code: grpc.status.PERMISSION_DENIED, message });
 }
 
-export function createChatService({ pool }) {
+export function createChatService({ pool, ownerPhoneNumber, smsSender }) {
   // Confirms a visitor-supplied chat_id actually belongs to them --
   // without this, any visitor could read/post into any chat by guessing a
   // UUID (chat_id is always explicit in every RPC, even visitor calls --
@@ -43,6 +50,18 @@ export function createChatService({ pool }) {
       throw err;
     }
     return chat;
+  }
+
+  // "If I'm not logged in, I'd like to be texted... but not more than once
+  // an hour" -- checked (and, on a send, recorded) here rather than
+  // unconditionally, since the owner being logged in already means they'll
+  // see this live in the browser (badge/list), no text needed.
+  async function notifyOwnerIfOffline(chat, body) {
+    if (await authRepo.hasActiveSession(pool)) return;
+    const throttleCutoff = new Date(Date.now() - NOTIFICATION_THROTTLE_MS);
+    if (await chatNotificationRepo.wasNotifiedSince(pool, throttleCutoff)) return;
+    await chatNotificationRepo.recordNotification(pool);
+    await smsSender.send(ownerPhoneNumber, `New message from ${chat.label}: ${body}`);
   }
 
   return {
@@ -88,6 +107,7 @@ export function createChatService({ pool }) {
           isNewChat: false,
           chatLabel: chat.label,
         });
+        if (sender === 'visitor') await notifyOwnerIfOffline(chat, body);
         callback(null, { message: toProtoMessage(messageRow) });
       } catch (err) {
         callback({ code: err.code ?? grpc.status.INTERNAL, message: err.message });
@@ -119,13 +139,22 @@ export function createChatService({ pool }) {
       }
     },
 
+    // Owner can rename any chat (the pencil icon in their list); a visitor
+    // can rename only their own (the "Your messages appear from:" field --
+    // see widgets/chat/src/ChatWidget.vue), same scoping as SendMessage/
+    // MarkRead above.
     async RenameChat(call, callback) {
       try {
-        if (!(await isOwnerRequest(pool, call))) return permissionDenied(callback, 'owner only');
-        await chatRepo.rename(pool, call.request.chatId, call.request.label);
+        const { chatId, label } = call.request;
+        if (!(await isOwnerRequest(pool, call))) {
+          const visitorId = getVisitorId(call);
+          if (!visitorId) return invalidArgument(callback, 'missing visitor-id');
+          await assertVisitorOwnsChat(chatId, visitorId);
+        }
+        await chatRepo.rename(pool, chatId, label);
         callback(null, {});
       } catch (err) {
-        callback({ code: grpc.status.INTERNAL, message: err.message });
+        callback({ code: err.code ?? grpc.status.INTERNAL, message: err.message });
       }
     },
 

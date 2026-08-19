@@ -1,0 +1,23 @@
+# Declares static-server as an HTTP service to Consul -- companion to
+# service-defaults.yaml, but for the new static-server service (see
+# infra/eks/manifests/static-server.yaml). No ServiceRouter counterpart:
+# unlike widgetgrid-server's SubscribeNewPosts/SubscribeOwnerPresence/
+# SubscribeChatEvents (long-lived streaming RPCs that need the route-timeout
+# override service-router.yaml exists for), static-server only ever serves
+# short-lived static-file HTTP requests -- Envoy's built-in 15s route
+# default (overridden separately in infra/eks/envoy/envoy-eks.yaml's own
+# route to this upstream) is already more than enough, so there's no
+# Consul-side timeout to override here.
+#
+# Same "kubectl apply only reliably reaches Consul's catalog on first
+# create, not on an update to an already-applied resource" caveat as
+# local-k8s/manifests/service-defaults.yaml documents -- see that file's
+# header comment for the `consul config write` fallback if this ever needs
+# changing on an already-live cluster.
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: static-server
+  namespace: widgetgrid
+spec:
+  protocol: http

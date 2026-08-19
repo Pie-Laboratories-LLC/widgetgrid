@@ -4,7 +4,20 @@ package widgetgrid.v1;
 
 // Single-owner auth -- there's no username, no signup, just "text the one
 // configured phone number a code". See authService.js/otpSender.js.
-message RequestLoginCodeRequest {}
+//
+// requested_at_ms is never read server-side (RequestLoginCode ignores
+// call.request entirely) -- it exists purely so this message never
+// serializes to zero bytes. Confirmed the hard way: a genuinely
+// zero-length gRPC-Web request body (which is what a truly empty proto3
+// message serializes to) gets silently swallowed somewhere between the
+// browser and widgetgrid-server -- HTTP 200 comes back, but the request
+// never reaches the handler (no code generated, nothing logged). A 5-byte
+// empty-message grpc-web frame sent by hand (curl) worked fine; a
+// genuinely empty body reproduced the failure exactly. authClient.js sets
+// this to Date.now(), which is never 0, guaranteeing a non-empty payload.
+message RequestLoginCodeRequest {
+  int64 requested_at_ms = 1;
+}
 message RequestLoginCodeResponse {}
 
 message VerifyLoginCodeRequest {

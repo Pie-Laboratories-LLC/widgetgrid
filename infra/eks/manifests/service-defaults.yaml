@@ -1,0 +1,58 @@
+# Declares widgetgrid-server as a gRPC service to Consul, so the Envoy
+# config Consul's connect-inject webhook generates for the mesh hop to it
+# (envoy-gateway's sidecar -> widgetgrid-server's sidecar; a different,
+# Consul-managed config from this directory's own hand-authored
+# envoy/envoy-local.yaml, which only covers the first hop, browser ->
+# envoy-gateway) is configured with gRPC/streaming in mind.
+#
+# protocol: grpc alone narrows but doesn't fix the actual cutoff -- it
+# affects things like health-checking and how Consul labels the route, but
+# the inbound "public_listener" route on this sidecar (the one facing the
+# rest of the mesh, i.e. envoy-gateway's sidecar -> this pod) still had no
+# explicit route timeout, so it fell back to Envoy's built-in 15s default --
+# confirmed directly via this pod's own Envoy admin API
+# (GET :19000/config_dump, RoutesConfigDump, the "public_listener" route
+# config had no "timeout" key at all). localRequestTimeoutMs is the actual
+# knob for that: it's documented on the ServiceDefaults CRD as "If not
+# specified, inherits the Envoy default for route timeouts (15s)" -- an
+# exact match for the symptom (SubscribeNewPosts/SubscribeOwnerPresence/
+# SubscribeChatEvents all getting cut at ~15s).
+#
+# Deliberately NOT 0, even though that's what "no timeout" means to Envoy
+# itself (see envoy-local.yaml's own first-hop route, timeout: 0s): Consul's
+# Go struct for this field can't distinguish "explicitly set to 0" from
+# "never set" (a plain int, zero-valued by default), so writing 0 here
+# round-trips as if the field were absent -- confirmed by reading it back
+# with `consul config read`, which omits the key entirely when set to 0, and
+# by checking the resulting Envoy route, which still had no explicit
+# "timeout" key (still defaulting to 15s). A large-but-finite value avoids
+# that ambiguity, since it's clearly distinguishable from the zero value.
+#
+# Also worth knowing if you ever need to change this on an ALREADY-running
+# cluster rather than a fresh one: `kubectl apply` on this file only reaches
+# Consul's actual catalog on first create. This Helm chart's
+# controller.enabled: true (consul-values.yaml) does not appear to deploy a
+# running CRD-sync controller in this chart version (checked: no such
+# Deployment exists in the consul namespace) -- so an update to an
+# already-applied ServiceDefaults resource shows a new `generation` and a
+# stale `status.lastSyncedTime` on the k8s object, but never actually
+# reaches Consul (`consul config read` keeps the old ModifyIndex). The
+# reliable way to push a change to an existing cluster is to write the
+# config entry directly:
+#   kubectl cp <this-file-as-hcl> consul/consul-server-0:/tmp/x.hcl
+#   kubectl exec -n consul consul-server-0 -- consul config write /tmp/x.hcl
+# then `kubectl rollout restart deployment/widgetgrid-server -n widgetgrid`
+# -- the "public_listener" route above is baked into the sidecar's static
+# bootstrap config at pod startup, not pushed live via xDS, so nothing
+# picks up a Consul-side config-entry change without a pod restart either.
+# A fresh `local-k8s/teardown.sh && local-k8s/setup.sh` doesn't hit any of
+# this, since `kubectl apply` at cluster-creation time IS a create, not an
+# update, and that path works fine.
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: widgetgrid-server
+  namespace: widgetgrid
+spec:
+  protocol: grpc
+  localRequestTimeoutMs: 86400000

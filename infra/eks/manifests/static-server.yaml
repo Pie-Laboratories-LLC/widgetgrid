@@ -1,0 +1,69 @@
+# New in the EKS deployment -- no local-k8s equivalent (see
+# local-k8s/README.md's "Not covered, deliberately: static asset serving").
+# Consul-Connect-injected the same way as widgetgrid-server.yaml so
+# envoy-gateway can reach it as a mesh upstream (see
+# infra/eks/manifests/envoy-gateway.yaml's connect-service-upstreams
+# annotation and infra/eks/envoy/envoy-eks.yaml's widgetgrid_static
+# cluster) -- not a raw co-located 127.0.0.1:8081 process the way
+# infra/envoy/envoy.yaml's own placeholder comment assumes.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: static-server
+  namespace: widgetgrid
+  labels:
+    app: static-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: static-server
+  template:
+    metadata:
+      labels:
+        app: static-server
+      annotations:
+        consul.hashicorp.com/connect-inject: "true"
+    spec:
+      # false, not the k8s default true: without this, Kubernetes injects a
+      # Docker-links-style `STATIC_SERVER_PORT=tcp://<clusterIP>:8081` env
+      # var for the `static-server` Service into every pod in this
+      # namespace, which collides with (and silently overrides) the app's
+      # own STATIC_SERVER_PORT config var (a plain port number, see
+      # packages/static-server/src/index.js) -- confirmed the hard way:
+      # `EACCES: permission denied tcp://<clusterIP>:8081` on startup,
+      # since Node tried to .listen() on that whole URL string as if it
+      # were the port argument. Service discovery here goes through Consul
+      # Connect, not these legacy vars, so disabling them is safe.
+      enableServiceLinks: false
+      containers:
+        - name: static-server
+          image: ${STATIC_IMAGE}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8081
+              name: http
+          # No app-level health endpoint (sirv doesn't provide one) -- a
+          # bare TCP check is a reasonable stand-in, same reasoning as
+          # widgetgrid-server.yaml's probes.
+          readinessProbe:
+            tcpSocket: { port: 8081 }
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket: { port: 8081 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: static-server
+  namespace: widgetgrid
+spec:
+  selector:
+    app: static-server
+  ports:
+    - port: 8081
+      targetPort: 8081
+      name: http

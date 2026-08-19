@@ -4,7 +4,8 @@
   "version": "0.1.0",
   "workspaces": [
     "packages/*",
-    "widgets/*"
+    "widgets/*",
+    "infra/cdk"
   ],
   "devDependencies": {
     "grpc-tools": "1.13.1"

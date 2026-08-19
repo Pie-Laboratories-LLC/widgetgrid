@@ -13,7 +13,12 @@ const client = new AuthServicePromiseClient(GRPC_WEB_ORIGIN);
 
 export const authClient = {
   async requestLoginCode() {
-    await client.requestLoginCode(new RequestLoginCodeRequest(), {});
+    // requestedAtMs is never read server-side -- set purely so this
+    // message never serializes to zero bytes, see auth.proto's comment on
+    // RequestLoginCodeRequest for why that matters.
+    const request = new RequestLoginCodeRequest();
+    request.setRequestedAtMs(Date.now());
+    await client.requestLoginCode(request, {});
   },
   // Returns '' on a wrong/expired code -- see authService.js's
   // VerifyLoginCode for why this is a plain empty-string response rather

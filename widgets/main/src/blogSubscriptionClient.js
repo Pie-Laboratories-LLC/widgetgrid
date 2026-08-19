@@ -11,32 +11,78 @@ import { BlogServicePromiseClient } from '@widgetgrid/proto-gen-web/widgetgrid/v
 const GRPC_WEB_ORIGIN = import.meta.env.VITE_GRPC_WEB_ORIGIN ?? '';
 const client = new BlogServicePromiseClient(GRPC_WEB_ORIGIN);
 
+// Fixed, not exponential-backoff -- same reasoning as
+// chatSubscriptionClient.js's identical constant.
+const RECONNECT_DELAY_MS = 2000;
+
 // Returns an unsubscribe function. onNewPost receives a plain
 // { slug, title, publishedAt } object per event.
+//
+// Used to have no 'error'/reconnect handling at all -- the reasoning was
+// "a dropped subscription just means the badge stops updating until the
+// page reloads, not worth a reconnect/backoff loop for this feature", with
+// the known failure mode assumed to be local-k8s's two Consul-injected mesh
+// hops (browser -> envoy-gateway's sidecar -> widgetgrid-server's sidecar)
+// cutting any long-lived stream at Envoy's built-in 15s route timeout (see
+// local-k8s/manifests/service-defaults.yaml/service-router.yaml, which fix
+// that). Confirmed against the real deployed environment that this isn't
+// mesh-timeout-only: WidgetgridDevGatewayStack's ALB has a 60s idle
+// timeout (AWS default, unmodified), and this stream carries no traffic at
+// all between posts -- past that idle window the ALB silently closes the
+// connection, and "reload to see it" is a worse tradeoff in production
+// than a small reconnect loop.
+//
+// Separately, still relevant: grpc-web's client codegen mode matters just
+// as much as any of the above for anything server-streaming -- see
+// proto/scripts/gen-web.mjs's comment on why it's mode=grpcwebtext, not
+// mode=grpcweb (binary/arraybuffer XHR responses never deliver
+// incrementally in a browser, no matter how long the connection stays open).
 export function subscribeNewPosts(onNewPost) {
-  const stream = client.subscribeNewPosts(new SubscribeNewPostsRequest(), {});
-  stream.on('data', (event) => onNewPost(event.toObject()));
-  // Deliberately no 'error' handling beyond letting the stream end -- a
-  // dropped subscription just means the badge stops updating until the
-  // page reloads, not worth a reconnect/backoff loop for this feature.
-  // local-k8s/'s two Consul-injected mesh hops (browser -> envoy-gateway's
-  // sidecar -> widgetgrid-server's sidecar) both used to cut any long-lived
-  // stream at Envoy's built-in 15s route timeout, with no explicit
-  // "timeout" key set on either hop's route -- see local-k8s/manifests/
-  // service-defaults.yaml and service-router.yaml, which fix the two
-  // halves of that respectively. Also worth knowing if this ever seems
-  // broken again after editing either of those two files on an
-  // already-running cluster: both routes turned out to be baked into their
-  // sidecar's *static* bootstrap config, not pushed live via xDS, so a
-  // Consul-side change needs `kubectl rollout restart` on the relevant
-  // deployment(s) before it actually takes effect (a fresh
-  // local-k8s/setup.sh run doesn't hit this, since that's a create, not an
-  // update).
-  //
-  // Separately: grpc-web's client codegen mode matters just as much as the
-  // above for anything server-streaming -- see proto/scripts/gen-web.mjs's
-  // comment on why it's mode=grpcwebtext, not mode=grpcweb (binary/
-  // arraybuffer XHR responses never deliver incrementally in a browser, no
-  // matter how long the mesh lets the stream stay open).
-  return () => stream.cancel();
+  let cancelled = false;
+  let stream = null;
+  let reconnectTimer = null;
+  // Shared across reconnects within this subscription's lifetime, not
+  // reset per-connect -- this is what lets the server (see
+  // blogChangeNotifier.js's watch()) notice a post published during a
+  // disconnected gap and report it immediately on reconnect, instead of
+  // silently folding it into a fresh baseline the way a truly-unseeded
+  // reconnect would. Empty string on this subscription's genuine first
+  // connect is the correct "I don't know of anything yet" signal.
+  let lastKnownSlug = '';
+
+  function scheduleReconnect() {
+    // Guards against grpc-web firing both 'error' and 'end' for the same
+    // disconnect and scheduling two reconnects -- same reasoning as
+    // chatSubscriptionClient.js's identical guard.
+    if (cancelled || reconnectTimer) return;
+    reconnectTimer = setTimeout(() => {
+      reconnectTimer = null;
+      connect();
+    }, RECONNECT_DELAY_MS);
+  }
+
+  function connect() {
+    const request = new SubscribeNewPostsRequest();
+    request.setLastKnownSlug(lastKnownSlug);
+    // Never read server-side -- see auth.proto's identical field on
+    // RequestLoginCodeRequest for why (a request with only an empty
+    // last_known_slug would otherwise serialize to zero bytes on this
+    // subscription's first-ever connect).
+    request.setRequestedAtMs(Date.now());
+    stream = client.subscribeNewPosts(request, {});
+    stream.on('data', (event) => {
+      const post = event.toObject();
+      lastKnownSlug = post.slug;
+      onNewPost(post);
+    });
+    stream.on('error', scheduleReconnect);
+    stream.on('end', scheduleReconnect);
+  }
+
+  connect();
+  return () => {
+    cancelled = true;
+    if (reconnectTimer) clearTimeout(reconnectTimer);
+    stream.cancel();
+  };
 }

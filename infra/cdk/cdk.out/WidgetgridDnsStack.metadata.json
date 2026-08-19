@@ -1,0 +1,108 @@
+{
+  "/WidgetgridDnsStack": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:19: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:19:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDnsStack/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridDnsStack/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridDnsStack/DevCertificate/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DevCertificate34D4CB71"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Certificate2 in aws-cdk-lib...",
+        "new DnsStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dns-stack.js:32:24)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:19: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:19:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDnsStack/MailMx/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MailMxD4AAC8F4"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new MxRecord2 in aws-cdk-lib...",
+        "new DnsStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dns-stack.js:46:5)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:19: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:19:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDnsStack/MailSpf/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MailSpf1BF7241D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new TxtRecord2 in aws-cdk-lib...",
+        "new DnsStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dns-stack.js:53:5)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:19: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:19:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDnsStack/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridDnsStack/Exports/Output{\"Ref\":\"DevCertificate34D4CB71\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefDevCertificate34D4CB71D624DA54"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ]
+}

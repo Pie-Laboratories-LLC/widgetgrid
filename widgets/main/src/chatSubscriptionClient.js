@@ -22,16 +22,57 @@ function identityMetadata() {
   return { 'visitor-id': visitorId };
 }
 
+// Reconnect delay for a dropped stream (see subscribeChatEvents below) --
+// fixed, not exponential-backoff: this reconnects to our own ALB/mesh, not
+// a third-party API with rate limits worth backing off from, so a short
+// fixed delay is simpler and still avoids hammering on a persistent outage.
+const RECONNECT_DELAY_MS = 2000;
+
 // Returns an unsubscribe function. onChatEvent receives a plain
 // { chatId, message, isNewChat, chatLabel } object per event. Subscribed
 // once here for the page's whole lifetime (see MainWidget.vue's 'created'
 // hook, same reasoning as its blog subscription) -- the server filters by
 // visitor_id internally (see chatBus.js/chatService.js), so this is safe
 // to open before the visitor has ever started a chat.
+//
+// Reconnects automatically on drop -- confirmed the hard way that this
+// isn't just a local-k8s mesh-timeout concern (this file used to have no
+// reconnect logic at all, same reasoning as blogSubscriptionClient.js's
+// comment on that): WidgetgridDevGatewayStack's ALB has a 60s idle
+// timeout, unmodified from the AWS default, and this stream carries no
+// traffic at all while a conversation is quiet. Past that idle window the
+// ALB silently closes the connection -- messages sent after that keep
+// landing in Postgres and reaching ListMessages/ListChats fine, they just
+// never arrive live, which is exactly the "have to switch views and back
+// to see it" symptom this was reported as.
 export function subscribeChatEvents(onChatEvent) {
-  const stream = client.subscribeChatEvents(new SubscribeChatEventsRequest(), identityMetadata());
-  stream.on('data', (event) => onChatEvent(event.toObject()));
-  // Same "no reconnect/backoff loop" call as blogSubscriptionClient.js,
-  // and the same known local-k8s mesh limitation applies here too.
-  return () => stream.cancel();
+  let cancelled = false;
+  let stream = null;
+  let reconnectTimer = null;
+
+  function scheduleReconnect() {
+    // The reconnectTimer guard matters here specifically: grpc-web can
+    // fire both 'error' and 'end' for the same disconnect, and without
+    // this, that would schedule two reconnects and end up with two live
+    // streams both calling onChatEvent for every future event.
+    if (cancelled || reconnectTimer) return;
+    reconnectTimer = setTimeout(() => {
+      reconnectTimer = null;
+      connect();
+    }, RECONNECT_DELAY_MS);
+  }
+
+  function connect() {
+    stream = client.subscribeChatEvents(new SubscribeChatEventsRequest(), identityMetadata());
+    stream.on('data', (event) => onChatEvent(event.toObject()));
+    stream.on('error', scheduleReconnect);
+    stream.on('end', scheduleReconnect);
+  }
+
+  connect();
+  return () => {
+    cancelled = true;
+    if (reconnectTimer) clearTimeout(reconnectTimer);
+    stream.cancel();
+  };
 }

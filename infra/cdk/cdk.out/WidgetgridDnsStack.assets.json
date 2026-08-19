@@ -1,0 +1,21 @@
+{
+  "version": "54.0.0",
+  "files": {
+    "5e4b2e277a16ba0c2ac8b4de2e87baa2fd705d0872aa86c1f176f218133631cd": {
+      "displayName": "WidgetgridDnsStack Template",
+      "source": {
+        "path": "WidgetgridDnsStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "913318903667-us-east-1-0e1b4ee3": {
+          "bucketName": "cdk-hnb659fds-assets-913318903667-us-east-1",
+          "objectKey": "5e4b2e277a16ba0c2ac8b4de2e87baa2fd705d0872aa86c1f176f218133631cd.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-file-publishing-role-913318903667-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

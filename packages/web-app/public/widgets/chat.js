@@ -1,4 +1,4 @@
-(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-chat[data-v-97112f78]{box-sizing:border-box;height:100%}.chat-status[data-v-97112f78]{color:#666;padding:24px}.chat-shell[data-v-97112f78]{height:100%;display:flex}.chat-list[data-v-97112f78]{box-sizing:border-box;border-right:1px solid #ddd;flex:none;width:220px;overflow-y:auto}.chat-list-item[data-v-97112f78]{cursor:pointer;border-bottom:1px solid #eee;justify-content:space-between;align-items:center;gap:8px;padding:12px 16px;display:flex}.chat-list-item[data-v-97112f78]:hover{background:#f7f5fa}.chat-list-item-active[data-v-97112f78]{background:#efe9f7}.chat-list-label[data-v-97112f78]{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.chat-list-label-unread[data-v-97112f78]{font-weight:700}.chat-rename-btn[data-v-97112f78]{color:#999;cursor:pointer;background:0 0;border:none;flex:none;padding:2px 4px}.chat-rename-btn[data-v-97112f78]:hover{color:#333}.chat-rename-input[data-v-97112f78]{box-sizing:border-box;width:100%;padding:4px 6px}.chat-thread[data-v-97112f78]{flex-direction:column;flex:1;min-width:0;display:flex}.chat-thread-visitor[data-v-97112f78]{height:100%}.chat-messages[data-v-97112f78]{flex-direction:column;flex:1;gap:10px;padding:24px;display:flex;overflow-y:auto}.chat-message[data-v-97112f78]{background:#f0f0f0;border-radius:12px;max-width:70%;padding:8px 12px}.chat-message-body[data-v-97112f78]{white-space:pre-wrap;word-break:break-word;margin:0}.chat-message-mine[data-v-97112f78]{color:#f4ead9;background:#150a2e;align-self:flex-end}.chat-message-theirs[data-v-97112f78]{align-self:flex-start}.chat-composer[data-v-97112f78]{border-top:1px solid #ddd;flex:none;gap:8px;padding:16px 24px;display:flex}.chat-input[data-v-97112f78]{border:1px solid #ccc;border-radius:6px;flex:1;padding:10px 12px;font-size:1rem}.chat-send[data-v-97112f78]{color:#f4ead9;cursor:pointer;background:#150a2e;border:none;border-radius:6px;padding:10px 16px;font-weight:600}.chat-send[data-v-97112f78]:disabled{opacity:.5;cursor:default}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
+(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-chat[data-v-ddad20fd]{box-sizing:border-box;height:100%}.chat-status[data-v-ddad20fd]{color:#666;padding:24px}.chat-shell[data-v-ddad20fd]{height:100%;display:flex}.chat-list[data-v-ddad20fd]{box-sizing:border-box;border-right:1px solid #ddd;flex:none;width:220px;overflow-y:auto}.chat-list-item[data-v-ddad20fd]{cursor:pointer;border-bottom:1px solid #eee;justify-content:space-between;align-items:center;gap:8px;padding:12px 16px;display:flex}.chat-list-item[data-v-ddad20fd]:hover{background:#f7f5fa}.chat-list-item-active[data-v-ddad20fd]{background:#efe9f7}.chat-list-label[data-v-ddad20fd]{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.chat-list-label-unread[data-v-ddad20fd]{font-weight:700}.chat-rename-btn[data-v-ddad20fd]{color:#999;cursor:pointer;background:0 0;border:none;flex:none;padding:2px 4px}.chat-rename-btn[data-v-ddad20fd]:hover{color:#333}.chat-rename-input[data-v-ddad20fd]{box-sizing:border-box;width:100%;padding:4px 6px}.chat-thread[data-v-ddad20fd]{flex-direction:column;flex:1;min-width:0;display:flex}.chat-thread-visitor[data-v-ddad20fd]{height:100%}.chat-name-prompt[data-v-ddad20fd]{color:#666;border-bottom:1px solid #ddd;flex:none;align-items:center;gap:8px;padding:12px 24px;font-size:.85rem;display:flex}.chat-name-input[data-v-ddad20fd]{border:1px solid #ccc;border-radius:6px;flex:1;max-width:220px;padding:6px 10px;font-size:.9rem}.chat-messages[data-v-ddad20fd]{flex-direction:column;flex:1;gap:10px;padding:24px;display:flex;overflow-y:auto}.chat-message[data-v-ddad20fd]{background:#f0f0f0;border-radius:12px;max-width:70%;padding:8px 12px}.chat-message-body[data-v-ddad20fd]{white-space:pre-wrap;word-break:break-word;margin:0}.chat-message-mine[data-v-ddad20fd]{color:#f4ead9;background:#150a2e;align-self:flex-end}.chat-message-theirs[data-v-ddad20fd]{align-self:flex-start}.chat-composer[data-v-ddad20fd]{border-top:1px solid #ddd;flex:none;gap:8px;padding:16px 24px;display:flex}.chat-input[data-v-ddad20fd]{border:1px solid #ccc;border-radius:6px;flex:1;padding:10px 12px;font-size:1rem}.chat-send[data-v-ddad20fd]{color:#f4ead9;cursor:pointer;background:#150a2e;border:none;border-radius:6px;padding:10px 16px;font-weight:600}.chat-send[data-v-ddad20fd]:disabled{opacity:.5;cursor:default}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
 import { Fragment, createCommentVNode, createElementBlock, createElementVNode, normalizeClass, openBlock, renderList, toDisplayString, vModelText, withDirectives, withKeys, withModifiers } from "vue";
 //#region \0rolldown/runtime.js
 var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t.exports), require_google_protobuf = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -5820,7 +5820,7 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 	}, r.widgetgrid.v1.ChatServicePromiseClient.prototype.subscribeChatEvents = function(e, t) {
 		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.ChatService/SubscribeChatEvents", e, t || {}, d);
 	}, t.exports = r.widgetgrid.v1;
-})), import_chat_pb = require_chat_pb(), import_chat_grpc_web_pb = require_chat_grpc_web_pb(), client = new import_chat_grpc_web_pb.ChatServicePromiseClient("http://localhost:8080"), TOKEN_KEY = "widgetgrid:ownerToken", VISITOR_ID_KEY = "widgetgrid:visitorId";
+})), import_chat_pb = require_chat_pb(), import_chat_grpc_web_pb = require_chat_grpc_web_pb(), client$1 = new import_chat_grpc_web_pb.ChatServicePromiseClient("http://localhost:8080"), TOKEN_KEY = "widgetgrid:ownerToken", VISITOR_ID_KEY = "widgetgrid:visitorId";
 function getOwnerToken() {
 	return localStorage.getItem(TOKEN_KEY);
 }
@@ -5834,32 +5834,265 @@ function identityMetadata() {
 }
 var chatClient = {
 	async startOrGetChat() {
-		return (await client.startOrGetChat(new import_chat_pb.StartOrGetChatRequest(), identityMetadata())).toObject().chat;
+		return (await client$1.startOrGetChat(new import_chat_pb.StartOrGetChatRequest(), identityMetadata())).toObject().chat;
 	},
 	async sendMessage(e, t) {
 		let n = new import_chat_pb.SendMessageRequest();
-		return n.setChatId(e), n.setBody(t), (await client.sendMessage(n, identityMetadata())).toObject().message;
+		return n.setChatId(e), n.setBody(t), (await client$1.sendMessage(n, identityMetadata())).toObject().message;
 	},
 	async listMessages(e) {
 		let t = new import_chat_pb.ListMessagesRequest();
-		return t.setChatId(e), (await client.listMessages(t, identityMetadata())).toObject().messagesList;
+		return t.setChatId(e), (await client$1.listMessages(t, identityMetadata())).toObject().messagesList;
 	},
 	async listChats() {
-		return (await client.listChats(new import_chat_pb.ListChatsRequest(), identityMetadata())).toObject().chatsList;
+		return (await client$1.listChats(new import_chat_pb.ListChatsRequest(), identityMetadata())).toObject().chatsList;
 	},
 	async renameChat(e, t) {
 		let n = new import_chat_pb.RenameChatRequest();
-		n.setChatId(e), n.setLabel(t), await client.renameChat(n, identityMetadata());
+		n.setChatId(e), n.setLabel(t), await client$1.renameChat(n, identityMetadata());
 	},
 	async markRead(e) {
 		let t = new import_chat_pb.MarkReadRequest();
-		t.setChatId(e), await client.markRead(t, identityMetadata());
+		t.setChatId(e), await client$1.markRead(t, identityMetadata());
 	}
-}, _plugin_vue_export_helper_default = (e, t) => {
+}, require_auth_pb = /* @__PURE__ */ __commonJSMin(((e) => {
+	var t = require_google_protobuf(), n = t, r = function() {
+		return this ? this : typeof window < "u" ? window : r === void 0 ? typeof self < "u" ? self : Function("return this")() : r;
+	}.call(null);
+	n.exportSymbol("proto.widgetgrid.v1.LogoutRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.LogoutResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.OwnerPresenceEvent", null, r), n.exportSymbol("proto.widgetgrid.v1.RequestLoginCodeRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.RequestLoginCodeResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.SubscribeOwnerPresenceRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.VerifyLoginCodeRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.VerifyLoginCodeResponse", null, r), proto.widgetgrid.v1.RequestLoginCodeRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.RequestLoginCodeRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RequestLoginCodeRequest.displayName = "proto.widgetgrid.v1.RequestLoginCodeRequest"), proto.widgetgrid.v1.RequestLoginCodeResponse = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.RequestLoginCodeResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RequestLoginCodeResponse.displayName = "proto.widgetgrid.v1.RequestLoginCodeResponse"), proto.widgetgrid.v1.VerifyLoginCodeRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.VerifyLoginCodeRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.VerifyLoginCodeRequest.displayName = "proto.widgetgrid.v1.VerifyLoginCodeRequest"), proto.widgetgrid.v1.VerifyLoginCodeResponse = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.VerifyLoginCodeResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.VerifyLoginCodeResponse.displayName = "proto.widgetgrid.v1.VerifyLoginCodeResponse"), proto.widgetgrid.v1.LogoutRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.LogoutRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.LogoutRequest.displayName = "proto.widgetgrid.v1.LogoutRequest"), proto.widgetgrid.v1.LogoutResponse = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.LogoutResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.LogoutResponse.displayName = "proto.widgetgrid.v1.LogoutResponse"), proto.widgetgrid.v1.SubscribeOwnerPresenceRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.SubscribeOwnerPresenceRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.displayName = "proto.widgetgrid.v1.SubscribeOwnerPresenceRequest"), proto.widgetgrid.v1.OwnerPresenceEvent = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.OwnerPresenceEvent, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.OwnerPresenceEvent.displayName = "proto.widgetgrid.v1.OwnerPresenceEvent"), t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RequestLoginCodeRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.RequestLoginCodeRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.RequestLoginCodeRequest.toObject = function(e, t) {
+		var n = {};
+		return e && (n.$jspbMessageInstance = t), n;
+	}), proto.widgetgrid.v1.RequestLoginCodeRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RequestLoginCodeRequest();
+		return proto.widgetgrid.v1.RequestLoginCodeRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.RequestLoginCodeRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		return e;
+	}, proto.widgetgrid.v1.RequestLoginCodeRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.RequestLoginCodeRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.RequestLoginCodeRequest.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RequestLoginCodeResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.RequestLoginCodeResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.RequestLoginCodeResponse.toObject = function(e, t) {
+		var n = {};
+		return e && (n.$jspbMessageInstance = t), n;
+	}), proto.widgetgrid.v1.RequestLoginCodeResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RequestLoginCodeResponse();
+		return proto.widgetgrid.v1.RequestLoginCodeResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.RequestLoginCodeResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		return e;
+	}, proto.widgetgrid.v1.RequestLoginCodeResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.RequestLoginCodeResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.RequestLoginCodeResponse.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.VerifyLoginCodeRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.VerifyLoginCodeRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.VerifyLoginCodeRequest.toObject = function(e, n) {
+		var r = { code: t.Message.getFieldWithDefault(n, 1, "") };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.VerifyLoginCodeRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.VerifyLoginCodeRequest();
+		return proto.widgetgrid.v1.VerifyLoginCodeRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.VerifyLoginCodeRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setCode(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.VerifyLoginCodeRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.VerifyLoginCodeRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.VerifyLoginCodeRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getCode(), n.length > 0 && t.writeString(1, n);
+	}, proto.widgetgrid.v1.VerifyLoginCodeRequest.prototype.getCode = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.VerifyLoginCodeRequest.prototype.setCode = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.VerifyLoginCodeResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.VerifyLoginCodeResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.VerifyLoginCodeResponse.toObject = function(e, n) {
+		var r = { token: t.Message.getFieldWithDefault(n, 1, "") };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.VerifyLoginCodeResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.VerifyLoginCodeResponse();
+		return proto.widgetgrid.v1.VerifyLoginCodeResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.VerifyLoginCodeResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setToken(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.VerifyLoginCodeResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.VerifyLoginCodeResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.VerifyLoginCodeResponse.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getToken(), n.length > 0 && t.writeString(1, n);
+	}, proto.widgetgrid.v1.VerifyLoginCodeResponse.prototype.getToken = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.VerifyLoginCodeResponse.prototype.setToken = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.LogoutRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.LogoutRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.LogoutRequest.toObject = function(e, n) {
+		var r = { token: t.Message.getFieldWithDefault(n, 1, "") };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.LogoutRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.LogoutRequest();
+		return proto.widgetgrid.v1.LogoutRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.LogoutRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setToken(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.LogoutRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.LogoutRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.LogoutRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getToken(), n.length > 0 && t.writeString(1, n);
+	}, proto.widgetgrid.v1.LogoutRequest.prototype.getToken = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.LogoutRequest.prototype.setToken = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.LogoutResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.LogoutResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.LogoutResponse.toObject = function(e, t) {
+		var n = {};
+		return e && (n.$jspbMessageInstance = t), n;
+	}), proto.widgetgrid.v1.LogoutResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.LogoutResponse();
+		return proto.widgetgrid.v1.LogoutResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.LogoutResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		return e;
+	}, proto.widgetgrid.v1.LogoutResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.LogoutResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.LogoutResponse.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.toObject = function(e, t) {
+		var n = {};
+		return e && (n.$jspbMessageInstance = t), n;
+	}), proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.SubscribeOwnerPresenceRequest();
+		return proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		return e;
+	}, proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.OwnerPresenceEvent.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.OwnerPresenceEvent.toObject(e, this);
+	}, proto.widgetgrid.v1.OwnerPresenceEvent.toObject = function(e, n) {
+		var r = { online: t.Message.getBooleanFieldWithDefault(n, 1, !1) };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.OwnerPresenceEvent.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.OwnerPresenceEvent();
+		return proto.widgetgrid.v1.OwnerPresenceEvent.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.OwnerPresenceEvent.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readBool();
+				e.setOnline(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.OwnerPresenceEvent.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.OwnerPresenceEvent.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.OwnerPresenceEvent.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getOnline(), n && t.writeBool(1, n);
+	}, proto.widgetgrid.v1.OwnerPresenceEvent.prototype.getOnline = function() {
+		return t.Message.getBooleanFieldWithDefault(this, 1, !1);
+	}, proto.widgetgrid.v1.OwnerPresenceEvent.prototype.setOnline = function(e) {
+		return t.Message.setProto3BooleanField(this, 1, e);
+	}, n.object.extend(e, proto.widgetgrid.v1);
+})), require_auth_grpc_web_pb = /* @__PURE__ */ __commonJSMin(((e, t) => {
+	var n = {};
+	n.web = require_grpc_web();
+	var r = {};
+	r.widgetgrid = {}, r.widgetgrid.v1 = require_auth_pb(), r.widgetgrid.v1.AuthServiceClient = function(e, t, r) {
+		r ||= {}, r.format = "text", this.client_ = new n.web.GrpcWebClientBase(r), this.hostname_ = e.replace(/\/+$/, "");
+	}, r.widgetgrid.v1.AuthServicePromiseClient = function(e, t, r) {
+		r ||= {}, r.format = "text", this.client_ = new n.web.GrpcWebClientBase(r), this.hostname_ = e.replace(/\/+$/, "");
+	};
+	var i = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/RequestLoginCode", n.web.MethodType.UNARY, r.widgetgrid.v1.RequestLoginCodeRequest, r.widgetgrid.v1.RequestLoginCodeResponse, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.RequestLoginCodeResponse.deserializeBinary);
+	r.widgetgrid.v1.AuthServiceClient.prototype.requestLoginCode = function(e, t, n) {
+		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.AuthService/RequestLoginCode", e, t || {}, i, n);
+	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.requestLoginCode = function(e, t) {
+		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.AuthService/RequestLoginCode", e, t || {}, i);
+	};
+	var o = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/VerifyLoginCode", n.web.MethodType.UNARY, r.widgetgrid.v1.VerifyLoginCodeRequest, r.widgetgrid.v1.VerifyLoginCodeResponse, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.VerifyLoginCodeResponse.deserializeBinary);
+	r.widgetgrid.v1.AuthServiceClient.prototype.verifyLoginCode = function(e, t, n) {
+		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.AuthService/VerifyLoginCode", e, t || {}, o, n);
+	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.verifyLoginCode = function(e, t) {
+		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.AuthService/VerifyLoginCode", e, t || {}, o);
+	};
+	var s = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/Logout", n.web.MethodType.UNARY, r.widgetgrid.v1.LogoutRequest, r.widgetgrid.v1.LogoutResponse, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.LogoutResponse.deserializeBinary);
+	r.widgetgrid.v1.AuthServiceClient.prototype.logout = function(e, t, n) {
+		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.AuthService/Logout", e, t || {}, s, n);
+	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.logout = function(e, t) {
+		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.AuthService/Logout", e, t || {}, s);
+	};
+	var c = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/SubscribeOwnerPresence", n.web.MethodType.SERVER_STREAMING, r.widgetgrid.v1.SubscribeOwnerPresenceRequest, r.widgetgrid.v1.OwnerPresenceEvent, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.OwnerPresenceEvent.deserializeBinary);
+	r.widgetgrid.v1.AuthServiceClient.prototype.subscribeOwnerPresence = function(e, t) {
+		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.AuthService/SubscribeOwnerPresence", e, t || {}, c);
+	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.subscribeOwnerPresence = function(e, t) {
+		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.AuthService/SubscribeOwnerPresence", e, t || {}, c);
+	}, t.exports = r.widgetgrid.v1;
+})), import_auth_pb = require_auth_pb(), import_auth_grpc_web_pb = require_auth_grpc_web_pb(), client = new import_auth_grpc_web_pb.AuthServicePromiseClient("http://localhost:8080");
+function subscribeOwnerPresence(e) {
+	let t = client.subscribeOwnerPresence(new import_auth_pb.SubscribeOwnerPresenceRequest(), {});
+	return t.on("data", (t) => e(t.toObject().online)), () => t.cancel();
+}
+//#endregion
+//#region \0plugin-vue:export-helper
+var _plugin_vue_export_helper_default = (e, t) => {
 	let n = e.__vccOpts || e;
 	for (let [e, r] of t) n[e] = r;
 	return n;
-}, _sfc_main = {
+}, AUTO_LABEL = /^chat\d+$/, _sfc_main = {
 	name: "ChatWidget",
 	props: {
 		data: {
@@ -5881,18 +6114,25 @@ var chatClient = {
 			messages: [],
 			newMessageBody: "",
 			renamingChatId: null,
-			renameValue: ""
+			renameValue: "",
+			visitorName: "",
+			ownerOnline: !1
 		};
 	},
+	computed: { emptyThreadMessage() {
+		return this.ownerOnline ? "Say hello — Matt will get back to you here." : "Leave a message for Matt.";
+	} },
 	created() {
-		window.addEventListener("widgetgrid:chat-event", this.onChatEvent), this.isOwner ? this.loadChats() : chatClient.startOrGetChat().then((e) => (this.myChatId = e.id, this.loadMessages(e.id))).then(() => {
+		window.addEventListener("widgetgrid:chat-event", this.onChatEvent), this.isOwner ? this.loadChats() : (this.unsubscribePresence = subscribeOwnerPresence((e) => {
+			this.ownerOnline = e;
+		}), chatClient.startOrGetChat().then((e) => (this.myChatId = e.id, AUTO_LABEL.test(e.label) || (this.visitorName = e.label), this.loadMessages(e.id))).then(() => {
 			this.status = "ready";
 		}).catch(() => {
 			this.status = "error";
-		});
+		}));
 	},
 	beforeUnmount() {
-		window.removeEventListener("widgetgrid:chat-event", this.onChatEvent);
+		window.removeEventListener("widgetgrid:chat-event", this.onChatEvent), this.unsubscribePresence?.();
 	},
 	updated() {
 		this.scrollToBottom();
@@ -5926,6 +6166,10 @@ var chatClient = {
 		},
 		cancelRename() {
 			this.renamingChatId = null;
+		},
+		async saveVisitorName() {
+			let e = this.visitorName.trim();
+			!e || !this.myChatId || await chatClient.renameChat(this.myChatId, e);
 		},
 		async sendMessage() {
 			let e = this.newMessageBody.trim(), t = this.isOwner ? this.selectedChatId : this.myChatId;
@@ -5972,13 +6216,13 @@ var chatClient = {
 }, _hoisted_14 = {
 	key: 0,
 	class: "chat-status"
-}, _hoisted_15 = {
+}, _hoisted_15 = { class: "chat-name-prompt" }, _hoisted_16 = {
 	ref: "messagesEl",
 	class: "chat-messages"
-}, _hoisted_16 = {
+}, _hoisted_17 = {
 	key: 0,
 	class: "chat-status"
-}, _hoisted_17 = { class: "chat-message-body" }, _hoisted_18 = ["disabled"];
+}, _hoisted_18 = { class: "chat-message-body" }, _hoisted_19 = ["disabled"];
 function _sfc_render(e, t, n, r, i, o) {
 	return openBlock(), createElementBlock("div", _hoisted_1, [i.isOwner ? (openBlock(), createElementBlock("div", _hoisted_2, [createElementVNode("aside", _hoisted_3, [i.status === "loading" ? (openBlock(), createElementBlock("p", _hoisted_4, "Loading…")) : i.chats.length === 0 ? (openBlock(), createElementBlock("p", _hoisted_5, "No conversations yet.")) : createCommentVNode("", !0), (openBlock(!0), createElementBlock(Fragment, null, renderList(i.chats, (e) => (openBlock(), createElementBlock("div", {
 		key: e.id,
@@ -6013,23 +6257,35 @@ function _sfc_render(e, t, n, r, i, o) {
 		type: "submit",
 		class: "chat-send",
 		disabled: !i.newMessageBody.trim()
-	}, "Send", 8, _hoisted_11)], 32)], 64)) : (openBlock(), createElementBlock("p", _hoisted_12, "Select a conversation."))])])) : (openBlock(), createElementBlock("div", _hoisted_13, [i.status === "loading" ? (openBlock(), createElementBlock("p", _hoisted_14, "Connecting…")) : (openBlock(), createElementBlock(Fragment, { key: 1 }, [createElementVNode("div", _hoisted_15, [i.messages.length === 0 ? (openBlock(), createElementBlock("p", _hoisted_16, "Say hello — Matt will get back to you here.")) : createCommentVNode("", !0), (openBlock(!0), createElementBlock(Fragment, null, renderList(i.messages, (e) => (openBlock(), createElementBlock("div", {
-		key: e.id,
-		class: normalizeClass(["chat-message", e.sender === "visitor" ? "chat-message-mine" : "chat-message-theirs"])
-	}, [createElementVNode("p", _hoisted_17, toDisplayString(e.body), 1)], 2))), 128))], 512), createElementVNode("form", {
-		class: "chat-composer",
-		onSubmit: t[8] ||= withModifiers((...e) => o.sendMessage && o.sendMessage(...e), ["prevent"])
-	}, [withDirectives(createElementVNode("input", {
-		"onUpdate:modelValue": t[7] ||= (e) => i.newMessageBody = e,
-		type: "text",
-		class: "chat-input",
-		placeholder: "Type a message…"
-	}, null, 512), [[vModelText, i.newMessageBody]]), createElementVNode("button", {
-		type: "submit",
-		class: "chat-send",
-		disabled: !i.newMessageBody.trim()
-	}, "Send", 8, _hoisted_18)], 32)], 64))]))]);
+	}, "Send", 8, _hoisted_11)], 32)], 64)) : (openBlock(), createElementBlock("p", _hoisted_12, "Select a conversation."))])])) : (openBlock(), createElementBlock("div", _hoisted_13, [i.status === "loading" ? (openBlock(), createElementBlock("p", _hoisted_14, "Connecting…")) : (openBlock(), createElementBlock(Fragment, { key: 1 }, [
+		createElementVNode("div", _hoisted_15, [t[12] ||= createElementVNode("label", { for: "chat-visitor-name" }, "Your messages appear from:", -1), withDirectives(createElementVNode("input", {
+			id: "chat-visitor-name",
+			"onUpdate:modelValue": t[7] ||= (e) => i.visitorName = e,
+			type: "text",
+			class: "chat-name-input",
+			placeholder: "optional",
+			onBlur: t[8] ||= (...e) => o.saveVisitorName && o.saveVisitorName(...e),
+			onKeyup: t[9] ||= withKeys((...e) => o.saveVisitorName && o.saveVisitorName(...e), ["enter"])
+		}, null, 544), [[vModelText, i.visitorName]])]),
+		createElementVNode("div", _hoisted_16, [i.messages.length === 0 ? (openBlock(), createElementBlock("p", _hoisted_17, toDisplayString(o.emptyThreadMessage), 1)) : createCommentVNode("", !0), (openBlock(!0), createElementBlock(Fragment, null, renderList(i.messages, (e) => (openBlock(), createElementBlock("div", {
+			key: e.id,
+			class: normalizeClass(["chat-message", e.sender === "visitor" ? "chat-message-mine" : "chat-message-theirs"])
+		}, [createElementVNode("p", _hoisted_18, toDisplayString(e.body), 1)], 2))), 128))], 512),
+		createElementVNode("form", {
+			class: "chat-composer",
+			onSubmit: t[11] ||= withModifiers((...e) => o.sendMessage && o.sendMessage(...e), ["prevent"])
+		}, [withDirectives(createElementVNode("input", {
+			"onUpdate:modelValue": t[10] ||= (e) => i.newMessageBody = e,
+			type: "text",
+			class: "chat-input",
+			placeholder: "Type a message…"
+		}, null, 512), [[vModelText, i.newMessageBody]]), createElementVNode("button", {
+			type: "submit",
+			class: "chat-send",
+			disabled: !i.newMessageBody.trim()
+		}, "Send", 8, _hoisted_19)], 32)
+	], 64))]))]);
 }
-var ChatWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-97112f78"]]);
+var ChatWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-ddad20fd"]]);
 //#endregion
 export { ChatWidget_default as default };

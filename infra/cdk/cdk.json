@@ -1,0 +1,11 @@
+{
+  "app": "node bin/app.js",
+  "watch": {
+    "include": ["**"],
+    "exclude": ["README.md", "cdk*.json", "node_modules", "cdk.out"]
+  },
+  "context": {
+    "@aws-cdk/core:newStyleStackSynthesis": true,
+    "@aws-cdk/aws-autoscaling:generateLaunchTemplateInsteadOfLaunchConfig": true
+  }
+}

@@ -1,0 +1,93 @@
+# EKS variant of local-k8s/manifests/widgetgrid-server.yaml. Two real
+# differences from that file:
+#
+# 1. image is `${SERVER_IMAGE}` (a full ECR URI:tag), substituted by
+#    infra/eks/deploy.sh via envsubst before apply -- not `widgetgrid-server:local`
+#    loaded straight into a kind node. imagePullPolicy: Always, not
+#    IfNotPresent, since tags get reused across deploys of the same commit
+#    isn't assumed here the way a fixed `:local` tag was locally.
+# 2. DATABASE_URL comes from a real k8s Secret (widgetgrid-server-secret),
+#    populated by deploy.sh from the RDS-generated Secrets Manager secret --
+#    not a plain ConfigMap holding a throwaway local Postgres URL.
+# 3. SMS_PROVIDER=sns and BLOG_S3_BUCKET/BLOG_ASSETS_BASE_URL (local-k8s
+#    has no equivalent for either -- it never sends real texts and always
+#    reads content/blog off the local filesystem) and
+#    serviceAccountName: widgetgrid-server, which is what
+#    WidgetgridServerPodIdentity (infra/cdk/lib/eks-stack.js) grants
+#    sns:Publish and BlogBucket read access to -- see
+#    packages/server/src/smsSender.js and blogSource.js.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: widgetgrid-server
+  namespace: widgetgrid
+  labels:
+    app: widgetgrid-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: widgetgrid-server
+  template:
+    metadata:
+      labels:
+        app: widgetgrid-server
+      annotations:
+        # The mechanism under test in local-k8s, now the real thing: Consul's
+        # mutating webhook injects an Envoy sidecar into this pod and
+        # registers "widgetgrid-server" (from the Service name below) in
+        # Consul's catalog.
+        consul.hashicorp.com/connect-inject: "true"
+    spec:
+      # Defensive, not currently load-bearing: no Service name in this
+      # namespace collides with GRPC_SERVER_HOST/GRPC_SERVER_PORT today,
+      # but see static-server.yaml's header comment for the exact bug this
+      # sidesteps (Kubernetes' Docker-links-style env var injection
+      # silently overriding an app config var of the same name) --
+      # disabling it here too avoids the same class of bug if that ever
+      # changes. Service discovery goes through Consul Connect, not these.
+      enableServiceLinks: false
+      serviceAccountName: widgetgrid-server
+      containers:
+        - name: widgetgrid-server
+          image: ${SERVER_IMAGE}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 50051
+              name: grpc
+          env:
+            - name: SMS_PROVIDER
+              value: sns
+            - name: BLOG_S3_BUCKET
+              value: ${BLOG_S3_BUCKET}
+            - name: BLOG_ASSETS_BASE_URL
+              value: ${BLOG_ASSETS_BASE_URL}
+          envFrom:
+            - secretRef:
+                name: widgetgrid-server-secret
+          # No application-level health endpoint exists yet (would need the
+          # standard grpc.health.v1.Health service implemented server-side
+          # for a native k8s grpc: probe) -- a bare TCP check is a
+          # reasonable stand-in that needs no server code changes, same as
+          # local-k8s/manifests/widgetgrid-server.yaml.
+          readinessProbe:
+            tcpSocket: { port: 50051 }
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket: { port: 50051 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: widgetgrid-server
+  namespace: widgetgrid
+spec:
+  selector:
+    app: widgetgrid-server
+  ports:
+    - port: 50051
+      targetPort: 50051
+      name: grpc

@@ -14,10 +14,21 @@ export function createPollingBlogNotifier({ blogSource, intervalMs = 20_000 }) {
     // browser tabs subscribed at once) each get their own interval --
     // simple, and at this poll frequency/scale not worth sharing one poll
     // loop across subscribers.
-    watch(onNewPost) {
-      let lastSlug;
-      let hasBaseline = false;
-      const timer = setInterval(async () => {
+    //
+    // lastKnownSlug (from the client's own memory of what it's already
+    // seen, see blogSubscriptionClient.js) seeds the baseline instead of
+    // always starting fresh from "whatever's newest right now" -- without
+    // this, a subscriber that reconnects (any dropped stream does, e.g.
+    // the ALB's 60s idle timeout) silently absorbs anything published
+    // during the gap into its new baseline instead of ever reporting it.
+    // Doing an immediate poll() before the first interval tick (rather
+    // than waiting intervalMs) is what makes that catch-up happen right
+    // on reconnect instead of up to intervalMs later.
+    watch(onNewPost, { lastKnownSlug = '' } = {}) {
+      let lastSlug = lastKnownSlug || undefined;
+      let hasBaseline = !!lastKnownSlug;
+
+      async function poll() {
         let posts;
         try {
           posts = await blogSource.listPosts();
@@ -29,8 +40,11 @@ export function createPollingBlogNotifier({ blogSource, intervalMs = 20_000 }) {
         const shouldNotify = hasBaseline;
         lastSlug = newest.slug;
         hasBaseline = true;
-        if (shouldNotify) onNewPost(newest); // first poll only establishes the baseline, doesn't notify
-      }, intervalMs);
+        if (shouldNotify) onNewPost(newest); // no lastKnownSlug given: first poll only establishes the baseline, doesn't notify
+      }
+
+      poll();
+      const timer = setInterval(poll, intervalMs);
       return () => clearInterval(timer);
     },
   };

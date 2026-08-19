@@ -25,7 +25,23 @@ message ListBlogPostsResponse {
   repeated BlogPost posts = 1;
 }
 
-message SubscribeNewPostsRequest {}
+message SubscribeNewPostsRequest {
+  // The most recent post slug this subscriber already knows about, if
+  // any -- empty on a subscriber's genuine first-ever connection. Lets
+  // the server catch it up immediately on (re)connect if something newer
+  // already exists, rather than only detecting it on the next poll tick
+  // after silently folding it into a fresh, connection-scoped baseline
+  // (see blogChangeNotifier.js's watch()). Confirmed missing the hard
+  // way: a stream reconnect (blogSubscriptionClient.js needs one for the
+  // ALB's 60s idle timeout) landing between a post being uploaded and the
+  // next poll silently swallowed the notification for it.
+  string last_known_slug = 1;
+  // Never read server-side -- exists purely so this message never
+  // serializes to zero bytes when last_known_slug is also empty (a
+  // genuine first-ever connection), same reasoning as
+  // RequestLoginCodeRequest.requested_at_ms in auth.proto.
+  int64 requested_at_ms = 2;
+}
 
 // One of these per newly-detected post -- just enough for the client to
 // show a notice and know to refetch, not the full BlogPost (that's what

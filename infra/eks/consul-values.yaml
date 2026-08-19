@@ -1,0 +1,31 @@
+# helm upgrade --install consul hashicorp/consul --namespace consul --create-namespace \
+#   --values infra/eks/consul-values.yaml --version 2.0.3
+#
+# EKS variant of local-k8s/consul-values.yaml -- same single-server,
+# single-datacenter topology (cost-minimized dev tier, not a reference for
+# production sizing; see that file's own header comment). The ONE real
+# difference: server.storageClass. kind ships a default StorageClass
+# (`standard`, rancher.io/local-path) out of the box; EKS ships none (the
+# in-tree EBS provisioner was removed in Kubernetes 1.23+, and the
+# aws-ebs-csi-driver addon -- provisioned by WidgetgridEksStack, see
+# infra/cdk/lib/eks-stack.js -- doesn't register a StorageClass by itself).
+# Without this, the Consul server's PVC sits Pending forever and the server
+# pod never starts.
+global:
+  name: consul
+  datacenter: dc1
+
+server:
+  replicas: 1
+  bootstrapExpect: 1
+  storageClass: gp3
+
+connectInject:
+  enabled: true
+  default: false
+
+controller:
+  enabled: true
+
+ui:
+  enabled: true

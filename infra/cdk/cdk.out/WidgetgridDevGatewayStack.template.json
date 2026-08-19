@@ -1,0 +1,832 @@
+{
+ "Resources": {
+  "Vpc8378EB38": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.0.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "WidgetgridDevGatewayStack/Vpc"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/Resource"
+   }
+  },
+  "VpcpublicSubnet1Subnet2BB74ED7": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1a",
+    "CidrBlock": "10.0.0.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "kubernetes.io/role/elb",
+      "Value": "1"
+     },
+     {
+      "Key": "Name",
+      "Value": "WidgetgridDevGatewayStack/Vpc/publicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/publicSubnet1/Subnet"
+   }
+  },
+  "VpcpublicSubnet1RouteTable15C15F8E": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "kubernetes.io/role/elb",
+      "Value": "1"
+     },
+     {
+      "Key": "Name",
+      "Value": "WidgetgridDevGatewayStack/Vpc/publicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/publicSubnet1/RouteTable"
+   }
+  },
+  "VpcpublicSubnet1RouteTableAssociation4E83B6E4": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "VpcpublicSubnet1RouteTable15C15F8E"
+    },
+    "SubnetId": {
+     "Ref": "VpcpublicSubnet1Subnet2BB74ED7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/publicSubnet1/RouteTableAssociation"
+   }
+  },
+  "VpcpublicSubnet1DefaultRouteB88F9E93": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "VpcIGWD7BA715C"
+    },
+    "RouteTableId": {
+     "Ref": "VpcpublicSubnet1RouteTable15C15F8E"
+    }
+   },
+   "DependsOn": [
+    "VpcVPCGWBF912B6E"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/publicSubnet1/DefaultRoute"
+   }
+  },
+  "VpcpublicSubnet1EIP411541E6": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "kubernetes.io/role/elb",
+      "Value": "1"
+     },
+     {
+      "Key": "Name",
+      "Value": "WidgetgridDevGatewayStack/Vpc/publicSubnet1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/publicSubnet1/EIP"
+   }
+  },
+  "VpcpublicSubnet1NATGatewayA036E8A6": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "VpcpublicSubnet1EIP411541E6",
+      "AllocationId"
+     ]
+    },
+    "SubnetId": {
+     "Ref": "VpcpublicSubnet1Subnet2BB74ED7"
+    },
+    "Tags": [
+     {
+      "Key": "kubernetes.io/role/elb",
+      "Value": "1"
+     },
+     {
+      "Key": "Name",
+      "Value": "WidgetgridDevGatewayStack/Vpc/publicSubnet1"
+     }
+    ]
+   },
+   "DependsOn": [
+    "VpcpublicSubnet1DefaultRouteB88F9E93",
+    "VpcpublicSubnet1RouteTableAssociation4E83B6E4"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/publicSubnet1/NATGateway"
+   }
+  },
+  "VpcpublicSubnet2SubnetE34B022A": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1b",
+    "CidrBlock": "10.0.1.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "kubernetes.io/role/elb",
+      "Value": "1"
+     },
+     {
+      "Key": "Name",
+      "Value": "WidgetgridDevGatewayStack/Vpc/publicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/publicSubnet2/Subnet"
+   }
+  },
+  "VpcpublicSubnet2RouteTableC5A6DF77": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "kubernetes.io/role/elb",
+      "Value": "1"
+     },
+     {
+      "Key": "Name",
+      "Value": "WidgetgridDevGatewayStack/Vpc/publicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/publicSubnet2/RouteTable"
+   }
+  },
+  "VpcpublicSubnet2RouteTableAssociationCCE257FF": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "VpcpublicSubnet2RouteTableC5A6DF77"
+    },
+    "SubnetId": {
+     "Ref": "VpcpublicSubnet2SubnetE34B022A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/publicSubnet2/RouteTableAssociation"
+   }
+  },
+  "VpcpublicSubnet2DefaultRoute732F0BEB": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "VpcIGWD7BA715C"
+    },
+    "RouteTableId": {
+     "Ref": "VpcpublicSubnet2RouteTableC5A6DF77"
+    }
+   },
+   "DependsOn": [
+    "VpcVPCGWBF912B6E"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/publicSubnet2/DefaultRoute"
+   }
+  },
+  "VpcprivateSubnet1SubnetCEAD3716": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1a",
+    "CidrBlock": "10.0.2.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "kubernetes.io/role/internal-elb",
+      "Value": "1"
+     },
+     {
+      "Key": "Name",
+      "Value": "WidgetgridDevGatewayStack/Vpc/privateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/privateSubnet1/Subnet"
+   }
+  },
+  "VpcprivateSubnet1RouteTable1979EACB": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "kubernetes.io/role/internal-elb",
+      "Value": "1"
+     },
+     {
+      "Key": "Name",
+      "Value": "WidgetgridDevGatewayStack/Vpc/privateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/privateSubnet1/RouteTable"
+   }
+  },
+  "VpcprivateSubnet1RouteTableAssociationEEBD93CE": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "VpcprivateSubnet1RouteTable1979EACB"
+    },
+    "SubnetId": {
+     "Ref": "VpcprivateSubnet1SubnetCEAD3716"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/privateSubnet1/RouteTableAssociation"
+   }
+  },
+  "VpcprivateSubnet1DefaultRouteB506891A": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "VpcpublicSubnet1NATGatewayA036E8A6"
+    },
+    "RouteTableId": {
+     "Ref": "VpcprivateSubnet1RouteTable1979EACB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/privateSubnet1/DefaultRoute"
+   }
+  },
+  "VpcprivateSubnet2Subnet2DE7549C": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1b",
+    "CidrBlock": "10.0.3.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "kubernetes.io/role/internal-elb",
+      "Value": "1"
+     },
+     {
+      "Key": "Name",
+      "Value": "WidgetgridDevGatewayStack/Vpc/privateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/privateSubnet2/Subnet"
+   }
+  },
+  "VpcprivateSubnet2RouteTable4D0FFC8C": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "kubernetes.io/role/internal-elb",
+      "Value": "1"
+     },
+     {
+      "Key": "Name",
+      "Value": "WidgetgridDevGatewayStack/Vpc/privateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/privateSubnet2/RouteTable"
+   }
+  },
+  "VpcprivateSubnet2RouteTableAssociationB691E645": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "VpcprivateSubnet2RouteTable4D0FFC8C"
+    },
+    "SubnetId": {
+     "Ref": "VpcprivateSubnet2Subnet2DE7549C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/privateSubnet2/RouteTableAssociation"
+   }
+  },
+  "VpcprivateSubnet2DefaultRouteBAC3C1C3": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "VpcpublicSubnet1NATGatewayA036E8A6"
+    },
+    "RouteTableId": {
+     "Ref": "VpcprivateSubnet2RouteTable4D0FFC8C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/privateSubnet2/DefaultRoute"
+   }
+  },
+  "VpcIGWD7BA715C": {
+   "Type": "AWS::EC2::InternetGateway",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "WidgetgridDevGatewayStack/Vpc"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/IGW"
+   }
+  },
+  "VpcVPCGWBF912B6E": {
+   "Type": "AWS::EC2::VPCGatewayAttachment",
+   "Properties": {
+    "InternetGatewayId": {
+     "Ref": "VpcIGWD7BA715C"
+    },
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Vpc/VPCGW"
+   }
+  },
+  "Alb16C2F182": {
+   "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+   "Properties": {
+    "LoadBalancerAttributes": [
+     {
+      "Key": "deletion_protection.enabled",
+      "Value": "false"
+     }
+    ],
+    "Scheme": "internet-facing",
+    "SecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "AlbSecurityGroup580F65A6",
+       "GroupId"
+      ]
+     }
+    ],
+    "Subnets": [
+     {
+      "Ref": "VpcpublicSubnet1Subnet2BB74ED7"
+     },
+     {
+      "Ref": "VpcpublicSubnet2SubnetE34B022A"
+     }
+    ],
+    "Type": "application"
+   },
+   "DependsOn": [
+    "VpcpublicSubnet1DefaultRouteB88F9E93",
+    "VpcpublicSubnet1RouteTableAssociation4E83B6E4",
+    "VpcpublicSubnet2DefaultRoute732F0BEB",
+    "VpcpublicSubnet2RouteTableAssociationCCE257FF"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Alb/Resource"
+   }
+  },
+  "AlbSecurityGroup580F65A6": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Automatically created Security Group for ELB WidgetgridDevGatewayStackAlb93F462AB",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": {
+       "Fn::GetAtt": [
+        "Vpc8378EB38",
+        "CidrBlock"
+       ]
+      },
+      "Description": "ALB to envoy-gateway NodePort on any node in the VPC",
+      "FromPort": 30080,
+      "IpProtocol": "tcp",
+      "ToPort": 30080
+     },
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow to IdP endpoint",
+      "FromPort": 443,
+      "IpProtocol": "tcp",
+      "ToPort": 443
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow from anyone on port 80",
+      "FromPort": 80,
+      "IpProtocol": "tcp",
+      "ToPort": 80
+     },
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow from anyone on port 443",
+      "FromPort": 443,
+      "IpProtocol": "tcp",
+      "ToPort": 443
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Alb/SecurityGroup/Resource"
+   }
+  },
+  "AlbRedirect80To443C790C012": {
+   "Type": "AWS::ElasticLoadBalancingV2::Listener",
+   "Properties": {
+    "DefaultActions": [
+     {
+      "RedirectConfig": {
+       "Port": "443",
+       "Protocol": "HTTPS",
+       "StatusCode": "HTTP_301"
+      },
+      "Type": "redirect"
+     }
+    ],
+    "LoadBalancerArn": {
+     "Ref": "Alb16C2F182"
+    },
+    "Port": 80,
+    "Protocol": "HTTP"
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Alb/Redirect80To443/Resource"
+   }
+  },
+  "AlbHttpsListener2ADA614F": {
+   "Type": "AWS::ElasticLoadBalancingV2::Listener",
+   "Properties": {
+    "Certificates": [
+     {
+      "CertificateArn": {
+       "Fn::ImportValue": "WidgetgridDnsStack:ExportsOutputRefDevCertificate34D4CB71D624DA54"
+      }
+     }
+    ],
+    "DefaultActions": [
+     {
+      "AuthenticateCognitoConfig": {
+       "UserPoolArn": {
+        "Fn::GetAtt": [
+         "UserPool6BA7E5F2",
+         "Arn"
+        ]
+       },
+       "UserPoolClientId": {
+        "Ref": "UserPoolUserPoolClient40176907"
+       },
+       "UserPoolDomain": {
+        "Ref": "UserPoolUserPoolDomain9F01E991"
+       }
+      },
+      "Order": 1,
+      "Type": "authenticate-cognito"
+     },
+     {
+      "FixedResponseConfig": {
+       "ContentType": "text/plain",
+       "MessageBody": "widgetgrid dev -- nothing deployed here yet",
+       "StatusCode": "200"
+      },
+      "Order": 2,
+      "Type": "fixed-response"
+     }
+    ],
+    "LoadBalancerArn": {
+     "Ref": "Alb16C2F182"
+    },
+    "Port": 443,
+    "Protocol": "HTTPS"
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/Alb/HttpsListener/Resource"
+   }
+  },
+  "DevAliasRecordFF37646A": {
+   "Type": "AWS::Route53::RecordSet",
+   "Properties": {
+    "AliasTarget": {
+     "DNSName": {
+      "Fn::Join": [
+       "",
+       [
+        "dualstack.",
+        {
+         "Fn::GetAtt": [
+          "Alb16C2F182",
+          "DNSName"
+         ]
+        }
+       ]
+      ]
+     },
+     "HostedZoneId": {
+      "Fn::GetAtt": [
+       "Alb16C2F182",
+       "CanonicalHostedZoneID"
+      ]
+     }
+    },
+    "HostedZoneId": "Z0519890WM0HGBX8Z6QT",
+    "Name": "dev.pie-laboratories.com.",
+    "Type": "A"
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/DevAliasRecord/Resource"
+   }
+  },
+  "UserPool6BA7E5F2": {
+   "Type": "AWS::Cognito::UserPool",
+   "Properties": {
+    "AccountRecoverySetting": {
+     "RecoveryMechanisms": [
+      {
+       "Name": "verified_phone_number",
+       "Priority": 1
+      },
+      {
+       "Name": "verified_email",
+       "Priority": 2
+      }
+     ]
+    },
+    "AdminCreateUserConfig": {
+     "AllowAdminCreateUserOnly": true
+    },
+    "AutoVerifiedAttributes": [
+     "email"
+    ],
+    "EmailVerificationMessage": "The verification code to your new account is {####}",
+    "EmailVerificationSubject": "Verify your new account",
+    "SmsVerificationMessage": "The verification code to your new account is {####}",
+    "UserPoolName": "widgetgrid-dev",
+    "UsernameAttributes": [
+     "email"
+    ],
+    "VerificationMessageTemplate": {
+     "DefaultEmailOption": "CONFIRM_WITH_CODE",
+     "EmailMessage": "The verification code to your new account is {####}",
+     "EmailSubject": "Verify your new account",
+     "SmsMessage": "The verification code to your new account is {####}"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/UserPool/Resource"
+   }
+  },
+  "UserPoolUserPoolDomain9F01E991": {
+   "Type": "AWS::Cognito::UserPoolDomain",
+   "Properties": {
+    "Domain": "widgetgrid-dev",
+    "UserPoolId": {
+     "Ref": "UserPool6BA7E5F2"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/UserPool/UserPoolDomain/Resource"
+   }
+  },
+  "UserPoolUserPoolClient40176907": {
+   "Type": "AWS::Cognito::UserPoolClient",
+   "Properties": {
+    "AllowedOAuthFlows": [
+     "code"
+    ],
+    "AllowedOAuthFlowsUserPoolClient": true,
+    "AllowedOAuthScopes": [
+     "openid",
+     "email"
+    ],
+    "CallbackURLs": [
+     "https://dev.pie-laboratories.com/oauth2/idpresponse"
+    ],
+    "GenerateSecret": true,
+    "SupportedIdentityProviders": [
+     {
+      "Ref": "IdentityCenterSaml7DDC803F"
+     }
+    ],
+    "UserPoolId": {
+     "Ref": "UserPool6BA7E5F2"
+    }
+   },
+   "DependsOn": [
+    "IdentityCenterSaml7DDC803F"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/UserPool/UserPoolClient/Resource"
+   }
+  },
+  "IdentityCenterSaml7DDC803F": {
+   "Type": "AWS::Cognito::UserPoolIdentityProvider",
+   "Properties": {
+    "AttributeMapping": {
+     "email": "email"
+    },
+    "ProviderDetails": {
+     "IDPSignout": false,
+     "MetadataFile": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><md:EntityDescriptor xmlns:md=\"urn:oasis:names:tc:SAML:2.0:metadata\" entityID=\"https://portal.sso.us-east-1.amazonaws.com/saml/assertion/OTEzMzE4OTAzNjY3X2lucy03MjIzODY4YTdjY2FkMTAz\">\n  <md:IDPSSODescriptor WantAuthnRequestsSigned=\"false\" protocolSupportEnumeration=\"urn:oasis:names:tc:SAML:2.0:protocol\">\n    <md:KeyDescriptor use=\"signing\">\n      <ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">\n        <ds:X509Data>\n          <ds:X509Certificate>MIIDBjCCAe6gAwIBAgIEBQ0T7TANBgkqhkiG9w0BAQsFADBFMRYwFAYDVQQDDA1hbWF6b25hd3MuY29tMQ0wCwYDVQQLDARJREFTMQ8wDQYDVQQKDAZBbWF6b24xCzAJBgNVBAYTAlVTMB4XDTI2MDgxNjIzMTYwOFoXDTMxMDgxNjIzMTYwOFowRTEWMBQGA1UEAwwNYW1hem9uYXdzLmNvbTENMAsGA1UECwwESURBUzEPMA0GA1UECgwGQW1hem9uMQswCQYDVQQGEwJVUzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAN2IYlAcWfQTa1VGRnXMvcLS3hbP50/jiK3qHnIYN4Ky1Lyn5ADxk0Q0KZ+6D376rL3lf3L9quPmETHI5d8cyGi4+ZzBwixt+JiIbpJns36ylHmUBYy8LedA7CDnFNVFn6a6LPRlmUVuKBBlP08nqEBWnl7+CCVxFd68UJbix/ng2vX7Ie/yhIGRm97QQQyhCnNL7T3/l5OPn6znjO2HoDsrYm1y7lU+hkgrVuRrCrGI+dHr4brnPNJOb+a2AolkTJnzDANX+ED0aV6UWfkZZlihpQh0bBlE0TDaIivmpiAPZmlWyZavVxfT3xrhHf4uOcq2dRKSCEK+ekYHuIob0N0CAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAAB1xlbydhtLDL4JZnZ5BEL6muSkmfHyLxMU7VoGIr4tCEo1c7nlPQU9xKaM3umxqrqHGfrL5sBXt20s7JINWGN62H5IM0rhs4HcKj3klBiEARrdodc32qqhiWaJ+fxU7U3LxYA2NuVvR5M9ecgQM34rp1e5OsZAQf9Qj+RWS5mDzQAvpCG8Rt7HC7028YZGUx8ZisU5UCMShc/YLfl50N63KN8Cl46LVWgBiDeO4pMHyQZXNnnPr8aSb339/7OMnXrwdtWk+z/cA4R1k7o5iPRkYiPT39XB6RH0EeB/zeSfTZNqd7GypZQI1/2vk/xJjYuP6fIvhoziLaQWLYXCR4Q==</ds:X509Certificate>\n        </ds:X509Data>\n      </ds:KeyInfo>\n    </md:KeyDescriptor>\n    <md:SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://portal.sso.us-east-1.amazonaws.com/saml/logout/OTEzMzE4OTAzNjY3X2lucy03MjIzODY4YTdjY2FkMTAz\"/>\n    <md:SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\" Location=\"https://portal.sso.us-east-1.amazonaws.com/saml/logout/OTEzMzE4OTAzNjY3X2lucy03MjIzODY4YTdjY2FkMTAz\"/>\n    <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</md:NameIDFormat>\n    <md:SingleSignOnService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://portal.sso.us-east-1.amazonaws.com/saml/assertion/OTEzMzE4OTAzNjY3X2lucy03MjIzODY4YTdjY2FkMTAz\"/>\n    <md:SingleSignOnService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\" Location=\"https://portal.sso.us-east-1.amazonaws.com/saml/assertion/OTEzMzE4OTAzNjY3X2lucy03MjIzODY4YTdjY2FkMTAz\"/>\n  </md:IDPSSODescriptor>\n</md:EntityDescriptor>\n"
+    },
+    "ProviderName": "IdentityCenter",
+    "ProviderType": "SAML",
+    "UserPoolId": {
+     "Ref": "UserPool6BA7E5F2"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/IdentityCenterSaml/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/11R30+DMBD+W3zv6kRnfMVpliVGCehezVHOeVtpSXtlWQj/u4GxwXy671eu36WRjB4Xcn4DBz9TxX6mKZdNxqD2Ag7+u0EVyWZTKbH8MZtkKZKQa1JZyA1yp40otYHxE3KNoz5qsfdWETBZcwl34HWddOMdeAWMBziKxFENjOPitWF0Bi+BU5OBxcygfks0LDJUwREfV86Gqu8wFVqBGjyT0haKHDQYRWZbR7KJq0qT6qu9WSieew9dt+GKT3PkGc2QGXArXHfU4l42cYrKuqI/tEcZciuU3RpiK5svjy6xVnf+BZ/Biy2BzNQalDNdauqunQQG5UzXBRomPibO1lSgy6C8euq/37YiRW+DU/2PfASuArfC2ALlzt/W0YO8e5Lzm50nmrlgmEqU6Wn+AdRs2t4/AgAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridDevGatewayStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "DevUrl": {
+   "Value": "https://dev.pie-laboratories.com"
+  },
+  "UserPoolId": {
+   "Value": {
+    "Ref": "UserPool6BA7E5F2"
+   }
+  },
+  "UserPoolDomainUrl": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "UserPoolUserPoolDomain9F01E991"
+      },
+      ".auth.us-east-1.amazoncognito.com"
+     ]
+    ]
+   }
+  },
+  "ExportsOutputRefVpc8378EB38272D6E3A": {
+   "Value": {
+    "Ref": "Vpc8378EB38"
+   },
+   "Export": {
+    "Name": "WidgetgridDevGatewayStack:ExportsOutputRefVpc8378EB38272D6E3A"
+   }
+  },
+  "ExportsOutputRefVpcprivateSubnet1SubnetCEAD37168693D373": {
+   "Value": {
+    "Ref": "VpcprivateSubnet1SubnetCEAD3716"
+   },
+   "Export": {
+    "Name": "WidgetgridDevGatewayStack:ExportsOutputRefVpcprivateSubnet1SubnetCEAD37168693D373"
+   }
+  },
+  "ExportsOutputRefVpcprivateSubnet2Subnet2DE7549CDF5ACE3D": {
+   "Value": {
+    "Ref": "VpcprivateSubnet2Subnet2DE7549C"
+   },
+   "Export": {
+    "Name": "WidgetgridDevGatewayStack:ExportsOutputRefVpcprivateSubnet2Subnet2DE7549CDF5ACE3D"
+   }
+  },
+  "ExportsOutputFnGetAttAlbSecurityGroup580F65A6GroupId37F3639D": {
+   "Value": {
+    "Fn::GetAtt": [
+     "AlbSecurityGroup580F65A6",
+     "GroupId"
+    ]
+   },
+   "Export": {
+    "Name": "WidgetgridDevGatewayStack:ExportsOutputFnGetAttAlbSecurityGroup580F65A6GroupId37F3639D"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

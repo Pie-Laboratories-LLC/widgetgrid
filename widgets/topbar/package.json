@@ -10,10 +10,7 @@
     "dev": "vite build --watch"
   },
   "dependencies": {
-    "@widgetgrid/vite-widget-lib": "*",
-    "@widgetgrid/proto-gen-web": "*",
-    "google-protobuf": "4.0.2",
-    "grpc-web": "2.0.2"
+    "@widgetgrid/vite-widget-lib": "*"
   },
   "devDependencies": {
     "vite": "8.2.1",

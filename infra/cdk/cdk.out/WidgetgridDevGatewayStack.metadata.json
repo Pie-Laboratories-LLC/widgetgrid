@@ -1,0 +1,601 @@
+{
+  "/WidgetgridDevGatewayStack": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    },
+    {
+      "type": "aws:cdk:warning",
+      "data": "No cross-stack-reference strength configured, defaulting to \"strong\". We recommend you set feature flag \"@aws-cdk/core:defaultCrossStackReferences\" to \"both\", then deploy everywhere, then set it to \"weak\". Alternatively, set it to \"strong\" explicitly to lock in the current producer-protecting behavior. (See: https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/README.md#reference-strength) [ack: @aws-cdk/core:crossStackReferencesDefaultStrong]",
+      "trace": [
+        "Annotations.addMessage (/home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/annotations.js:1:3506)",
+        "Annotations.addWarningV2 (/home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/annotations.js:1:2194)",
+        "resolveValue (/home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/private/refs.js:1:6980)",
+        "resolveReferences (/home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/private/refs.js:1:4848)",
+        "prepareApp (/home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/private/prepare-app.js:1:1503)",
+        "synthesize (/home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/private/synthesis.js:1:2625)",
+        "App.synth (/home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/stage.js:1:5061)",
+        "App.synth (/home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/app.js:1:5050)",
+        "process.<anonymous> (/home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/app.js:1:3936)",
+        "Object.onceWrapper (node:events:631:26)",
+        "process.emit (node:events:509:28)"
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/DevUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DevUrl"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:188:5)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/UserPoolId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolId"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:189:5)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/UserPoolDomainUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolDomainUrl"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:190:5)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Vpc8378EB38"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/IGW": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcIGWD7BA715C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/VPCGW": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcVPCGWBF912B6E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Alb/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Alb16C2F182"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new ApplicationLoadBalancer2 in aws-cdk-lib...",
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:57:17)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/DevAliasRecord/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DevAliasRecordFF37646A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new ARecord2 in aws-cdk-lib...",
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:95:5)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/UserPool/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPool6BA7E5F2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new UserPool2 in aws-cdk-lib...",
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:103:22)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/IdentityCenterSaml/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "IdentityCenterSaml7DDC803F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new UserPoolIdentityProviderSaml2 in aws-cdk-lib...",
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:122:36)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Exports/Output{\"Ref\":\"Vpc8378EB38\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefVpc8378EB38272D6E3A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Exports/Output{\"Ref\":\"VpcprivateSubnet1SubnetCEAD3716\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefVpcprivateSubnet1SubnetCEAD37168693D373"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Exports/Output{\"Ref\":\"VpcprivateSubnet2Subnet2DE7549C\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefVpcprivateSubnet2Subnet2DE7549CDF5ACE3D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Exports/Output{\"Fn::GetAtt\":[\"AlbSecurityGroup580F65A6\",\"GroupId\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttAlbSecurityGroup580F65A6GroupId37F3639D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/publicSubnet1/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcpublicSubnet1Subnet2BB74ED7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:268 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/publicSubnet1/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcpublicSubnet1RouteTable15C15F8E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:268 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/publicSubnet1/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcpublicSubnet1RouteTableAssociation4E83B6E4"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:268 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/publicSubnet1/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcpublicSubnet1DefaultRouteB88F9E93"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:208 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/publicSubnet1/EIP": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcpublicSubnet1EIP411541E6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/publicSubnet1/NATGateway": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcpublicSubnet1NATGatewayA036E8A6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/publicSubnet2/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcpublicSubnet2SubnetE34B022A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:268 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/publicSubnet2/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcpublicSubnet2RouteTableC5A6DF77"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:268 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/publicSubnet2/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcpublicSubnet2RouteTableAssociationCCE257FF"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:268 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/publicSubnet2/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcpublicSubnet2DefaultRoute732F0BEB"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:208 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/privateSubnet1/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcprivateSubnet1SubnetCEAD3716"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:270 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/privateSubnet1/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcprivateSubnet1RouteTable1979EACB"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:270 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/privateSubnet1/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcprivateSubnet1RouteTableAssociationEEBD93CE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:270 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/privateSubnet1/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcprivateSubnet1DefaultRouteB506891A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/privateSubnet2/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcprivateSubnet2Subnet2DE7549C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:270 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/privateSubnet2/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcprivateSubnet2RouteTable4D0FFC8C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:270 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/privateSubnet2/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcprivateSubnet2RouteTableAssociationB691E645"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:270 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Vpc/privateSubnet2/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcprivateSubnet2DefaultRouteBAC3C1C3"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Alb/SecurityGroup/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AlbSecurityGroup580F65A6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new ApplicationLoadBalancer2 in aws-cdk-lib...",
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:57:17)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Alb/Redirect80To443/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AlbRedirect80To443C790C012"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:88:9)"
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/Alb/HttpsListener/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AlbHttpsListener2ADA614F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:175:9)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/UserPool/UserPoolDomain/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolUserPoolDomain9F01E991"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addDomain in aws-cdk-lib...",
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:113:37)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevGatewayStack/UserPool/UserPoolClient/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolUserPoolClient40176907"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addClient in aws-cdk-lib...",
+        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:136:37)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "...node internals..."
+      ]
+    }
+  ]
+}

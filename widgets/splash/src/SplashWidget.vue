@@ -61,7 +61,17 @@ export default {
   justify-content: center;
   min-height: 100vh;
   padding: 2rem;
-  background: radial-gradient(ellipse at center, #2e1250 0%, #150a2e 45%, #050208 100%);
+  /* True 4-corner gradient (Gravatar's default-avatar palette): top-left
+     rgb(12,48,140), top-right rgb(152,50,120), bottom-left rgb(152,50,120),
+     bottom-right rgb(76,33,43) -- a genuine bilinear gradient, which CSS's
+     background can't express directly (linear-gradient only varies along
+     one axis). Approximated as a single 135deg (top-left -> bottom-right)
+     gradient through all three distinct colors, with the shared top-right/
+     bottom-left color as the midpoint -- exact along the two corners that
+     matter most (both ends), and since top-right and bottom-left are the
+     same color here, the visible seam a true bilinear render would have
+     along that anti-diagonal collapses to nothing. */
+  background: linear-gradient(135deg, rgb(12, 48, 140) 0%, rgb(152, 50, 120) 50%, rgb(76, 33, 43) 100%);
 }
 
 /* Aspect ratio matches the logo (1024x769) so the overlay -- sized to the

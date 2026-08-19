@@ -167,7 +167,15 @@ export default {
 <style scoped>
 .widget-main {
   margin-top: 255px;
-  margin-right: 160px;
+  /* Matches RightRailWidget.vue's own clamp() exactly (unconditional, no
+     breakpoint) -- that rail's actual rendered width scales continuously
+     with viewport width, so this has to track the same formula or the
+     content column either overlaps the rail (margin too small) or wastes
+     space the rail already gave back (margin too big, confirmed the hard
+     way: a stale fixed 160px here on a narrow phone reserved a rail's
+     worth of width even though the rail itself had already shrunk to
+     ~88px, silently eating the difference as dead space). */
+  margin-right: clamp(88px, 20vw, 160px);
   height: calc(100vh - 255px);
   overflow-y: auto;
   box-sizing: border-box;
@@ -177,6 +185,17 @@ export default {
 .widget-main.main-collapsed {
   margin-top: 64px;
   height: calc(100vh - 64px);
+}
+
+/* Kept in sync with TopBarWidget.vue's own identical breakpoint/value --
+   same reasoning as margin-right above, just for the top offset: that
+   widget's uncollapsed height drops to 128px here, so this margin has to
+   follow or the same dead-space bug opens up vertically instead. */
+@media (max-width: 640px) {
+  .widget-main {
+    margin-top: 128px;
+    height: calc(100vh - 128px);
+  }
 }
 
 .main-status {

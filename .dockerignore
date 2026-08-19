@@ -2,7 +2,27 @@ node_modules
 dist
 dist-static
 .env
+# .env.local specifically (not just .env): Vite auto-loads it on every
+# build, including `vite build` for production -- packages/web-app/.env.local
+# is a machine-local override for testing against local-k8s
+# (VITE_GRPC_WEB_ORIGIN=http://localhost:8080, see local-k8s/README.md),
+# and its presence here alone was enough to get baked into a "production"
+# static-server image, breaking every gRPC-Web call (confirmed the hard
+# way: browser CORS-blocked the SPA's own calls to http://localhost:8080
+# once deployed, since that's not this app's origin in production).
+.env.local
+**/.env.local
+.env.*.local
+**/.env.*.local
 *.log
 .git
 .tools
 local-k8s
+
+# Un-ignore: staged by infra/eks/deploy.sh from the sibling ~/GIT/solitaire
+# repo before `docker build` runs (see .gitignore and
+# widgets/solitaire/scripts/vendor-solitaire.mjs) -- unlike every other
+# `dist` directory the bare pattern above matches, this one already exists
+# at context-collection time (the others are RUN-step build output, created
+# after Docker already has the context), so it needs an explicit exception.
+!widgets/solitaire/.vendor-src/dist

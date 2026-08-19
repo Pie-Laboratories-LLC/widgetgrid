@@ -17,7 +17,7 @@ export function createBlogService({ blogSource, blogChangeNotifier }) {
     SubscribeNewPosts(call) {
       const unwatch = blogChangeNotifier.watch((post) => {
         call.write({ slug: post.slug, title: post.title, publishedAt: post.publishedAt });
-      });
+      }, { lastKnownSlug: call.request.lastKnownSlug });
       call.on('cancelled', unwatch);
     },
   };

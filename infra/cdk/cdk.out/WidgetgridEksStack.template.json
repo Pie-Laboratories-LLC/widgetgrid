@@ -1,0 +1,1848 @@
+{
+ "Resources": {
+  "ClusterKubectlHandlerRole94549F93": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/AmazonEC2ContainerRegistryPullOnly"
+       ]
+      ]
+     },
+     {
+      "Fn::If": [
+       "ClusterHasEcrPublic8EE1114E",
+       {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":iam::aws:policy/AmazonElasticContainerRegistryPublicReadOnly"
+         ]
+        ]
+       },
+       {
+        "Ref": "AWS::NoValue"
+       }
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/KubectlHandlerRole/Resource"
+   }
+  },
+  "ClusterKubectlHandlerRoleDefaultPolicyE44083DD": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "eks:DescribeCluster",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "Cluster9EE0221C",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "ClusterCreationRole360249B6",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ClusterKubectlHandlerRoleDefaultPolicyE44083DD",
+    "Roles": [
+     {
+      "Ref": "ClusterKubectlHandlerRole94549F93"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/KubectlHandlerRole/DefaultPolicy/Resource"
+   }
+  },
+  "ClusterRoleFA261979": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "eks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/AmazonEKSClusterPolicy"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/Role/Resource"
+   }
+  },
+  "ClusterControlPlaneSecurityGroupD274242C": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "EKS Control Plane Security Group",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Fn::ImportValue": "WidgetgridDevGatewayStack:ExportsOutputRefVpc8378EB38272D6E3A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/ControlPlaneSecurityGroup/Resource"
+   }
+  },
+  "ClusterControlPlaneSecurityGroupfromWidgetgridEksStackNodeSecurityGroup8CBCBED2443FB5F070C": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from WidgetgridEksStackNodeSecurityGroup8CBCBED2:443",
+    "FromPort": 443,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "ClusterControlPlaneSecurityGroupD274242C",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "NodeSecurityGroup73B1F8A3",
+      "GroupId"
+     ]
+    },
+    "ToPort": 443
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/ControlPlaneSecurityGroup/from WidgetgridEksStackNodeSecurityGroup8CBCBED2:443"
+   }
+  },
+  "ClusterControlPlaneSecurityGroupfromWidgetgridEksStackClusterClusterSecurityGroupD9D2DE3A4430935D382": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from WidgetgridEksStackClusterClusterSecurityGroupD9D2DE3A:443",
+    "FromPort": 443,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "ClusterControlPlaneSecurityGroupD274242C",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "Cluster9EE0221C",
+      "ClusterSecurityGroupId"
+     ]
+    },
+    "ToPort": 443
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/ControlPlaneSecurityGroup/from WidgetgridEksStackClusterClusterSecurityGroupD9D2DE3A:443"
+   }
+  },
+  "ClusterCreationRole360249B6": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "awscdkawseksClusterResourceProviderNestedStackawscdkawseksClusterResourceProviderNestedStackResource9827C454",
+          "Outputs.WidgetgridEksStackawscdkawseksClusterResourceProviderOnEventHandlerServiceRole881452BBArn"
+         ]
+        }
+       }
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "awscdkawseksClusterResourceProviderNestedStackawscdkawseksClusterResourceProviderNestedStackResource9827C454",
+          "Outputs.WidgetgridEksStackawscdkawseksClusterResourceProviderIsCompleteHandlerServiceRoleF192D673Arn"
+         ]
+        }
+       }
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "ClusterKubectlHandlerRole94549F93",
+          "Arn"
+         ]
+        }
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/Resource/CreationRole/Resource"
+   }
+  },
+  "ClusterCreationRoleDefaultPolicyE8BDFC7B": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "iam:PassRole",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "ClusterRoleFA261979",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "eks:CreateCluster",
+        "eks:DescribeCluster",
+        "eks:DescribeUpdate",
+        "eks:DeleteCluster",
+        "eks:UpdateClusterVersion",
+        "eks:UpdateClusterConfig",
+        "eks:CreateFargateProfile",
+        "eks:TagResource",
+        "eks:UntagResource"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":eks:us-east-1:913318903667:cluster/widgetgrid-dev"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":eks:us-east-1:913318903667:cluster/widgetgrid-dev/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "eks:DescribeFargateProfile",
+        "eks:DeleteFargateProfile"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":eks:us-east-1:913318903667:fargateprofile/widgetgrid-dev/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "iam:GetRole",
+        "iam:listAttachedRolePolicies"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": "iam:CreateServiceLinkedRole",
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "ec2:DescribeInstances",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeRouteTables",
+        "ec2:DescribeDhcpOptions",
+        "ec2:DescribeVpcs"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ClusterCreationRoleDefaultPolicyE8BDFC7B",
+    "Roles": [
+     {
+      "Ref": "ClusterCreationRole360249B6"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/Resource/CreationRole/DefaultPolicy/Resource"
+   }
+  },
+  "Cluster9EE0221C": {
+   "Type": "Custom::AWSCDK-EKS-Cluster",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "awscdkawseksClusterResourceProviderNestedStackawscdkawseksClusterResourceProviderNestedStackResource9827C454",
+      "Outputs.WidgetgridEksStackawscdkawseksClusterResourceProviderframeworkonEventD75713A8Arn"
+     ]
+    },
+    "Config": {
+     "name": "widgetgrid-dev",
+     "version": "1.32",
+     "roleArn": {
+      "Fn::GetAtt": [
+       "ClusterRoleFA261979",
+       "Arn"
+      ]
+     },
+     "kubernetesNetworkConfig": {
+      "ipFamily": "ipv4"
+     },
+     "resourcesVpcConfig": {
+      "subnetIds": [
+       {
+        "Fn::ImportValue": "WidgetgridDevGatewayStack:ExportsOutputRefVpcprivateSubnet1SubnetCEAD37168693D373"
+       },
+       {
+        "Fn::ImportValue": "WidgetgridDevGatewayStack:ExportsOutputRefVpcprivateSubnet2Subnet2DE7549CDF5ACE3D"
+       }
+      ],
+      "securityGroupIds": [
+       {
+        "Fn::GetAtt": [
+         "ClusterControlPlaneSecurityGroupD274242C",
+         "GroupId"
+        ]
+       }
+      ],
+      "endpointPublicAccess": true,
+      "endpointPrivateAccess": true
+     },
+     "accessConfig": {
+      "authenticationMode": "API",
+      "bootstrapClusterCreatorAdminPermissions": true
+     }
+    },
+    "AssumeRoleArn": {
+     "Fn::GetAtt": [
+      "ClusterCreationRole360249B6",
+      "Arn"
+     ]
+    },
+    "AttributesRevision": 5
+   },
+   "DependsOn": [
+    "ClusterCreationRoleDefaultPolicyE8BDFC7B",
+    "ClusterCreationRole360249B6"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/Resource/Resource/Default"
+   }
+  },
+  "ClusterKubectlReadyBarrier200052AF": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Type": "String",
+    "Value": "aws:cdk:eks:kubectl-ready"
+   },
+   "DependsOn": [
+    "ClusterCreationRoleDefaultPolicyE8BDFC7B",
+    "ClusterCreationRole360249B6",
+    "Cluster9EE0221C"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/KubectlReadyBarrier"
+   }
+  },
+  "ClusterClusterSecurityGroupfromWidgetgridEksStackNodeSecurityGroup8CBCBED244356DDACA5": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from WidgetgridEksStackNodeSecurityGroup8CBCBED2:443",
+    "FromPort": 443,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "Cluster9EE0221C",
+      "ClusterSecurityGroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "NodeSecurityGroup73B1F8A3",
+      "GroupId"
+     ]
+    },
+    "ToPort": 443
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/ClusterSecurityGroup/from WidgetgridEksStackNodeSecurityGroup8CBCBED2:443"
+   }
+  },
+  "ClusterClusterSecurityGroupfromWidgetgridEksStackNodeSecurityGroup8CBCBED2ALLTRAFFICE6A7E979": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from WidgetgridEksStackNodeSecurityGroup8CBCBED2:ALL TRAFFIC",
+    "GroupId": {
+     "Fn::GetAtt": [
+      "Cluster9EE0221C",
+      "ClusterSecurityGroupId"
+     ]
+    },
+    "IpProtocol": "-1",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "NodeSecurityGroup73B1F8A3",
+      "GroupId"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/ClusterSecurityGroup/from WidgetgridEksStackNodeSecurityGroup8CBCBED2:ALL TRAFFIC"
+   }
+  },
+  "ClusterClusterSecurityGroupfromWidgetgridEksStackClusterClusterSecurityGroupD9D2DE3A4433C633439": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from WidgetgridEksStackClusterClusterSecurityGroupD9D2DE3A:443",
+    "FromPort": 443,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "Cluster9EE0221C",
+      "ClusterSecurityGroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "Cluster9EE0221C",
+      "ClusterSecurityGroupId"
+     ]
+    },
+    "ToPort": 443
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/ClusterSecurityGroup/from WidgetgridEksStackClusterClusterSecurityGroupD9D2DE3A:443"
+   }
+  },
+  "ClusterClusterSecurityGroupfromWidgetgridEksStackClusterControlPlaneSecurityGroupCED0F7E4443E4DCC41B": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from WidgetgridEksStackClusterControlPlaneSecurityGroupCED0F7E4:443",
+    "FromPort": 443,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "Cluster9EE0221C",
+      "ClusterSecurityGroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "ClusterControlPlaneSecurityGroupD274242C",
+      "GroupId"
+     ]
+    },
+    "ToPort": 443
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/ClusterSecurityGroup/from WidgetgridEksStackClusterControlPlaneSecurityGroupCED0F7E4:443"
+   }
+  },
+  "ClusterClusterSecurityGroupfromWidgetgridEksStackClusterClusterSecurityGroupD9D2DE3A102565535AD073EDF": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from WidgetgridEksStackClusterClusterSecurityGroupD9D2DE3A:1025-65535",
+    "FromPort": 1025,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "Cluster9EE0221C",
+      "ClusterSecurityGroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "Cluster9EE0221C",
+      "ClusterSecurityGroupId"
+     ]
+    },
+    "ToPort": 65535
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/ClusterSecurityGroup/from WidgetgridEksStackClusterClusterSecurityGroupD9D2DE3A:1025-65535"
+   }
+  },
+  "ClusterClusterSecurityGroupfromWidgetgridEksStackClusterControlPlaneSecurityGroupCED0F7E410256553577F4DBC1": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from WidgetgridEksStackClusterControlPlaneSecurityGroupCED0F7E4:1025-65535",
+    "FromPort": 1025,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "Cluster9EE0221C",
+      "ClusterSecurityGroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "ClusterControlPlaneSecurityGroupD274242C",
+      "GroupId"
+     ]
+    },
+    "ToPort": 65535
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/ClusterSecurityGroup/from WidgetgridEksStackClusterControlPlaneSecurityGroupCED0F7E4:1025-65535"
+   }
+  },
+  "ClusterClusterSecurityGroupfromWidgetgridEksStackClusterClusterSecurityGroupD9D2DE3AALLTRAFFIC35199194": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from WidgetgridEksStackClusterClusterSecurityGroupD9D2DE3A:ALL TRAFFIC",
+    "GroupId": {
+     "Fn::GetAtt": [
+      "Cluster9EE0221C",
+      "ClusterSecurityGroupId"
+     ]
+    },
+    "IpProtocol": "-1",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "Cluster9EE0221C",
+      "ClusterSecurityGroupId"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/ClusterSecurityGroup/from WidgetgridEksStackClusterClusterSecurityGroupD9D2DE3A:ALL TRAFFIC"
+   }
+  },
+  "ClusterNodeGroupInstanceRole2C464581": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ec2.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/AmazonEKSWorkerNodePolicy"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/AmazonEKS_CNI_Policy"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": {
+       "Fn::Join": [
+        "",
+        [
+         "kubernetes.io/cluster/",
+         {
+          "Ref": "Cluster9EE0221C"
+         }
+        ]
+       ]
+      },
+      "Value": "owned"
+     },
+     {
+      "Key": "Name",
+      "Value": "WidgetgridEksStack/Cluster/NodeGroup"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/NodeGroup/InstanceRole/Resource"
+   }
+  },
+  "ClusterNodeGroupInstanceProfile0E179E65": {
+   "Type": "AWS::IAM::InstanceProfile",
+   "Properties": {
+    "Roles": [
+     {
+      "Ref": "ClusterNodeGroupInstanceRole2C464581"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/NodeGroup/InstanceProfile"
+   }
+  },
+  "ClusterNodeGroupLaunchTemplateFDD70506": {
+   "Type": "AWS::EC2::LaunchTemplate",
+   "Properties": {
+    "LaunchTemplateData": {
+     "IamInstanceProfile": {
+      "Arn": {
+       "Fn::GetAtt": [
+        "ClusterNodeGroupInstanceProfile0E179E65",
+        "Arn"
+       ]
+      }
+     },
+     "ImageId": {
+      "Ref": "SsmParameterValueawsserviceeksoptimizedami132amazonlinux2recommendedimageidC96584B6F00A464EAD1953AFF4B05118Parameter"
+     },
+     "InstanceType": "t3.medium",
+     "Monitoring": {
+      "Enabled": false
+     },
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "NodeSecurityGroup73B1F8A3",
+        "GroupId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "Cluster9EE0221C",
+        "ClusterSecurityGroupId"
+       ]
+      }
+     ],
+     "TagSpecifications": [
+      {
+       "ResourceType": "instance",
+       "Tags": [
+        {
+         "Key": {
+          "Fn::Join": [
+           "",
+           [
+            "kubernetes.io/cluster/",
+            {
+             "Ref": "Cluster9EE0221C"
+            }
+           ]
+          ]
+         },
+         "Value": "owned"
+        },
+        {
+         "Key": "Name",
+         "Value": "WidgetgridEksStack/Cluster/NodeGroup/LaunchTemplate"
+        }
+       ]
+      },
+      {
+       "ResourceType": "volume",
+       "Tags": [
+        {
+         "Key": {
+          "Fn::Join": [
+           "",
+           [
+            "kubernetes.io/cluster/",
+            {
+             "Ref": "Cluster9EE0221C"
+            }
+           ]
+          ]
+         },
+         "Value": "owned"
+        },
+        {
+         "Key": "Name",
+         "Value": "WidgetgridEksStack/Cluster/NodeGroup/LaunchTemplate"
+        }
+       ]
+      }
+     ],
+     "UserData": {
+      "Fn::Base64": {
+       "Fn::Join": [
+        "",
+        [
+         "#!/bin/bash\nset -o xtrace\n/etc/eks/bootstrap.sh ",
+         {
+          "Ref": "Cluster9EE0221C"
+         },
+         " --kubelet-extra-args \"--node-labels lifecycle=OnDemand\" --apiserver-endpoint '",
+         {
+          "Fn::GetAtt": [
+           "Cluster9EE0221C",
+           "Endpoint"
+          ]
+         },
+         "' --b64-cluster-ca '",
+         {
+          "Fn::GetAtt": [
+           "Cluster9EE0221C",
+           "CertificateAuthorityData"
+          ]
+         },
+         "' --use-max-pods true\n/opt/aws/bin/cfn-signal --exit-code $? --stack WidgetgridEksStack --resource ClusterNodeGroupASGA3C3BF4C --region us-east-1"
+        ]
+       ]
+      }
+     }
+    },
+    "TagSpecifications": [
+     {
+      "ResourceType": "launch-template",
+      "Tags": [
+       {
+        "Key": {
+         "Fn::Join": [
+          "",
+          [
+           "kubernetes.io/cluster/",
+           {
+            "Ref": "Cluster9EE0221C"
+           }
+          ]
+         ]
+        },
+        "Value": "owned"
+       },
+       {
+        "Key": "Name",
+        "Value": "WidgetgridEksStack/Cluster/NodeGroup/LaunchTemplate"
+       }
+      ]
+     }
+    ]
+   },
+   "DependsOn": [
+    "ClusterNodeGroupInstanceRole2C464581"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/NodeGroup/LaunchTemplate/Resource"
+   }
+  },
+  "ClusterNodeGroupASGA3C3BF4C": {
+   "Type": "AWS::AutoScaling::AutoScalingGroup",
+   "Properties": {
+    "LaunchTemplate": {
+     "LaunchTemplateId": {
+      "Ref": "ClusterNodeGroupLaunchTemplateFDD70506"
+     },
+     "Version": {
+      "Fn::GetAtt": [
+       "ClusterNodeGroupLaunchTemplateFDD70506",
+       "LatestVersionNumber"
+      ]
+     }
+    },
+    "MaxSize": "2",
+    "MinSize": "2",
+    "Tags": [
+     {
+      "Key": {
+       "Fn::Join": [
+        "",
+        [
+         "kubernetes.io/cluster/",
+         {
+          "Ref": "Cluster9EE0221C"
+         }
+        ]
+       ]
+      },
+      "PropagateAtLaunch": true,
+      "Value": "owned"
+     },
+     {
+      "Key": "Name",
+      "PropagateAtLaunch": true,
+      "Value": "WidgetgridEksStack/Cluster/NodeGroup"
+     }
+    ],
+    "TargetGroupARNs": [
+     {
+      "Ref": "EnvoyTargetGroup2494AD89"
+     }
+    ],
+    "VPCZoneIdentifier": [
+     {
+      "Fn::ImportValue": "WidgetgridDevGatewayStack:ExportsOutputRefVpcprivateSubnet1SubnetCEAD37168693D373"
+     },
+     {
+      "Fn::ImportValue": "WidgetgridDevGatewayStack:ExportsOutputRefVpcprivateSubnet2Subnet2DE7549CDF5ACE3D"
+     }
+    ]
+   },
+   "UpdatePolicy": {
+    "AutoScalingScheduledAction": {
+     "IgnoreUnmodifiedGroupSizeProperties": true
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Cluster/NodeGroup/ASG"
+   }
+  },
+  "awscdkawseksClusterResourceProviderNestedStackawscdkawseksClusterResourceProviderNestedStackResource9827C454": {
+   "Type": "AWS::CloudFormation::Stack",
+   "Properties": {
+    "TemplateURL": {
+     "Fn::Join": [
+      "",
+      [
+       "https://s3.us-east-1.",
+       {
+        "Ref": "AWS::URLSuffix"
+       },
+       "/cdk-hnb659fds-assets-913318903667-us-east-1/f88b3a28629921b1bc6112edd44c1366640eb0ed0ad91282f51935e6399f4996.json"
+      ]
+     ]
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/@aws-cdk--aws-eks.ClusterResourceProvider.NestedStack/@aws-cdk--aws-eks.ClusterResourceProvider.NestedStackResource",
+    "aws:asset:path": "WidgetgridEksStackawscdkawseksClusterResourceProviderCCD46BEA.nested.template.json",
+    "aws:asset:property": "TemplateURL"
+   }
+  },
+  "awscdkawseksKubectlProviderNestedStackawscdkawseksKubectlProviderNestedStackResourceA7AEBA6B": {
+   "Type": "AWS::CloudFormation::Stack",
+   "Properties": {
+    "Parameters": {
+     "referencetoWidgetgridEksStackClusterKubectlHandlerRoleDBE62D76Arn": {
+      "Fn::GetAtt": [
+       "ClusterKubectlHandlerRole94549F93",
+       "Arn"
+      ]
+     },
+     "referencetoWidgetgridEksStackCluster6279EF32ClusterSecurityGroupId": {
+      "Fn::GetAtt": [
+       "Cluster9EE0221C",
+       "ClusterSecurityGroupId"
+      ]
+     }
+    },
+    "TemplateURL": {
+     "Fn::Join": [
+      "",
+      [
+       "https://s3.us-east-1.",
+       {
+        "Ref": "AWS::URLSuffix"
+       },
+       "/cdk-hnb659fds-assets-913318903667-us-east-1/97291e5d560b3579f3b8bc253a8eb7655800be96159d01d46d0d113067fd6bce.json"
+      ]
+     ]
+    }
+   },
+   "DependsOn": [
+    "ClusterKubectlHandlerRoleDefaultPolicyE44083DD",
+    "ClusterKubectlHandlerRole94549F93"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/@aws-cdk--aws-eks.KubectlProvider.NestedStack/@aws-cdk--aws-eks.KubectlProvider.NestedStackResource",
+    "aws:asset:path": "WidgetgridEksStackawscdkawseksKubectlProvider4D54B13C.nested.template.json",
+    "aws:asset:property": "TemplateURL"
+   }
+  },
+  "DeployingUserAccessEntry18374234": {
+   "Type": "AWS::EKS::AccessEntry",
+   "Properties": {
+    "AccessPolicies": [
+     {
+      "AccessScope": {
+       "Type": "cluster"
+      },
+      "PolicyArn": {
+       "Fn::Join": [
+        "",
+        [
+         "arn:",
+         {
+          "Ref": "AWS::Partition"
+         },
+         ":eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+        ]
+       ]
+      }
+     }
+    ],
+    "ClusterName": {
+     "Ref": "Cluster9EE0221C"
+    },
+    "PrincipalArn": "arn:aws:iam::913318903667:user/mlemay"
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/DeployingUserAccessEntry/Resource"
+   }
+  },
+  "NodeSecurityGroup73B1F8A3": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "widgetgrid-dev EKS node group",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Fn::ImportValue": "WidgetgridDevGatewayStack:ExportsOutputRefVpc8378EB38272D6E3A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/NodeSecurityGroup/Resource"
+   }
+  },
+  "NodeSecurityGroupfromWidgetgridDevGatewayStackAlbSecurityGroup2945D8BC30080A3723744": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "ALB to envoy-gateway NodePort",
+    "FromPort": 30080,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "NodeSecurityGroup73B1F8A3",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::ImportValue": "WidgetgridDevGatewayStack:ExportsOutputFnGetAttAlbSecurityGroup580F65A6GroupId37F3639D"
+    },
+    "ToPort": 30080
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/NodeSecurityGroup/from WidgetgridDevGatewayStackAlbSecurityGroup2945D8BC:30080"
+   }
+  },
+  "NodeSecurityGroupfromWidgetgridEksStackNodeSecurityGroup8CBCBED2ALLTRAFFIC7147986E": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from WidgetgridEksStackNodeSecurityGroup8CBCBED2:ALL TRAFFIC",
+    "GroupId": {
+     "Fn::GetAtt": [
+      "NodeSecurityGroup73B1F8A3",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "-1",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "NodeSecurityGroup73B1F8A3",
+      "GroupId"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/NodeSecurityGroup/from WidgetgridEksStackNodeSecurityGroup8CBCBED2:ALL TRAFFIC"
+   }
+  },
+  "NodeSecurityGroupfromWidgetgridEksStackClusterClusterSecurityGroupD9D2DE3A443E174540A": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from WidgetgridEksStackClusterClusterSecurityGroupD9D2DE3A:443",
+    "FromPort": 443,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "NodeSecurityGroup73B1F8A3",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "Cluster9EE0221C",
+      "ClusterSecurityGroupId"
+     ]
+    },
+    "ToPort": 443
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/NodeSecurityGroup/from WidgetgridEksStackClusterClusterSecurityGroupD9D2DE3A:443"
+   }
+  },
+  "NodeSecurityGroupfromWidgetgridEksStackClusterControlPlaneSecurityGroupCED0F7E44436565B5FE": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from WidgetgridEksStackClusterControlPlaneSecurityGroupCED0F7E4:443",
+    "FromPort": 443,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "NodeSecurityGroup73B1F8A3",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "ClusterControlPlaneSecurityGroupD274242C",
+      "GroupId"
+     ]
+    },
+    "ToPort": 443
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/NodeSecurityGroup/from WidgetgridEksStackClusterControlPlaneSecurityGroupCED0F7E4:443"
+   }
+  },
+  "NodeSecurityGroupfromWidgetgridEksStackClusterClusterSecurityGroupD9D2DE3A102565535B8DC86D2": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from WidgetgridEksStackClusterClusterSecurityGroupD9D2DE3A:1025-65535",
+    "FromPort": 1025,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "NodeSecurityGroup73B1F8A3",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "Cluster9EE0221C",
+      "ClusterSecurityGroupId"
+     ]
+    },
+    "ToPort": 65535
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/NodeSecurityGroup/from WidgetgridEksStackClusterClusterSecurityGroupD9D2DE3A:1025-65535"
+   }
+  },
+  "NodeSecurityGroupfromWidgetgridEksStackClusterControlPlaneSecurityGroupCED0F7E410256553587BD68AE": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from WidgetgridEksStackClusterControlPlaneSecurityGroupCED0F7E4:1025-65535",
+    "FromPort": 1025,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "NodeSecurityGroup73B1F8A3",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "ClusterControlPlaneSecurityGroupD274242C",
+      "GroupId"
+     ]
+    },
+    "ToPort": 65535
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/NodeSecurityGroup/from WidgetgridEksStackClusterControlPlaneSecurityGroupCED0F7E4:1025-65535"
+   }
+  },
+  "NodeSecurityGroupfromWidgetgridEksStackClusterClusterSecurityGroupD9D2DE3AALLTRAFFICF6900AAD": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from WidgetgridEksStackClusterClusterSecurityGroupD9D2DE3A:ALL TRAFFIC",
+    "GroupId": {
+     "Fn::GetAtt": [
+      "NodeSecurityGroup73B1F8A3",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "-1",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "Cluster9EE0221C",
+      "ClusterSecurityGroupId"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/NodeSecurityGroup/from WidgetgridEksStackClusterClusterSecurityGroupD9D2DE3A:ALL TRAFFIC"
+   }
+  },
+  "NodeAccessEntry4A55EBD9": {
+   "Type": "AWS::EKS::AccessEntry",
+   "Properties": {
+    "AccessPolicies": [],
+    "ClusterName": {
+     "Ref": "Cluster9EE0221C"
+    },
+    "PrincipalArn": {
+     "Fn::GetAtt": [
+      "ClusterNodeGroupInstanceRole2C464581",
+      "Arn"
+     ]
+    },
+    "Type": "EC2_LINUX"
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/NodeAccessEntry/Resource"
+   }
+  },
+  "PodIdentityAgentAddonEA859C8F": {
+   "Type": "AWS::EKS::Addon",
+   "Properties": {
+    "AddonName": "eks-pod-identity-agent",
+    "ClusterName": {
+     "Ref": "Cluster9EE0221C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/PodIdentityAgentAddon/Resource"
+   }
+  },
+  "EbsCsiDriverRole2AEB9D95": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "sts:AssumeRole",
+        "sts:TagSession"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "pods.eks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/EbsCsiDriverRole/Resource"
+   }
+  },
+  "EbsCsiPodIdentity": {
+   "Type": "AWS::EKS::PodIdentityAssociation",
+   "Properties": {
+    "ClusterName": {
+     "Ref": "Cluster9EE0221C"
+    },
+    "Namespace": "kube-system",
+    "RoleArn": {
+     "Fn::GetAtt": [
+      "EbsCsiDriverRole2AEB9D95",
+      "Arn"
+     ]
+    },
+    "ServiceAccount": "ebs-csi-controller-sa"
+   },
+   "DependsOn": [
+    "PodIdentityAgentAddonEA859C8F"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/EbsCsiPodIdentity"
+   }
+  },
+  "EbsCsiDriverAddonC1D165BE": {
+   "Type": "AWS::EKS::Addon",
+   "Properties": {
+    "AddonName": "aws-ebs-csi-driver",
+    "ClusterName": {
+     "Ref": "Cluster9EE0221C"
+    }
+   },
+   "DependsOn": [
+    "EbsCsiPodIdentity"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/EbsCsiDriverAddon/Resource"
+   }
+  },
+  "BlogBucket3E358F18": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": false,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": false
+    },
+    "Tags": [
+     {
+      "Key": "aws-cdk:auto-delete-objects",
+      "Value": "true"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/BlogBucket/Resource"
+   }
+  },
+  "BlogBucketPolicy81EFCEDB": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "BlogBucket3E358F18"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:PutBucketPolicy",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:DeleteObject*"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+          "Arn"
+         ]
+        }
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "BlogBucket3E358F18",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "BlogBucket3E358F18",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": "s3:GetObject",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          {
+           "Fn::GetAtt": [
+            "BlogBucket3E358F18",
+            "Arn"
+           ]
+          },
+          "/*/*"
+         ]
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/BlogBucket/Policy/Resource"
+   }
+  },
+  "BlogBucketAutoDeleteObjectsCustomResource9F11A136": {
+   "Type": "Custom::S3AutoDeleteObjects",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+      "Arn"
+     ]
+    },
+    "BucketName": {
+     "Ref": "BlogBucket3E358F18"
+    }
+   },
+   "DependsOn": [
+    "BlogBucketPolicy81EFCEDB"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/BlogBucket/AutoDeleteObjectsCustomResource/Default"
+   }
+  },
+  "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Version": "2012-10-17",
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ]
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Sub": "arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role"
+   }
+  },
+  "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-913318903667-us-east-1",
+     "S3Key": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip"
+    },
+    "Timeout": 900,
+    "MemorySize": 128,
+    "Handler": "index.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs24.x",
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Lambda function for auto-deleting objects in ",
+       {
+        "Ref": "BlogBucket3E358F18"
+       },
+       " S3 bucket."
+      ]
+     ]
+    }
+   },
+   "DependsOn": [
+    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler",
+    "aws:asset:path": "asset.faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6",
+    "aws:asset:property": "Code"
+   }
+  },
+  "WidgetgridServerRole698EF450": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "sts:AssumeRole",
+        "sts:TagSession"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "pods.eks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/WidgetgridServerRole/Resource"
+   }
+  },
+  "WidgetgridServerRoleDefaultPolicyC33AC2DA": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sns:Publish",
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "BlogBucket3E358F18",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "BlogBucket3E358F18",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "WidgetgridServerRoleDefaultPolicyC33AC2DA",
+    "Roles": [
+     {
+      "Ref": "WidgetgridServerRole698EF450"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/WidgetgridServerRole/DefaultPolicy/Resource"
+   }
+  },
+  "WidgetgridServerPodIdentity": {
+   "Type": "AWS::EKS::PodIdentityAssociation",
+   "Properties": {
+    "ClusterName": {
+     "Ref": "Cluster9EE0221C"
+    },
+    "Namespace": "widgetgrid",
+    "RoleArn": {
+     "Fn::GetAtt": [
+      "WidgetgridServerRole698EF450",
+      "Arn"
+     ]
+    },
+    "ServiceAccount": "widgetgrid-server"
+   },
+   "DependsOn": [
+    "PodIdentityAgentAddonEA859C8F"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/WidgetgridServerPodIdentity"
+   }
+  },
+  "ServerRepositoryBE576A85": {
+   "Type": "AWS::ECR::Repository",
+   "Properties": {
+    "EmptyOnDelete": true,
+    "ImageScanningConfiguration": {
+     "ScanOnPush": true
+    },
+    "RepositoryName": "widgetgrid-server"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/ServerRepository/Resource"
+   }
+  },
+  "StaticRepositoryF1118F58": {
+   "Type": "AWS::ECR::Repository",
+   "Properties": {
+    "EmptyOnDelete": true,
+    "ImageScanningConfiguration": {
+     "ScanOnPush": true
+    },
+    "RepositoryName": "widgetgrid-static"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/StaticRepository/Resource"
+   }
+  },
+  "EnvoyTargetGroup2494AD89": {
+   "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+   "Properties": {
+    "HealthCheckPath": "/",
+    "Port": 30080,
+    "Protocol": "HTTP",
+    "TargetGroupAttributes": [
+     {
+      "Key": "stickiness.enabled",
+      "Value": "false"
+     }
+    ],
+    "TargetType": "instance",
+    "VpcId": {
+     "Fn::ImportValue": "WidgetgridDevGatewayStack:ExportsOutputRefVpc8378EB38272D6E3A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/EnvoyTargetGroup/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/5VSwWobMRD9lvgsq+kmKaW3jVOKIRDjza2UMtZONmNrpUUzcmLE/nvRCiebHgo9zXtvRk/wZipdfbnRlxfwwkvTHpaWdjo1Auag4IV/JzywTisbWTCo2hhk/u4knNTqyc1p3bbeTeIZbHy7btEJyalm9oZAyLtREfQ6bb3FPDTVjbdkTuXNGa0dCziDm+CfyOKo0FQ6NWhiIDn9CD4Oeezfwtp1AZnVPURnnh+xHyzI9O9HZVQQxbMBS67TqY7im0LefP/WRsVXOt1Gc0DJ/YJ+pkVPr+QW3xbzQHOSfKWnFusymg3v0KLgw26PRngx/lKl9Z7CnP+Hd3nQCAj26CbrHGDQaYuDZxJfFvjORoUWWMhYD+0OLDhDrjtWOtXDYMlMu3uE0KG8RTKj46hWkcX3W2Qfgym7PeO5uPKupWyWyUOUIU7xlYvLFwABeszH9tFwE/yRWgy3wKhqZpRGoCPXjcr5FvWePx2ra/35q7682DPRMkQn1KPelvoHsW/eM+gCAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Conditions": {
+  "ClusterHasEcrPublic8EE1114E": {
+   "Fn::Equals": [
+    {
+     "Ref": "AWS::Partition"
+    },
+    "aws"
+   ]
+  }
+ },
+ "Outputs": {
+  "ClusterNodeGroupInstanceRoleARN92F9AC65": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ClusterNodeGroupInstanceRole2C464581",
+     "Arn"
+    ]
+   }
+  },
+  "EnvoyTargetGroupArn": {
+   "Value": {
+    "Ref": "EnvoyTargetGroup2494AD89"
+   }
+  },
+  "ClusterName": {
+   "Value": {
+    "Ref": "Cluster9EE0221C"
+   }
+  },
+  "ServerRepositoryUri": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      {
+       "Fn::Select": [
+        4,
+        {
+         "Fn::Split": [
+          ":",
+          {
+           "Fn::GetAtt": [
+            "ServerRepositoryBE576A85",
+            "Arn"
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      ".dkr.ecr.",
+      {
+       "Fn::Select": [
+        3,
+        {
+         "Fn::Split": [
+          ":",
+          {
+           "Fn::GetAtt": [
+            "ServerRepositoryBE576A85",
+            "Arn"
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      ".",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "ServerRepositoryBE576A85"
+      }
+     ]
+    ]
+   }
+  },
+  "StaticRepositoryUri": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      {
+       "Fn::Select": [
+        4,
+        {
+         "Fn::Split": [
+          ":",
+          {
+           "Fn::GetAtt": [
+            "StaticRepositoryF1118F58",
+            "Arn"
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      ".dkr.ecr.",
+      {
+       "Fn::Select": [
+        3,
+        {
+         "Fn::Split": [
+          ":",
+          {
+           "Fn::GetAtt": [
+            "StaticRepositoryF1118F58",
+            "Arn"
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      ".",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "StaticRepositoryF1118F58"
+      }
+     ]
+    ]
+   }
+  },
+  "BlogBucketName": {
+   "Value": {
+    "Ref": "BlogBucket3E358F18"
+   }
+  },
+  "BlogBucketPublicUrl": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Fn::GetAtt": [
+        "BlogBucket3E358F18",
+        "RegionalDomainName"
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "ExportsOutputFnGetAttNodeSecurityGroup73B1F8A3GroupIdB6A3689A": {
+   "Value": {
+    "Fn::GetAtt": [
+     "NodeSecurityGroup73B1F8A3",
+     "GroupId"
+    ]
+   },
+   "Export": {
+    "Name": "WidgetgridEksStack:ExportsOutputFnGetAttNodeSecurityGroup73B1F8A3GroupIdB6A3689A"
+   }
+  }
+ },
+ "Parameters": {
+  "SsmParameterValueawsserviceeksoptimizedami132amazonlinux2recommendedimageidC96584B6F00A464EAD1953AFF4B05118Parameter": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/aws/service/eks/optimized-ami/1.32/amazon-linux-2/recommended/image_id"
+  },
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

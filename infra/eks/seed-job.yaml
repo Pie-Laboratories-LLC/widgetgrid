@@ -1,0 +1,29 @@
+# Template, not applied directly -- infra/eks/deploy.sh runs this through
+# envsubst (SEED_JOB_NAME, MIGRATE_IMAGE -- same image as migrate-job.yaml,
+# it already has packages/db/seeds/ copied in, see
+# infra/eks/migrate.Dockerfile) before `kubectl apply`.
+#
+# packages/db/seeds/seed.mjs is idempotent for "splash" (skips if it
+# already exists) but deliberately RESETS "home" to its canonical layout on
+# every run (see that file's own header comment -- there's no authoring UI
+# yet for anyone to have made real edits worth preserving). Running this on
+# every deploy is intentional, not just a one-off bootstrap step, for
+# exactly that reason -- matches local-k8s/README.md's own instructions to
+# run both `db:migrate` and `db:seed`.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ${SEED_JOB_NAME}
+  namespace: widgetgrid
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: seed
+          image: ${MIGRATE_IMAGE}
+          command: ["node", "seeds/seed.mjs"]
+          envFrom:
+            - secretRef:
+                name: widgetgrid-server-secret

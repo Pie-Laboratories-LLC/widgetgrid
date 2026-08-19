@@ -1,0 +1,107 @@
+# The real edge Envoy config -- merges infra/envoy/envoy.yaml's routing
+# table (gRPC-Web paths to the backend, everything else to static assets;
+# Envoy is the single public origin) onto local-k8s/envoy/envoy-local.yaml's
+# Connect-upstream pattern (both backend clusters are Consul's sidecar-bound
+# local ports, not real service IPs -- see
+# infra/eks/manifests/envoy-gateway.yaml's connect-service-upstreams
+# annotation, which is what makes 127.0.0.1:50051/127.0.0.1:8081 below
+# correct).
+#
+# Route list expanded beyond infra/envoy/envoy.yaml's own two routes
+# (PageService, WidgetService): that file predates AuthService/BlogService/
+# ChatService (confirmed against proto/widgetgrid/v1/*.proto, all five
+# `widgetgrid.v1.*` services are real and in active use -- authContext.js,
+# BlogWidget.vue, ChatWidget.vue). Leaving those three unrouted would 404
+# login and chat entirely in production.
+#
+# Two differences from infra/envoy/envoy.yaml's own sketch:
+# 1. No CORS block -- this Envoy really is the single public origin here
+#    (unlike local-k8s/envoy/envoy-local.yaml's SPA-dev-server-is-a-different-origin
+#    case), so no cross-origin requests ever reach it.
+# 2. Both routes use `timeout: 0s`, not infra/envoy/envoy.yaml's 30s --
+#    that 30s note is flagged in that file itself as provisional pending
+#    SubscribeWidgetUpdates actually being implemented; BlogService's
+#    SubscribeNewPosts/AuthService's/ChatService's streaming RPCs are real
+#    and already need 0s (see
+#    local-k8s/manifests/service-defaults.yaml/service-router.yaml's own
+#    justification for the equivalent Consul-side timeouts) -- an
+#    Envoy-level cutoff at THIS hop would undo that work regardless of what
+#    Consul-side config says.
+static_resources:
+  listeners:
+    - name: public_listener
+      address:
+        socket_address: { address: 0.0.0.0, port_value: 8080 }
+      filter_chains:
+        - filters:
+            - name: envoy.filters.network.http_connection_manager
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                stat_prefix: ingress_http
+                codec_type: AUTO
+                route_config:
+                  name: local_route
+                  virtual_hosts:
+                    - name: widgetgrid
+                      domains: ["*"]
+                      routes:
+                        - match: { prefix: "/widgetgrid.v1.PageService" }
+                          route: { cluster: widgetgrid_backend, timeout: 0s }
+                        - match: { prefix: "/widgetgrid.v1.WidgetService" }
+                          route: { cluster: widgetgrid_backend, timeout: 0s }
+                        - match: { prefix: "/widgetgrid.v1.BlogService" }
+                          route: { cluster: widgetgrid_backend, timeout: 0s }
+                        - match: { prefix: "/widgetgrid.v1.AuthService" }
+                          route: { cluster: widgetgrid_backend, timeout: 0s }
+                        - match: { prefix: "/widgetgrid.v1.ChatService" }
+                          route: { cluster: widgetgrid_backend, timeout: 0s }
+                        # Everything else: the static SPA/widget bundles,
+                        # served by static-server.
+                        - match: { prefix: "/" }
+                          route: { cluster: widgetgrid_static }
+                http_filters:
+                  - name: envoy.filters.http.grpc_web
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.grpc_web.v3.GrpcWeb
+                  - name: envoy.filters.http.router
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+
+  clusters:
+    # Consul Connect's dynamically-injected upstream for widgetgrid-server
+    # (see envoy-gateway.yaml's connect-service-upstreams annotation) --
+    # mTLS'd, service-discovered via Consul, not a real backend IP.
+    - name: widgetgrid_backend
+      connect_timeout: 5s
+      type: STATIC
+      lb_policy: ROUND_ROBIN
+      typed_extension_protocol_options:
+        envoy.extensions.upstreams.http.v3.HttpProtocolOptions:
+          "@type": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions
+          explicit_http_config:
+            http2_protocol_options: {} # gRPC requires HTTP/2 to the backend
+      load_assignment:
+        cluster_name: widgetgrid_backend
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address: { address: 127.0.0.1, port_value: 50051 }
+
+    # Same pattern, for static-server (see
+    # infra/eks/manifests/static-server.yaml) -- plain HTTP/1.1, not gRPC.
+    - name: widgetgrid_static
+      connect_timeout: 5s
+      type: STATIC
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: widgetgrid_static
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address: { address: 127.0.0.1, port_value: 8081 }
+
+admin:
+  address:
+    socket_address: { address: 127.0.0.1, port_value: 9901 }

@@ -39,8 +39,8 @@ export default {
       });
   },
   methods: {
-    formatDate(isoDate) {
-      return new Date(`${isoDate}T00:00:00`).toLocaleDateString('en-US', {
+    formatDate(isoDateTime) {
+      return new Date(isoDateTime).toLocaleDateString('en-US', {
         year: 'numeric', month: 'long', day: 'numeric',
       });
     },
@@ -64,7 +64,11 @@ export default {
    child of MainWidget (see its own comment for why), never placed directly
    by the page layout itself anymore. */
 .widget-blog {
-  padding: 32px;
+  /* Fluid like RightRailWidget.vue's own clamp()-based spacing -- a flat
+     32px on each side was over 60px of combined dead horizontal space on
+     a narrow phone, on top of MainWidget.vue's own margin-right already
+     ceding room to the rail. */
+  padding: clamp(16px, 4vw, 32px);
   box-sizing: border-box;
 }
 
@@ -104,5 +108,15 @@ export default {
 
 .post-body :deep(h1) {
   font-size: 1.2rem;
+}
+
+/* Post images render at their native pixel size otherwise -- nothing
+   constrained them to the .post's own 640px max-width, so a large source
+   image (e.g. a raw screen capture) could blow well past the column and
+   dominate the whole main content area. height: auto keeps the aspect
+   ratio when max-width actually kicks in and scales it down. */
+.post-body :deep(img) {
+  max-width: 100%;
+  height: auto;
 }
 </style>

@@ -10,7 +10,7 @@ function hashCode(code) {
   return crypto.createHash('sha256').update(code).digest('hex');
 }
 
-export function createAuthService({ pool, ownerPhoneNumber, otpSender }) {
+export function createAuthService({ pool, ownerPhoneNumber, smsSender }) {
   return {
     async RequestLoginCode(call, callback) {
       try {
@@ -19,7 +19,7 @@ export function createAuthService({ pool, ownerPhoneNumber, otpSender }) {
           codeHash: hashCode(code),
           expiresAt: new Date(Date.now() + CODE_TTL_MS),
         });
-        await otpSender.send(ownerPhoneNumber, code);
+        await smsSender.send(ownerPhoneNumber, code);
         callback(null, {});
       } catch (err) {
         callback({ code: grpc.status.INTERNAL, message: err.message });

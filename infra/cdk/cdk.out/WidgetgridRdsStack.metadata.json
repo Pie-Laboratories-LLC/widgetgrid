@@ -1,0 +1,153 @@
+{
+  "/WidgetgridRdsStack": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:32 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridRdsStack/DbSecretArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DbSecretArn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new RdsStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/rds-stack.js:50:5)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:32 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridRdsStack/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridRdsStack/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridRdsStack/DbSecurityGroup/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DbSecurityGroupE9D701AD"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new SecurityGroup2 in aws-cdk-lib...",
+        "new RdsStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/rds-stack.js:13:29)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:32 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridRdsStack/DbSecurityGroup/from WidgetgridEksStackNodeSecurityGroup8CBCBED2:5432": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DbSecurityGroupfromWidgetgridEksStackNodeSecurityGroup8CBCBED2543254783474"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new RdsStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/rds-stack.js:18:21)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:32 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridRdsStack/Instance/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InstanceC1063A87"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new DatabaseInstance2 in aws-cdk-lib...",
+        "new RdsStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/rds-stack.js:29:21)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:32 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridRdsStack/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridRdsStack/Instance/SubnetGroup/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InstanceSubnetGroupF2CBA54F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new DatabaseInstance2 in aws-cdk-lib...",
+        "new RdsStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/rds-stack.js:29:21)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:32 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridRdsStack/Instance/Secret/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WidgetgridRdsStackInstanceSecret21E031793fdaad7efa858a3daf9490cf0a702aeb"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new DatabaseInstance2 in aws-cdk-lib...",
+        "new RdsStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/rds-stack.js:29:21)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:32 (:)"
+      ]
+    }
+  ],
+  "/WidgetgridRdsStack/Instance/Secret/Attachment/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InstanceSecretAttachment83BEE581"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new DatabaseInstance2 in aws-cdk-lib...",
+        "new RdsStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/rds-stack.js:29:21)",
+        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:32 (:)",
+        "...node internals..."
+      ]
+    }
+  ]
+}

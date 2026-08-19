@@ -9,24 +9,32 @@ import { loadProto } from './loadProto.js';
 import { createPageService } from './services/pageService.js';
 import { createWidgetService } from './services/widgetService.js';
 import { createBlogService } from './services/blogService.js';
-import { createLocalBlogSource } from './blogSource.js';
+import { createLocalBlogSource, createS3BlogSource } from './blogSource.js';
 import { createPollingBlogNotifier } from './blogChangeNotifier.js';
 import { createAuthService } from './services/authService.js';
 import { createChatService } from './services/chatService.js';
-import { createConsoleOtpSender } from './otpSender.js';
+import { createConsoleSmsSender, createSnsSmsSender } from './smsSender.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const HOST = process.env.GRPC_SERVER_HOST ?? '127.0.0.1';
 const PORT = process.env.GRPC_SERVER_PORT ?? '50051';
-// Local filesystem in dev; production points this at an S3 bucket instead
-// (see blogSource.js's header comment -- not implemented yet).
+// Local filesystem in dev. Production (EKS) sets BLOG_S3_BUCKET instead --
+// see infra/eks/manifests/widgetgrid-server.yaml and blogSource.js's
+// createS3BlogSource. Unset here, not defaulted, since its mere presence
+// is the local-vs-S3 switch below.
 const BLOG_CONTENT_DIR = process.env.BLOG_CONTENT_DIR ?? path.resolve(__dirname, '../../../content/blog');
+const BLOG_S3_BUCKET = process.env.BLOG_S3_BUCKET;
 // Public URL prefix a post's own asset subdirectory is served under, e.g.
 // "/blog-assets/2026-08-16-electrifying-results/diagram.png" -- something
 // actually serves that path (locally: web-app's dev server middleware +
-// assemble-static.mjs for the built bundle; in production: wherever the S3
-// bucket/CDN publicly serves the same postDir prefix from).
-const BLOG_ASSETS_BASE_URL = process.env.BLOG_ASSETS_BASE_URL ?? '/blog-assets';
+// assemble-static.mjs for the built bundle; in production: the BlogBucket's
+// own public URL, see infra/cdk/lib/eks-stack.js). `||`, not `??` --
+// confirmed the hard way that an env var explicitly set to an empty string
+// (a deploy-tooling mistake, envsubst silently substitutes "" for an unset
+// shell variable rather than failing) is a real failure mode worth
+// defaulting away from, not just a theoretical one; `??` only catches
+// null/undefined, not "".
+const BLOG_ASSETS_BASE_URL = process.env.BLOG_ASSETS_BASE_URL || '/blog-assets';
 // How often the local "did a new post show up" poll runs (see
 // blogChangeNotifier.js) -- irrelevant once a real S3-event-driven
 // notifier replaces it, since that's push, not poll.
@@ -34,26 +42,32 @@ const BLOG_POLL_INTERVAL_MS = Number(process.env.BLOG_POLL_INTERVAL_MS ?? 20_000
 // The one phone number a login code ever goes to -- there's no signup,
 // this is a single-owner login, not a general accounts system.
 const OWNER_PHONE_NUMBER = process.env.OWNER_PHONE_NUMBER ?? '';
+// 'console' (default, local dev) logs instead of texting; 'sns' (set in
+// infra/eks/manifests/widgetgrid-server.yaml) sends real texts via SNS --
+// see smsSender.js.
+const SMS_PROVIDER = process.env.SMS_PROVIDER ?? 'console';
 
 export function startServer() {
   const pool = getPool();
   const proto = loadProto();
-  const blogSource = createLocalBlogSource({ dir: BLOG_CONTENT_DIR, assetsBaseUrl: BLOG_ASSETS_BASE_URL });
+  const blogSource = BLOG_S3_BUCKET
+    ? createS3BlogSource({ bucket: BLOG_S3_BUCKET, assetsBaseUrl: BLOG_ASSETS_BASE_URL })
+    : createLocalBlogSource({ dir: BLOG_CONTENT_DIR, assetsBaseUrl: BLOG_ASSETS_BASE_URL });
   // Injected, not hardcoded into blogService.js: swapping in a real
   // S3-event-driven notifier later (see that file's header comment) is a
   // one-line change here, same seam as blogSource above.
   const blogChangeNotifier = createPollingBlogNotifier({ blogSource, intervalMs: BLOG_POLL_INTERVAL_MS });
-  // Logs the code instead of texting it -- see otpSender.js's header
-  // comment for why a real SMS provider isn't wired up here, same
-  // reasoning as blogSource's unbuilt S3 half.
-  const otpSender = createConsoleOtpSender();
+  // Shared between AuthService (login codes) and ChatService
+  // (offline-message alerts) -- same "text Matt's one phone number"
+  // operation either way, see smsSender.js.
+  const smsSender = SMS_PROVIDER === 'sns' ? createSnsSmsSender() : createConsoleSmsSender();
 
   const server = new grpc.Server();
   server.addService(proto.PageService.service, createPageService({ pool, pagesRepo, layoutNodesRepo }));
   server.addService(proto.WidgetService.service, createWidgetService({ pool, widgetsRepo }));
   server.addService(proto.BlogService.service, createBlogService({ blogSource, blogChangeNotifier }));
-  server.addService(proto.AuthService.service, createAuthService({ pool, ownerPhoneNumber: OWNER_PHONE_NUMBER, otpSender }));
-  server.addService(proto.ChatService.service, createChatService({ pool }));
+  server.addService(proto.AuthService.service, createAuthService({ pool, ownerPhoneNumber: OWNER_PHONE_NUMBER, smsSender }));
+  server.addService(proto.ChatService.service, createChatService({ pool, ownerPhoneNumber: OWNER_PHONE_NUMBER, smsSender }));
 
   return new Promise((resolve, reject) => {
     server.bindAsync(`${HOST}:${PORT}`, grpc.ServerCredentials.createInsecure(), (err, boundPort) => {

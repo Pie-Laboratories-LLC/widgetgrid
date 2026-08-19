@@ -81,18 +81,34 @@ export default {
   right: 0;
   bottom: 0;
   z-index: 10;
-  width: 160px;
-  padding: 20px 20px 0 20px;
+  /* clamp(), not a hard breakpoint -- scales continuously with viewport
+     width instead of jumping at one fixed device size, since a narrow
+     phone and a slightly-wider one both need less of this than desktop
+     does, not just "mobile vs. not". */
+  width: clamp(88px, 20vw, 160px);
+  padding: clamp(10px, 4vw, 20px) clamp(10px, 4vw, 20px) 0 clamp(10px, 4vw, 20px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 28px;
+  gap: clamp(14px, 3vw, 28px);
   background: #fff;
   transition: top 0.25s ease;
 }
 
 .widget-rightrail.rail-collapsed {
   top: 64px;
+}
+
+/* Kept in sync with TopBarWidget.vue's own identical breakpoint -- this
+   rail sits directly below the topbar (top: 255px above matches its
+   uncollapsed height), so when that shrinks to 128px on mobile, this has
+   to follow or a gap/overlap opens up between them. The collapsed height
+   (64px) is unchanged on mobile, so rail-collapsed's own top needs no
+   override here. */
+@media (max-width: 640px) {
+  .widget-rightrail {
+    top: 128px;
+  }
 }
 
 .rail-item {

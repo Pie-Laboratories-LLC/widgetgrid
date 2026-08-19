@@ -1,0 +1,27 @@
+# Template, not applied directly -- infra/eks/deploy.sh runs this through
+# envsubst (MIGRATE_JOB_NAME, MIGRATE_IMAGE) before `kubectl apply`.
+# MIGRATE_JOB_NAME is suffixed per run (deploy.sh uses a git SHA) since
+# Jobs aren't mutable in place; deploy.sh also cleans up prior completed
+# migrate-* Jobs after a successful run.
+#
+# Runs from inside the cluster (private-subnet path to RDS, same as the
+# app) rather than from a developer laptop via bastion/tunnel -- see
+# infra/eks/migrate.Dockerfile's header comment for why this needs its own
+# image (packages/server's runtime image omits node-pg-migrate and
+# packages/db/migrations on purpose).
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ${MIGRATE_JOB_NAME}
+  namespace: widgetgrid
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: ${MIGRATE_IMAGE}
+          envFrom:
+            - secretRef:
+                name: widgetgrid-server-secret

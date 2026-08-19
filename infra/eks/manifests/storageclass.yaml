@@ -1,0 +1,14 @@
+# The aws-ebs-csi-driver addon (see infra/cdk/lib/eks-stack.js) installs the
+# CSI driver itself but does NOT create a StorageClass -- that's left to the
+# cluster admin. Without this, infra/eks/consul-values.yaml's
+# `server.storageClass: gp3` refers to a StorageClass that doesn't exist,
+# and Consul server's PVC sits Pending forever. Applied by
+# infra/eks/deploy.sh before the Consul Helm install.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gp3
+provisioner: ebs.csi.aws.com
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  type: gp3

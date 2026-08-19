@@ -1,18 +1,21 @@
-// Local-filesystem stand-in for the real content source. In production this
-// reads an S3 bucket instead (same interface -- listPosts() -- so the
-// service/caller code doesn't change; only which createXBlogSource() gets
-// wired up in index.js would). Not built yet: there's no way to test an S3
-// client against real AWS credentials from here, so this only implements
-// the local half for now.
+// createLocalBlogSource is the local-filesystem stand-in; createS3BlogSource
+// (below) is what production/EKS uses (see index.js's BLOG_S3_BUCKET
+// switch). Same interface either way -- listPosts() -- so blogService.js
+// never knows or cares which one it's holding, only parsePost's shared
+// parsing logic runs either way.
 import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { Marked } from 'marked';
+import { S3Client, ListObjectsV2Command, GetObjectCommand } from '@aws-sdk/client-s3';
 
 const marked = new Marked();
 
-// YYYY-MM-DD-slug.md -- the date prefix is what "newest to oldest" sorts
-// on, and doubles as publishedAt; no frontmatter parsing needed.
-const FILENAME_PATTERN = /^(\d{4}-\d{2}-\d{2})-(.+)\.md$/;
+// YYYY-MM-DD-HH-mm-slug.md -- the date+time prefix is what "newest to
+// oldest" sorts on, and (reformatted to real ISO 8601) doubles as
+// publishedAt; no frontmatter parsing needed. Time-of-day exists alongside
+// the date so two posts published the same day still sort deterministically
+// instead of tying on date alone.
+const FILENAME_PATTERN = /^(\d{4}-\d{2}-\d{2}-\d{2}-\d{2})-(.+)\.md$/;
 
 // scheme://... or protocol-relative //... or root-relative /... -- anything
 // already resolvable as-is, left untouched by rewriteImageHref.
@@ -30,11 +33,12 @@ export function createLocalBlogSource({ dir, assetsBaseUrl = '/blog-assets' }) {
         .filter((entry) => entry.isFile())
         .map((entry) => ({ name: entry.name, match: FILENAME_PATTERN.exec(entry.name) }))
         .filter((f) => f.match)
-        .sort((a, b) => b.match[1].localeCompare(a.match[1])); // date desc
+        .sort((a, b) => b.match[1].localeCompare(a.match[1])); // date+time desc
 
       const posts = [];
       for (const { name, match } of files) {
-        const [, publishedAt, slug] = match;
+        const [, rawDateTime, slug] = match;
+        const publishedAt = toIsoDateTime(rawDateTime);
         const raw = await readFile(path.join(dir, name), 'utf8');
         // Each post's images live in their own subdirectory (locally) / key
         // prefix (S3), named to match the post file itself -- so an
@@ -42,6 +46,53 @@ export function createLocalBlogSource({ dir, assetsBaseUrl = '/blog-assets' }) {
         // directory, and a post can just say ![x](./diagram.png) without
         // knowing or caring where it's actually hosted.
         const postDir = name.slice(0, -'.md'.length);
+        posts.push(parsePost({ raw, slug, publishedAt, assetsBaseUrl, postDir }));
+      }
+      return posts;
+    },
+  };
+}
+
+// Bucket layout mirrors content/blog/'s own convention exactly: .md files
+// sit at the bucket root, each post's images live under a key prefix
+// matching its own filename (minus .md) -- e.g.
+// "2026-08-16-13-00-humble-beginnings.md" alongside
+// "2026-08-16-13-00-humble-beginnings/humble-beginnings.png". That's not
+// just a style choice carried over from the local version -- the bucket
+// policy (see infra/cdk/lib/eks-stack.js's BlogBucket) relies on it
+// structurally: it grants public s3:GetObject only to keys containing a
+// "/" (i.e. anything under a postDir prefix -- the images), while root-level
+// .md keys stay readable only by widgetgrid-server's own IAM permissions.
+// assetsBaseUrl needs to point at wherever those objects are actually
+// publicly reachable (the bucket's own public URL, see
+// infra/eks/manifests/widgetgrid-server.yaml's BLOG_ASSETS_BASE_URL) --
+// this source only rewrites hrefs to be relative to that base, it doesn't
+// serve the bytes itself.
+export function createS3BlogSource({ bucket, assetsBaseUrl = '/blog-assets' }) {
+  const client = new S3Client({});
+  return {
+    async listPosts() {
+      // Delimiter: '/' is what makes this listing return only root-level
+      // keys (the .md files) in Contents -- image keys under a postDir/
+      // prefix get folded into CommonPrefixes instead, which this ignores
+      // (each post's own markdown already knows which images it needs by
+      // relative path; there's no reason to enumerate them separately).
+      const { Contents = [] } = await client.send(
+        new ListObjectsV2Command({ Bucket: bucket, Delimiter: '/' }),
+      );
+
+      const files = Contents
+        .map((obj) => ({ key: obj.Key, match: FILENAME_PATTERN.exec(obj.Key) }))
+        .filter((f) => f.match)
+        .sort((a, b) => b.match[1].localeCompare(a.match[1])); // date+time desc
+
+      const posts = [];
+      for (const { key, match } of files) {
+        const [, rawDateTime, slug] = match;
+        const publishedAt = toIsoDateTime(rawDateTime);
+        const object = await client.send(new GetObjectCommand({ Bucket: bucket, Key: key }));
+        const raw = await object.Body.transformToString('utf8');
+        const postDir = key.slice(0, -'.md'.length);
         posts.push(parsePost({ raw, slug, publishedAt, assetsBaseUrl, postDir }));
       }
       return posts;
@@ -82,7 +133,7 @@ function rewriteImageHref(token, assetsBaseUrl, postDir) {
   token.href = `${assetsBaseUrl}/${postDir}/${token.href.replace(/^\.\//, '')}`;
 }
 
-// [see also](./2026-08-01-welcome-to-the-lab.md) -> #post-welcome-to-the-lab
+// [see also](./2026-08-01-00-00-welcome-to-the-lab.md) -> #post-welcome-to-the-lab
 // -- there's no per-post page/route to link to yet (BlogWidget.vue renders
 // every post into one scrolling feed), so this only reaches a post that
 // happens to also be rendered in the current feed, by matching the id
@@ -95,6 +146,14 @@ function rewriteCrossPostLink(token) {
   if (!match) return;
   const [, , referencedSlug] = match;
   token.href = `#post-${referencedSlug}`;
+}
+
+// "2026-08-16-14-30" -> "2026-08-16T14:30" -- the hyphen-delimited filename
+// format reformatted as real ISO 8601, so publishedAt is directly usable by
+// `new Date()` and as an HTML <time datetime> value on the client.
+function toIsoDateTime(rawDateTime) {
+  const [year, month, day, hour, minute] = rawDateTime.split('-');
+  return `${year}-${month}-${day}T${hour}:${minute}`;
 }
 
 function humanizeSlug(slug) {
