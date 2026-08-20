@@ -1,3 +1,9 @@
+# Introduction
+
+This is a website built by Anthropic Claude to my personal specifications.  To
+be clear, I have not contributed to this repository.  That said, I chose the
+technologies used and mechanism by which the website was implemented.
+
 # WidgetGrid
 
 A database-driven, multi-page Vue SPA framework. Every page's layout and
