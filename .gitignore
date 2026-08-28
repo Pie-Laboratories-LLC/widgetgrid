@@ -21,3 +21,8 @@ packages/web-app/public/vendor/*
 # build context, i.e. never from ../solitaire directly) -- see
 # widgets/solitaire/scripts/vendor-solitaire.mjs.
 widgets/solitaire/.vendor-src/
+
+# vim <3
+.*.sw?
+*.sw?
+*~
