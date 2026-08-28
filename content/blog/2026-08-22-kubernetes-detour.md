@@ -6,10 +6,10 @@ Much as I'm driven by my personal project, _a boy has to eat_, so I have been
 feverishly looking for work.  It's harder to find eligible positions as a senior
 architect, so I've been biding my time.  One technology I absolutely love is
 Kubernetes.  I've worked with it since 2018, at great peril to my career.  The
-industry can be so flighty, if you're in the right place at the right time, you
+industry can be so flighty; if you're in the right place at the right time, you
 become the Kubernetes guy irrespective of your abilities.  If not, you have to
 have had 10 years production experience managing multiple thousand-node clusters
-across cloud platform and on premisis clusters with specific security tooling if
+across cloud platform and on-premisis clusters with specific security tooling if
 you want to even be considered for a Kubernetes role.
 
 /rant
@@ -30,31 +30,32 @@ development, and an ironic one given the importance of the domain area to the
 modern internet.  Put plainly, most websites just don't have enough kitten
 pictures.  Some websites don't even have any at all.  That's just plain wrong.
 
-What occurred to me, given kubernetes' robustness, we could add a service that
-delivered kitten pictures.  This is best achieved with an operator, we want to
-ensure the kitten service is always up and running and in fine fetter.  Then, to
-save the developer the onerous hassle of convincing the business guy kitten
-pictures were vital to the success of the project, having to haggle with the
-product owner to ensure the kitten picture gets prioritised properly, why not
-just insert the kitten picture for the developer, thereby completely eliminating
-the bother.  And the best way to do that is with a sidecar.  A sidecar that
-_automatically_ injects kitten pictures into web applications.
+What occurred to me, given kubernetes' robustness, was that we could add a
+service that delivered kitten pictures.  This is best achieved with an
+operator.  We want to ensure the kitten service is always up and running and in
+fine fetter.  Then, to save the developer the onerous chore of convincing the
+business guy kitten pictures were vital to the success of the project, having
+to haggle with the product owner to ensure the kitten picture gets prioritised
+properly, and so forth, why not just insert the kitten picture for the
+developer, thereby completely eliminating the bother.  And the best way to do
+that is with a sidecar.  A sidecar that _automatically_ injects kitten pictures
+into web applications.
 
-I have gotten to love Anthropic's claude.  I've mentioned elsewhere my
-philosophy with AI.  In this case I leaned heavily on claude for writing these.
-My preferred method is working with claude in the browser to work through the
+I have gotten to love Anthropic's Claude.  I've mentioned elsewhere my
+philosophy with AI.  In this case I leaned heavily on Claude for writing these.
+My preferred method is working with Claude in the browser to work through the
 idea; in this case I was a little more than a reverse centaur for claude, but
 not much.
 
 This is really the value of AI for me; it's turned me into a super-programmer
-able to do tasks for which I have no direct training.  It allowed me to quickly
-create an operator-and-mutating-admission-webhook following the [Kubebuilder
-Book](https://book.kubebuilder.io/).  It includes unit tests and sanity checks
-to ensure the configuration manager is installed and a suitable service url is
-provided for the sidecar.  As mentioned elsewhere, if I were to do this project
-again, or implement a _more_ serious mutating admission webhook / operator, I
-would want to go through the [official Go tour](https://go.dev/tour/) again and
-follow the Book directly.
+able to do tasks for which I have no direct training.  It allowed me to create
+an operator-and-mutating-admission-webhook following the [Kubebuilder
+Book](https://book.kubebuilder.io/) in about a day.  It includes unit tests and
+sanity checks to ensure the configuration manager is installed and a suitable
+service url is provided for the sidecar.  As mentioned elsewhere, if I were to
+do this project again, or implement a _more_ serious mutating admission webhook
+/ operator, I would want to go through the [official Go
+tour](https://go.dev/tour/) again and follow the Book directly.
 
 In any event, the following are all hosted on github:
 
@@ -62,12 +63,12 @@ In any event, the following are all hosted on github:
   this repository includes the docker container for the kitten service app as
   well as the helm chart for the kitten service.
 
-  * [a docker
-    image](https://github.com/orgs/Pie-Laboratories-LLC/packages/container/package/kitten-operator)
+  * [a Docker
+    Image](https://github.com/orgs/Pie-Laboratories-LLC/packages/container/package/kitten-operator)
     containing the kitten service
 
-  * [the helm
-    chart](https://github.com/orgs/Pie-Laboratories-LLC/packages/container/package/kitten-operator-chart)
+  * [the Helm
+    Chart](https://github.com/orgs/Pie-Laboratories-LLC/packages/container/package/kitten-operator-chart)
     that installs the kitten service
 
 * [Kitten Operator
@@ -76,15 +77,15 @@ In any event, the following are all hosted on github:
   admission webhook / operator and the other for the sidecar.  In addition, it
   includes a helm chart which installs it.
 
-  * [a docker
-    image](https://github.com/orgs/Pie-Laboratories-LLC/packages/container/package/kitten-operator-sidecar)
+  * [a Docker
+    Image](https://github.com/orgs/Pie-Laboratories-LLC/packages/container/package/kitten-operator-sidecar)
     cotining the sidecar
 
-  * [a docker
-    image](https://github.com/orgs/Pie-Laboratories-LLC/packages/container/package/kitten-operator-controller)
+  * [a Docker
+    Image](https://github.com/orgs/Pie-Laboratories-LLC/packages/container/package/kitten-operator-controller)
     containing the controller.
 
-  * [the helm
-    chart](https://github.com/orgs/Pie-Laboratories-LLC/packages/container/package/kitten-operator-controller-chart)
+  * [the Helm
+    Chart](https://github.com/orgs/Pie-Laboratories-LLC/packages/container/package/kitten-operator-controller-chart)
     that installs the controller
 
