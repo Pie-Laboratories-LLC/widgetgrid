@@ -1,5 +1,14 @@
 # SYNOPSIS
 
+One thing I've been curious about for a while is how sidecars and operators
+work.  They're definitely not the same thing but they're frequently together.
+There are typically custom resource definitions which an operator uses to ensure
+some custom resource is kept in a consistent state.  That operator doesn't
+always produce its own sidecars; frequently operators exist, for instance, to
+ensure logging machinery is always in place or that a postgres cluster is
+running well.  But in other cases, like the consul/Envoy service discovery
+pattern, they're combined.
+
 # A Kubernetes Detour
 
 Much as I'm driven by my personal project, _a boy has to eat_, so I have been
