@@ -7,7 +7,7 @@ tutorial.  That's nothing to sneeze at, surviving the tutorial should earn
 encomiums without end, trumpets playing when you enter rooms and so forth.
 Alas.
 
-# HUMBLE BEGINNINGS
+# Humble Beginnings
 
 
 [![Humble Beginnings](./humble-beginnings.png)](https://youtu.be/kPc7KQj64TE?si=U8Udg_K2M6GMXtcp)
