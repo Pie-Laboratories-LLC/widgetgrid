@@ -26,6 +26,11 @@ COPY widgets/splash/package.json widgets/splash/package.json
 COPY widgets/topbar/package.json widgets/topbar/package.json
 COPY widgets/rightrail/package.json widgets/rightrail/package.json
 COPY widgets/blog/package.json widgets/blog/package.json
+COPY widgets/chat/package.json widgets/chat/package.json
+COPY widgets/login/package.json widgets/login/package.json
+COPY widgets/main/package.json widgets/main/package.json
+COPY widgets/solitaire/package.json widgets/solitaire/package.json
+COPY infra/cdk/package.json infra/cdk/package.json
 
 # --ignore-scripts: nothing packages/server or packages/db depend on needs
 # install-time scripts (that requirement -- grpc-tools' protoc binary,
