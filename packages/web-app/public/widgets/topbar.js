@@ -1,4 +1,4 @@
-(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-topbar[data-v-84331a26]{z-index:20;background:#050505;align-items:center;height:255px;padding-left:40px;transition:height .25s;display:flex;position:fixed;top:0;left:0;right:0}.widget-topbar.topbar-collapsed[data-v-84331a26]{height:64px}.topbar-logo[data-v-84331a26]{cursor:pointer;width:auto;height:255px;transition:height .25s;display:block}.topbar-collapsed .topbar-logo[data-v-84331a26]{height:64px}.topbar-brand[data-v-84331a26]{color:#f4ead9;flex-direction:column;justify-content:center;margin-left:16px;line-height:1.3;display:flex}.topbar-brand-name[data-v-84331a26]{font-size:1rem;font-weight:600}.topbar-brand-email[data-v-84331a26]{opacity:.75;color:inherit;font-size:.8rem;text-decoration:none}.topbar-brand-email[data-v-84331a26]:hover{opacity:1;text-decoration:underline}.topbar-menu-slot[data-v-84331a26]{flex:1;justify-content:flex-end;align-items:center;gap:20px;padding-right:40px;display:flex}.topbar-icon[data-v-84331a26]{color:#f4ead9;cursor:pointer;background:0 0;border:none;border-radius:6px;padding:6px;line-height:0;position:relative}.topbar-icon[data-v-84331a26]:hover,.topbar-icon[data-v-84331a26]:focus-visible{background:#f4ead91f}.topbar-icon svg[data-v-84331a26]{width:30px;height:30px}.topbar-badge[data-v-84331a26]{color:#fff;text-align:center;background:#e5322d;border-radius:999px;min-width:14px;height:14px;padding:0 2px;font-size:10px;font-weight:700;line-height:14px;position:absolute;bottom:2px;right:2px;box-shadow:0 0 0 2px #150a2e}@media (width<=640px){.widget-topbar[data-v-84331a26]{height:128px;padding-left:0}.topbar-logo[data-v-84331a26]{height:128px}}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
+(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-topbar[data-v-70b6ee7b]{z-index:20;background:#050505;align-items:center;height:255px;padding-left:40px;transition:height .25s;display:flex;position:fixed;top:0;left:0;right:0}.widget-topbar.topbar-collapsed[data-v-70b6ee7b]{height:64px}.topbar-logo[data-v-70b6ee7b]{cursor:pointer;width:auto;height:255px;transition:height .25s;display:block}.topbar-collapsed .topbar-logo[data-v-70b6ee7b]{height:64px}.topbar-brand[data-v-70b6ee7b]{color:#f4ead9;flex-direction:column;justify-content:center;margin-left:16px;line-height:1.3;display:flex}.topbar-brand-name[data-v-70b6ee7b]{font-size:1rem;font-weight:600}.topbar-brand-email[data-v-70b6ee7b]{opacity:.75;color:inherit;font-size:.8rem;text-decoration:none}.topbar-brand-email[data-v-70b6ee7b]:hover{opacity:1;text-decoration:underline}.topbar-menu-slot[data-v-70b6ee7b]{flex:1;justify-content:flex-end;align-items:center;gap:20px;padding-right:40px;display:flex}.topbar-icon[data-v-70b6ee7b]{color:#f4ead9;cursor:pointer;background:0 0;border:none;border-radius:6px;padding:6px;line-height:0;position:relative}.topbar-icon[data-v-70b6ee7b]:hover,.topbar-icon[data-v-70b6ee7b]:focus-visible{background:#f4ead91f}.topbar-icon svg[data-v-70b6ee7b]{width:30px;height:30px}.topbar-badge[data-v-70b6ee7b]{color:#fff;text-align:center;background:#e5322d;border-radius:999px;min-width:14px;height:14px;padding:0 2px;font-size:10px;font-weight:700;line-height:14px;position:absolute;bottom:2px;right:2px;box-shadow:0 0 0 2px #150a2e}@media (width<=640px){.widget-topbar[data-v-70b6ee7b]{height:128px;padding-left:0}.topbar-logo[data-v-70b6ee7b]{height:128px}}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
 import { createBlock as e, createCommentVNode as t, createElementBlock as n, createElementVNode as r, normalizeClass as i, openBlock as a, resolveDynamicComponent as o } from "vue";
 //#region \0plugin-vue:export-helper
 var s = (e, t) => {
@@ -56,10 +56,20 @@ var s = (e, t) => {
 		onLogoClick() {
 			window.dispatchEvent(new CustomEvent("widgetgrid:logo-click"));
 		},
+		canLeaveFor(e) {
+			return e === this.activeView || window.dispatchEvent(new CustomEvent("widgetgrid:before-navigate", {
+				detail: {
+					from: this.activeView,
+					to: e
+				},
+				cancelable: !0
+			}));
+		},
 		navigate(e) {
-			window.dispatchEvent(new CustomEvent("widgetgrid:navigate", { detail: { view: e } }));
+			this.canLeaveFor(e) && window.dispatchEvent(new CustomEvent("widgetgrid:navigate", { detail: { view: e } }));
 		},
 		onHomeClick() {
+			if (!this.canLeaveFor("blog")) return;
 			let e = this.hasNewPost;
 			this.hasNewPost = !1, window.dispatchEvent(new CustomEvent("widgetgrid:navigate", { detail: {
 				view: "blog",
@@ -119,10 +129,6 @@ var s = (e, t) => {
 	fill: "currentColor",
 	"aria-hidden": "true"
 }, y = {
-	key: 2,
-	class: "topbar-badge",
-	"aria-hidden": "true"
-}, b = {
 	key: 0,
 	viewBox: "0 0 24 24",
 	fill: "none",
@@ -131,10 +137,14 @@ var s = (e, t) => {
 	"stroke-linecap": "round",
 	"stroke-linejoin": "round",
 	"aria-hidden": "true"
-}, x = {
+}, b = {
 	key: 1,
 	viewBox: "0 0 24 24",
 	fill: "currentColor",
+	"aria-hidden": "true"
+}, x = {
+	key: 2,
+	class: "topbar-badge",
 	"aria-hidden": "true"
 };
 function S(s, c, l, S, C, w) {
@@ -181,29 +191,29 @@ function S(s, c, l, S, C, w) {
 			r("button", {
 				type: "button",
 				class: "topbar-icon",
-				title: "Chat with management",
-				"aria-label": "Chat with management",
-				onClick: c[3] ||= (e) => w.navigate("chat")
-			}, [C.activeView === "chat" ? (a(), n("svg", _, [...c[9] ||= [
-				r("path", { d: "M8 9h8" }, null, -1),
-				r("path", { d: "M8 13h6" }, null, -1),
-				r("path", { d: "M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12" }, null, -1)
-			]])) : (a(), n("svg", v, [...c[10] ||= [r("path", { d: "M18 3a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-4.724l-4.762 2.857a1 1 0 0 1 -1.508 -.743l-.006 -.114v-2h-1a4 4 0 0 1 -3.995 -3.8l-.005 -.2v-8a4 4 0 0 1 4 -4zm-4 9h-6a1 1 0 0 0 0 2h6a1 1 0 0 0 0 -2m2 -4h-8a1 1 0 1 0 0 2h8a1 1 0 0 0 0 -2" }, null, -1)]])), C.hasNewChatMessage ? (a(), n("span", y, "!")) : t("", !0)]),
-			r("button", {
-				type: "button",
-				class: "topbar-icon",
 				title: "Embuscade",
 				"aria-label": "Embuscade",
-				onClick: c[4] ||= (e) => w.navigate("embuscade")
-			}, [C.activeView === "embuscade" ? (a(), n("svg", b, [...c[11] ||= [
+				onClick: c[3] ||= (e) => w.navigate("embuscade")
+			}, [C.activeView === "embuscade" ? (a(), n("svg", _, [...c[9] ||= [
 				r("path", { d: "M5.5 13h13a3.5 3.5 0 0 1 0 7h-13a3.5 3.5 0 0 1 0 -7z" }, null, -1),
 				r("path", { d: "M7 13v-2a2 2 0 0 1 2 -2h5a2 2 0 0 1 2 2v2" }, null, -1),
 				r("path", { d: "M16 10.5h5" }, null, -1)
-			]])) : (a(), n("svg", x, [...c[12] ||= [
+			]])) : (a(), n("svg", v, [...c[10] ||= [
 				r("path", { d: "M5.5 13h13a3.5 3.5 0 0 1 0 7h-13a3.5 3.5 0 0 1 0 -7z" }, null, -1),
 				r("path", { d: "M9 8h5a3 3 0 0 1 3 3v1h-11v-1a3 3 0 0 1 3 -3z" }, null, -1),
 				r("path", { d: "M16 9.5h6v2h-6z" }, null, -1)
 			]]))]),
+			r("button", {
+				type: "button",
+				class: "topbar-icon",
+				title: "Chat with management",
+				"aria-label": "Chat with management",
+				onClick: c[4] ||= (e) => w.navigate("chat")
+			}, [C.activeView === "chat" ? (a(), n("svg", y, [...c[11] ||= [
+				r("path", { d: "M8 9h8" }, null, -1),
+				r("path", { d: "M8 13h6" }, null, -1),
+				r("path", { d: "M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12" }, null, -1)
+			]])) : (a(), n("svg", b, [...c[12] ||= [r("path", { d: "M18 3a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-4.724l-4.762 2.857a1 1 0 0 1 -1.508 -.743l-.006 -.114v-2h-1a4 4 0 0 1 -3.995 -3.8l-.005 -.2v-8a4 4 0 0 1 4 -4zm-4 9h-6a1 1 0 0 0 0 2h6a1 1 0 0 0 0 -2m2 -4h-8a1 1 0 1 0 0 2h8a1 1 0 0 0 0 -2" }, null, -1)]])), C.hasNewChatMessage ? (a(), n("span", x, "!")) : t("", !0)]),
 			C.loginComponent ? (a(), e(o(C.loginComponent), {
 				key: 0,
 				data: {},
@@ -212,6 +222,6 @@ function S(s, c, l, S, C, w) {
 		])
 	], 2);
 }
-var C = /*#__PURE__*/ s(l, [["render", S], ["__scopeId", "data-v-84331a26"]]);
+var C = /*#__PURE__*/ s(l, [["render", S], ["__scopeId", "data-v-70b6ee7b"]]);
 //#endregion
 export { C as default };

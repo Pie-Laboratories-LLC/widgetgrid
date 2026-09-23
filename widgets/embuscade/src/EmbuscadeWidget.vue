@@ -35,6 +35,10 @@ export default {
     data: { type: Object, required: true },
     title: { type: String, default: '' },
   },
+  created() {
+    window.addEventListener('widgetgrid:before-navigate', this.onBeforeNavigate);
+    window.addEventListener('beforeunload', this.onBeforeUnload);
+  },
   mounted() {
     this.loadCss();
     import(/* @vite-ignore */ `${VENDOR_BASE}embuscade.js`).then((mod) => {
@@ -45,10 +49,26 @@ export default {
     });
   },
   beforeUnmount() {
+    window.removeEventListener('widgetgrid:before-navigate', this.onBeforeNavigate);
+    window.removeEventListener('beforeunload', this.onBeforeUnload);
     this.isUnmounted = true;
     this.unmountGame?.();
   },
   methods: {
+    // Leaving the view unmounts the game and drops its connection (see the
+    // comment at the top), so ask first. TopBarWidget.vue fires this
+    // (cancelable) before switching views.
+    onBeforeNavigate(event) {
+      if (!window.confirm('Leave Embuscade? You\'ll be disconnected from the game.')) {
+        event.preventDefault();
+      }
+    },
+    // Tab close/reload/typed URL -- browsers only show their own generic
+    // "leave site?" prompt here, never custom text.
+    onBeforeUnload(event) {
+      event.preventDefault();
+      event.returnValue = ''; // Safari still needs the legacy form
+    },
     loadCss() {
       if (document.getElementById(CSS_LINK_ID)) return;
       const link = document.createElement('link');

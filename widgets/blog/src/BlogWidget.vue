@@ -77,7 +77,9 @@ export default {
 }
 
 .post {
-  max-width: 640px;
+  /* Wide enough to use most of the content column on a desktop screen,
+     still capped so lines don't run the full width of a very wide one. */
+  max-width: 1100px;
   margin: 0 0 40px;
   padding-bottom: 40px;
   border-bottom: 1px solid #ddd;
@@ -111,7 +113,7 @@ export default {
 }
 
 /* Post images render at their native pixel size otherwise -- nothing
-   constrained them to the .post's own 640px max-width, so a large source
+   constrained them to the .post's own max-width, so a large source
    image (e.g. a raw screen capture) could blow well past the column and
    dominate the whole main content area. height: auto keeps the aspect
    ratio when max-width actually kicks in and scales it down. */

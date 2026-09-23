@@ -1,11 +1,11 @@
-(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-rightrail[data-v-f8e3459c]{z-index:10;background:#fff;flex-direction:column;align-items:center;gap:clamp(14px,3vw,28px);width:clamp(88px,20vw,160px);padding:clamp(10px,4vw,20px) clamp(10px,4vw,20px) 0;transition:top .25s;display:flex;position:fixed;top:255px;bottom:0;right:0}.widget-rightrail.rail-collapsed[data-v-f8e3459c]{top:64px}@media (width<=640px){.widget-rightrail[data-v-f8e3459c]{top:128px}}.rail-item[data-v-f8e3459c]{color:inherit;flex-direction:column;align-items:center;gap:6px;text-decoration:none;display:flex}.rail-icon[data-v-f8e3459c]{width:32px;height:32px}.rail-label[data-v-f8e3459c]{font-size:.8rem}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
-import { Fragment as e, createElementBlock as t, createElementVNode as n, normalizeClass as r, normalizeStyle as i, openBlock as a, renderList as o, toDisplayString as s } from "vue";
+(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-rightrail[data-v-c32f7b71]{z-index:10;background:#fff;flex-direction:column;align-items:center;gap:clamp(14px,3vw,28px);width:clamp(88px,20vw,160px);padding:clamp(10px,4vw,20px) clamp(10px,4vw,20px) 0;transition:top .25s;display:flex;position:fixed;top:255px;bottom:0;right:0}.widget-rightrail.rail-collapsed[data-v-c32f7b71]{top:64px}@media (width<=640px){.widget-rightrail[data-v-c32f7b71]{top:128px}}.rail-item[data-v-c32f7b71]{color:inherit;flex-direction:column;align-items:center;gap:6px;text-decoration:none;display:flex}.rail-icon[data-v-c32f7b71]{width:32px;height:32px}.rail-label[data-v-c32f7b71]{font-size:.8rem}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
+import { Fragment as e, createElementBlock as t, createElementVNode as n, normalizeClass as r, normalizeStyle as i, openBlock as a, renderList as o, toDisplayString as s, vShow as c, withDirectives as l } from "vue";
 //#region \0plugin-vue:export-helper
-var c = (e, t) => {
+var u = (e, t) => {
 	let n = e.__vccOpts || e;
 	for (let [e, r] of t) n[e] = r;
 	return n;
-}, l = [
+}, d = [
 	{
 		key: "youtube",
 		label: "YouTube",
@@ -24,7 +24,7 @@ var c = (e, t) => {
 		hex: "004880",
 		path: "M1.998.342a1.997 1.997 0 1 0 0 3.995 1.997 1.997 0 0 0 0-3.995zm9.18 4.34a6.156 6.156 0 0 0-6.153 6.155v6.667c0 3.4 2.756 6.154 6.154 6.154h6.667c3.4 0 6.154-2.755 6.154-6.154v-6.667a6.154 6.154 0 0 0-6.154-6.155zm-1.477 2.8a2.496 2.496 0 1 1 0 4.993 2.496 2.496 0 0 1 0-4.993zm7.968 6.16a3.996 3.996 0 1 1-.002 7.992 3.996 3.996 0 0 1 .002-7.992z"
 	}
-], u = {
+], f = {
 	name: "RightRailWidget",
 	props: {
 		data: {
@@ -37,27 +37,35 @@ var c = (e, t) => {
 		}
 	},
 	data() {
-		return { collapsed: !1 };
+		return {
+			collapsed: !1,
+			hidden: !1
+		};
 	},
 	computed: { items() {
 		let e = this.data?.links ?? {};
-		return l.map((t) => ({
+		return d.map((t) => ({
 			...t,
 			url: e[t.key] || "#"
 		}));
 	} },
 	created() {
-		window.addEventListener("widgetgrid:scroll", this.onScroll);
+		window.addEventListener("widgetgrid:scroll", this.onScroll), window.addEventListener("widgetgrid:rail", this.onRail);
 	},
 	beforeUnmount() {
-		window.removeEventListener("widgetgrid:scroll", this.onScroll);
+		window.removeEventListener("widgetgrid:scroll", this.onScroll), window.removeEventListener("widgetgrid:rail", this.onRail);
 	},
-	methods: { onScroll(e) {
-		this.collapsed = e.detail.collapsed;
-	} }
-}, d = ["href"], f = ["d"], p = { class: "rail-label" };
-function m(c, l, u, m, h, g) {
-	return a(), t("aside", { class: r(["widget widget-rightrail", { "rail-collapsed": h.collapsed }]) }, [(a(!0), t(e, null, o(g.items, (e) => (a(), t("a", {
+	methods: {
+		onRail(e) {
+			this.hidden = e.detail.hidden;
+		},
+		onScroll(e) {
+			this.collapsed = e.detail.collapsed;
+		}
+	}
+}, p = ["href"], m = ["d"], h = { class: "rail-label" };
+function g(u, d, f, g, _, v) {
+	return l((a(), t("aside", { class: r(["widget widget-rightrail", { "rail-collapsed": _.collapsed }]) }, [(a(!0), t(e, null, o(v.items, (e) => (a(), t("a", {
 		key: e.key,
 		href: e.url,
 		class: "rail-item",
@@ -68,8 +76,8 @@ function m(c, l, u, m, h, g) {
 		class: "rail-icon",
 		style: i({ fill: `#${e.hex}` }),
 		"aria-hidden": "true"
-	}, [n("path", { d: e.path }, null, 8, f)], 4)), n("span", p, s(e.label), 1)], 8, d))), 128))], 2);
+	}, [n("path", { d: e.path }, null, 8, m)], 4)), n("span", h, s(e.label), 1)], 8, p))), 128))], 2)), [[c, !_.hidden]]);
 }
-var h = /*#__PURE__*/ c(u, [["render", m], ["__scopeId", "data-v-f8e3459c"]]);
+var _ = /*#__PURE__*/ u(f, [["render", g], ["__scopeId", "data-v-c32f7b71"]]);
 //#endregion
-export { h as default };
+export { _ as default };

@@ -1,4 +1,4 @@
-(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-blog[data-v-3fcb772d]{box-sizing:border-box;padding:clamp(16px,4vw,32px)}.blog-status[data-v-3fcb772d]{color:#666}.post[data-v-3fcb772d]{border-bottom:1px solid #ddd;max-width:640px;margin:0 0 40px;padding-bottom:40px}.post[data-v-3fcb772d]:last-child{border-bottom:none}.post[data-v-3fcb772d]:not(.post-open){cursor:pointer}.post:not(.post-open):hover .post-title[data-v-3fcb772d]{text-decoration:underline}.post-title[data-v-3fcb772d]{margin:0 0 4px}.post-date[data-v-3fcb772d]{color:#888;margin-bottom:16px;font-size:.85rem;display:block}.post-body[data-v-3fcb772d] h1{font-size:1.2rem}.post-body[data-v-3fcb772d] img{max-width:100%;height:auto}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
+(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-blog[data-v-fe8e60c2]{box-sizing:border-box;padding:clamp(16px,4vw,32px)}.blog-status[data-v-fe8e60c2]{color:#666}.post[data-v-fe8e60c2]{border-bottom:1px solid #ddd;max-width:1100px;margin:0 0 40px;padding-bottom:40px}.post[data-v-fe8e60c2]:last-child{border-bottom:none}.post[data-v-fe8e60c2]:not(.post-open){cursor:pointer}.post:not(.post-open):hover .post-title[data-v-fe8e60c2]{text-decoration:underline}.post-title[data-v-fe8e60c2]{margin:0 0 4px}.post-date[data-v-fe8e60c2]{color:#888;margin-bottom:16px;font-size:.85rem;display:block}.post-body[data-v-fe8e60c2] h1{font-size:1.2rem}.post-body[data-v-fe8e60c2] img{max-width:100%;height:auto}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
 import { Fragment, createElementBlock, createElementVNode, normalizeClass, openBlock, renderList, toDisplayString } from "vue";
 //#region \0rolldown/runtime.js
 var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t.exports), require_google_protobuf = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -5520,6 +5520,6 @@ function _sfc_render(e, t, n, r, i, o) {
 		}, null, 8, _hoisted_8)
 	], 10, _hoisted_5))), 128))]);
 }
-var BlogWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-3fcb772d"]]);
+var BlogWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-fe8e60c2"]]);
 //#endregion
 export { BlogWidget_default as default };

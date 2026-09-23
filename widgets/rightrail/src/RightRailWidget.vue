@@ -1,5 +1,5 @@
 <template>
-  <aside class="widget widget-rightrail" :class="{ 'rail-collapsed': collapsed }">
+  <aside v-show="!hidden" class="widget widget-rightrail" :class="{ 'rail-collapsed': collapsed }">
     <a
       v-for="item in items"
       :key="item.key"
@@ -48,7 +48,7 @@ export default {
     title: { type: String, default: '' },
   },
   data() {
-    return { collapsed: false };
+    return { collapsed: false, hidden: false };
   },
   computed: {
     // data.links.<key> lets the real destination URLs be set later via the
@@ -62,11 +62,18 @@ export default {
     // MainWidget.vue's own scroll container is what actually knows this --
     // see its comment for why this is a window event, not a shared store.
     window.addEventListener('widgetgrid:scroll', this.onScroll);
+    // Same idea for which views hide the rail entirely (the games) --
+    // MainWidget.vue owns that list, see its RAIL_HIDDEN_VIEWS.
+    window.addEventListener('widgetgrid:rail', this.onRail);
   },
   beforeUnmount() {
     window.removeEventListener('widgetgrid:scroll', this.onScroll);
+    window.removeEventListener('widgetgrid:rail', this.onRail);
   },
   methods: {
+    onRail(event) {
+      this.hidden = event.detail.hidden;
+    },
     onScroll(event) {
       this.collapsed = event.detail.collapsed;
     },

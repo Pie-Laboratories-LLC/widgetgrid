@@ -1,4 +1,4 @@
-(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-main[data-v-d4775fda]{box-sizing:border-box;height:calc(100vh - 255px);margin-top:255px;margin-right:clamp(88px,20vw,160px);transition:margin-top .25s,height .25s;overflow-y:auto}.widget-main.main-collapsed[data-v-d4775fda]{height:calc(100vh - 64px);margin-top:64px}@media (width<=640px){.widget-main[data-v-d4775fda]{height:calc(100vh - 128px);margin-top:128px}}.main-status[data-v-d4775fda]{color:#666;padding:32px}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
+(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-main[data-v-6cfd8118]{box-sizing:border-box;height:calc(100vh - 255px);margin-top:255px;margin-right:clamp(88px,20vw,160px);transition:margin-top .25s,height .25s;overflow-y:auto}.widget-main.main-no-rail[data-v-6cfd8118]{margin-right:0}.widget-main.main-collapsed[data-v-6cfd8118]{height:calc(100vh - 64px);margin-top:64px}@media (width<=640px){.widget-main[data-v-6cfd8118]{height:calc(100vh - 128px);margin-top:128px}}.main-status[data-v-6cfd8118]{color:#666;padding:32px}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
 import { createBlock, createCommentVNode, createElementBlock, normalizeClass, openBlock, resolveDynamicComponent } from "vue";
 //#region \0rolldown/runtime.js
 var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t.exports), require_google_protobuf = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -6108,7 +6108,7 @@ var _plugin_vue_export_helper_default = (e, t) => {
 	solitaire: "collapsed",
 	chat: "collapsed",
 	embuscade: "collapsed"
-}, _sfc_main = {
+}, RAIL_HIDDEN_VIEWS = /* @__PURE__ */ new Set(["solitaire", "embuscade"]), _sfc_main = {
 	name: "MainWidget",
 	props: {
 		data: {
@@ -6128,6 +6128,7 @@ var _plugin_vue_export_helper_default = (e, t) => {
 			chatComponent: null,
 			embuscadeComponent: null,
 			collapsed: !1,
+			railHidden: !1,
 			blogReloadKey: 0
 		};
 	},
@@ -6170,10 +6171,13 @@ var _plugin_vue_export_helper_default = (e, t) => {
 				"/widgets/embuscade.js"
 ).then((e) => {
 				this.embuscadeComponent = e.default ?? e;
-			}), e.detail.forceReload && (this.blogReloadKey += 1), this.$el.scrollTop = 0, this.setCollapsed(this.topbarMode === "collapsed");
+			}), e.detail.forceReload && (this.blogReloadKey += 1), this.$el.scrollTop = 0, this.setCollapsed(this.topbarMode === "collapsed"), this.setRailHidden(RAIL_HIDDEN_VIEWS.has(this.view));
 		},
 		onScroll(e) {
 			this.topbarMode === "scroll" && this.setCollapsed(e.target.scrollTop > SCROLL_THRESHOLD);
+		},
+		setRailHidden(e) {
+			e !== this.railHidden && (this.railHidden = e, window.dispatchEvent(new CustomEvent("widgetgrid:rail", { detail: { hidden: e } })));
 		},
 		setCollapsed(e) {
 			e !== this.collapsed && (this.collapsed = e, window.dispatchEvent(new CustomEvent("widgetgrid:scroll", { detail: { collapsed: e } })));
@@ -6194,7 +6198,10 @@ var _plugin_vue_export_helper_default = (e, t) => {
 };
 function _sfc_render(e, t, n, r, i, o) {
 	return openBlock(), createElementBlock("div", {
-		class: normalizeClass(["widget widget-main", { "main-collapsed": i.collapsed }]),
+		class: normalizeClass(["widget widget-main", {
+			"main-collapsed": i.collapsed,
+			"main-no-rail": i.railHidden
+		}]),
 		onScroll: t[0] ||= (...e) => o.onScroll && o.onScroll(...e)
 	}, [
 		i.view === "blog" && !i.blogComponent ? (openBlock(), createElementBlock("p", _hoisted_1, "Loading…")) : i.view === "blog" ? (openBlock(), createBlock(resolveDynamicComponent(i.blogComponent), {
@@ -6218,6 +6225,6 @@ function _sfc_render(e, t, n, r, i, o) {
 		})) : createCommentVNode("", !0)
 	], 34);
 }
-var MainWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-d4775fda"]]);
+var MainWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-6cfd8118"]]);
 //#endregion
 export { MainWidget_default as default };

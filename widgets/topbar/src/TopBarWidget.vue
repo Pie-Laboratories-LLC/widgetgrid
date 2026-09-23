@@ -43,6 +43,18 @@
           <path d="M19.08 5.61a1 1 0 0 1 1.31 -.53c.257 .108 .505 .21 .769 .314a2 2 0 0 1 1.114 2.479l-.056 .146l-2.298 5.374a1 1 0 0 1 -1.878 -.676l.04 -.11l2.296 -5.371l-.366 -.148l-.402 -.167a1 1 0 0 1 -.53 -1.312z" />
         </svg>
       </button>
+      <button type="button" class="topbar-icon" title="Embuscade" aria-label="Embuscade" @click="navigate('embuscade')">
+        <svg v-if="activeView === 'embuscade'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5.5 13h13a3.5 3.5 0 0 1 0 7h-13a3.5 3.5 0 0 1 0 -7z" />
+          <path d="M7 13v-2a2 2 0 0 1 2 -2h5a2 2 0 0 1 2 2v2" />
+          <path d="M16 10.5h5" />
+        </svg>
+        <svg v-else viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M5.5 13h13a3.5 3.5 0 0 1 0 7h-13a3.5 3.5 0 0 1 0 -7z" />
+          <path d="M9 8h5a3 3 0 0 1 3 3v1h-11v-1a3 3 0 0 1 3 -3z" />
+          <path d="M16 9.5h6v2h-6z" />
+        </svg>
+      </button>
       <button
         type="button" class="topbar-icon" title="Chat with management" aria-label="Chat with management"
         @click="navigate('chat')"
@@ -56,18 +68,6 @@
           <path d="M18 3a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-4.724l-4.762 2.857a1 1 0 0 1 -1.508 -.743l-.006 -.114v-2h-1a4 4 0 0 1 -3.995 -3.8l-.005 -.2v-8a4 4 0 0 1 4 -4zm-4 9h-6a1 1 0 0 0 0 2h6a1 1 0 0 0 0 -2m2 -4h-8a1 1 0 1 0 0 2h8a1 1 0 0 0 0 -2" />
         </svg>
         <span v-if="hasNewChatMessage" class="topbar-badge" aria-hidden="true">!</span>
-      </button>
-      <button type="button" class="topbar-icon" title="Embuscade" aria-label="Embuscade" @click="navigate('embuscade')">
-        <svg v-if="activeView === 'embuscade'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M5.5 13h13a3.5 3.5 0 0 1 0 7h-13a3.5 3.5 0 0 1 0 -7z" />
-          <path d="M7 13v-2a2 2 0 0 1 2 -2h5a2 2 0 0 1 2 2v2" />
-          <path d="M16 10.5h5" />
-        </svg>
-        <svg v-else viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M5.5 13h13a3.5 3.5 0 0 1 0 7h-13a3.5 3.5 0 0 1 0 -7z" />
-          <path d="M9 8h5a3 3 0 0 1 3 3v1h-11v-1a3 3 0 0 1 3 -3z" />
-          <path d="M16 9.5h6v2h-6z" />
-        </svg>
       </button>
       <component :is="loginComponent" v-if="loginComponent" :data="{}" title="" />
     </nav>
@@ -164,10 +164,21 @@ export default {
     onLogoClick() {
       window.dispatchEvent(new CustomEvent('widgetgrid:logo-click'));
     },
+    // Fired (cancelable) before every navigate: the current view's widget
+    // can preventDefault() to veto leaving it -- e.g. EmbuscadeWidget.vue
+    // asking for confirmation mid-game. Same view -> nothing to leave, so
+    // no event.
+    canLeaveFor(view) {
+      if (view === this.activeView) return true;
+      return window.dispatchEvent(new CustomEvent('widgetgrid:before-navigate', {
+        detail: { from: this.activeView, to: view }, cancelable: true,
+      }));
+    },
     // widgets/main/src/MainWidget.vue listens for this on window -- see its
     // comment for why a window event, not a shared store, is what connects
     // two independently-built widgets.
     navigate(view) {
+      if (!this.canLeaveFor(view)) return;
       window.dispatchEvent(new CustomEvent('widgetgrid:navigate', { detail: { view } }));
     },
     // Separate from navigate('blog') above: this one also clears the badge
@@ -175,6 +186,7 @@ export default {
     // needed because a plain view-change wouldn't remount BlogWidget if
     // you're already looking at the blog when a new post shows up.
     onHomeClick() {
+      if (!this.canLeaveFor('blog')) return;
       const forceReload = this.hasNewPost;
       this.hasNewPost = false;
       window.dispatchEvent(new CustomEvent('widgetgrid:navigate', { detail: { view: 'blog', forceReload } }));

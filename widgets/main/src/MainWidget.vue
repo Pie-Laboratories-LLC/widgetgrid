@@ -1,5 +1,5 @@
 <template>
-  <div class="widget widget-main" :class="{ 'main-collapsed': collapsed }" @scroll="onScroll">
+  <div class="widget widget-main" :class="{ 'main-collapsed': collapsed, 'main-no-rail': railHidden }" @scroll="onScroll">
     <p v-if="view === 'blog' && !blogComponent" class="main-status">Loading…</p>
     <component v-else-if="view === 'blog'" :is="blogComponent" :key="blogReloadKey" :data="{}" title="" />
     <p v-else-if="view === 'solitaire' && !solitaireComponent" class="main-status">Loading…</p>
@@ -56,6 +56,11 @@ const TOPBAR_MODE = {
   embuscade: 'collapsed',
 };
 
+// Views that hide the right rail and take its width -- the games want the
+// full horizontal area. Broadcast as widgetgrid:rail (see setRailHidden)
+// so RightRailWidget.vue doesn't need its own copy of this list.
+const RAIL_HIDDEN_VIEWS = new Set(['solitaire', 'embuscade']);
+
 export default {
   name: 'MainWidget',
   props: {
@@ -65,7 +70,7 @@ export default {
   data() {
     return {
       view: 'blog', blogComponent: null, solitaireComponent: null, chatComponent: null,
-      embuscadeComponent: null, collapsed: false,
+      embuscadeComponent: null, collapsed: false, railHidden: false,
       blogReloadKey: 0,
     };
   },
@@ -155,6 +160,7 @@ export default {
       // otherwise carry over from whatever the previous view left it at.
       this.$el.scrollTop = 0;
       this.setCollapsed(this.topbarMode === 'collapsed');
+      this.setRailHidden(RAIL_HIDDEN_VIEWS.has(this.view));
     },
     // This element is the only thing that actually scrolls on the page
     // (the fixed topbar/rail don't, and nothing else does either), so it's
@@ -165,6 +171,11 @@ export default {
     onScroll(event) {
       if (this.topbarMode !== 'scroll') return;
       this.setCollapsed(event.target.scrollTop > SCROLL_THRESHOLD);
+    },
+    setRailHidden(value) {
+      if (value === this.railHidden) return;
+      this.railHidden = value;
+      window.dispatchEvent(new CustomEvent('widgetgrid:rail', { detail: { hidden: value } }));
     },
     setCollapsed(value) {
       if (value === this.collapsed) return;
@@ -191,6 +202,12 @@ export default {
   overflow-y: auto;
   box-sizing: border-box;
   transition: margin-top 0.25s ease, height 0.25s ease;
+}
+
+/* The rail is hidden in this view (RAIL_HIDDEN_VIEWS), so there's nothing
+   to clear on the right. */
+.widget-main.main-no-rail {
+  margin-right: 0;
 }
 
 .widget-main.main-collapsed {
