@@ -23,7 +23,13 @@
 # 127.0.0.1:50051 locally and securely (mTLS) forwards to the real
 # widgetgrid-server service elsewhere in the mesh. Same pattern
 # packages/server/src/index.js itself relies on for its own plaintext
-# localhost bind; see the comment there.
+# localhost bind; see the comment there. embuscade_backend (127.0.0.1:8082)
+# is the same arrangement for the Embuscade game server.
+#
+# /embuscade-ws is a WebSocket, not gRPC-Web: upgrade_configs below lets
+# the upgrade through, and the route's own timeout: 0s keeps the default
+# 15s route timeout from killing every game after 15s. No CORS needed on
+# it -- browsers don't preflight WebSocket handshakes.
 static_resources:
   listeners:
     - name: public_listener
@@ -36,12 +42,16 @@ static_resources:
                 "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
                 stat_prefix: ingress_http
                 codec_type: AUTO
+                upgrade_configs:
+                  - upgrade_type: websocket
                 route_config:
                   name: local_route
                   virtual_hosts:
                     - name: widgetgrid
                       domains: ["*"]
                       routes:
+                        - match: { prefix: "/embuscade-ws" }
+                          route: { cluster: embuscade_backend, timeout: 0s }
                         - match: { prefix: "/" }
                           route:
                             cluster: widgetgrid_backend
@@ -103,6 +113,20 @@ static_resources:
               - endpoint:
                   address:
                     socket_address: { address: 127.0.0.1, port_value: 50051 }
+
+    # HTTP/1.1 (Envoy's default -- no http2_protocol_options): WebSocket
+    # upgrades from HTTP/1.1.
+    - name: embuscade_backend
+      connect_timeout: 5s
+      type: STATIC
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: embuscade_backend
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address: { address: 127.0.0.1, port_value: 8082 }
 
 admin:
   address:

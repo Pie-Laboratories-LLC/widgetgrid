@@ -65,8 +65,19 @@ grpcurl -plaintext -import-path proto -proto proto/widgetgrid/v1/page.proto \
 From the actual SPA:
 ```
 echo "VITE_GRPC_WEB_ORIGIN=http://localhost:8080" > packages/web-app/.env.local
+# Widget bundles read the repo-root .env.local instead (vite-widget-lib's
+# envDir), baked in at build time -- so this has to exist before
+# `npm run build:widgets`, or they silently call :5173 and show no content.
+cat > .env.local <<'EOF'
+VITE_GRPC_WEB_ORIGIN=http://localhost:8080
+VITE_EMBUSCADE_WS_URL=ws://localhost:8080/embuscade-ws
+EOF
+npm run build:widgets
 npm run dev:web
 ```
+(Embuscade needs ~/GIT/bolo-server's `packages/client` built first --
+see widgets/embuscade/scripts/vendor-embuscade.mjs. setup.sh builds and
+deploys its server from the same repo, or skips it if it isn't there.)
 (`client.js` defaults to same-origin, which assumes the production
 Envoy-serves-everything topology -- not true here, where the SPA dev server
 and this gateway are genuinely different origins, which is exactly why

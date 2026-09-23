@@ -1,0 +1,71 @@
+# The Embuscade game server (~/GIT/bolo-server, image built by
+# local-k8s/setup.sh from that repo's own Dockerfile). Same Consul Connect
+# pattern as widgetgrid-server.yaml: the injected sidecar is what the rest
+# of the mesh talks to; envoy-gateway reaches it through its own
+# connect-service-upstreams entry (see envoy-gateway.yaml).
+#
+# State is in-memory by design (games vanish on restart) -- hence
+# replicas: 1: a second replica would split players across two
+# independent sets of games.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: embuscade-server
+  namespace: widgetgrid
+  labels:
+    app: embuscade-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: embuscade-server
+  template:
+    metadata:
+      labels:
+        app: embuscade-server
+      annotations:
+        consul.hashicorp.com/connect-inject: "true"
+    spec:
+      containers:
+        - name: embuscade-server
+          image: embuscade-server:local
+          imagePullPolicy: IfNotPresent # loaded via `kind load docker-image`, never pulled from a registry
+          ports:
+            - containerPort: 8082
+              name: ws
+          readinessProbe:
+            tcpSocket: { port: 8082 }
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket: { port: 8082 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: embuscade-server
+  namespace: widgetgrid
+spec:
+  selector:
+    app: embuscade-server
+  ports:
+    - port: 8082
+      targetPort: 8082
+      name: ws
+---
+# protocol: tcp -- the mesh hop (envoy-gateway's sidecar -> this pod's
+# sidecar) is a plain byte pipe, so neither sidecar has an HTTP route
+# timeout to cut the long-lived WebSocket off at 15s (the problem
+# service-defaults.yaml's localRequestTimeoutMs works around for
+# widgetgrid-server's gRPC streams). The WebSocket upgrade itself is
+# handled by envoy-gateway's own HTTP listener (envoy-local.yaml), before
+# traffic ever enters the mesh.
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: embuscade-server
+  namespace: widgetgrid
+spec:
+  protocol: tcp

@@ -6,6 +6,8 @@
     <component v-else-if="view === 'solitaire'" :is="solitaireComponent" :data="{}" title="" />
     <p v-if="view === 'chat' && !chatComponent" class="main-status">Loading…</p>
     <component v-else-if="view === 'chat'" :is="chatComponent" :data="{}" title="" />
+    <p v-if="view === 'embuscade' && !embuscadeComponent" class="main-status">Loading…</p>
+    <component v-else-if="view === 'embuscade'" :is="embuscadeComponent" :data="{}" title="" />
   </div>
 </template>
 
@@ -49,6 +51,9 @@ const TOPBAR_MODE = {
   // that never actually gets triggered by anything" reasoning as
   // solitaire, not a jank fix like solitaire's was.
   chat: 'collapsed',
+  // Same jank reasoning as solitaire, and the game also needs the
+  // vertical room.
+  embuscade: 'collapsed',
 };
 
 export default {
@@ -59,7 +64,8 @@ export default {
   },
   data() {
     return {
-      view: 'blog', blogComponent: null, solitaireComponent: null, chatComponent: null, collapsed: false,
+      view: 'blog', blogComponent: null, solitaireComponent: null, chatComponent: null,
+      embuscadeComponent: null, collapsed: false,
       blogReloadKey: 0,
     };
   },
@@ -132,6 +138,11 @@ export default {
       if (this.view === 'chat' && !this.chatComponent) {
         import(/* @vite-ignore */ '/widgets/chat.js').then((mod) => {
           this.chatComponent = mod.default ?? mod;
+        });
+      }
+      if (this.view === 'embuscade' && !this.embuscadeComponent) {
+        import(/* @vite-ignore */ '/widgets/embuscade.js').then((mod) => {
+          this.embuscadeComponent = mod.default ?? mod;
         });
       }
       // TopBarWidget.vue sets this when the home icon carried the new-post

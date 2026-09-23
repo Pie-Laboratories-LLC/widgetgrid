@@ -57,6 +57,18 @@
         </svg>
         <span v-if="hasNewChatMessage" class="topbar-badge" aria-hidden="true">!</span>
       </button>
+      <button type="button" class="topbar-icon" title="Embuscade" aria-label="Embuscade" @click="navigate('embuscade')">
+        <svg v-if="activeView === 'embuscade'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5.5 13h13a3.5 3.5 0 0 1 0 7h-13a3.5 3.5 0 0 1 0 -7z" />
+          <path d="M7 13v-2a2 2 0 0 1 2 -2h5a2 2 0 0 1 2 2v2" />
+          <path d="M16 10.5h5" />
+        </svg>
+        <svg v-else viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M5.5 13h13a3.5 3.5 0 0 1 0 7h-13a3.5 3.5 0 0 1 0 -7z" />
+          <path d="M9 8h5a3 3 0 0 1 3 3v1h-11v-1a3 3 0 0 1 3 -3z" />
+          <path d="M16 9.5h6v2h-6z" />
+        </svg>
+      </button>
       <component :is="loginComponent" v-if="loginComponent" :data="{}" title="" />
     </nav>
   </header>
@@ -70,7 +82,8 @@ const ASSET_BASE = '/widgets/topbar-assets/';
 
 // Icon paths are from Tabler Icons (MIT) -- "home", "cards" and "message",
 // each in both outline and filled variants (see template for how they're
-// used).
+// used). The Embuscade tank icon is hand-drawn in the same 24x24
+// outline/filled style.
 export default {
   name: 'TopBarWidget',
   props: {

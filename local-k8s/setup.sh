@@ -56,6 +56,21 @@ docker build -f packages/server/Dockerfile -t widgetgrid-server:local .
 kind load docker-image widgetgrid-server:local --name "$CLUSTER_NAME"
 
 echo
+echo "== embuscade-server image =="
+# The game lives in its own repo (~/GIT/bolo-server by default, a sibling
+# of this one -- same layout widgets/embuscade's vendor script assumes).
+# Optional: without it, everything else still comes up, just no game.
+EMBUSCADE_REPO_DIR=${EMBUSCADE_REPO_DIR:-../bolo-server}
+if [ -f "$EMBUSCADE_REPO_DIR/Dockerfile" ]; then
+  docker build -t embuscade-server:local "$EMBUSCADE_REPO_DIR"
+  kind load docker-image embuscade-server:local --name "$CLUSTER_NAME"
+  HAVE_EMBUSCADE=1
+else
+  echo "no $EMBUSCADE_REPO_DIR/Dockerfile -- skipping the game server (set EMBUSCADE_REPO_DIR if it lives elsewhere)"
+  HAVE_EMBUSCADE=
+fi
+
+echo
 echo "== applying manifests =="
 kubectl apply -f local-k8s/manifests/namespace.yaml
 # Tells Consul's connect-inject webhook widgetgrid-server speaks gRPC, and
@@ -90,12 +105,21 @@ kubectl create configmap widgetgrid-server-config \
   --namespace widgetgrid \
   --dry-run=client -o yaml | kubectl apply -f -
 kubectl apply -f local-k8s/manifests/widgetgrid-server.yaml
+if [ -n "$HAVE_EMBUSCADE" ]; then
+  kubectl apply -f local-k8s/manifests/embuscade-server.yaml
+  # Pick up a rebuilt image on re-runs: the tag never changes (:local), so
+  # without a restart the running pod keeps the old one.
+  kubectl rollout restart deployment/embuscade-server -n widgetgrid
+fi
 kubectl apply -f local-k8s/manifests/envoy-gateway.yaml
 
 echo
 echo "== waiting for pods to be ready (includes their injected Consul sidecars) =="
 kubectl wait --for=condition=ready pod -l app=widgetgrid-server -n widgetgrid --timeout=180s
 kubectl wait --for=condition=ready pod -l app=envoy-gateway -n widgetgrid --timeout=180s
+if [ -n "$HAVE_EMBUSCADE" ]; then
+  kubectl rollout status deployment/embuscade-server -n widgetgrid --timeout=180s
+fi
 
 cat <<'EOF'
 

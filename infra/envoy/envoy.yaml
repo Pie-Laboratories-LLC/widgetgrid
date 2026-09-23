@@ -1,8 +1,9 @@
 # Reference Envoy config -- NOT runnable as-is in a Consul Connect
 # deployment. This sketches the plain-Envoy pieces (grpc_web/cors/router
-# filters, the two-route split) that are independent of Connect; the actual
-# backend cluster below (a static 127.0.0.1:50051 endpoint) is what Connect's
-# dynamic upstream injection and mTLS replace in a real deployment -- that
+# filters, the two-route split, the WebSocket upgrade) that are independent
+# of Connect; the actual backend clusters below (static 127.0.0.1:50051 and
+# 127.0.0.1:8082 endpoints) are what Connect's dynamic upstream injection
+# and mTLS replace in a real deployment -- that
 # mesh-specific wiring depends on your Consul setup and isn't sketched here.
 # See ../consul/CONNECT_NOTES.md.
 #
@@ -24,6 +25,12 @@ static_resources:
                 "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
                 stat_prefix: ingress_http
                 codec_type: AUTO
+                # Lets an HTTP/1.1 "Upgrade: websocket" request through to
+                # whichever route it matches (only /embuscade-ws below is
+                # expected to see one). Without this Envoy rejects the
+                # upgrade outright.
+                upgrade_configs:
+                  - upgrade_type: websocket
                 route_config:
                   name: local_route
                   virtual_hosts:
@@ -42,6 +49,16 @@ static_resources:
                         # implemented, rather than guessing at the right value now.
                         - match: { prefix: "/widgetgrid.v1.WidgetService" }
                           route: { cluster: widgetgrid_backend, timeout: 30s }
+                        # Embuscade game server's WebSocket endpoint. Must sit above
+                        # the "/" catch-all. timeout: 0s disables the route
+                        # timeout (default 15s), which would otherwise kill
+                        # every upgraded connection 15s in -- the socket is
+                        # still subject to the connection manager's
+                        # stream_idle_timeout (default 5m), so the game
+                        # should send pings well inside that (and inside the
+                        # ALB's 60s idle timeout in AWS).
+                        - match: { prefix: "/embuscade-ws" }
+                          route: { cluster: embuscade_backend, timeout: 0s }
                         # Everything else: the static SPA/widget bundles.
                         - match: { prefix: "/" }
                           route: { cluster: widgetgrid_static }
@@ -76,6 +93,23 @@ static_resources:
               - endpoint:
                   address:
                     socket_address: { address: 127.0.0.1, port_value: 50051 }
+
+    # Placeholder static endpoint -- replace with Consul Connect's upstream
+    # for the Embuscade game server in a real deployment, same as
+    # widgetgrid_backend above. No http2_protocol_options: WebSocket
+    # upgrades from HTTP/1.1, so this cluster stays on Envoy's HTTP/1.1
+    # default.
+    - name: embuscade_backend
+      connect_timeout: 5s
+      type: STATIC
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: embuscade_backend
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address: { address: 127.0.0.1, port_value: 8082 }
 
     - name: widgetgrid_static
       connect_timeout: 5s
