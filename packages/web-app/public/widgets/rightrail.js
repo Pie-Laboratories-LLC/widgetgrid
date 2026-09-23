@@ -1,4 +1,4 @@
-(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-rightrail[data-v-bb264f10]{z-index:10;background:#fff;flex-direction:column;align-items:center;gap:28px;width:160px;padding:20px 20px 0;transition:top .25s;display:flex;position:fixed;top:255px;bottom:0;right:0}.widget-rightrail.rail-collapsed[data-v-bb264f10]{top:64px}.rail-item[data-v-bb264f10]{color:inherit;flex-direction:column;align-items:center;gap:6px;text-decoration:none;display:flex}.rail-icon[data-v-bb264f10]{width:32px;height:32px}.rail-label[data-v-bb264f10]{font-size:.8rem}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
+(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-rightrail[data-v-f8e3459c]{z-index:10;background:#fff;flex-direction:column;align-items:center;gap:clamp(14px,3vw,28px);width:clamp(88px,20vw,160px);padding:clamp(10px,4vw,20px) clamp(10px,4vw,20px) 0;transition:top .25s;display:flex;position:fixed;top:255px;bottom:0;right:0}.widget-rightrail.rail-collapsed[data-v-f8e3459c]{top:64px}@media (width<=640px){.widget-rightrail[data-v-f8e3459c]{top:128px}}.rail-item[data-v-f8e3459c]{color:inherit;flex-direction:column;align-items:center;gap:6px;text-decoration:none;display:flex}.rail-icon[data-v-f8e3459c]{width:32px;height:32px}.rail-label[data-v-f8e3459c]{font-size:.8rem}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
 import { Fragment as e, createElementBlock as t, createElementVNode as n, normalizeClass as r, normalizeStyle as i, openBlock as a, renderList as o, toDisplayString as s } from "vue";
 //#region \0plugin-vue:export-helper
 var c = (e, t) => {
@@ -70,6 +70,6 @@ function m(c, l, u, m, h, g) {
 		"aria-hidden": "true"
 	}, [n("path", { d: e.path }, null, 8, f)], 4)), n("span", p, s(e.label), 1)], 8, d))), 128))], 2);
 }
-var h = /*#__PURE__*/ c(u, [["render", m], ["__scopeId", "data-v-bb264f10"]]);
+var h = /*#__PURE__*/ c(u, [["render", m], ["__scopeId", "data-v-f8e3459c"]]);
 //#endregion
 export { h as default };

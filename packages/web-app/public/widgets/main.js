@@ -1,4 +1,4 @@
-(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-main[data-v-73e92f31]{box-sizing:border-box;height:calc(100vh - 255px);margin-top:255px;margin-right:160px;transition:margin-top .25s,height .25s;overflow-y:auto}.widget-main.main-collapsed[data-v-73e92f31]{height:calc(100vh - 64px);margin-top:64px}.main-status[data-v-73e92f31]{color:#666;padding:32px}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
+(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-main[data-v-d4775fda]{box-sizing:border-box;height:calc(100vh - 255px);margin-top:255px;margin-right:clamp(88px,20vw,160px);transition:margin-top .25s,height .25s;overflow-y:auto}.widget-main.main-collapsed[data-v-d4775fda]{height:calc(100vh - 64px);margin-top:64px}@media (width<=640px){.widget-main[data-v-d4775fda]{height:calc(100vh - 128px);margin-top:128px}}.main-status[data-v-d4775fda]{color:#666;padding:32px}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
 import { createBlock, createCommentVNode, createElementBlock, normalizeClass, openBlock, resolveDynamicComponent } from "vue";
 //#region \0rolldown/runtime.js
 var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t.exports), require_google_protobuf = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -4279,19 +4279,43 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 		return this.setPostsList([]);
 	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.toObject = function(e) {
 		return proto.widgetgrid.v1.SubscribeNewPostsRequest.toObject(e, this);
-	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.toObject = function(e, t) {
-		var n = {};
-		return e && (n.$jspbMessageInstance = t), n;
+	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.toObject = function(e, n) {
+		var r = {
+			lastKnownSlug: t.Message.getFieldWithDefault(n, 1, ""),
+			requestedAtMs: t.Message.getFieldWithDefault(n, 2, 0)
+		};
+		return e && (r.$jspbMessageInstance = n), r;
 	}), proto.widgetgrid.v1.SubscribeNewPostsRequest.deserializeBinary = function(e) {
 		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.SubscribeNewPostsRequest();
 		return proto.widgetgrid.v1.SubscribeNewPostsRequest.deserializeBinaryFromReader(r, n);
 	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setLastKnownSlug(n);
+				break;
+			case 2:
+				var n = t.readInt64();
+				e.setRequestedAtMs(n);
+				break;
+			default: t.skipField();
+		}
 		return e;
 	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.serializeBinary = function() {
 		var e = new t.BinaryWriter();
 		return proto.widgetgrid.v1.SubscribeNewPostsRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.NewPostEvent.prototype.toObject = function(e) {
+	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getLastKnownSlug(), n.length > 0 && t.writeString(1, n), n = e.getRequestedAtMs(), n !== 0 && t.writeInt64(2, n);
+	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.getLastKnownSlug = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.setLastKnownSlug = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.getRequestedAtMs = function() {
+		return t.Message.getFieldWithDefault(this, 2, 0);
+	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.setRequestedAtMs = function(e) {
+		return t.Message.setProto3IntField(this, 2, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.NewPostEvent.prototype.toObject = function(e) {
 		return proto.widgetgrid.v1.NewPostEvent.toObject(e, this);
 	}, proto.widgetgrid.v1.NewPostEvent.toObject = function(e, n) {
 		var r = {
@@ -5424,10 +5448,24 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 	}, r.widgetgrid.v1.BlogServicePromiseClient.prototype.subscribeNewPosts = function(e, t) {
 		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.BlogService/SubscribeNewPosts", e, t || {}, o);
 	}, t.exports = r.widgetgrid.v1;
-})), import_blog_pb = require_blog_pb(), import_blog_grpc_web_pb = require_blog_grpc_web_pb(), client$1 = new import_blog_grpc_web_pb.BlogServicePromiseClient("http://localhost:8080");
+})), import_blog_pb = require_blog_pb(), import_blog_grpc_web_pb = require_blog_grpc_web_pb(), client$1 = new import_blog_grpc_web_pb.BlogServicePromiseClient("http://localhost:8080"), RECONNECT_DELAY_MS$1 = 2e3;
 function subscribeNewPosts(e) {
-	let t = client$1.subscribeNewPosts(new import_blog_pb.SubscribeNewPostsRequest(), {});
-	return t.on("data", (t) => e(t.toObject())), () => t.cancel();
+	let t = !1, n = null, r = null, i = "";
+	function o() {
+		t || r || (r = setTimeout(() => {
+			r = null, s();
+		}, RECONNECT_DELAY_MS$1));
+	}
+	function s() {
+		let t = new import_blog_pb.SubscribeNewPostsRequest();
+		t.setLastKnownSlug(i), t.setRequestedAtMs(Date.now()), n = client$1.subscribeNewPosts(t, {}), n.on("data", (t) => {
+			let n = t.toObject();
+			i = n.slug, e(n);
+		}), n.on("error", o), n.on("end", o);
+	}
+	return s(), () => {
+		t = !0, r && clearTimeout(r), n.cancel();
+	};
 }
 //#endregion
 //#region ../../packages/proto-gen-web/widgetgrid/v1/chat_pb.js
@@ -6045,9 +6083,20 @@ function identityMetadata() {
 	let t = localStorage.getItem(VISITOR_ID_KEY);
 	return t || (t = crypto.randomUUID(), localStorage.setItem(VISITOR_ID_KEY, t)), { "visitor-id": t };
 }
+var RECONNECT_DELAY_MS = 2e3;
 function subscribeChatEvents(e) {
-	let t = client.subscribeChatEvents(new import_chat_pb.SubscribeChatEventsRequest(), identityMetadata());
-	return t.on("data", (t) => e(t.toObject())), () => t.cancel();
+	let t = !1, n = null, r = null;
+	function i() {
+		t || r || (r = setTimeout(() => {
+			r = null, o();
+		}, RECONNECT_DELAY_MS));
+	}
+	function o() {
+		n = client.subscribeChatEvents(new import_chat_pb.SubscribeChatEventsRequest(), identityMetadata()), n.on("data", (t) => e(t.toObject())), n.on("error", i), n.on("end", i);
+	}
+	return o(), () => {
+		t = !0, r && clearTimeout(r), n.cancel();
+	};
 }
 //#endregion
 //#region \0plugin-vue:export-helper
@@ -6057,7 +6106,8 @@ var _plugin_vue_export_helper_default = (e, t) => {
 	return n;
 }, SCROLL_THRESHOLD = 10, TOPBAR_MODE = {
 	solitaire: "collapsed",
-	chat: "collapsed"
+	chat: "collapsed",
+	embuscade: "collapsed"
 }, _sfc_main = {
 	name: "MainWidget",
 	props: {
@@ -6076,6 +6126,7 @@ var _plugin_vue_export_helper_default = (e, t) => {
 			blogComponent: null,
 			solitaireComponent: null,
 			chatComponent: null,
+			embuscadeComponent: null,
 			collapsed: !1,
 			blogReloadKey: 0
 		};
@@ -6114,6 +6165,11 @@ var _plugin_vue_export_helper_default = (e, t) => {
 				"/widgets/chat.js"
 ).then((e) => {
 				this.chatComponent = e.default ?? e;
+			}), this.view === "embuscade" && !this.embuscadeComponent && import(
+				/* @vite-ignore */
+				"/widgets/embuscade.js"
+).then((e) => {
+				this.embuscadeComponent = e.default ?? e;
 			}), e.detail.forceReload && (this.blogReloadKey += 1), this.$el.scrollTop = 0, this.setCollapsed(this.topbarMode === "collapsed");
 		},
 		onScroll(e) {
@@ -6132,25 +6188,36 @@ var _plugin_vue_export_helper_default = (e, t) => {
 }, _hoisted_3 = {
 	key: 4,
 	class: "main-status"
+}, _hoisted_4 = {
+	key: 6,
+	class: "main-status"
 };
 function _sfc_render(e, t, n, r, i, o) {
 	return openBlock(), createElementBlock("div", {
 		class: normalizeClass(["widget widget-main", { "main-collapsed": i.collapsed }]),
 		onScroll: t[0] ||= (...e) => o.onScroll && o.onScroll(...e)
-	}, [i.view === "blog" && !i.blogComponent ? (openBlock(), createElementBlock("p", _hoisted_1, "Loading…")) : i.view === "blog" ? (openBlock(), createBlock(resolveDynamicComponent(i.blogComponent), {
-		key: i.blogReloadKey,
-		data: {},
-		title: ""
-	})) : i.view === "solitaire" && !i.solitaireComponent ? (openBlock(), createElementBlock("p", _hoisted_2, "Loading…")) : i.view === "solitaire" ? (openBlock(), createBlock(resolveDynamicComponent(i.solitaireComponent), {
-		key: 3,
-		data: {},
-		title: ""
-	})) : createCommentVNode("", !0), i.view === "chat" && !i.chatComponent ? (openBlock(), createElementBlock("p", _hoisted_3, "Loading…")) : i.view === "chat" ? (openBlock(), createBlock(resolveDynamicComponent(i.chatComponent), {
-		key: 5,
-		data: {},
-		title: ""
-	})) : createCommentVNode("", !0)], 34);
+	}, [
+		i.view === "blog" && !i.blogComponent ? (openBlock(), createElementBlock("p", _hoisted_1, "Loading…")) : i.view === "blog" ? (openBlock(), createBlock(resolveDynamicComponent(i.blogComponent), {
+			key: i.blogReloadKey,
+			data: {},
+			title: ""
+		})) : i.view === "solitaire" && !i.solitaireComponent ? (openBlock(), createElementBlock("p", _hoisted_2, "Loading…")) : i.view === "solitaire" ? (openBlock(), createBlock(resolveDynamicComponent(i.solitaireComponent), {
+			key: 3,
+			data: {},
+			title: ""
+		})) : createCommentVNode("", !0),
+		i.view === "chat" && !i.chatComponent ? (openBlock(), createElementBlock("p", _hoisted_3, "Loading…")) : i.view === "chat" ? (openBlock(), createBlock(resolveDynamicComponent(i.chatComponent), {
+			key: 5,
+			data: {},
+			title: ""
+		})) : createCommentVNode("", !0),
+		i.view === "embuscade" && !i.embuscadeComponent ? (openBlock(), createElementBlock("p", _hoisted_4, "Loading…")) : i.view === "embuscade" ? (openBlock(), createBlock(resolveDynamicComponent(i.embuscadeComponent), {
+			key: 7,
+			data: {},
+			title: ""
+		})) : createCommentVNode("", !0)
+	], 34);
 }
-var MainWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-73e92f31"]]);
+var MainWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-d4775fda"]]);
 //#endregion
 export { MainWidget_default as default };

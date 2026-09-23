@@ -4175,19 +4175,32 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 		t.Message.initialize(this, e, 0, -1, null, null);
 	}, n.inherits(proto.widgetgrid.v1.OwnerPresenceEvent, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.OwnerPresenceEvent.displayName = "proto.widgetgrid.v1.OwnerPresenceEvent"), t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RequestLoginCodeRequest.prototype.toObject = function(e) {
 		return proto.widgetgrid.v1.RequestLoginCodeRequest.toObject(e, this);
-	}, proto.widgetgrid.v1.RequestLoginCodeRequest.toObject = function(e, t) {
-		var n = {};
-		return e && (n.$jspbMessageInstance = t), n;
+	}, proto.widgetgrid.v1.RequestLoginCodeRequest.toObject = function(e, n) {
+		var r = { requestedAtMs: t.Message.getFieldWithDefault(n, 1, 0) };
+		return e && (r.$jspbMessageInstance = n), r;
 	}), proto.widgetgrid.v1.RequestLoginCodeRequest.deserializeBinary = function(e) {
 		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RequestLoginCodeRequest();
 		return proto.widgetgrid.v1.RequestLoginCodeRequest.deserializeBinaryFromReader(r, n);
 	}, proto.widgetgrid.v1.RequestLoginCodeRequest.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readInt64();
+				e.setRequestedAtMs(n);
+				break;
+			default: t.skipField();
+		}
 		return e;
 	}, proto.widgetgrid.v1.RequestLoginCodeRequest.prototype.serializeBinary = function() {
 		var e = new t.BinaryWriter();
 		return proto.widgetgrid.v1.RequestLoginCodeRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.RequestLoginCodeRequest.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RequestLoginCodeResponse.prototype.toObject = function(e) {
+	}, proto.widgetgrid.v1.RequestLoginCodeRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getRequestedAtMs(), n !== 0 && t.writeInt64(1, n);
+	}, proto.widgetgrid.v1.RequestLoginCodeRequest.prototype.getRequestedAtMs = function() {
+		return t.Message.getFieldWithDefault(this, 1, 0);
+	}, proto.widgetgrid.v1.RequestLoginCodeRequest.prototype.setRequestedAtMs = function(e) {
+		return t.Message.setProto3IntField(this, 1, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RequestLoginCodeResponse.prototype.toObject = function(e) {
 		return proto.widgetgrid.v1.RequestLoginCodeResponse.toObject(e, this);
 	}, proto.widgetgrid.v1.RequestLoginCodeResponse.toObject = function(e, t) {
 		var n = {};
@@ -5441,7 +5454,8 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 	}, t.exports = r.widgetgrid.v1;
 })), import_auth_pb = require_auth_pb(), import_auth_grpc_web_pb = require_auth_grpc_web_pb(), client = new import_auth_grpc_web_pb.AuthServicePromiseClient("http://localhost:8080"), authClient = {
 	async requestLoginCode() {
-		await client.requestLoginCode(new import_auth_pb.RequestLoginCodeRequest(), {});
+		let e = new import_auth_pb.RequestLoginCodeRequest();
+		e.setRequestedAtMs(Date.now()), await client.requestLoginCode(e, {});
 	},
 	async verifyLoginCode(e) {
 		let t = new import_auth_pb.VerifyLoginCodeRequest();

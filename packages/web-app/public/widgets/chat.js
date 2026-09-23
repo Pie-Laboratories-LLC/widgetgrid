@@ -1,4 +1,4 @@
-(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-chat[data-v-ddad20fd]{box-sizing:border-box;height:100%}.chat-status[data-v-ddad20fd]{color:#666;padding:24px}.chat-shell[data-v-ddad20fd]{height:100%;display:flex}.chat-list[data-v-ddad20fd]{box-sizing:border-box;border-right:1px solid #ddd;flex:none;width:220px;overflow-y:auto}.chat-list-item[data-v-ddad20fd]{cursor:pointer;border-bottom:1px solid #eee;justify-content:space-between;align-items:center;gap:8px;padding:12px 16px;display:flex}.chat-list-item[data-v-ddad20fd]:hover{background:#f7f5fa}.chat-list-item-active[data-v-ddad20fd]{background:#efe9f7}.chat-list-label[data-v-ddad20fd]{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.chat-list-label-unread[data-v-ddad20fd]{font-weight:700}.chat-rename-btn[data-v-ddad20fd]{color:#999;cursor:pointer;background:0 0;border:none;flex:none;padding:2px 4px}.chat-rename-btn[data-v-ddad20fd]:hover{color:#333}.chat-rename-input[data-v-ddad20fd]{box-sizing:border-box;width:100%;padding:4px 6px}.chat-thread[data-v-ddad20fd]{flex-direction:column;flex:1;min-width:0;display:flex}.chat-thread-visitor[data-v-ddad20fd]{height:100%}.chat-name-prompt[data-v-ddad20fd]{color:#666;border-bottom:1px solid #ddd;flex:none;align-items:center;gap:8px;padding:12px 24px;font-size:.85rem;display:flex}.chat-name-input[data-v-ddad20fd]{border:1px solid #ccc;border-radius:6px;flex:1;max-width:220px;padding:6px 10px;font-size:.9rem}.chat-messages[data-v-ddad20fd]{flex-direction:column;flex:1;gap:10px;padding:24px;display:flex;overflow-y:auto}.chat-message[data-v-ddad20fd]{background:#f0f0f0;border-radius:12px;max-width:70%;padding:8px 12px}.chat-message-body[data-v-ddad20fd]{white-space:pre-wrap;word-break:break-word;margin:0}.chat-message-mine[data-v-ddad20fd]{color:#f4ead9;background:#150a2e;align-self:flex-end}.chat-message-theirs[data-v-ddad20fd]{align-self:flex-start}.chat-composer[data-v-ddad20fd]{border-top:1px solid #ddd;flex:none;gap:8px;padding:16px 24px;display:flex}.chat-input[data-v-ddad20fd]{border:1px solid #ccc;border-radius:6px;flex:1;padding:10px 12px;font-size:1rem}.chat-send[data-v-ddad20fd]{color:#f4ead9;cursor:pointer;background:#150a2e;border:none;border-radius:6px;padding:10px 16px;font-weight:600}.chat-send[data-v-ddad20fd]:disabled{opacity:.5;cursor:default}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
+(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-chat[data-v-67d3cd05]{box-sizing:border-box;height:100%}.chat-status[data-v-67d3cd05]{color:#666;padding:24px}.chat-shell[data-v-67d3cd05]{height:100%;display:flex}.chat-list[data-v-67d3cd05]{box-sizing:border-box;border-right:1px solid #ddd;flex:none;width:220px;overflow-y:auto}.chat-list-item[data-v-67d3cd05]{cursor:pointer;border-bottom:1px solid #eee;justify-content:space-between;align-items:center;gap:8px;padding:12px 16px;display:flex}.chat-list-item[data-v-67d3cd05]:hover{background:#f7f5fa}.chat-list-item-active[data-v-67d3cd05]{background:#efe9f7}.chat-list-label[data-v-67d3cd05]{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.chat-list-label-unread[data-v-67d3cd05]{font-weight:700}.chat-rename-btn[data-v-67d3cd05]{color:#999;cursor:pointer;background:0 0;border:none;flex:none;padding:2px 4px}.chat-rename-btn[data-v-67d3cd05]:hover{color:#333}.chat-rename-input[data-v-67d3cd05]{box-sizing:border-box;width:100%;padding:4px 6px}.chat-thread[data-v-67d3cd05]{flex-direction:column;flex:1;min-width:0;display:flex}.chat-thread-visitor[data-v-67d3cd05]{height:100%}.chat-name-prompt[data-v-67d3cd05]{color:#666;border-bottom:1px solid #ddd;flex:none;align-items:center;gap:8px;padding:12px 24px;font-size:.85rem;display:flex}.chat-name-input[data-v-67d3cd05]{border:1px solid #ccc;border-radius:6px;flex:1;max-width:220px;padding:6px 10px;font-size:.9rem}.chat-messages[data-v-67d3cd05]{flex-direction:column;flex:1;gap:10px;padding:24px;display:flex;overflow-y:auto}.chat-message[data-v-67d3cd05]{background:#f0f0f0;border-radius:12px;max-width:70%;padding:8px 12px}.chat-message-body[data-v-67d3cd05]{white-space:pre-wrap;word-break:break-word;margin:0}.chat-message-mine[data-v-67d3cd05]{color:#f4ead9;background:#150a2e;align-self:flex-end}.chat-message-theirs[data-v-67d3cd05]{align-self:flex-start}.chat-composer[data-v-67d3cd05]{border-top:1px solid #ddd;flex:none;gap:8px;padding:16px 24px;display:flex}.chat-input[data-v-67d3cd05]{border:1px solid #ccc;border-radius:6px;flex:1;padding:10px 12px;font-size:1rem}.chat-send[data-v-67d3cd05]{color:#f4ead9;cursor:pointer;background:#150a2e;border:none;border-radius:6px;padding:10px 16px;font-weight:600}.chat-send[data-v-67d3cd05]:disabled{opacity:.5;cursor:default}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
 import { Fragment, createCommentVNode, createElementBlock, createElementVNode, normalizeClass, openBlock, renderList, toDisplayString, vModelText, withDirectives, withKeys, withModifiers } from "vue";
 //#region \0rolldown/runtime.js
 var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t.exports), require_google_protobuf = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -5877,19 +5877,32 @@ var chatClient = {
 		t.Message.initialize(this, e, 0, -1, null, null);
 	}, n.inherits(proto.widgetgrid.v1.OwnerPresenceEvent, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.OwnerPresenceEvent.displayName = "proto.widgetgrid.v1.OwnerPresenceEvent"), t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RequestLoginCodeRequest.prototype.toObject = function(e) {
 		return proto.widgetgrid.v1.RequestLoginCodeRequest.toObject(e, this);
-	}, proto.widgetgrid.v1.RequestLoginCodeRequest.toObject = function(e, t) {
-		var n = {};
-		return e && (n.$jspbMessageInstance = t), n;
+	}, proto.widgetgrid.v1.RequestLoginCodeRequest.toObject = function(e, n) {
+		var r = { requestedAtMs: t.Message.getFieldWithDefault(n, 1, 0) };
+		return e && (r.$jspbMessageInstance = n), r;
 	}), proto.widgetgrid.v1.RequestLoginCodeRequest.deserializeBinary = function(e) {
 		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RequestLoginCodeRequest();
 		return proto.widgetgrid.v1.RequestLoginCodeRequest.deserializeBinaryFromReader(r, n);
 	}, proto.widgetgrid.v1.RequestLoginCodeRequest.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readInt64();
+				e.setRequestedAtMs(n);
+				break;
+			default: t.skipField();
+		}
 		return e;
 	}, proto.widgetgrid.v1.RequestLoginCodeRequest.prototype.serializeBinary = function() {
 		var e = new t.BinaryWriter();
 		return proto.widgetgrid.v1.RequestLoginCodeRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.RequestLoginCodeRequest.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RequestLoginCodeResponse.prototype.toObject = function(e) {
+	}, proto.widgetgrid.v1.RequestLoginCodeRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getRequestedAtMs(), n !== 0 && t.writeInt64(1, n);
+	}, proto.widgetgrid.v1.RequestLoginCodeRequest.prototype.getRequestedAtMs = function() {
+		return t.Message.getFieldWithDefault(this, 1, 0);
+	}, proto.widgetgrid.v1.RequestLoginCodeRequest.prototype.setRequestedAtMs = function(e) {
+		return t.Message.setProto3IntField(this, 1, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RequestLoginCodeResponse.prototype.toObject = function(e) {
 		return proto.widgetgrid.v1.RequestLoginCodeResponse.toObject(e, this);
 	}, proto.widgetgrid.v1.RequestLoginCodeResponse.toObject = function(e, t) {
 		var n = {};
@@ -6081,10 +6094,20 @@ var chatClient = {
 	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.subscribeOwnerPresence = function(e, t) {
 		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.AuthService/SubscribeOwnerPresence", e, t || {}, c);
 	}, t.exports = r.widgetgrid.v1;
-})), import_auth_pb = require_auth_pb(), import_auth_grpc_web_pb = require_auth_grpc_web_pb(), client = new import_auth_grpc_web_pb.AuthServicePromiseClient("http://localhost:8080");
+})), import_auth_pb = require_auth_pb(), import_auth_grpc_web_pb = require_auth_grpc_web_pb(), client = new import_auth_grpc_web_pb.AuthServicePromiseClient("http://localhost:8080"), RECONNECT_DELAY_MS = 2e3;
 function subscribeOwnerPresence(e) {
-	let t = client.subscribeOwnerPresence(new import_auth_pb.SubscribeOwnerPresenceRequest(), {});
-	return t.on("data", (t) => e(t.toObject().online)), () => t.cancel();
+	let t = !1, n = null, r = null;
+	function i() {
+		t || r || (r = setTimeout(() => {
+			r = null, o();
+		}, RECONNECT_DELAY_MS));
+	}
+	function o() {
+		n = client.subscribeOwnerPresence(new import_auth_pb.SubscribeOwnerPresenceRequest(), {}), n.on("data", (t) => e(t.toObject().online)), n.on("error", i), n.on("end", i);
+	}
+	return o(), () => {
+		t = !0, r && clearTimeout(r), n.cancel();
+	};
 }
 //#endregion
 //#region \0plugin-vue:export-helper
@@ -6123,21 +6146,27 @@ var _plugin_vue_export_helper_default = (e, t) => {
 		return this.ownerOnline ? "Say hello — Matt will get back to you here." : "Leave a message for Matt.";
 	} },
 	created() {
-		window.addEventListener("widgetgrid:chat-event", this.onChatEvent), this.isOwner ? this.loadChats() : (this.unsubscribePresence = subscribeOwnerPresence((e) => {
-			this.ownerOnline = e;
-		}), chatClient.startOrGetChat().then((e) => (this.myChatId = e.id, AUTO_LABEL.test(e.label) || (this.visitorName = e.label), this.loadMessages(e.id))).then(() => {
-			this.status = "ready";
-		}).catch(() => {
-			this.status = "error";
-		}));
+		window.addEventListener("widgetgrid:chat-event", this.onChatEvent), window.addEventListener("widgetgrid:identity-changed", this.onIdentityChanged), document.addEventListener("visibilitychange", this.onVisibilityChange), this.initForIdentity();
 	},
 	beforeUnmount() {
-		window.removeEventListener("widgetgrid:chat-event", this.onChatEvent), this.unsubscribePresence?.();
+		window.removeEventListener("widgetgrid:chat-event", this.onChatEvent), window.removeEventListener("widgetgrid:identity-changed", this.onIdentityChanged), document.removeEventListener("visibilitychange", this.onVisibilityChange), this.unsubscribePresence?.();
 	},
 	updated() {
 		this.scrollToBottom();
 	},
 	methods: {
+		initForIdentity() {
+			this.isOwner ? this.loadChats() : (this.unsubscribePresence = subscribeOwnerPresence((e) => {
+				this.ownerOnline = e;
+			}), chatClient.startOrGetChat().then((e) => (this.myChatId = e.id, AUTO_LABEL.test(e.label) || (this.visitorName = e.label), this.loadMessages(e.id))).then(() => {
+				this.status = "ready";
+			}).catch(() => {
+				this.status = "error";
+			}));
+		},
+		onIdentityChanged() {
+			this.unsubscribePresence?.(), this.unsubscribePresence = null, this.isOwner = !!getOwnerToken(), this.status = "loading", this.chats = [], this.selectedChatId = null, this.myChatId = null, this.messages = [], this.renamingChatId = null, this.renameValue = "", this.visitorName = "", this.ownerOnline = !1, this.initForIdentity();
+		},
 		async loadChats() {
 			try {
 				let e = await chatClient.listChats();
@@ -6189,6 +6218,9 @@ var _plugin_vue_export_helper_default = (e, t) => {
 				if (!this.myChatId) return;
 				await this.loadMessages(this.myChatId), await chatClient.markRead(this.myChatId);
 			}
+		},
+		async onVisibilityChange() {
+			document.visibilityState === "visible" && (this.isOwner ? (await this.loadChats(), this.selectedChatId && await this.loadMessages(this.selectedChatId)) : this.myChatId && await this.loadMessages(this.myChatId));
 		},
 		scrollToBottom() {
 			let e = this.$refs.messagesEl;
@@ -6286,6 +6318,6 @@ function _sfc_render(e, t, n, r, i, o) {
 		}, "Send", 8, _hoisted_19)], 32)
 	], 64))]))]);
 }
-var ChatWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-ddad20fd"]]);
+var ChatWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-67d3cd05"]]);
 //#endregion
 export { ChatWidget_default as default };
