@@ -35,6 +35,10 @@ WORKDIR /app
 # guess, which wouldn't exist inside this container regardless.
 ENV SOLITAIRE_REPO_DIR=/app/widgets/solitaire/.vendor-src
 
+# Same reasoning, for widgets/embuscade's own sibling repo
+# (~/GIT/bolo-server -- see widgets/embuscade/scripts/vendor-embuscade.mjs).
+ENV EMBUSCADE_REPO_DIR=/app/widgets/embuscade/.vendor-src
+
 COPY . .
 # No --ignore-scripts here (unlike packages/server/Dockerfile): grpc-tools'
 # postinstall is what makes grpc_tools_node_protoc available, and root

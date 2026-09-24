@@ -930,7 +930,7 @@
        {
         "Ref": "AWS::URLSuffix"
        },
-       "/cdk-hnb659fds-assets-913318903667-us-east-1/f88b3a28629921b1bc6112edd44c1366640eb0ed0ad91282f51935e6399f4996.json"
+       "/cdk-hnb659fds-assets-913318903667-us-east-1/677910ba681504690e211f2110c39b318a2c4675ba9d10f747c29f7bc1c07940.json"
       ]
      ]
     }
@@ -968,7 +968,7 @@
        {
         "Ref": "AWS::URLSuffix"
        },
-       "/cdk-hnb659fds-assets-913318903667-us-east-1/97291e5d560b3579f3b8bc253a8eb7655800be96159d01d46d0d113067fd6bce.json"
+       "/cdk-hnb659fds-assets-913318903667-us-east-1/84a7db4bb83b7cef70cbd29ca50ba09593a72d1fe59602d84d899720f45faefe.json"
       ]
      ]
     }
@@ -1614,6 +1614,21 @@
     "aws:cdk:path": "WidgetgridEksStack/StaticRepository/Resource"
    }
   },
+  "EmbuscadeRepository73CC49B0": {
+   "Type": "AWS::ECR::Repository",
+   "Properties": {
+    "EmptyOnDelete": true,
+    "ImageScanningConfiguration": {
+     "ScanOnPush": true
+    },
+    "RepositoryName": "embuscade-server"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/EmbuscadeRepository/Resource"
+   }
+  },
   "EnvoyTargetGroup2494AD89": {
    "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
    "Properties": {
@@ -1638,7 +1653,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/5VSwWobMRD9lvgsq+kmKaW3jVOKIRDjza2UMtZONmNrpUUzcmLE/nvRCiebHgo9zXtvRk/wZipdfbnRlxfwwkvTHpaWdjo1Auag4IV/JzywTisbWTCo2hhk/u4knNTqyc1p3bbeTeIZbHy7btEJyalm9oZAyLtREfQ6bb3FPDTVjbdkTuXNGa0dCziDm+CfyOKo0FQ6NWhiIDn9CD4Oeezfwtp1AZnVPURnnh+xHyzI9O9HZVQQxbMBS67TqY7im0LefP/WRsVXOt1Gc0DJ/YJ+pkVPr+QW3xbzQHOSfKWnFusymg3v0KLgw26PRngx/lKl9Z7CnP+Hd3nQCAj26CbrHGDQaYuDZxJfFvjORoUWWMhYD+0OLDhDrjtWOtXDYMlMu3uE0KG8RTKj46hWkcX3W2Qfgym7PeO5uPKupWyWyUOUIU7xlYvLFwABeszH9tFwE/yRWgy3wKhqZpRGoCPXjcr5FvWePx2ra/35q7682DPRMkQn1KPelvoHsW/eM+gCAAA="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/5VSwW7bMAz9luasaJ3b7rCbmxVDgAEN4t6GYWBk1mUiS4ZIpQsE//sgC2ndHgr0xPceqSfgkZWuvt3oywt45qVpD0tLO50aAXNQ8Mx/Ex5Yp5WNLBhUbQwy3zkJJ7V6dHNat613k3gGG9+uW3RCcqqZvSEQ8m5UBL1OW28xD0114y2ZU3lzRmvHAs7gJvhHsjgqNJVODZoYSE4/g49DHvtYWLsuILP6BdGZpwfsBwsy/ftWGRVE8WzAkut0qqP4ppAX3/faqPhKp9toDii5X9DvtOjpH7nF98U80JwkX+mpxbqMZsMfaFHwfrdHI7wY/6jSek1hzj/hXR40AoI9usk6Bxh02uLgmcSXBb6yUaEFFjLWQ7sDC86Q646VTvUwWDLT7h4gdCgvkczoOKpVZPH9FtnHYMpuz3gurrxrKZtlch9liFN85eLyBUCAHvOxvTXcBH+kFsMtMKqaGaUR6Mh1o3K+Rb3nL8fqWldf9eXFnomWITqhHvW21P97gBtV6AIAAA=="
    },
    "Metadata": {
     "aws:cdk:path": "WidgetgridEksStack/CDKMetadata/Default"
@@ -1769,6 +1784,56 @@
       "/",
       {
        "Ref": "StaticRepositoryF1118F58"
+      }
+     ]
+    ]
+   }
+  },
+  "EmbuscadeRepositoryUri": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      {
+       "Fn::Select": [
+        4,
+        {
+         "Fn::Split": [
+          ":",
+          {
+           "Fn::GetAtt": [
+            "EmbuscadeRepository73CC49B0",
+            "Arn"
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      ".dkr.ecr.",
+      {
+       "Fn::Select": [
+        3,
+        {
+         "Fn::Split": [
+          ":",
+          {
+           "Fn::GetAtt": [
+            "EmbuscadeRepository73CC49B0",
+            "Arn"
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      ".",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "EmbuscadeRepository73CC49B0"
       }
      ]
     ]

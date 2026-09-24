@@ -21,7 +21,7 @@
               "constructFqn": "aws-cdk-lib.Stack",
               "libraryVersion": "2.265.0",
               "stackTraces": [
-                "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:45: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:45:1)",
+                "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:45: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:45:1)",
                 "...node internals..."
               ]
             },
@@ -30,7 +30,7 @@
               "constructFqn": "aws-cdk-lib.Stack",
               "libraryVersion": "2.265.0",
               "stackTraces": [
-                "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
+                "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
                 "...node internals..."
               ]
             }
@@ -38,7 +38,7 @@
           "acknowledgedId": "CloudFormation-Validate::W2506",
           "reason": "SSM parameter is typed as String instead of AWS::SSM::Parameter::Value<AWS::EC2::Image::Id> for historical reasons.",
           "acknowledgedAt": "WidgetgridProdEksStack/Cluster/NodeGroup/LaunchTemplate",
-          "acknowledgedStackTrace": "    ...WrappedClass.<anonymous> in aws-cdk-lib...\n    at new ProdEksStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/prod-eks-stack.js:75:31)"
+          "acknowledgedStackTrace": "    ...WrappedClass.<anonymous> in aws-cdk-lib...\n    at new ProdEksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-eks-stack.js:75:31)"
         }
       ]
     }

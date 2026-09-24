@@ -91,46 +91,46 @@
         }
       }
     },
-    "588d6cac9b11a4485a902627fe0396d1ea2d2494aaf205c4d56e893b3fdf790a": {
+    "e827162ecbd015a4d6742e4fc3c1ebd7181d3802bf9d183f73ca2d58624d67c2": {
       "displayName": "@aws-cdk--aws-eks.ClusterResourceProvider Nested Stack Template",
       "source": {
         "path": "WidgetgridProdEksStackawscdkawseksClusterResourceProvider222BBA33.nested.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "913318903667-us-east-1-5cd22268": {
+        "913318903667-us-east-1-f4859501": {
           "bucketName": "cdk-hnb659fds-assets-913318903667-us-east-1",
-          "objectKey": "588d6cac9b11a4485a902627fe0396d1ea2d2494aaf205c4d56e893b3fdf790a.json",
+          "objectKey": "e827162ecbd015a4d6742e4fc3c1ebd7181d3802bf9d183f73ca2d58624d67c2.json",
           "region": "us-east-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-file-publishing-role-913318903667-us-east-1"
         }
       }
     },
-    "a1c0931cadddce248e566b6731f147de61b75035ff6d0f3cbe2c0f2f6a873b1b": {
+    "ca1826ffc795d69ac8aa2c096a8b86535281c3c8f75191ba45a99f54f314b312": {
       "displayName": "@aws-cdk--aws-eks.KubectlProvider Nested Stack Template",
       "source": {
         "path": "WidgetgridProdEksStackawscdkawseksKubectlProvider3D908B05.nested.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "913318903667-us-east-1-a8d726f1": {
+        "913318903667-us-east-1-b74bb07e": {
           "bucketName": "cdk-hnb659fds-assets-913318903667-us-east-1",
-          "objectKey": "a1c0931cadddce248e566b6731f147de61b75035ff6d0f3cbe2c0f2f6a873b1b.json",
+          "objectKey": "ca1826ffc795d69ac8aa2c096a8b86535281c3c8f75191ba45a99f54f314b312.json",
           "region": "us-east-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-file-publishing-role-913318903667-us-east-1"
         }
       }
     },
-    "678a2f8625cdf8432da096e56e95e06384358581eec317c0e4fbf2257499cc38": {
+    "924f4506fac2669e6a7a7ee1e87d047e4e167a45c76d5a7f77b06822d9541bac": {
       "displayName": "WidgetgridProdEksStack Template",
       "source": {
         "path": "WidgetgridProdEksStack.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "913318903667-us-east-1-7a4a27d8": {
+        "913318903667-us-east-1-659738c4": {
           "bucketName": "cdk-hnb659fds-assets-913318903667-us-east-1",
-          "objectKey": "678a2f8625cdf8432da096e56e95e06384358581eec317c0e4fbf2257499cc38.json",
+          "objectKey": "924f4506fac2669e6a7a7ee1e87d047e4e167a45c76d5a7f77b06822d9541bac.json",
           "region": "us-east-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-file-publishing-role-913318903667-us-east-1"
         }

@@ -545,8 +545,12 @@
     ],
     "DefaultActions": [
      {
-      "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:913318903667:targetgroup/Widget-Envoy-NISWD9VZB3SI/3618a14fd60dfef8",
-      "Type": "forward"
+      "FixedResponseConfig": {
+       "ContentType": "text/plain",
+       "MessageBody": "widgetgrid prod -- nothing deployed here yet",
+       "StatusCode": "200"
+      },
+      "Type": "fixed-response"
      }
     ],
     "LoadBalancerArn": {
@@ -688,7 +692,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/21QTWvCQBD9Ld7XrU1r6TWVIkJpQ1K8lslktKPrbtidVSTkv5dEa1Load4Xw5tJdPI017MJnMIUq/3UcKmbQgD3Ck7hqyFMdLOuUS02dp0tVBZLw1jE0pJ02oByF4U+oTQ06IOWhuCQQdjZW7gDr6usG+8gSxA6wVllno8gNCxeWSFv6Ra4NLmyVATw+0BWVEEYPct56V2s+w5joVVkIAijcVCVYMAi2+0x0U1a14axr/bmoHrpPfLdhj98nOMgZK+ZX/yPn8fLN8a8Vb47fv6gmzQndL7qH9KjgqRVSF54022iA1jYktfNYtC69Ii2rcopuOixdz6i1FFaZV1Fehfujsmjvn/Ws8kuME99tMIH0vll/gDhrA/D/QEAAA=="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/21QTWvCQBD9Ld7XrU1r76mICKUNSfFaJpPRjq67YXdWkZD/XhKtSaGneV8MbybRyctczyZwDlOsDlPDpW4KATwoOIevhjDRzaZGtdjaTbZQWSwNYxFLS9JpA8pdFPqE0tCgD1oagkMGYWfv4Q4s11k33kFWIHSGi8o8n0BoWLy2Qt7SPXBtcmOpCOD3kayogjB6lsvKu1j3HcZCq8hAEEbjoCrBgEW2u1Oim7SuDWNf7c1B9dp75LsNf/g4x0HI3jK/+B8/j9dvjHmrfHf8/Ek3aU7ofNU/pEcFSauQvPC220RHsLAjr5vFoHXpEW1blVNw0WPvfESpo7TKuor0PjyckmedPOrZZB+Ypz5a4SPp/Dp/ACtDyqX9AQAA"
    },
    "Metadata": {
     "aws:cdk:path": "WidgetgridProdGatewayStack/CDKMetadata/Default"

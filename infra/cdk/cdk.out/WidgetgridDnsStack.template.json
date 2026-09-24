@@ -56,7 +56,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02KsQ7CIBRFv6U7PCta497ZhXY3CK+G1kICD9uE8O/GMOh07rk5AsSlg7ZRW+TaLPxlH5AHUnphEqNPQSNTW7xnjYHsZLUiXJVTTwyQ+9/H+sn9aWHBJ8LuBPm2S9Q+mG9R14DExp2qlFKY8wZhjoe3OMPxCm0zR2t5SI7siiArP5QEViOqAAAA"
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02KQQ7CIBBFz9L9MFa0XqBrN617gzA1tBYSGGwTwt2NYaGr99/PkygvHbaN2qLQZhEv+8A8stILDBR9CppAbfGeNQW2k9WKaVVOPSlg7n8f9JP70wLBJ6buhPm6D6R9MN+irpEYbjtXKaWA84Zwjoe3PKM8YtvM0VoRkmO7Eg6VH17rk0WqAAAA"
    },
    "Metadata": {
     "aws:cdk:path": "WidgetgridDnsStack/CDKMetadata/Default"

@@ -1,10 +1,11 @@
 # EKS variant of local-k8s/manifests/envoy-gateway.yaml. Real differences:
 #
-# 1. connect-service-upstreams lists TWO upstreams (Consul's annotation
+# 1. connect-service-upstreams lists THREE upstreams (Consul's annotation
 #    syntax supports a comma-separated list): widgetgrid-server:50051 (as
-#    before) AND static-server:8081 (new -- see
-#    infra/eks/manifests/static-server.yaml and
-#    infra/eks/envoy/envoy-eks.yaml's widgetgrid_static cluster).
+#    before), static-server:8081 (see infra/eks/manifests/static-server.yaml
+#    and infra/eks/envoy/envoy-eks.yaml's widgetgrid_static cluster), and
+#    embuscade-server:8082 (see infra/eks/manifests/embuscade-server.yaml and
+#    that same file's embuscade_backend cluster).
 # 2. The envoy-gateway-config ConfigMap (still created by
 #    infra/eks/deploy.sh, not this file, same reasoning as the local-k8s
 #    version) wraps infra/eks/envoy/envoy-eks.yaml, which routes gRPC-Web
@@ -33,7 +34,7 @@ spec:
         app: envoy-gateway
       annotations:
         consul.hashicorp.com/connect-inject: "true"
-        consul.hashicorp.com/connect-service-upstreams: "widgetgrid-server:50051,static-server:8081"
+        consul.hashicorp.com/connect-service-upstreams: "widgetgrid-server:50051,static-server:8081,embuscade-server:8082"
         # Transparent proxy is cluster-default (connectInject.transparentProxy
         # in infra/eks/consul-values.yaml), which also intercepts *inbound*
         # traffic on this pod's port and requires mesh mTLS -- fine for

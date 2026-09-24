@@ -27,6 +27,12 @@
 #    justification for the equivalent Consul-side timeouts) -- an
 #    Envoy-level cutoff at THIS hop would undo that work regardless of what
 #    Consul-side config says.
+#
+# /embuscade-ws (added alongside the above, same reasoning as
+# local-k8s/envoy/envoy-local.yaml's own copy): a WebSocket, not gRPC-Web --
+# upgrade_configs below lets the upgrade through, and the route's own
+# timeout: 0s keeps the default 15s route timeout from killing every game
+# after 15s. No CORS needed on it either, same reasoning as that file.
 static_resources:
   listeners:
     - name: public_listener
@@ -39,6 +45,8 @@ static_resources:
                 "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
                 stat_prefix: ingress_http
                 codec_type: AUTO
+                upgrade_configs:
+                  - upgrade_type: websocket
                 route_config:
                   name: local_route
                   virtual_hosts:
@@ -55,6 +63,8 @@ static_resources:
                           route: { cluster: widgetgrid_backend, timeout: 0s }
                         - match: { prefix: "/widgetgrid.v1.ChatService" }
                           route: { cluster: widgetgrid_backend, timeout: 0s }
+                        - match: { prefix: "/embuscade-ws" }
+                          route: { cluster: embuscade_backend, timeout: 0s }
                         # Everything else: the static SPA/widget bundles,
                         # served by static-server.
                         - match: { prefix: "/" }
@@ -101,6 +111,21 @@ static_resources:
               - endpoint:
                   address:
                     socket_address: { address: 127.0.0.1, port_value: 8081 }
+
+    # HTTP/1.1 (Envoy's default -- no http2_protocol_options): WebSocket
+    # upgrades from HTTP/1.1. Same pattern as the two clusters above, for
+    # embuscade-server (see infra/eks/manifests/embuscade-server.yaml).
+    - name: embuscade_backend
+      connect_timeout: 5s
+      type: STATIC
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: embuscade_backend
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address: { address: 127.0.0.1, port_value: 8082 }
 
 admin:
   address:

@@ -3,7 +3,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     },
@@ -11,17 +11,17 @@
       "type": "aws:cdk:warning",
       "data": "No cross-stack-reference strength configured, defaulting to \"strong\". We recommend you set feature flag \"@aws-cdk/core:defaultCrossStackReferences\" to \"both\", then deploy everywhere, then set it to \"weak\". Alternatively, set it to \"strong\" explicitly to lock in the current producer-protecting behavior. (See: https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/README.md#reference-strength) [ack: @aws-cdk/core:crossStackReferencesDefaultStrong]",
       "trace": [
-        "Annotations.addMessage (/home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/annotations.js:1:3506)",
-        "Annotations.addWarningV2 (/home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/annotations.js:1:2194)",
-        "resolveValue (/home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/private/refs.js:1:6980)",
-        "resolveReferences (/home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/private/refs.js:1:4848)",
-        "prepareApp (/home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/private/prepare-app.js:1:1503)",
-        "synthesize (/home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/private/synthesis.js:1:2625)",
-        "App.synth (/home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/stage.js:1:5061)",
-        "App.synth (/home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/app.js:1:5050)",
-        "process.<anonymous> (/home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/app.js:1:3936)",
-        "Object.onceWrapper (node:events:631:26)",
-        "process.emit (node:events:509:28)"
+        "Annotations.addMessage (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/annotations.js:1:3506)",
+        "Annotations.addWarningV2 (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/annotations.js:1:2194)",
+        "resolveValue (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/private/refs.js:1:6980)",
+        "resolveReferences (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/private/refs.js:1:4848)",
+        "prepareApp (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/private/prepare-app.js:1:1503)",
+        "synthesize (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/private/synthesis.js:1:2625)",
+        "App.synth (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/stage.js:1:5061)",
+        "App.synth (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/app.js:1:5050)",
+        "process.<anonymous> (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/app.js:1:3936)",
+        "process.wrapper (node:events:639:12)",
+        "process.emit (node:events:514:28)"
       ]
     }
   ],
@@ -33,8 +33,8 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:188:5)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:188:5)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }
@@ -47,8 +47,8 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:189:5)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:189:5)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }
@@ -61,8 +61,8 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:190:5)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:190:5)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }
@@ -102,8 +102,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }
@@ -117,8 +117,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }
@@ -132,8 +132,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }
@@ -147,8 +147,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new ApplicationLoadBalancer2 in aws-cdk-lib...",
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:57:17)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:57:17)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }
@@ -162,8 +162,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new ARecord2 in aws-cdk-lib...",
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:95:5)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:95:5)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }
@@ -177,8 +177,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new UserPool2 in aws-cdk-lib...",
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:103:22)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:103:22)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }
@@ -192,8 +192,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new UserPoolIdentityProviderSaml2 in aws-cdk-lib...",
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:122:36)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:122:36)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }
@@ -271,7 +271,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:268 in aws-cdk-lib...",
+        ".../home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:268 in aws-cdk-lib...",
         "Array.forEach (:)",
         "...aws-cdk-lib..."
       ]
@@ -285,7 +285,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:268 in aws-cdk-lib...",
+        ".../home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:268 in aws-cdk-lib...",
         "Array.forEach (:)",
         "...aws-cdk-lib..."
       ]
@@ -299,7 +299,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:268 in aws-cdk-lib...",
+        ".../home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:268 in aws-cdk-lib...",
         "Array.forEach (:)",
         "...aws-cdk-lib..."
       ]
@@ -313,11 +313,11 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:208 in aws-cdk-lib...",
+        ".../home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:208 in aws-cdk-lib...",
         "Array.forEach (:)",
         "...new Vpc2 in aws-cdk-lib...",
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }
@@ -331,8 +331,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }
@@ -346,8 +346,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }
@@ -360,7 +360,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:268 in aws-cdk-lib...",
+        ".../home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:268 in aws-cdk-lib...",
         "Array.forEach (:)",
         "...aws-cdk-lib..."
       ]
@@ -374,7 +374,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:268 in aws-cdk-lib...",
+        ".../home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:268 in aws-cdk-lib...",
         "Array.forEach (:)",
         "...aws-cdk-lib..."
       ]
@@ -388,7 +388,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:268 in aws-cdk-lib...",
+        ".../home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:268 in aws-cdk-lib...",
         "Array.forEach (:)",
         "...aws-cdk-lib..."
       ]
@@ -402,11 +402,11 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:208 in aws-cdk-lib...",
+        ".../home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:208 in aws-cdk-lib...",
         "Array.forEach (:)",
         "...new Vpc2 in aws-cdk-lib...",
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }
@@ -419,7 +419,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:270 in aws-cdk-lib...",
+        ".../home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:270 in aws-cdk-lib...",
         "Array.forEach (:)",
         "...aws-cdk-lib..."
       ]
@@ -433,7 +433,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:270 in aws-cdk-lib...",
+        ".../home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:270 in aws-cdk-lib...",
         "Array.forEach (:)",
         "...aws-cdk-lib..."
       ]
@@ -447,7 +447,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:270 in aws-cdk-lib...",
+        ".../home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:270 in aws-cdk-lib...",
         "Array.forEach (:)",
         "...aws-cdk-lib..."
       ]
@@ -462,8 +462,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }
@@ -476,7 +476,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:270 in aws-cdk-lib...",
+        ".../home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:270 in aws-cdk-lib...",
         "Array.forEach (:)",
         "...aws-cdk-lib..."
       ]
@@ -490,7 +490,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:270 in aws-cdk-lib...",
+        ".../home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:270 in aws-cdk-lib...",
         "Array.forEach (:)",
         "...aws-cdk-lib..."
       ]
@@ -504,7 +504,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        ".../home/kazaak/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:270 in aws-cdk-lib...",
+        ".../home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:270 in aws-cdk-lib...",
         "Array.forEach (:)",
         "...aws-cdk-lib..."
       ]
@@ -519,8 +519,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }
@@ -534,8 +534,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new ApplicationLoadBalancer2 in aws-cdk-lib...",
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:57:17)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:57:17)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }
@@ -549,7 +549,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:88:9)"
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:88:9)"
       ]
     }
   ],
@@ -562,8 +562,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:175:9)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:175:9)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }
@@ -577,8 +577,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.addDomain in aws-cdk-lib...",
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:113:37)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:113:37)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }
@@ -592,8 +592,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.addClient in aws-cdk-lib...",
-        "new DevGatewayStack (file:///home/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:136:37)",
-        "file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:136:37)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
         "...node internals..."
       ]
     }

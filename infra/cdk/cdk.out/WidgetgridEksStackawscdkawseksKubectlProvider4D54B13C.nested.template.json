@@ -226,7 +226,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02PwYrCQBBEv8V7p3Wju+xVBS96kAh7HTqTXmkzmYHpGYOE/LskurCnV3UoHlVi+fWJqwX1WtimLZzUOFCvZuBW8ZhrtsmdY7hLwxEcdXVDOByyt0mCh/2v/59P9OD4w1El+BF0bUiVk+J2Augad9m2nHakDEIdDlVwPA1nnoMT+5jqK40jzMNLoqv469tu3CQx1Kt1gtte905mL1SsIUfLYLOm0Jn47op/B0bwoWG86fJebvDjG1eLm4oUMfskHWP14hO3vcOvFQEAAA=="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02PwYrCQBBEv8V7p9eN7t5V8KIHieB16Ex6pZPJDEzPGCTk35dEF/b0qg7Fo0osv79wvaJBC9t0hZMaRxrUjNwpnnLNNrlLDA9pOIKjvm4Ix2P2NknwcPjx//OZnhxvHFWCn0A3hlQ5Ke5mgG5wn23HaU/KINTjWAXH83DhJTixz7m+0jTBMrwmuou/v+3GzRJDg1onuBv04GTxQsUacrQMNmsKvYnvrvh3YAIfGsZWPx7lFstPXK9aFSli9kl6xurFX31SBskVAQAA"
    },
    "Metadata": {
     "aws:cdk:path": "WidgetgridEksStack/@aws-cdk--aws-eks.KubectlProvider/CDKMetadata/Default"

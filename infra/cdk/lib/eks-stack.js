@@ -249,6 +249,18 @@ export class EksStack extends Stack {
       emptyOnDelete: true,
       removalPolicy: RemovalPolicy.DESTROY,
     });
+    // Embuscade (~/GIT/bolo-server): its own image, own repo -- same
+    // reasoning as splitting server/static above. Built straight from that
+    // repo's own Dockerfile (see infra/eks/deploy.sh), not from anything in
+    // this repo's build context, unlike the widget bundle it also ships
+    // (baked into StaticRepository's image via widgets/embuscade's vendor
+    // step -- see packages/static-server/Dockerfile's EMBUSCADE_REPO_DIR).
+    this.embuscadeRepository = new ecr.Repository(this, 'EmbuscadeRepository', {
+      repositoryName: 'embuscade-server',
+      imageScanOnPush: true,
+      emptyOnDelete: true,
+      removalPolicy: RemovalPolicy.DESTROY,
+    });
 
     // NodePort + ASG-attach, not the AWS Load Balancer Controller: avoids
     // installing/maintaining an extra controller (its own IAM policy,
@@ -271,6 +283,7 @@ export class EksStack extends Stack {
     new CfnOutput(this, 'ClusterName', { value: cluster.clusterName });
     new CfnOutput(this, 'ServerRepositoryUri', { value: this.serverRepository.repositoryUri });
     new CfnOutput(this, 'StaticRepositoryUri', { value: this.staticRepository.repositoryUri });
+    new CfnOutput(this, 'EmbuscadeRepositoryUri', { value: this.embuscadeRepository.repositoryUri });
     new CfnOutput(this, 'BlogBucketName', { value: this.blogBucket.bucketName });
     // Feed into BLOG_ASSETS_BASE_URL (infra/eks/manifests/widgetgrid-server.yaml)
     // -- the bucket's own public REST endpoint, not a website-hosting URL

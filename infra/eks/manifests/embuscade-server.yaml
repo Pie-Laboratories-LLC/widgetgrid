@@ -1,0 +1,70 @@
+# EKS variant of local-k8s/manifests/embuscade-server.yaml. Same real
+# difference as widgetgrid-server.yaml/static-server.yaml: image is
+# `${EMBUSCADE_IMAGE}` (a full ECR URI:tag), substituted by
+# infra/eks/deploy.sh via envsubst before apply -- not `embuscade-server:local`
+# loaded straight into a kind node. imagePullPolicy: Always, not
+# IfNotPresent, for the same reused-tag reasoning as those two files.
+#
+# Still in-memory/replicas: 1 (see local-k8s/manifests/embuscade-server.yaml's
+# own comment) -- nothing about running on EKS changes that.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: embuscade-server
+  namespace: widgetgrid
+  labels:
+    app: embuscade-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: embuscade-server
+  template:
+    metadata:
+      labels:
+        app: embuscade-server
+      annotations:
+        consul.hashicorp.com/connect-inject: "true"
+    spec:
+      # Same reasoning as widgetgrid-server.yaml/static-server.yaml -- no
+      # current collision, disabled defensively anyway.
+      enableServiceLinks: false
+      containers:
+        - name: embuscade-server
+          image: ${EMBUSCADE_IMAGE}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8082
+              name: ws
+          readinessProbe:
+            tcpSocket: { port: 8082 }
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket: { port: 8082 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: embuscade-server
+  namespace: widgetgrid
+spec:
+  selector:
+    app: embuscade-server
+  ports:
+    - port: 8082
+      targetPort: 8082
+      name: ws
+---
+# Same reasoning as local-k8s/manifests/embuscade-server.yaml's own
+# ServiceDefaults -- the WebSocket mesh hop needs tcp, not the default http,
+# and no Envoy-level route timeout to cut it off.
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: embuscade-server
+  namespace: widgetgrid
+spec:
+  protocol: tcp

@@ -50,6 +50,7 @@ BLOG_ASSETS_BASE_URL=$(echo "$eks_outputs" | jq -r '.[] | select(.OutputKey=="Bl
 ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
 SERVER_REPO="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/widgetgrid-server"
 STATIC_REPO="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/widgetgrid-static"
+EMBUSCADE_REPO="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/embuscade-server"
 
 rds_outputs=$(aws cloudformation describe-stacks --region "$REGION" --stack-name "$RDS_STACK" --query 'Stacks[0].Outputs' --output json)
 DB_SECRET_ARN=$(echo "$rds_outputs" | jq -r '.[] | select(.OutputKey=="DbSecretArn") | .OutputValue')
@@ -60,7 +61,7 @@ DB_SECRET_ARN=$(echo "$rds_outputs" | jq -r '.[] | select(.OutputKey=="DbSecretA
 # with a blank BLOG_ASSETS_BASE_URL and broken image links, no error
 # anywhere in the chain. Failing loudly here, before that template ever
 # gets rendered, is cheap insurance against the same mistake recurring.
-for var in CLUSTER_NAME SERVER_REPO STATIC_REPO TARGET_GROUP_ARN BLOG_S3_BUCKET BLOG_ASSETS_BASE_URL DB_SECRET_ARN; do
+for var in CLUSTER_NAME SERVER_REPO STATIC_REPO EMBUSCADE_REPO TARGET_GROUP_ARN BLOG_S3_BUCKET BLOG_ASSETS_BASE_URL DB_SECRET_ARN; do
   if [ -z "${!var}" ]; then
     echo "Missing/empty required value: $var (check WidgetgridEksStack/WidgetgridRdsStack outputs)" >&2
     exit 1
@@ -91,6 +92,7 @@ echo "== building + pushing images =="
 IMAGE_TAG="${ENV}-$(git rev-parse --short HEAD)-$(date +%s)"
 SERVER_IMAGE="${SERVER_REPO}:${IMAGE_TAG}"
 STATIC_IMAGE="${STATIC_REPO}:${IMAGE_TAG}"
+EMBUSCADE_IMAGE="${EMBUSCADE_REPO}:${IMAGE_TAG}"
 MIGRATE_IMAGE="${SERVER_REPO}:migrate-${IMAGE_TAG}"  # shares the server repo -- one-off, not worth its own ECR repo
 
 aws ecr get-login-password --region "$REGION" | \
@@ -114,11 +116,29 @@ mkdir -p widgets/solitaire/.vendor-src
 cp -r "${SOLITAIRE_SRC_DIR}/dist" widgets/solitaire/.vendor-src/dist
 cp "${SOLITAIRE_SRC_DIR}/solitaire.css" widgets/solitaire/.vendor-src/solitaire.css
 
+# widgets/embuscade's build depends on ANOTHER separate sibling repo
+# (~/GIT/bolo-server) -- same Docker-build-context boundary as solitaire
+# above, same staging fix. See widgets/embuscade/scripts/vendor-embuscade.mjs
+# and packages/static-server/Dockerfile's EMBUSCADE_REPO_DIR.
+EMBUSCADE_SRC_DIR="${EMBUSCADE_REPO_DIR:-../bolo-server}"
+if [ ! -d "${EMBUSCADE_SRC_DIR}/packages/client/dist" ]; then
+  echo "Missing ${EMBUSCADE_SRC_DIR}/packages/client/dist -- run 'npm run build' in ${EMBUSCADE_SRC_DIR}/packages/client first (or set EMBUSCADE_REPO_DIR)." >&2
+  exit 1
+fi
+rm -rf widgets/embuscade/.vendor-src
+mkdir -p widgets/embuscade/.vendor-src/packages/client
+cp -r "${EMBUSCADE_SRC_DIR}/packages/client/dist" widgets/embuscade/.vendor-src/packages/client/dist
+
 docker build -f packages/static-server/Dockerfile -t "$STATIC_IMAGE" .
 docker push "$STATIC_IMAGE"
-rm -rf widgets/solitaire/.vendor-src
+rm -rf widgets/solitaire/.vendor-src widgets/embuscade/.vendor-src
 docker build -f infra/eks/migrate.Dockerfile -t "$MIGRATE_IMAGE" .
 docker push "$MIGRATE_IMAGE"
+
+echo
+echo "== embuscade-server image (from ${EMBUSCADE_SRC_DIR}'s own Dockerfile -- a separate repo/build, not part of this one) =="
+docker build -t "$EMBUSCADE_IMAGE" "$EMBUSCADE_SRC_DIR"
+docker push "$EMBUSCADE_IMAGE"
 
 echo
 echo "== applying cluster-scoped manifests =="
@@ -204,15 +224,25 @@ kubectl get jobs -n widgetgrid -o name | grep '^job.batch/seed-' | grep -v "$SEE
 
 echo
 echo "== applying app manifests =="
-export SERVER_IMAGE STATIC_IMAGE BLOG_S3_BUCKET BLOG_ASSETS_BASE_URL
+export SERVER_IMAGE STATIC_IMAGE EMBUSCADE_IMAGE BLOG_S3_BUCKET BLOG_ASSETS_BASE_URL
 envsubst < infra/eks/manifests/widgetgrid-server.yaml | kubectl apply -f -
 envsubst < infra/eks/manifests/static-server.yaml | kubectl apply -f -
+envsubst < infra/eks/manifests/embuscade-server.yaml | kubectl apply -f -
 kubectl apply -f infra/eks/manifests/envoy-gateway.yaml
+# Pick up a rebuilt image on re-runs: the tag changes every run (unlike
+# local-k8s/setup.sh's fixed :local), so this is normally implicit via the
+# Deployment's new pod spec -- but envoy-gateway itself has no image bump to
+# trigger a rollout when only its ConfigMap (envoy-gateway-config, applied
+# above) changes, e.g. adding this very route. Same reasoning as
+# local-k8s/setup.sh's own restart for embuscade-server.
+kubectl rollout restart deployment/envoy-gateway -n widgetgrid
 
 echo
 echo "== waiting for pods to be ready (includes their injected Consul sidecars) =="
 kubectl wait --for=condition=ready pod -l app=widgetgrid-server -n widgetgrid --timeout=180s
 kubectl wait --for=condition=ready pod -l app=static-server -n widgetgrid --timeout=180s
+kubectl wait --for=condition=ready pod -l app=embuscade-server -n widgetgrid --timeout=180s
+kubectl rollout status deployment/envoy-gateway -n widgetgrid --timeout=180s
 kubectl wait --for=condition=ready pod -l app=envoy-gateway -n widgetgrid --timeout=180s
 
 echo

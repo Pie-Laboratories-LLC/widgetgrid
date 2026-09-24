@@ -22,6 +22,10 @@ packages/web-app/public/vendor/*
 # widgets/solitaire/scripts/vendor-solitaire.mjs.
 widgets/solitaire/.vendor-src/
 
+# Same staging trick, for the sibling ~/GIT/bolo-server repo's build output
+# -- see widgets/embuscade/scripts/vendor-embuscade.mjs.
+widgets/embuscade/.vendor-src/
+
 # vim <3
 .*.sw?
 *.sw?
