@@ -57,10 +57,10 @@ kind load docker-image widgetgrid-server:local --name "$CLUSTER_NAME"
 
 echo
 echo "== embuscade-server image =="
-# The game lives in its own repo (~/GIT/bolo-server by default, a sibling
+# The game lives in its own repo (~/GIT/embuscade by default, a sibling
 # of this one -- same layout widgets/embuscade's vendor script assumes).
 # Optional: without it, everything else still comes up, just no game.
-EMBUSCADE_REPO_DIR=${EMBUSCADE_REPO_DIR:-../bolo-server}
+EMBUSCADE_REPO_DIR=${EMBUSCADE_REPO_DIR:-../embuscade}
 if [ -f "$EMBUSCADE_REPO_DIR/Dockerfile" ]; then
   docker build -t embuscade-server:local "$EMBUSCADE_REPO_DIR"
   kind load docker-image embuscade-server:local --name "$CLUSTER_NAME"

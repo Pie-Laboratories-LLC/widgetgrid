@@ -75,7 +75,7 @@ EOF
 npm run build:widgets
 npm run dev:web
 ```
-(Embuscade needs ~/GIT/bolo-server's `packages/client` built first --
+(Embuscade needs ~/GIT/embuscade's `packages/client` built first --
 see widgets/embuscade/scripts/vendor-embuscade.mjs. setup.sh builds and
 deploys its server from the same repo, or skips it if it isn't there.)
 (`client.js` defaults to same-origin, which assumes the production

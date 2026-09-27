@@ -249,7 +249,7 @@ export class EksStack extends Stack {
       emptyOnDelete: true,
       removalPolicy: RemovalPolicy.DESTROY,
     });
-    // Embuscade (~/GIT/bolo-server): its own image, own repo -- same
+    // Embuscade (~/GIT/embuscade): its own image, own repo -- same
     // reasoning as splitting server/static above. Built straight from that
     // repo's own Dockerfile (see infra/eks/deploy.sh), not from anything in
     // this repo's build context, unlike the widget bundle it also ships

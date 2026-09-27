@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 // Copies the Embuscade game client's own build output into
-// dist/embuscade-vendor/. That game (~/GIT/bolo-server, the "lobo" repo) is
-// a separate repo with its own npm workspaces and Vite build, not a
-// widgetgrid workspace -- same vendoring boundary as
-// widgets/solitaire/scripts/vendor-solitaire.mjs. Its packages/client
+// dist/embuscade-vendor/. That game (~/GIT/embuscade, formerly
+// ~/GIT/bolo-server / the "lobo" repo) is a separate repo with its own npm
+// workspaces and Vite build, not a widgetgrid workspace -- same vendoring
+// boundary as widgets/solitaire/scripts/vendor-solitaire.mjs. Its packages/client
 // `npm run build` must already have been run: that produces
 // dist/embuscade.js (ES module exporting mount(), with the game's shared
 // code already bundled in) and dist/embuscade.css.
@@ -16,7 +16,7 @@ const dest = path.join(root, 'dist/embuscade-vendor');
 // Sibling of ~/GIT/widgetgrid by default -- override via env var for any
 // other layout.
 const repoDir = process.env.EMBUSCADE_REPO_DIR
-  ?? path.resolve(root, '../../../bolo-server');
+  ?? path.resolve(root, '../../../embuscade');
 const clientDistDir = path.join(repoDir, 'packages/client/dist');
 
 if (!(await exists(path.join(clientDistDir, 'embuscade.js')))) {

@@ -36,7 +36,7 @@ WORKDIR /app
 ENV SOLITAIRE_REPO_DIR=/app/widgets/solitaire/.vendor-src
 
 # Same reasoning, for widgets/embuscade's own sibling repo
-# (~/GIT/bolo-server -- see widgets/embuscade/scripts/vendor-embuscade.mjs).
+# (~/GIT/embuscade -- see widgets/embuscade/scripts/vendor-embuscade.mjs).
 ENV EMBUSCADE_REPO_DIR=/app/widgets/embuscade/.vendor-src
 
 COPY . .

@@ -117,10 +117,10 @@ cp -r "${SOLITAIRE_SRC_DIR}/dist" widgets/solitaire/.vendor-src/dist
 cp "${SOLITAIRE_SRC_DIR}/solitaire.css" widgets/solitaire/.vendor-src/solitaire.css
 
 # widgets/embuscade's build depends on ANOTHER separate sibling repo
-# (~/GIT/bolo-server) -- same Docker-build-context boundary as solitaire
+# (~/GIT/embuscade) -- same Docker-build-context boundary as solitaire
 # above, same staging fix. See widgets/embuscade/scripts/vendor-embuscade.mjs
 # and packages/static-server/Dockerfile's EMBUSCADE_REPO_DIR.
-EMBUSCADE_SRC_DIR="${EMBUSCADE_REPO_DIR:-../bolo-server}"
+EMBUSCADE_SRC_DIR="${EMBUSCADE_REPO_DIR:-../embuscade}"
 if [ ! -d "${EMBUSCADE_SRC_DIR}/packages/client/dist" ]; then
   echo "Missing ${EMBUSCADE_SRC_DIR}/packages/client/dist -- run 'npm run build' in ${EMBUSCADE_SRC_DIR}/packages/client first (or set EMBUSCADE_REPO_DIR)." >&2
   exit 1
