@@ -226,3 +226,145 @@ service IssueTypeService {
   // Replaces the type's whole workflow in one transaction.
   rpc UpdateWorkflow(UpdateWorkflowRequest) returns (UpdateWorkflowResponse);
 }
+
+// ---------------------------------------------------------------------------
+// Issues. Keys are "<project key>-<number>" (ffdb-1); numbers are per
+// project and never reused. Issues nest without limit; siblings keep a
+// manual order.
+
+message Issue {
+  string id = 1;
+  string project_id = 2;
+  // "ffdb-1"
+  string key = 3;
+  int32 number = 4;
+  // Empty = a root issue.
+  string parent_id = 5;
+  // Sorts siblings: compare as plain strings (byte order).
+  string sibling_rank = 6;
+  string issue_type_id = 7;
+  string state_id = 8;
+  string summary = 9;
+  // Only filled by GetIssue; ListIssues leaves it empty to stay light.
+  string description = 10;
+  // na | minor | normal | serious | blocker
+  string severity = 11;
+  // Empty = unassigned.
+  string assignee_id = 12;
+  // Set exactly when the issue is in a terminal state:
+  // completed | wont_complete | obsolete | already_addressed
+  string end_reason = 13;
+  string end_description = 14;
+  string created_at = 15;
+  string created_by = 16;
+  string modified_at = 17;
+  string modified_by = 18;
+  // Send back on every write; a write against a stale version is
+  // rejected (ABORTED) so concurrent edits are never silently lost.
+  int32 version = 19;
+}
+
+message User {
+  string id = 1;
+  string email = 2;
+}
+
+message ListUsersRequest {
+  int64 requested_at_ms = 1;
+}
+message ListUsersResponse {
+  repeated User users = 1;
+}
+
+message ListIssuesRequest {
+  string project_id = 1;
+}
+message ListIssuesResponse {
+  // Every issue in the project; build the tree from parent_id and
+  // sibling_rank.
+  repeated Issue issues = 1;
+}
+
+message GetIssueRequest {
+  // One of the two. A key may be an old key from before a project move.
+  string id = 1;
+  string key = 2;
+}
+message GetIssueResponse {
+  Issue issue = 1;
+}
+
+message CreateIssueRequest {
+  string project_id = 1;
+  // Empty = a root issue.
+  string parent_id = 2;
+  string issue_type_id = 3;
+  string summary = 4;
+  string description = 5;
+  // Empty = normal.
+  string severity = 6;
+  string assignee_id = 7;
+}
+message CreateIssueResponse {
+  Issue issue = 1;
+}
+
+// Only the fields that are set change. An empty assignee_id unassigns.
+message UpdateIssueRequest {
+  string id = 1;
+  int32 version = 2;
+  optional string summary = 3;
+  optional string description = 4;
+  optional string severity = 5;
+  optional string assignee_id = 6;
+  // Changing type also needs the state to put the issue in, from the new
+  // type's workflow (terminal if the issue is closed, otherwise not).
+  optional string issue_type_id = 7;
+  string state_id_in_new_type = 8;
+}
+message UpdateIssueResponse {
+  Issue issue = 1;
+}
+
+// Re-parent and/or reorder within the project.
+message MoveIssueRequest {
+  string id = 1;
+  // Empty = make it a root issue.
+  string new_parent_id = 2;
+  // Place it directly after this sibling under the new parent; empty =
+  // first among its siblings.
+  string after_sibling_id = 3;
+}
+message MoveIssueResponse {
+  Issue issue = 1;
+}
+
+message MoveIssuesToProjectRequest {
+  // Each moves with its whole subtree; issues inside another listed
+  // issue's subtree just come along.
+  repeated string issue_ids = 1;
+  string target_project_id = 2;
+}
+message MoveIssuesToProjectResponse {
+  // old key -> new key, for every issue that moved.
+  map<string, string> new_keys = 1;
+}
+
+message DeleteIssuesRequest {
+  // Each is deleted with its whole subtree.
+  repeated string issue_ids = 1;
+}
+message DeleteIssuesResponse {
+  int32 deleted = 1;
+}
+
+service IssueService {
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+  rpc ListIssues(ListIssuesRequest) returns (ListIssuesResponse);
+  rpc GetIssue(GetIssueRequest) returns (GetIssueResponse);
+  rpc CreateIssue(CreateIssueRequest) returns (CreateIssueResponse);
+  rpc UpdateIssue(UpdateIssueRequest) returns (UpdateIssueResponse);
+  rpc MoveIssue(MoveIssueRequest) returns (MoveIssueResponse);
+  rpc MoveIssuesToProject(MoveIssuesToProjectRequest) returns (MoveIssuesToProjectResponse);
+  rpc DeleteIssues(DeleteIssuesRequest) returns (DeleteIssuesResponse);
+}

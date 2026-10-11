@@ -50,6 +50,11 @@ test('project keys are validated and unique', async () => {
   await assert.rejects(create({ name: 'Dup' }), { code: grpc.status.ALREADY_EXISTS });
 });
 
+test('a blank or malformed id is a clear invalid-argument error, not an internal one', async () => {
+  await assert.rejects(invoke(projects, 'UpdateProject', { id: '', name: 'x', color: '' }), { code: grpc.status.INVALID_ARGUMENT });
+  await assert.rejects(invoke(projects, 'DeleteProject', { id: 'nope' }), { code: grpc.status.INVALID_ARGUMENT });
+});
+
 test('names and colours are validated', async () => {
   await assert.rejects(create({ name: '   ' }), { code: grpc.status.INVALID_ARGUMENT });
   await assert.rejects(create({ color: 'red' }), { code: grpc.status.INVALID_ARGUMENT });

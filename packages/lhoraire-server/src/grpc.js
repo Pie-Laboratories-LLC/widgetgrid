@@ -22,6 +22,7 @@ function fromPg(err) {
   if (err.code === '23505') return alreadyExists('That already exists.');
   if (err.code === '23503') return conflict('Something it refers to is missing or still in use.');
   if (err.code === '23514') return invalid('A value is out of range or badly formatted.');
+  if (err.code === '22P02') return invalid('An id is missing or malformed.');
   return null;
 }
 
