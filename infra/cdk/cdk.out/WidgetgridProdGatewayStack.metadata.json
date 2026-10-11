@@ -3,7 +3,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44:2)",
         "...node internals..."
       ]
     }
@@ -17,7 +17,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "new ProdGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-gateway-stack.js:128:5)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44:2)",
         "...node internals..."
       ]
     }
@@ -58,7 +58,7 @@
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
         "new ProdGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-gateway-stack.js:30:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44:2)",
         "...node internals..."
       ]
     }
@@ -73,7 +73,7 @@
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
         "new ProdGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-gateway-stack.js:30:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44:2)",
         "...node internals..."
       ]
     }
@@ -88,7 +88,7 @@
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
         "new ProdGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-gateway-stack.js:30:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44:2)",
         "...node internals..."
       ]
     }
@@ -103,7 +103,7 @@
       "data": [
         "...new ApplicationLoadBalancer2 in aws-cdk-lib...",
         "new ProdGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-gateway-stack.js:40:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44:2)",
         "...node internals..."
       ]
     }
@@ -118,7 +118,7 @@
       "data": [
         "...new ARecord2 in aws-cdk-lib...",
         "new ProdGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-gateway-stack.js:62:5)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44:2)",
         "...node internals..."
       ]
     }
@@ -133,7 +133,7 @@
       "data": [
         "...new ARecord2 in aws-cdk-lib...",
         "new ProdGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-gateway-stack.js:72:5)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44:2)",
         "...node internals..."
       ]
     }
@@ -148,7 +148,7 @@
       "data": [
         "...new Certificate2 in aws-cdk-lib...",
         "new ProdGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-gateway-stack.js:79:25)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44:2)",
         "...node internals..."
       ]
     }
@@ -272,7 +272,7 @@
         "Array.forEach (:)",
         "...new Vpc2 in aws-cdk-lib...",
         "new ProdGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-gateway-stack.js:30:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44:2)",
         "...node internals..."
       ]
     }
@@ -287,7 +287,7 @@
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
         "new ProdGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-gateway-stack.js:30:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44:2)",
         "...node internals..."
       ]
     }
@@ -302,7 +302,7 @@
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
         "new ProdGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-gateway-stack.js:30:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44:2)",
         "...node internals..."
       ]
     }
@@ -361,7 +361,7 @@
         "Array.forEach (:)",
         "...new Vpc2 in aws-cdk-lib...",
         "new ProdGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-gateway-stack.js:30:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44:2)",
         "...node internals..."
       ]
     }
@@ -418,7 +418,7 @@
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
         "new ProdGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-gateway-stack.js:30:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44:2)",
         "...node internals..."
       ]
     }
@@ -475,7 +475,7 @@
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
         "new ProdGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-gateway-stack.js:30:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44:2)",
         "...node internals..."
       ]
     }
@@ -490,7 +490,7 @@
       "data": [
         "...new ApplicationLoadBalancer2 in aws-cdk-lib...",
         "new ProdGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-gateway-stack.js:40:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44:2)",
         "...node internals..."
       ]
     }
@@ -518,7 +518,7 @@
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
         "new ProdGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-gateway-stack.js:109:31)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44:2)",
         "...node internals..."
       ]
     }
@@ -533,7 +533,7 @@
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
         "new ProdGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-gateway-stack.js:119:19)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:41:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:44:2)",
         "...node internals..."
       ]
     }

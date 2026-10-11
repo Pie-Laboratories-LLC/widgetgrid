@@ -107,16 +107,15 @@ grpcurl -plaintext ... # see local-k8s/README.md's example, adapted to hit the r
 The recurring bill for `WidgetgridEksStack` + `WidgetgridRdsStack`: EKS's
 flat ~$0.10/hr control plane, 2×t3.medium, 1 NAT gateway, `db.t4g.micro`,
 plus the existing ALB. `infra/eks/teardown.sh` drops the workloads (cheap to
-redo via `infra/eks/deploy.sh`) without touching the cluster/RDS/ECR
+redo via `infra/eks/deploy.sh`) without touching the cluster/RDS
 themselves; `cdk destroy WidgetgridEksStack WidgetgridRdsStack` is the actual
 cost-saving teardown when this environment isn't needed for a while --
 `WidgetgridDnsStack`/`WidgetgridDevGatewayStack` can stay up independently
 since neither depends on the other two.
 
-**Caveat (2026-10):** `WidgetgridEksStack` still owns the `widgetgrid-server`/
-`widgetgrid-static`/`embuscade-server` ECR repos (`emptyOnDelete: true`), and
-`WidgetgridProdEksStack` imports them by name. Destroying the dev stack
-would delete prod's images -- move the repos to their own stack first.
+The `widgetgrid-server`/`widgetgrid-static`/`embuscade-server` ECR repos live
+in `WidgetgridSharedStack` (RETAIN), used by both environments, so tearing
+down either environment's stacks leaves every image in place.
 
 Staying on a Kubernetes minor past its standard-support date bills EKS
 extended support: $0.60/hr per cluster instead of $0.10/hr. That ran

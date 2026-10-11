@@ -24,9 +24,10 @@ const K8S_VERSION = '1.36';
 // infrastructure that already works. Everything here is genuinely a
 // separate physical cluster/ASG/bucket from dev's -- see this repo's
 // deploy plan for the isolation rationale -- with ONE deliberate
-// exception: ECR repos are imported by fixed name below, not recreated,
-// since a registry isn't runtime state and has no blast-radius overlap
-// with the dev/prod isolation this stack otherwise maintains.
+// exception: ECR repos are shared, owned by WidgetgridSharedStack and
+// imported by fixed name below, since a registry isn't runtime state and
+// has no blast-radius overlap with the dev/prod isolation this stack
+// otherwise maintains.
 export class ProdEksStack extends Stack {
   constructor(scope, id, props) {
     super(scope, id, props);

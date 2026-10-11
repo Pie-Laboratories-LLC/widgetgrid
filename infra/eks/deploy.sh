@@ -43,10 +43,9 @@ CLUSTER_NAME=$(echo "$eks_outputs" | jq -r '.[] | select(.OutputKey=="ClusterNam
 TARGET_GROUP_ARN=$(echo "$eks_outputs" | jq -r '.[] | select(.OutputKey=="EnvoyTargetGroupArn") | .OutputValue')
 BLOG_S3_BUCKET=$(echo "$eks_outputs" | jq -r '.[] | select(.OutputKey=="BlogBucketName") | .OutputValue')
 BLOG_ASSETS_BASE_URL=$(echo "$eks_outputs" | jq -r '.[] | select(.OutputKey=="BlogBucketPublicUrl") | .OutputValue')
-# ServerRepositoryUri/StaticRepositoryUri are only output by the dev stack
-# (WidgetgridEksStack) -- prod imports the same two repos by fixed name
-# instead of owning its own (see prod-eks-stack.js's header comment), so
-# both environments push to these same URIs regardless of $ENV.
+# The ECR repos are shared by both environments (WidgetgridSharedStack,
+# see infra/cdk/lib/shared-stack.js), so both push to these same URIs
+# regardless of $ENV.
 ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
 SERVER_REPO="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/widgetgrid-server"
 STATIC_REPO="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/widgetgrid-static"

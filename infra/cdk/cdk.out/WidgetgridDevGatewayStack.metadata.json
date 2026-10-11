@@ -3,7 +3,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     },
@@ -34,7 +34,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:188:5)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }
@@ -48,7 +48,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:189:5)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }
@@ -62,7 +62,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:190:5)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }
@@ -103,7 +103,7 @@
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }
@@ -118,7 +118,7 @@
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }
@@ -133,7 +133,7 @@
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }
@@ -148,7 +148,7 @@
       "data": [
         "...new ApplicationLoadBalancer2 in aws-cdk-lib...",
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:57:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }
@@ -163,7 +163,7 @@
       "data": [
         "...new ARecord2 in aws-cdk-lib...",
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:95:5)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }
@@ -178,7 +178,7 @@
       "data": [
         "...new UserPool2 in aws-cdk-lib...",
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:103:22)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }
@@ -193,7 +193,7 @@
       "data": [
         "...new UserPoolIdentityProviderSaml2 in aws-cdk-lib...",
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:122:36)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }
@@ -317,7 +317,7 @@
         "Array.forEach (:)",
         "...new Vpc2 in aws-cdk-lib...",
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }
@@ -332,7 +332,7 @@
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }
@@ -347,7 +347,7 @@
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }
@@ -406,7 +406,7 @@
         "Array.forEach (:)",
         "...new Vpc2 in aws-cdk-lib...",
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }
@@ -463,7 +463,7 @@
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }
@@ -520,7 +520,7 @@
       "data": [
         "...new Vpc2 in aws-cdk-lib...",
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:43:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }
@@ -535,7 +535,7 @@
       "data": [
         "...new ApplicationLoadBalancer2 in aws-cdk-lib...",
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:57:17)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }
@@ -563,7 +563,7 @@
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:175:9)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }
@@ -578,7 +578,7 @@
       "data": [
         "...WrappedClass.addDomain in aws-cdk-lib...",
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:113:37)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }
@@ -593,7 +593,7 @@
       "data": [
         "...WrappedClass.addClient in aws-cdk-lib...",
         "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:136:37)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:20:2)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23:2)",
         "...node internals..."
       ]
     }

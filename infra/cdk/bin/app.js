@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { App } from 'aws-cdk-lib';
 import { DnsStack } from '../lib/dns-stack.js';
+import { SharedStack } from '../lib/shared-stack.js';
 import { DevGatewayStack } from '../lib/dev-gateway-stack.js';
 import { EksStack } from '../lib/eks-stack.js';
 import { RdsStack } from '../lib/rds-stack.js';
@@ -17,6 +18,8 @@ const env = { account: process.env.CDK_DEFAULT_ACCOUNT, region: 'us-east-1' };
 
 const app = new App();
 const dns = new DnsStack(app, 'WidgetgridDnsStack', { env });
+// ECR repos used by both environments -- see shared-stack.js.
+new SharedStack(app, 'WidgetgridSharedStack', { env });
 const devGateway = new DevGatewayStack(app, 'WidgetgridDevGatewayStack', {
   env,
   hostedZone: dns.hostedZone,

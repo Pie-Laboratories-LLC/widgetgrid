@@ -1,7 +1,6 @@
 import { Stack, RemovalPolicy, CfnOutput } from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as eks from 'aws-cdk-lib/aws-eks';
-import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import * as iam from 'aws-cdk-lib/aws-iam';
@@ -30,7 +29,7 @@ export const ENVOY_GATEWAY_NODE_PORT = 30080;
 
 // Everything here is expected to change a lot less often than
 // DevGatewayStack's own listener wiring, but a lot more than DnsStack's --
-// cluster/node/ECR lifecycle is its own concern, split out so e.g.
+// cluster/node lifecycle is its own concern, split out so e.g.
 // `cdk destroy WidgetgridEksStack` (a cost-saving teardown) doesn't touch
 // the DNS/cert/Cognito stack at all. See infra/cdk/README.md.
 export class EksStack extends Stack {
@@ -240,34 +239,6 @@ export class EksStack extends Stack {
     });
     serverPodIdentity.node.addDependency(podIdentityAgent);
 
-    // Two dedicated repos (server, static), not one shared repo -- separate
-    // images with separate lifecycles/tags, matching packages/server/Dockerfile
-    // and packages/static-server/Dockerfile being two different builds.
-    this.serverRepository = new ecr.Repository(this, 'ServerRepository', {
-      repositoryName: 'widgetgrid-server',
-      imageScanOnPush: true,
-      emptyOnDelete: true,
-      removalPolicy: RemovalPolicy.DESTROY,
-    });
-    this.staticRepository = new ecr.Repository(this, 'StaticRepository', {
-      repositoryName: 'widgetgrid-static',
-      imageScanOnPush: true,
-      emptyOnDelete: true,
-      removalPolicy: RemovalPolicy.DESTROY,
-    });
-    // Embuscade (~/GIT/embuscade): its own image, own repo -- same
-    // reasoning as splitting server/static above. Built straight from that
-    // repo's own Dockerfile (see infra/eks/deploy.sh), not from anything in
-    // this repo's build context, unlike the widget bundle it also ships
-    // (baked into StaticRepository's image via widgets/embuscade's vendor
-    // step -- see packages/static-server/Dockerfile's EMBUSCADE_REPO_DIR).
-    this.embuscadeRepository = new ecr.Repository(this, 'EmbuscadeRepository', {
-      repositoryName: 'embuscade-server',
-      imageScanOnPush: true,
-      emptyOnDelete: true,
-      removalPolicy: RemovalPolicy.DESTROY,
-    });
-
     // NodePort + ASG-attach, not the AWS Load Balancer Controller: avoids
     // installing/maintaining an extra controller (its own IAM policy,
     // webhook, failure mode) for a dev environment. Health check hits
@@ -287,9 +258,6 @@ export class EksStack extends Stack {
     // comment for why this isn't wired up automatically.
     new CfnOutput(this, 'EnvoyTargetGroupArn', { value: this.targetGroup.targetGroupArn });
     new CfnOutput(this, 'ClusterName', { value: cluster.clusterName });
-    new CfnOutput(this, 'ServerRepositoryUri', { value: this.serverRepository.repositoryUri });
-    new CfnOutput(this, 'StaticRepositoryUri', { value: this.staticRepository.repositoryUri });
-    new CfnOutput(this, 'EmbuscadeRepositoryUri', { value: this.embuscadeRepository.repositoryUri });
     new CfnOutput(this, 'BlogBucketName', { value: this.blogBucket.bucketName });
     // Feed into BLOG_ASSETS_BASE_URL (infra/eks/manifests/widgetgrid-server.yaml)
     // -- the bucket's own public REST endpoint, not a website-hosting URL
