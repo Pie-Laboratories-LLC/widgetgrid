@@ -2,7 +2,7 @@ import grpc from '@grpc/grpc-js';
 import * as chatRepo from '@widgetgrid/db/src/chatRepo.js';
 import * as authRepo from '@widgetgrid/db/src/authRepo.js';
 import * as chatNotificationRepo from '@widgetgrid/db/src/chatNotificationRepo.js';
-import { isOwnerRequest, getVisitorId } from '../authContext.js';
+import { getVisitorId } from '../authContext.js';
 import { publishChatEvent, subscribeChatEvents } from '../chatBus.js';
 
 // "not more than once an hour" -- a global throttle (not per-chat): the
@@ -37,7 +37,7 @@ function permissionDenied(callback, message) {
   callback({ code: grpc.status.PERMISSION_DENIED, message });
 }
 
-export function createChatService({ pool, ownerPhoneNumber, smsSender }) {
+export function createChatService({ pool, authContext, ownerPhoneNumber, smsSender }) {
   // Confirms a visitor-supplied chat_id actually belongs to them --
   // without this, any visitor could read/post into any chat by guessing a
   // UUID (chat_id is always explicit in every RPC, even visitor calls --
@@ -87,7 +87,7 @@ export function createChatService({ pool, ownerPhoneNumber, smsSender }) {
     async SendMessage(call, callback) {
       try {
         const { chatId, body } = call.request;
-        const isOwner = await isOwnerRequest(pool, call);
+        const isOwner = await authContext.isOwner(call);
         let sender;
         if (isOwner) {
           sender = 'owner';
@@ -117,7 +117,7 @@ export function createChatService({ pool, ownerPhoneNumber, smsSender }) {
     async ListMessages(call, callback) {
       try {
         const { chatId } = call.request;
-        if (!(await isOwnerRequest(pool, call))) {
+        if (!(await authContext.isOwner(call))) {
           const visitorId = getVisitorId(call);
           if (!visitorId) return invalidArgument(callback, 'missing visitor-id');
           await assertVisitorOwnsChat(chatId, visitorId);
@@ -131,7 +131,7 @@ export function createChatService({ pool, ownerPhoneNumber, smsSender }) {
 
     async ListChats(call, callback) {
       try {
-        if (!(await isOwnerRequest(pool, call))) return permissionDenied(callback, 'owner only');
+        if (!(await authContext.isOwner(call))) return permissionDenied(callback, 'owner only');
         const chats = await chatRepo.listAllForOwner(pool);
         callback(null, { chats: chats.map(toProtoChat) });
       } catch (err) {
@@ -146,7 +146,7 @@ export function createChatService({ pool, ownerPhoneNumber, smsSender }) {
     async RenameChat(call, callback) {
       try {
         const { chatId, label } = call.request;
-        if (!(await isOwnerRequest(pool, call))) {
+        if (!(await authContext.isOwner(call))) {
           const visitorId = getVisitorId(call);
           if (!visitorId) return invalidArgument(callback, 'missing visitor-id');
           await assertVisitorOwnsChat(chatId, visitorId);
@@ -161,7 +161,7 @@ export function createChatService({ pool, ownerPhoneNumber, smsSender }) {
     async MarkRead(call, callback) {
       try {
         const { chatId } = call.request;
-        if (await isOwnerRequest(pool, call)) {
+        if (await authContext.isOwner(call)) {
           await chatRepo.markOwnerRead(pool, chatId);
         } else {
           const visitorId = getVisitorId(call);
@@ -181,7 +181,7 @@ export function createChatService({ pool, ownerPhoneNumber, smsSender }) {
     // chat_id resolved once at subscribe time -- this lets a visitor
     // subscribe before they've ever started a chat, e.g. at page load).
     async SubscribeChatEvents(call) {
-      const isOwner = await isOwnerRequest(pool, call);
+      const isOwner = await authContext.isOwner(call);
       const visitorId = isOwner ? null : getVisitorId(call);
       if (!isOwner && !visitorId) {
         call.emit('error', { code: grpc.status.INVALID_ARGUMENT, message: 'missing visitor-id' });

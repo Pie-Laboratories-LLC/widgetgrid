@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import { chatClient, getOwnerToken } from './chatClient.js';
+import { chatClient, isSignedInOwner } from './chatClient.js';
 import { subscribeOwnerPresence } from './presenceSubscriptionClient.js';
 
 // Chats still get this auto-generated label at creation time (see
@@ -80,7 +80,7 @@ export default {
   },
   data() {
     return {
-      isOwner: !!getOwnerToken(),
+      isOwner: isSignedInOwner(),
       status: 'loading',
       chats: [],
       selectedChatId: null,
@@ -174,7 +174,7 @@ export default {
     onIdentityChanged() {
       this.unsubscribePresence?.();
       this.unsubscribePresence = null;
-      this.isOwner = !!getOwnerToken();
+      this.isOwner = isSignedInOwner();
       this.status = 'loading';
       this.chats = [];
       this.selectedChatId = null;

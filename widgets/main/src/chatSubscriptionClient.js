@@ -1,25 +1,23 @@
 // Its own small gRPC-Web client, same reasoning as blogSubscriptionClient.js.
 import { SubscribeChatEventsRequest } from '@widgetgrid/proto-gen-web/widgetgrid/v1/chat_pb.js';
 import { ChatServicePromiseClient } from '@widgetgrid/proto-gen-web/widgetgrid/v1/chat_grpc_web_pb.js';
+import { authMetadata } from '@widgetgrid/auth-web';
 
 const GRPC_WEB_ORIGIN = import.meta.env.VITE_GRPC_WEB_ORIGIN ?? '';
 const client = new ChatServicePromiseClient(GRPC_WEB_ORIGIN);
 
-// Same localStorage keys widgets/chat and widgets/login use -- see
-// widgets/chat/src/chatClient.js's comment on why there's no shared
-// module to hold these constants in instead.
-const TOKEN_KEY = 'widgetgrid:ownerToken';
+// Same visitor-id key widgets/chat uses.
 const VISITOR_ID_KEY = 'widgetgrid:visitorId';
 
-function identityMetadata() {
-  const token = localStorage.getItem(TOKEN_KEY);
-  if (token) return { authorization: `Bearer ${token}` };
+// visitor-id always, plus the access token when signed in -- same as
+// widgets/chat/src/chatClient.js.
+async function identityMetadata() {
   let visitorId = localStorage.getItem(VISITOR_ID_KEY);
   if (!visitorId) {
     visitorId = crypto.randomUUID();
     localStorage.setItem(VISITOR_ID_KEY, visitorId);
   }
-  return { 'visitor-id': visitorId };
+  return { 'visitor-id': visitorId, ...(await authMetadata()) };
 }
 
 // Reconnect delay for a dropped stream (see subscribeChatEvents below) --
@@ -62,8 +60,10 @@ export function subscribeChatEvents(onChatEvent) {
     }, RECONNECT_DELAY_MS);
   }
 
-  function connect() {
-    stream = client.subscribeChatEvents(new SubscribeChatEventsRequest(), identityMetadata());
+  async function connect() {
+    const metadata = await identityMetadata();
+    if (cancelled) return;
+    stream = client.subscribeChatEvents(new SubscribeChatEventsRequest(), metadata);
     stream.on('data', (event) => onChatEvent(event.toObject()));
     stream.on('error', scheduleReconnect);
     stream.on('end', scheduleReconnect);
@@ -73,6 +73,6 @@ export function subscribeChatEvents(onChatEvent) {
   return () => {
     cancelled = true;
     if (reconnectTimer) clearTimeout(reconnectTimer);
-    stream.cancel();
+    stream?.cancel();
   };
 }

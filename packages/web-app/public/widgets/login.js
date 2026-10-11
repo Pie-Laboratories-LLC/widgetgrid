@@ -1,5 +1,5 @@
-(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.login-logout-link[data-v-34985984]{color:#f4ead9;opacity:.7;cursor:pointer;background:0 0;border:none;padding:6px 4px;font-size:.85rem}.login-logout-link[data-v-34985984]:hover{opacity:1;text-decoration:underline}.login-overlay[data-v-34985984]{z-index:100;background:#0a05148c;justify-content:center;align-items:center;display:flex;position:fixed;inset:0}.login-panel[data-v-34985984]{color:#f4ead9;background:#150a2e;border-radius:12px;width:320px;max-width:calc(100vw - 40px);padding:32px 24px 24px;position:relative;box-shadow:0 20px 60px #00000080}.login-close[data-v-34985984]{color:#f4ead9;opacity:.6;cursor:pointer;background:0 0;border:none;font-size:1.4rem;line-height:1;position:absolute;top:8px;right:12px}.login-close[data-v-34985984]:hover{opacity:1}.login-prompt[data-v-34985984]{margin:0 0 16px;font-size:.95rem}.login-input[data-v-34985984]{box-sizing:border-box;color:#f4ead9;letter-spacing:.1em;background:#f4ead90f;border:1px solid #f4ead94d;border-radius:6px;width:100%;margin-bottom:12px;padding:10px 12px;font-size:1.1rem}.login-submit[data-v-34985984]{color:#fff;cursor:pointer;background:#e5322d;border:none;border-radius:6px;width:100%;padding:10px 12px;font-weight:600}.login-submit[data-v-34985984]:disabled{opacity:.5;cursor:default}.login-error[data-v-34985984]{color:#ff9d97;margin:12px 0 0;font-size:.85rem}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
-import { Fragment, createCommentVNode, createElementBlock, createElementVNode, openBlock, toDisplayString, vModelText, withDirectives, withModifiers } from "vue";
+(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.login-logout-link[data-v-ab26e2ad]{color:#f4ead9;opacity:.7;cursor:pointer;background:0 0;border:none;padding:6px 4px;font-size:.85rem}.login-logout-link[data-v-ab26e2ad]:hover{opacity:1;text-decoration:underline}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
+import { createCommentVNode, createElementBlock, openBlock } from "vue";
 //#region \0rolldown/runtime.js
 var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t.exports), require_google_protobuf = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var COMPILED = !0, goog = goog || {};
@@ -4157,15 +4157,11 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 	var t = require_google_protobuf(), n = t, r = function() {
 		return this ? this : typeof window < "u" ? window : r === void 0 ? typeof self < "u" ? self : Function("return this")() : r;
 	}.call(null);
-	n.exportSymbol("proto.widgetgrid.v1.LogoutRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.LogoutResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.OwnerPresenceEvent", null, r), n.exportSymbol("proto.widgetgrid.v1.RequestLoginCodeRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.RequestLoginCodeResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.SubscribeOwnerPresenceRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.VerifyLoginCodeRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.VerifyLoginCodeResponse", null, r), proto.widgetgrid.v1.RequestLoginCodeRequest = function(e) {
+	n.exportSymbol("proto.widgetgrid.v1.LogoutRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.LogoutResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.OwnerPresenceEvent", null, r), n.exportSymbol("proto.widgetgrid.v1.RegisterSignInRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.RegisterSignInResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.SubscribeOwnerPresenceRequest", null, r), proto.widgetgrid.v1.RegisterSignInRequest = function(e) {
 		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.RequestLoginCodeRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RequestLoginCodeRequest.displayName = "proto.widgetgrid.v1.RequestLoginCodeRequest"), proto.widgetgrid.v1.RequestLoginCodeResponse = function(e) {
+	}, n.inherits(proto.widgetgrid.v1.RegisterSignInRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RegisterSignInRequest.displayName = "proto.widgetgrid.v1.RegisterSignInRequest"), proto.widgetgrid.v1.RegisterSignInResponse = function(e) {
 		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.RequestLoginCodeResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RequestLoginCodeResponse.displayName = "proto.widgetgrid.v1.RequestLoginCodeResponse"), proto.widgetgrid.v1.VerifyLoginCodeRequest = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.VerifyLoginCodeRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.VerifyLoginCodeRequest.displayName = "proto.widgetgrid.v1.VerifyLoginCodeRequest"), proto.widgetgrid.v1.VerifyLoginCodeResponse = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.VerifyLoginCodeResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.VerifyLoginCodeResponse.displayName = "proto.widgetgrid.v1.VerifyLoginCodeResponse"), proto.widgetgrid.v1.LogoutRequest = function(e) {
+	}, n.inherits(proto.widgetgrid.v1.RegisterSignInResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RegisterSignInResponse.displayName = "proto.widgetgrid.v1.RegisterSignInResponse"), proto.widgetgrid.v1.LogoutRequest = function(e) {
 		t.Message.initialize(this, e, 0, -1, null, null);
 	}, n.inherits(proto.widgetgrid.v1.LogoutRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.LogoutRequest.displayName = "proto.widgetgrid.v1.LogoutRequest"), proto.widgetgrid.v1.LogoutResponse = function(e) {
 		t.Message.initialize(this, e, 0, -1, null, null);
@@ -4173,101 +4169,71 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 		t.Message.initialize(this, e, 0, -1, null, null);
 	}, n.inherits(proto.widgetgrid.v1.SubscribeOwnerPresenceRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.displayName = "proto.widgetgrid.v1.SubscribeOwnerPresenceRequest"), proto.widgetgrid.v1.OwnerPresenceEvent = function(e) {
 		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.OwnerPresenceEvent, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.OwnerPresenceEvent.displayName = "proto.widgetgrid.v1.OwnerPresenceEvent"), t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RequestLoginCodeRequest.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.RequestLoginCodeRequest.toObject(e, this);
-	}, proto.widgetgrid.v1.RequestLoginCodeRequest.toObject = function(e, n) {
-		var r = { requestedAtMs: t.Message.getFieldWithDefault(n, 1, 0) };
+	}, n.inherits(proto.widgetgrid.v1.OwnerPresenceEvent, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.OwnerPresenceEvent.displayName = "proto.widgetgrid.v1.OwnerPresenceEvent"), t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RegisterSignInRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.RegisterSignInRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.RegisterSignInRequest.toObject = function(e, n) {
+		var r = { idToken: t.Message.getFieldWithDefault(n, 1, "") };
 		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.RequestLoginCodeRequest.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RequestLoginCodeRequest();
-		return proto.widgetgrid.v1.RequestLoginCodeRequest.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.RequestLoginCodeRequest.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
-			case 1:
-				var n = t.readInt64();
-				e.setRequestedAtMs(n);
-				break;
-			default: t.skipField();
-		}
-		return e;
-	}, proto.widgetgrid.v1.RequestLoginCodeRequest.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.RequestLoginCodeRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.RequestLoginCodeRequest.serializeBinaryToWriter = function(e, t) {
-		var n = void 0;
-		n = e.getRequestedAtMs(), n !== 0 && t.writeInt64(1, n);
-	}, proto.widgetgrid.v1.RequestLoginCodeRequest.prototype.getRequestedAtMs = function() {
-		return t.Message.getFieldWithDefault(this, 1, 0);
-	}, proto.widgetgrid.v1.RequestLoginCodeRequest.prototype.setRequestedAtMs = function(e) {
-		return t.Message.setProto3IntField(this, 1, e);
-	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RequestLoginCodeResponse.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.RequestLoginCodeResponse.toObject(e, this);
-	}, proto.widgetgrid.v1.RequestLoginCodeResponse.toObject = function(e, t) {
-		var n = {};
-		return e && (n.$jspbMessageInstance = t), n;
-	}), proto.widgetgrid.v1.RequestLoginCodeResponse.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RequestLoginCodeResponse();
-		return proto.widgetgrid.v1.RequestLoginCodeResponse.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.RequestLoginCodeResponse.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
-		return e;
-	}, proto.widgetgrid.v1.RequestLoginCodeResponse.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.RequestLoginCodeResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.RequestLoginCodeResponse.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.VerifyLoginCodeRequest.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.VerifyLoginCodeRequest.toObject(e, this);
-	}, proto.widgetgrid.v1.VerifyLoginCodeRequest.toObject = function(e, n) {
-		var r = { code: t.Message.getFieldWithDefault(n, 1, "") };
-		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.VerifyLoginCodeRequest.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.VerifyLoginCodeRequest();
-		return proto.widgetgrid.v1.VerifyLoginCodeRequest.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.VerifyLoginCodeRequest.deserializeBinaryFromReader = function(e, t) {
+	}), proto.widgetgrid.v1.RegisterSignInRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RegisterSignInRequest();
+		return proto.widgetgrid.v1.RegisterSignInRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.RegisterSignInRequest.deserializeBinaryFromReader = function(e, t) {
 		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
 			case 1:
 				var n = t.readString();
-				e.setCode(n);
+				e.setIdToken(n);
 				break;
 			default: t.skipField();
 		}
 		return e;
-	}, proto.widgetgrid.v1.VerifyLoginCodeRequest.prototype.serializeBinary = function() {
+	}, proto.widgetgrid.v1.RegisterSignInRequest.prototype.serializeBinary = function() {
 		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.VerifyLoginCodeRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.VerifyLoginCodeRequest.serializeBinaryToWriter = function(e, t) {
+		return proto.widgetgrid.v1.RegisterSignInRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.RegisterSignInRequest.serializeBinaryToWriter = function(e, t) {
 		var n = void 0;
-		n = e.getCode(), n.length > 0 && t.writeString(1, n);
-	}, proto.widgetgrid.v1.VerifyLoginCodeRequest.prototype.getCode = function() {
+		n = e.getIdToken(), n.length > 0 && t.writeString(1, n);
+	}, proto.widgetgrid.v1.RegisterSignInRequest.prototype.getIdToken = function() {
 		return t.Message.getFieldWithDefault(this, 1, "");
-	}, proto.widgetgrid.v1.VerifyLoginCodeRequest.prototype.setCode = function(e) {
+	}, proto.widgetgrid.v1.RegisterSignInRequest.prototype.setIdToken = function(e) {
 		return t.Message.setProto3StringField(this, 1, e);
-	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.VerifyLoginCodeResponse.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.VerifyLoginCodeResponse.toObject(e, this);
-	}, proto.widgetgrid.v1.VerifyLoginCodeResponse.toObject = function(e, n) {
-		var r = { token: t.Message.getFieldWithDefault(n, 1, "") };
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RegisterSignInResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.RegisterSignInResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.RegisterSignInResponse.toObject = function(e, n) {
+		var r = {
+			sessionToken: t.Message.getFieldWithDefault(n, 1, ""),
+			role: t.Message.getFieldWithDefault(n, 2, "")
+		};
 		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.VerifyLoginCodeResponse.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.VerifyLoginCodeResponse();
-		return proto.widgetgrid.v1.VerifyLoginCodeResponse.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.VerifyLoginCodeResponse.deserializeBinaryFromReader = function(e, t) {
+	}), proto.widgetgrid.v1.RegisterSignInResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RegisterSignInResponse();
+		return proto.widgetgrid.v1.RegisterSignInResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.RegisterSignInResponse.deserializeBinaryFromReader = function(e, t) {
 		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
 			case 1:
 				var n = t.readString();
-				e.setToken(n);
+				e.setSessionToken(n);
+				break;
+			case 2:
+				var n = t.readString();
+				e.setRole(n);
 				break;
 			default: t.skipField();
 		}
 		return e;
-	}, proto.widgetgrid.v1.VerifyLoginCodeResponse.prototype.serializeBinary = function() {
+	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.serializeBinary = function() {
 		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.VerifyLoginCodeResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.VerifyLoginCodeResponse.serializeBinaryToWriter = function(e, t) {
+		return proto.widgetgrid.v1.RegisterSignInResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.RegisterSignInResponse.serializeBinaryToWriter = function(e, t) {
 		var n = void 0;
-		n = e.getToken(), n.length > 0 && t.writeString(1, n);
-	}, proto.widgetgrid.v1.VerifyLoginCodeResponse.prototype.getToken = function() {
+		n = e.getSessionToken(), n.length > 0 && t.writeString(1, n), n = e.getRole(), n.length > 0 && t.writeString(2, n);
+	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.getSessionToken = function() {
 		return t.Message.getFieldWithDefault(this, 1, "");
-	}, proto.widgetgrid.v1.VerifyLoginCodeResponse.prototype.setToken = function(e) {
+	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.setSessionToken = function(e) {
 		return t.Message.setProto3StringField(this, 1, e);
+	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.getRole = function() {
+		return t.Message.getFieldWithDefault(this, 2, "");
+	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.setRole = function(e) {
+		return t.Message.setProto3StringField(this, 2, e);
 	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.LogoutRequest.prototype.toObject = function(e) {
 		return proto.widgetgrid.v1.LogoutRequest.toObject(e, this);
 	}, proto.widgetgrid.v1.LogoutRequest.toObject = function(e, n) {
@@ -5420,56 +5386,114 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 	}, r.widgetgrid.v1.AuthServicePromiseClient = function(e, t, r) {
 		r ||= {}, r.format = "text", this.client_ = new n.web.GrpcWebClientBase(r), this.hostname_ = e.replace(/\/+$/, "");
 	};
-	var i = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/RequestLoginCode", n.web.MethodType.UNARY, r.widgetgrid.v1.RequestLoginCodeRequest, r.widgetgrid.v1.RequestLoginCodeResponse, function(e) {
+	var i = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/RegisterSignIn", n.web.MethodType.UNARY, r.widgetgrid.v1.RegisterSignInRequest, r.widgetgrid.v1.RegisterSignInResponse, function(e) {
 		return e.serializeBinary();
-	}, r.widgetgrid.v1.RequestLoginCodeResponse.deserializeBinary);
-	r.widgetgrid.v1.AuthServiceClient.prototype.requestLoginCode = function(e, t, n) {
-		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.AuthService/RequestLoginCode", e, t || {}, i, n);
-	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.requestLoginCode = function(e, t) {
-		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.AuthService/RequestLoginCode", e, t || {}, i);
+	}, r.widgetgrid.v1.RegisterSignInResponse.deserializeBinary);
+	r.widgetgrid.v1.AuthServiceClient.prototype.registerSignIn = function(e, t, n) {
+		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.AuthService/RegisterSignIn", e, t || {}, i, n);
+	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.registerSignIn = function(e, t) {
+		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.AuthService/RegisterSignIn", e, t || {}, i);
 	};
-	var o = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/VerifyLoginCode", n.web.MethodType.UNARY, r.widgetgrid.v1.VerifyLoginCodeRequest, r.widgetgrid.v1.VerifyLoginCodeResponse, function(e) {
-		return e.serializeBinary();
-	}, r.widgetgrid.v1.VerifyLoginCodeResponse.deserializeBinary);
-	r.widgetgrid.v1.AuthServiceClient.prototype.verifyLoginCode = function(e, t, n) {
-		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.AuthService/VerifyLoginCode", e, t || {}, o, n);
-	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.verifyLoginCode = function(e, t) {
-		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.AuthService/VerifyLoginCode", e, t || {}, o);
-	};
-	var s = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/Logout", n.web.MethodType.UNARY, r.widgetgrid.v1.LogoutRequest, r.widgetgrid.v1.LogoutResponse, function(e) {
+	var o = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/Logout", n.web.MethodType.UNARY, r.widgetgrid.v1.LogoutRequest, r.widgetgrid.v1.LogoutResponse, function(e) {
 		return e.serializeBinary();
 	}, r.widgetgrid.v1.LogoutResponse.deserializeBinary);
 	r.widgetgrid.v1.AuthServiceClient.prototype.logout = function(e, t, n) {
-		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.AuthService/Logout", e, t || {}, s, n);
+		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.AuthService/Logout", e, t || {}, o, n);
 	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.logout = function(e, t) {
-		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.AuthService/Logout", e, t || {}, s);
+		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.AuthService/Logout", e, t || {}, o);
 	};
-	var c = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/SubscribeOwnerPresence", n.web.MethodType.SERVER_STREAMING, r.widgetgrid.v1.SubscribeOwnerPresenceRequest, r.widgetgrid.v1.OwnerPresenceEvent, function(e) {
+	var s = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/SubscribeOwnerPresence", n.web.MethodType.SERVER_STREAMING, r.widgetgrid.v1.SubscribeOwnerPresenceRequest, r.widgetgrid.v1.OwnerPresenceEvent, function(e) {
 		return e.serializeBinary();
 	}, r.widgetgrid.v1.OwnerPresenceEvent.deserializeBinary);
 	r.widgetgrid.v1.AuthServiceClient.prototype.subscribeOwnerPresence = function(e, t) {
-		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.AuthService/SubscribeOwnerPresence", e, t || {}, c);
+		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.AuthService/SubscribeOwnerPresence", e, t || {}, s);
 	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.subscribeOwnerPresence = function(e, t) {
-		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.AuthService/SubscribeOwnerPresence", e, t || {}, c);
+		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.AuthService/SubscribeOwnerPresence", e, t || {}, s);
 	}, t.exports = r.widgetgrid.v1;
-})), import_auth_pb = require_auth_pb(), import_auth_grpc_web_pb = require_auth_grpc_web_pb(), client = new import_auth_grpc_web_pb.AuthServicePromiseClient("http://localhost:8080"), authClient = {
-	async requestLoginCode() {
-		let e = new import_auth_pb.RequestLoginCodeRequest();
-		e.setRequestedAtMs(Date.now()), await client.requestLoginCode(e, {});
-	},
-	async verifyLoginCode(e) {
-		let t = new import_auth_pb.VerifyLoginCodeRequest();
-		return t.setCode(e), (await client.verifyLoginCode(t, {})).toObject().token;
-	},
-	async logout(e) {
-		let t = new import_auth_pb.LogoutRequest();
-		t.setToken(e), await client.logout(t, {});
+})), import_auth_pb = require_auth_pb(), import_auth_grpc_web_pb = require_auth_grpc_web_pb(), AUTH_ORIGIN = "https://auth.pie-laboratories.com", CLIENT_ID = "bvec1bfa2e7srgjf237e2m3ja", IDENTITY_PROVIDER = "IdentityCenter", CALLBACK_PATH = "/auth/callback", STORAGE_KEY = "widgetgrid:auth", PKCE_PREFIX = "widgetgrid:pkce:", PKCE_TTL_MS = 6e5, IDENTITY_CHANGED_EVENT = "widgetgrid:identity-changed";
+function redirectUri() {
+	return `${window.location.origin}${CALLBACK_PATH}`;
+}
+function base64url(e) {
+	return btoa(String.fromCharCode(...new Uint8Array(e))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function randomString(e) {
+	return base64url(crypto.getRandomValues(new Uint8Array(e)));
+}
+function readStored() {
+	try {
+		return JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? null;
+	} catch {
+		return null;
 	}
-}, _plugin_vue_export_helper_default = (e, t) => {
+}
+function writeStored(e) {
+	e ? localStorage.setItem(STORAGE_KEY, JSON.stringify(e)) : localStorage.removeItem(STORAGE_KEY);
+}
+function announce() {
+	window.dispatchEvent(new CustomEvent(IDENTITY_CHANGED_EVENT));
+}
+window.addEventListener("storage", (e) => {
+	e.key === STORAGE_KEY && announce();
+});
+function decodeClaims(e) {
+	let t = e.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+	return JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(t), (e) => e.charCodeAt(0))));
+}
+var signInStarting = !1;
+async function startSignIn() {
+	if (signInStarting) return;
+	signInStarting = !0;
+	let e = randomString(48), t = base64url(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(e))), n = randomString(16);
+	for (let e = localStorage.length - 1; e >= 0; --e) {
+		let t = localStorage.key(e);
+		t?.startsWith(PKCE_PREFIX) && (JSON.parse(localStorage.getItem(t))?.startedAt ?? 0) < Date.now() - PKCE_TTL_MS && localStorage.removeItem(t);
+	}
+	localStorage.setItem(PKCE_PREFIX + n, JSON.stringify({
+		verifier: e,
+		startedAt: Date.now(),
+		returnTo: window.location.pathname + window.location.search
+	}));
+	let r = new URLSearchParams({
+		response_type: "code",
+		client_id: CLIENT_ID,
+		redirect_uri: redirectUri(),
+		scope: "openid email profile",
+		code_challenge: t,
+		code_challenge_method: "S256",
+		identity_provider: IDENTITY_PROVIDER,
+		state: n
+	});
+	window.location.assign(`${AUTH_ORIGIN}/oauth2/authorize?${r}`);
+}
+function getIdentity() {
+	let e = readStored();
+	if (!e) return null;
+	try {
+		let t = decodeClaims(e.idToken);
+		return {
+			email: t.email,
+			groups: t["cognito:groups"] ?? [],
+			role: e.role
+		};
+	} catch {
+		return null;
+	}
+}
+async function signOut({ grpcWebOrigin: e = "" } = {}) {
+	let t = readStored();
+	if (writeStored(null), announce(), t?.sessionToken) try {
+		let n = new import_auth_pb.LogoutRequest();
+		n.setToken(t.sessionToken), await new import_auth_grpc_web_pb.AuthServicePromiseClient(e).logout(n, {});
+	} catch {}
+}
+//#endregion
+//#region \0plugin-vue:export-helper
+var _plugin_vue_export_helper_default = (e, t) => {
 	let n = e.__vccOpts || e;
 	for (let [e, r] of t) n[e] = r;
 	return n;
-}, TOKEN_KEY = "widgetgrid:ownerToken", _sfc_main = {
+}, GRPC_WEB_ORIGIN = "http://localhost:8080", _sfc_main = {
 	name: "LoginWidget",
 	props: {
 		data: {
@@ -5483,112 +5507,39 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 	},
 	data() {
 		return {
-			ownerToken: localStorage.getItem(TOKEN_KEY),
-			showPanel: !1,
-			step: "request",
-			code: "",
-			busy: !1,
-			error: "",
+			identity: getIdentity(),
 			clickCount: 0
 		};
 	},
 	created() {
-		window.addEventListener("widgetgrid:logo-click", this.onLogoClick);
+		window.addEventListener("widgetgrid:logo-click", this.onLogoClick), window.addEventListener(IDENTITY_CHANGED_EVENT, this.onIdentityChanged);
 	},
 	beforeUnmount() {
-		window.removeEventListener("widgetgrid:logo-click", this.onLogoClick), clearTimeout(this.clickResetTimer);
+		window.removeEventListener("widgetgrid:logo-click", this.onLogoClick), window.removeEventListener(IDENTITY_CHANGED_EVENT, this.onIdentityChanged), clearTimeout(this.clickResetTimer);
 	},
 	methods: {
 		onLogoClick() {
-			this.ownerToken || (this.clickCount += 1, clearTimeout(this.clickResetTimer), this.clickResetTimer = setTimeout(() => {
+			this.identity || (this.clickCount += 1, clearTimeout(this.clickResetTimer), this.clickResetTimer = setTimeout(() => {
 				this.clickCount = 0;
-			}, 2e3), this.clickCount >= 5 && (this.clickCount = 0, this.showPanel = !0, this.step = "request", this.error = ""));
+			}, 2e3), this.clickCount >= 5 && (this.clickCount = 0, startSignIn()));
 		},
-		close() {
-			this.showPanel = !1, this.code = "", this.error = "";
+		onIdentityChanged() {
+			this.identity = getIdentity();
 		},
-		async requestCode() {
-			this.busy = !0, this.error = "";
-			try {
-				await authClient.requestLoginCode(), this.step = "code";
-			} catch {
-				this.error = "Couldn't send the code -- try again.";
-			} finally {
-				this.busy = !1;
-			}
-		},
-		async submitCode() {
-			this.busy = !0, this.error = "";
-			try {
-				let e = await authClient.verifyLoginCode(this.code);
-				if (!e) {
-					this.error = "Wrong code -- request a new one.", this.step = "request", this.code = "";
-					return;
-				}
-				localStorage.setItem(TOKEN_KEY, e), this.ownerToken = e, this.showPanel = !1, this.code = "", window.dispatchEvent(new CustomEvent("widgetgrid:identity-changed"));
-			} catch {
-				this.error = "Something went wrong -- try again.";
-			} finally {
-				this.busy = !1;
-			}
-		},
-		async logout() {
-			let e = this.ownerToken;
-			localStorage.removeItem(TOKEN_KEY), this.ownerToken = null, window.dispatchEvent(new CustomEvent("widgetgrid:identity-changed"));
-			try {
-				await authClient.logout(e);
-			} catch {}
+		logout() {
+			signOut({ grpcWebOrigin: GRPC_WEB_ORIGIN });
 		}
 	}
-}, _hoisted_1 = { class: "widget widget-login" }, _hoisted_2 = { class: "login-panel" }, _hoisted_3 = ["disabled"], _hoisted_4 = {
-	key: 0,
-	class: "login-error"
-}, _hoisted_5 = ["disabled"], _hoisted_6 = {
-	key: 0,
-	class: "login-error"
-};
+}, _hoisted_1 = { class: "widget widget-login" }, _hoisted_2 = ["title"];
 function _sfc_render(e, t, n, r, i, o) {
-	return openBlock(), createElementBlock("div", _hoisted_1, [i.ownerToken && !i.showPanel ? (openBlock(), createElementBlock("button", {
+	return openBlock(), createElementBlock("div", _hoisted_1, [i.identity ? (openBlock(), createElementBlock("button", {
 		key: 0,
 		type: "button",
 		class: "login-logout-link",
+		title: i.identity.email,
 		onClick: t[0] ||= (...e) => o.logout && o.logout(...e)
-	}, "Log out")) : createCommentVNode("", !0), i.showPanel ? (openBlock(), createElementBlock("div", {
-		key: 1,
-		class: "login-overlay",
-		onClick: t[5] ||= withModifiers((...e) => o.close && o.close(...e), ["self"])
-	}, [createElementVNode("div", _hoisted_2, [createElementVNode("button", {
-		type: "button",
-		class: "login-close",
-		"aria-label": "Close",
-		onClick: t[1] ||= (...e) => o.close && o.close(...e)
-	}, "×"), i.step === "code" ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [
-		t[6] ||= createElementVNode("p", { class: "login-prompt" }, "Enter the code that was texted to you.", -1),
-		createElementVNode("form", { onSubmit: t[3] ||= withModifiers((...e) => o.submitCode && o.submitCode(...e), ["prevent"]) }, [withDirectives(createElementVNode("input", {
-			"onUpdate:modelValue": t[2] ||= (e) => i.code = e,
-			type: "text",
-			inputmode: "numeric",
-			autocomplete: "one-time-code",
-			class: "login-input",
-			placeholder: "123456",
-			autofocus: ""
-		}, null, 512), [[vModelText, i.code]]), createElementVNode("button", {
-			type: "submit",
-			class: "login-submit",
-			disabled: i.busy || !i.code
-		}, "Verify", 8, _hoisted_3)], 32),
-		i.error ? (openBlock(), createElementBlock("p", _hoisted_4, toDisplayString(i.error), 1)) : createCommentVNode("", !0)
-	], 64)) : (openBlock(), createElementBlock(Fragment, { key: 1 }, [
-		t[7] ||= createElementVNode("p", { class: "login-prompt" }, "Text yourself a one-time login code?", -1),
-		createElementVNode("button", {
-			type: "button",
-			class: "login-submit",
-			disabled: i.busy,
-			onClick: t[4] ||= (...e) => o.requestCode && o.requestCode(...e)
-		}, toDisplayString(i.busy ? "Sending…" : "Send code"), 9, _hoisted_5),
-		i.error ? (openBlock(), createElementBlock("p", _hoisted_6, toDisplayString(i.error), 1)) : createCommentVNode("", !0)
-	], 64))])])) : createCommentVNode("", !0)]);
+	}, "Log out", 8, _hoisted_2)) : createCommentVNode("", !0)]);
 }
-var LoginWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-34985984"]]);
+var LoginWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-ab26e2ad"]]);
 //#endregion
 export { LoginWidget_default as default };

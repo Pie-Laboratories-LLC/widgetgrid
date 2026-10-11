@@ -1,0 +1,11 @@
+{
+  "name": "@widgetgrid/auth-web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Browser-side Cognito sign-in (authorization code + PKCE) and token storage, shared by packages/web-app and the widgets.",
+  "main": "src/index.js",
+  "dependencies": {
+    "@widgetgrid/proto-gen-web": "*"
+  }
+}

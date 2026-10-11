@@ -155,7 +155,7 @@ kubectl create configmap envoy-gateway-config \
   --dry-run=client -o yaml | kubectl apply -f -
 
 echo
-echo "== widgetgrid-server secret (DATABASE_URL from Secrets Manager, OWNER_PHONE_NUMBER from .env) =="
+echo "== widgetgrid-server secret (DATABASE_URL from Secrets Manager, OWNER_PHONE_NUMBER/OWNER_EMAIL from .env) =="
 # .env, not a literal in this script -- same gitignored local file
 # packages/db/packages/server already read for local dev (see .env.example).
 # Sourced BEFORE computing DATABASE_URL below, deliberately: .env's own
@@ -191,6 +191,7 @@ DATABASE_URL=$(echo "$db_secret_json" | jq -r '"postgres://\(.username):\(.passw
 kubectl create secret generic widgetgrid-server-secret \
   --from-literal=DATABASE_URL="$DATABASE_URL" \
   --from-literal=OWNER_PHONE_NUMBER="${OWNER_PHONE_NUMBER:-}" \
+  --from-literal=OWNER_EMAIL="${OWNER_EMAIL:-}" \
   --namespace widgetgrid \
   --dry-run=client -o yaml | kubectl apply -f -
 

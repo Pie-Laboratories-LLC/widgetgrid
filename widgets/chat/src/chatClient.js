@@ -8,18 +8,17 @@ import {
   MarkReadRequest,
 } from '@widgetgrid/proto-gen-web/widgetgrid/v1/chat_pb.js';
 import { ChatServicePromiseClient } from '@widgetgrid/proto-gen-web/widgetgrid/v1/chat_grpc_web_pb.js';
+import { authMetadata, getIdentity } from '@widgetgrid/auth-web';
 
 const GRPC_WEB_ORIGIN = import.meta.env.VITE_GRPC_WEB_ORIGIN ?? '';
 const client = new ChatServicePromiseClient(GRPC_WEB_ORIGIN);
 
-// Same localStorage key LoginWidget.vue writes on a successful login --
-// independently built widgets, no shared module to hold the constant in
-// (see LoginWidget.vue's comment on TOKEN_KEY).
-const TOKEN_KEY = 'widgetgrid:ownerToken';
 const VISITOR_ID_KEY = 'widgetgrid:visitorId';
 
-export function getOwnerToken() {
-  return localStorage.getItem(TOKEN_KEY);
+// UI-only: whether to show the owner's side of chat. The server decides
+// for real from the access token (authContext.js).
+export function isSignedInOwner() {
+  return getIdentity()?.role === 'owner';
 }
 
 // The one piece of identity an anonymous visitor has: a UUID generated
@@ -35,44 +34,43 @@ export function getOrCreateVisitorId() {
   return id;
 }
 
-// authorization for the owner's browser, visitor-id for everyone else --
-// mirrors authContext.js's isOwnerRequest/getVisitorId on the server.
-function identityMetadata() {
-  const token = getOwnerToken();
-  return token ? { authorization: `Bearer ${token}` } : { 'visitor-id': getOrCreateVisitorId() };
+// visitor-id always, plus the access token when signed in -- a signed-in
+// member who isn't the owner still chats as a visitor (see authContext.js).
+async function identityMetadata() {
+  return { 'visitor-id': getOrCreateVisitorId(), ...(await authMetadata()) };
 }
 
 export const chatClient = {
   async startOrGetChat() {
-    const response = await client.startOrGetChat(new StartOrGetChatRequest(), identityMetadata());
+    const response = await client.startOrGetChat(new StartOrGetChatRequest(), await identityMetadata());
     return response.toObject().chat;
   },
   async sendMessage(chatId, body) {
     const request = new SendMessageRequest();
     request.setChatId(chatId);
     request.setBody(body);
-    const response = await client.sendMessage(request, identityMetadata());
+    const response = await client.sendMessage(request, await identityMetadata());
     return response.toObject().message;
   },
   async listMessages(chatId) {
     const request = new ListMessagesRequest();
     request.setChatId(chatId);
-    const response = await client.listMessages(request, identityMetadata());
+    const response = await client.listMessages(request, await identityMetadata());
     return response.toObject().messagesList;
   },
   async listChats() {
-    const response = await client.listChats(new ListChatsRequest(), identityMetadata());
+    const response = await client.listChats(new ListChatsRequest(), await identityMetadata());
     return response.toObject().chatsList;
   },
   async renameChat(chatId, label) {
     const request = new RenameChatRequest();
     request.setChatId(chatId);
     request.setLabel(label);
-    await client.renameChat(request, identityMetadata());
+    await client.renameChat(request, await identityMetadata());
   },
   async markRead(chatId) {
     const request = new MarkReadRequest();
     request.setChatId(chatId);
-    await client.markRead(request, identityMetadata());
+    await client.markRead(request, await identityMetadata());
   },
 };

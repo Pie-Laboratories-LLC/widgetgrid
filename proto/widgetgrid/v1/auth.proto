@@ -2,34 +2,23 @@ syntax = "proto3";
 
 package widgetgrid.v1;
 
-// Single-owner auth -- there's no username, no signup, just "text the one
-// configured phone number a code". See authService.js/otpSender.js.
-//
-// requested_at_ms is never read server-side (RequestLoginCode ignores
-// call.request entirely) -- it exists purely so this message never
-// serializes to zero bytes. Confirmed the hard way: a genuinely
-// zero-length gRPC-Web request body (which is what a truly empty proto3
-// message serializes to) gets silently swallowed somewhere between the
-// browser and widgetgrid-server -- HTTP 200 comes back, but the request
-// never reaches the handler (no code generated, nothing logged). A 5-byte
-// empty-message grpc-web frame sent by hand (curl) worked fine; a
-// genuinely empty body reproduced the failure exactly. authClient.js sets
-// this to Date.now(), which is never 0, guaranteeing a non-empty payload.
-message RequestLoginCodeRequest {
-  int64 requested_at_ms = 1;
-}
-message RequestLoginCodeResponse {}
+// Sign-in itself happens in the browser against Cognito (hosted UI ->
+// IAM Identity Center, authorization code + PKCE; see
+// packages/auth-web). Every call then carries the Cognito access token as
+// "authorization: Bearer <jwt>" (see authContext.js). This service only
+// records the sign-in server-side: the users row, and for the owner, the
+// presence session behind SubscribeOwnerPresence.
 
-message VerifyLoginCodeRequest {
-  string code = 1;
+message RegisterSignInRequest {
+  // The ID token from the same sign-in -- it carries the email the access
+  // token doesn't. Verified server-side against the user pool.
+  string id_token = 1;
 }
 
-message VerifyLoginCodeResponse {
-  // Empty if verification failed -- callers check for that, not a
-  // separate ok/error field, to keep this a plain unary RPC rather than
-  // needing gRPC status-code branching for an expected-to-sometimes-fail
-  // case (a wrong code isn't exceptional, it's just resolving to "no").
-  string token = 1;
+message RegisterSignInResponse {
+  // Presence session for Logout; empty unless the caller is the owner.
+  string session_token = 1;
+  string role = 2;
 }
 
 message LogoutRequest {
@@ -44,8 +33,7 @@ message OwnerPresenceEvent {
 }
 
 service AuthService {
-  rpc RequestLoginCode(RequestLoginCodeRequest) returns (RequestLoginCodeResponse);
-  rpc VerifyLoginCode(VerifyLoginCodeRequest) returns (VerifyLoginCodeResponse);
+  rpc RegisterSignIn(RegisterSignInRequest) returns (RegisterSignInResponse);
   rpc Logout(LogoutRequest) returns (LogoutResponse);
   // Pushes on login/logout so every visitor's chat-icon greyed state
   // updates live, not just on their next page load. Same server-streaming

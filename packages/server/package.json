@@ -17,6 +17,7 @@
     "@grpc/grpc-js": "1.14.4",
     "@grpc/proto-loader": "0.8.1",
     "@widgetgrid/db": "*",
+    "aws-jwt-verify": "5.2.1",
     "marked": "18.0.9"
   }
 }

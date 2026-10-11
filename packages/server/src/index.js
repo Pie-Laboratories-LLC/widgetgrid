@@ -14,6 +14,7 @@ import { createPollingBlogNotifier } from './blogChangeNotifier.js';
 import { createAuthService } from './services/authService.js';
 import { createChatService } from './services/chatService.js';
 import { createConsoleSmsSender, createSnsSmsSender } from './smsSender.js';
+import { createAuthContext, createCognitoVerifiers } from './authContext.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const HOST = process.env.GRPC_SERVER_HOST ?? '127.0.0.1';
@@ -39,13 +40,16 @@ const BLOG_ASSETS_BASE_URL = process.env.BLOG_ASSETS_BASE_URL || '/blog-assets';
 // blogChangeNotifier.js) -- irrelevant once a real S3-event-driven
 // notifier replaces it, since that's push, not poll.
 const BLOG_POLL_INTERVAL_MS = Number(process.env.BLOG_POLL_INTERVAL_MS ?? 20_000);
-// The one phone number a login code ever goes to -- there's no signup,
-// this is a single-owner login, not a general accounts system.
+// Where chatService.js texts offline-message alerts (SMS is behind 10DLC
+// registration; see smsSender.js).
 const OWNER_PHONE_NUMBER = process.env.OWNER_PHONE_NUMBER ?? '';
 // 'console' (default, local dev) logs instead of texting; 'sns' (set in
 // infra/eks/manifests/widgetgrid-server.yaml) sends real texts via SNS --
 // see smsSender.js.
 const SMS_PROVIDER = process.env.SMS_PROVIDER ?? 'console';
+// The Identity Center email that becomes role 'owner' on sign-in (chat
+// server side, presence). Everyone else who signs in is a 'member'.
+const OWNER_EMAIL = process.env.OWNER_EMAIL ?? '';
 
 export function startServer() {
   const pool = getPool();
@@ -57,17 +61,18 @@ export function startServer() {
   // S3-event-driven notifier later (see that file's header comment) is a
   // one-line change here, same seam as blogSource above.
   const blogChangeNotifier = createPollingBlogNotifier({ blogSource, intervalMs: BLOG_POLL_INTERVAL_MS });
-  // Shared between AuthService (login codes) and ChatService
-  // (offline-message alerts) -- same "text Matt's one phone number"
-  // operation either way, see smsSender.js.
+  // ChatService's offline-message alerts -- see smsSender.js.
   const smsSender = SMS_PROVIDER === 'sns' ? createSnsSmsSender() : createConsoleSmsSender();
+
+  const { verifyAccessToken, verifyIdToken } = createCognitoVerifiers();
+  const authContext = createAuthContext({ pool, verifyAccessToken });
 
   const server = new grpc.Server();
   server.addService(proto.PageService.service, createPageService({ pool, pagesRepo, layoutNodesRepo }));
   server.addService(proto.WidgetService.service, createWidgetService({ pool, widgetsRepo }));
   server.addService(proto.BlogService.service, createBlogService({ blogSource, blogChangeNotifier }));
-  server.addService(proto.AuthService.service, createAuthService({ pool, ownerPhoneNumber: OWNER_PHONE_NUMBER, smsSender }));
-  server.addService(proto.ChatService.service, createChatService({ pool, ownerPhoneNumber: OWNER_PHONE_NUMBER, smsSender }));
+  server.addService(proto.AuthService.service, createAuthService({ pool, verifyIdToken, ownerEmail: OWNER_EMAIL }));
+  server.addService(proto.ChatService.service, createChatService({ pool, authContext, ownerPhoneNumber: OWNER_PHONE_NUMBER, smsSender }));
 
   return new Promise((resolve, reject) => {
     server.bindAsync(`${HOST}:${PORT}`, grpc.ServerCredentials.createInsecure(), (err, boundPort) => {

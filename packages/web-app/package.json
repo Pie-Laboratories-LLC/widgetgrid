@@ -12,6 +12,7 @@
     "test": "node --test src/**/*.test.js"
   },
   "dependencies": {
+    "@widgetgrid/auth-web": "*",
     "@widgetgrid/proto-gen-web": "*",
     "bootstrap": "5.3.8",
     "google-protobuf": "4.0.2",

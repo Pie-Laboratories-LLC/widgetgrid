@@ -1,51 +1,49 @@
 import crypto from 'node:crypto';
 import grpc from '@grpc/grpc-js';
-import * as authRepo from '@widgetgrid/db/src/authRepo.js';
+import * as defaultAuthRepo from '@widgetgrid/db/src/authRepo.js';
+import * as defaultUsersRepo from '@widgetgrid/db/src/usersRepo.js';
 import { publishPresence, subscribePresence } from '../presenceBus.js';
 
-const CODE_TTL_MS = 5 * 60 * 1000;
-const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days -- "just me", not worth re-texting a code every session
+// Matches the SPA client's refresh-token lifetime (Cognito default, 30
+// days): a presence session shouldn't outlive the browser's ability to
+// stay signed in.
+const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
-function hashCode(code) {
-  return crypto.createHash('sha256').update(code).digest('hex');
-}
-
-export function createAuthService({ pool, ownerPhoneNumber, smsSender }) {
+// ownerEmail: the one Identity Center email that gets role 'owner' on sign-in
+// (OWNER_EMAIL, see index.js). Everyone else who signs in is a 'member'.
+export function createAuthService({
+  pool,
+  verifyIdToken,
+  ownerEmail,
+  authRepo = defaultAuthRepo,
+  usersRepo = defaultUsersRepo,
+}) {
   return {
-    async RequestLoginCode(call, callback) {
+    async RegisterSignIn(call, callback) {
+      let claims;
       try {
-        const code = String(crypto.randomInt(100_000, 1_000_000));
-        await authRepo.createLoginCode(pool, {
-          codeHash: hashCode(code),
-          expiresAt: new Date(Date.now() + CODE_TTL_MS),
-        });
-        await smsSender.send(ownerPhoneNumber, code);
-        callback(null, {});
-      } catch (err) {
-        callback({ code: grpc.status.INTERNAL, message: err.message });
+        claims = await verifyIdToken(call.request.idToken);
+      } catch {
+        callback({ code: grpc.status.UNAUTHENTICATED, message: 'invalid id token' });
+        return;
       }
-    },
-
-    async VerifyLoginCode(call, callback) {
       try {
-        const latest = await authRepo.findLatestActiveLoginCode(pool);
-        if (!latest) {
-          callback(null, { token: '' });
-          return;
-        }
-        // Consumed regardless of match -- see authRepo.js's comment on
-        // findLatestActiveLoginCode for why this, not a hash-match lookup,
-        // is what makes a wrong guess actually cost something.
-        await authRepo.consumeLoginCode(pool, latest.id);
-        if (hashCode(call.request.code) !== latest.code_hash) {
-          callback(null, { token: '' });
-          return;
-        }
+        const email = String(claims.email ?? '');
+        const becomeOwner = !!ownerEmail && email.toLowerCase() === ownerEmail.toLowerCase();
+        const user = await usersRepo.upsertOnSignIn(pool, { sub: claims.sub, email, becomeOwner });
 
-        const token = crypto.randomBytes(32).toString('hex');
-        await authRepo.createSession(pool, { token, expiresAt: new Date(Date.now() + SESSION_TTL_MS) });
+        if (user.role !== 'owner') {
+          callback(null, { sessionToken: '', role: user.role });
+          return;
+        }
+        const sessionToken = crypto.randomBytes(32).toString('hex');
+        await authRepo.createSession(pool, {
+          token: sessionToken,
+          userId: user.id,
+          expiresAt: new Date(Date.now() + SESSION_TTL_MS),
+        });
         publishPresence(true);
-        callback(null, { token });
+        callback(null, { sessionToken, role: user.role });
       } catch (err) {
         callback({ code: grpc.status.INTERNAL, message: err.message });
       }
@@ -53,9 +51,9 @@ export function createAuthService({ pool, ownerPhoneNumber, smsSender }) {
 
     async Logout(call, callback) {
       try {
-        await authRepo.deleteSession(pool, call.request.token);
+        if (call.request.token) await authRepo.deleteSession(pool, call.request.token);
         // hasActiveSession, not a flat "false": another device could still
-        // be logged in (unlikely for "just me", but cheap to get right).
+        // be signed in.
         publishPresence(await authRepo.hasActiveSession(pool));
         callback(null, {});
       } catch (err) {
@@ -65,8 +63,8 @@ export function createAuthService({ pool, ownerPhoneNumber, smsSender }) {
 
     async SubscribeOwnerPresence(call) {
       // Current state immediately on subscribe, not just future changes --
-      // otherwise a page loaded while already logged in elsewhere would
-      // show the chat icon greyed out until the next login/logout.
+      // otherwise a page loaded while already signed in elsewhere would
+      // show the chat icon greyed out until the next sign-in/out.
       const online = await authRepo.hasActiveSession(pool);
       call.write({ online });
 

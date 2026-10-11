@@ -6076,12 +6076,267 @@ var require_chat_pb = /* @__PURE__ */ __commonJSMin(((e) => {
 	}, r.widgetgrid.v1.ChatServicePromiseClient.prototype.subscribeChatEvents = function(e, t) {
 		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.ChatService/SubscribeChatEvents", e, t || {}, d);
 	}, t.exports = r.widgetgrid.v1;
-})), import_chat_pb = require_chat_pb(), import_chat_grpc_web_pb = require_chat_grpc_web_pb(), client = new import_chat_grpc_web_pb.ChatServicePromiseClient("http://localhost:8080"), TOKEN_KEY = "widgetgrid:ownerToken", VISITOR_ID_KEY = "widgetgrid:visitorId";
-function identityMetadata() {
-	let e = localStorage.getItem(TOKEN_KEY);
-	if (e) return { authorization: `Bearer ${e}` };
-	let t = localStorage.getItem(VISITOR_ID_KEY);
-	return t || (t = crypto.randomUUID(), localStorage.setItem(VISITOR_ID_KEY, t)), { "visitor-id": t };
+})), require_auth_pb = /* @__PURE__ */ __commonJSMin(((e) => {
+	var t = require_google_protobuf(), n = t, r = function() {
+		return this ? this : typeof window < "u" ? window : r === void 0 ? typeof self < "u" ? self : Function("return this")() : r;
+	}.call(null);
+	n.exportSymbol("proto.widgetgrid.v1.LogoutRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.LogoutResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.OwnerPresenceEvent", null, r), n.exportSymbol("proto.widgetgrid.v1.RegisterSignInRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.RegisterSignInResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.SubscribeOwnerPresenceRequest", null, r), proto.widgetgrid.v1.RegisterSignInRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.RegisterSignInRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RegisterSignInRequest.displayName = "proto.widgetgrid.v1.RegisterSignInRequest"), proto.widgetgrid.v1.RegisterSignInResponse = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.RegisterSignInResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RegisterSignInResponse.displayName = "proto.widgetgrid.v1.RegisterSignInResponse"), proto.widgetgrid.v1.LogoutRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.LogoutRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.LogoutRequest.displayName = "proto.widgetgrid.v1.LogoutRequest"), proto.widgetgrid.v1.LogoutResponse = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.LogoutResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.LogoutResponse.displayName = "proto.widgetgrid.v1.LogoutResponse"), proto.widgetgrid.v1.SubscribeOwnerPresenceRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.SubscribeOwnerPresenceRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.displayName = "proto.widgetgrid.v1.SubscribeOwnerPresenceRequest"), proto.widgetgrid.v1.OwnerPresenceEvent = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.OwnerPresenceEvent, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.OwnerPresenceEvent.displayName = "proto.widgetgrid.v1.OwnerPresenceEvent"), t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RegisterSignInRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.RegisterSignInRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.RegisterSignInRequest.toObject = function(e, n) {
+		var r = { idToken: t.Message.getFieldWithDefault(n, 1, "") };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.RegisterSignInRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RegisterSignInRequest();
+		return proto.widgetgrid.v1.RegisterSignInRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.RegisterSignInRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setIdToken(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.RegisterSignInRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.RegisterSignInRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.RegisterSignInRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getIdToken(), n.length > 0 && t.writeString(1, n);
+	}, proto.widgetgrid.v1.RegisterSignInRequest.prototype.getIdToken = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.RegisterSignInRequest.prototype.setIdToken = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RegisterSignInResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.RegisterSignInResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.RegisterSignInResponse.toObject = function(e, n) {
+		var r = {
+			sessionToken: t.Message.getFieldWithDefault(n, 1, ""),
+			role: t.Message.getFieldWithDefault(n, 2, "")
+		};
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.RegisterSignInResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RegisterSignInResponse();
+		return proto.widgetgrid.v1.RegisterSignInResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.RegisterSignInResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setSessionToken(n);
+				break;
+			case 2:
+				var n = t.readString();
+				e.setRole(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.RegisterSignInResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.RegisterSignInResponse.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getSessionToken(), n.length > 0 && t.writeString(1, n), n = e.getRole(), n.length > 0 && t.writeString(2, n);
+	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.getSessionToken = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.setSessionToken = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.getRole = function() {
+		return t.Message.getFieldWithDefault(this, 2, "");
+	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.setRole = function(e) {
+		return t.Message.setProto3StringField(this, 2, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.LogoutRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.LogoutRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.LogoutRequest.toObject = function(e, n) {
+		var r = { token: t.Message.getFieldWithDefault(n, 1, "") };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.LogoutRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.LogoutRequest();
+		return proto.widgetgrid.v1.LogoutRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.LogoutRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setToken(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.LogoutRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.LogoutRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.LogoutRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getToken(), n.length > 0 && t.writeString(1, n);
+	}, proto.widgetgrid.v1.LogoutRequest.prototype.getToken = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.LogoutRequest.prototype.setToken = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.LogoutResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.LogoutResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.LogoutResponse.toObject = function(e, t) {
+		var n = {};
+		return e && (n.$jspbMessageInstance = t), n;
+	}), proto.widgetgrid.v1.LogoutResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.LogoutResponse();
+		return proto.widgetgrid.v1.LogoutResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.LogoutResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		return e;
+	}, proto.widgetgrid.v1.LogoutResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.LogoutResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.LogoutResponse.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.toObject = function(e, t) {
+		var n = {};
+		return e && (n.$jspbMessageInstance = t), n;
+	}), proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.SubscribeOwnerPresenceRequest();
+		return proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		return e;
+	}, proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.OwnerPresenceEvent.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.OwnerPresenceEvent.toObject(e, this);
+	}, proto.widgetgrid.v1.OwnerPresenceEvent.toObject = function(e, n) {
+		var r = { online: t.Message.getBooleanFieldWithDefault(n, 1, !1) };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.OwnerPresenceEvent.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.OwnerPresenceEvent();
+		return proto.widgetgrid.v1.OwnerPresenceEvent.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.OwnerPresenceEvent.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readBool();
+				e.setOnline(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.OwnerPresenceEvent.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.OwnerPresenceEvent.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.OwnerPresenceEvent.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getOnline(), n && t.writeBool(1, n);
+	}, proto.widgetgrid.v1.OwnerPresenceEvent.prototype.getOnline = function() {
+		return t.Message.getBooleanFieldWithDefault(this, 1, !1);
+	}, proto.widgetgrid.v1.OwnerPresenceEvent.prototype.setOnline = function(e) {
+		return t.Message.setProto3BooleanField(this, 1, e);
+	}, n.object.extend(e, proto.widgetgrid.v1);
+})), require_auth_grpc_web_pb = /* @__PURE__ */ __commonJSMin(((e, t) => {
+	var n = {};
+	n.web = require_grpc_web();
+	var r = {};
+	r.widgetgrid = {}, r.widgetgrid.v1 = require_auth_pb(), r.widgetgrid.v1.AuthServiceClient = function(e, t, r) {
+		r ||= {}, r.format = "text", this.client_ = new n.web.GrpcWebClientBase(r), this.hostname_ = e.replace(/\/+$/, "");
+	}, r.widgetgrid.v1.AuthServicePromiseClient = function(e, t, r) {
+		r ||= {}, r.format = "text", this.client_ = new n.web.GrpcWebClientBase(r), this.hostname_ = e.replace(/\/+$/, "");
+	};
+	var i = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/RegisterSignIn", n.web.MethodType.UNARY, r.widgetgrid.v1.RegisterSignInRequest, r.widgetgrid.v1.RegisterSignInResponse, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.RegisterSignInResponse.deserializeBinary);
+	r.widgetgrid.v1.AuthServiceClient.prototype.registerSignIn = function(e, t, n) {
+		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.AuthService/RegisterSignIn", e, t || {}, i, n);
+	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.registerSignIn = function(e, t) {
+		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.AuthService/RegisterSignIn", e, t || {}, i);
+	};
+	var o = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/Logout", n.web.MethodType.UNARY, r.widgetgrid.v1.LogoutRequest, r.widgetgrid.v1.LogoutResponse, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.LogoutResponse.deserializeBinary);
+	r.widgetgrid.v1.AuthServiceClient.prototype.logout = function(e, t, n) {
+		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.AuthService/Logout", e, t || {}, o, n);
+	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.logout = function(e, t) {
+		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.AuthService/Logout", e, t || {}, o);
+	};
+	var s = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/SubscribeOwnerPresence", n.web.MethodType.SERVER_STREAMING, r.widgetgrid.v1.SubscribeOwnerPresenceRequest, r.widgetgrid.v1.OwnerPresenceEvent, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.OwnerPresenceEvent.deserializeBinary);
+	r.widgetgrid.v1.AuthServiceClient.prototype.subscribeOwnerPresence = function(e, t) {
+		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.AuthService/SubscribeOwnerPresence", e, t || {}, s);
+	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.subscribeOwnerPresence = function(e, t) {
+		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.AuthService/SubscribeOwnerPresence", e, t || {}, s);
+	}, t.exports = r.widgetgrid.v1;
+})), import_chat_pb = require_chat_pb(), import_chat_grpc_web_pb = require_chat_grpc_web_pb(), import_auth_pb = require_auth_pb(), import_auth_grpc_web_pb = require_auth_grpc_web_pb(), AUTH_ORIGIN = "https://auth.pie-laboratories.com", CLIENT_ID = "bvec1bfa2e7srgjf237e2m3ja", STORAGE_KEY = "widgetgrid:auth", EXPIRY_SKEW_MS = 6e4, IDENTITY_CHANGED_EVENT = "widgetgrid:identity-changed";
+function readStored() {
+	try {
+		return JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? null;
+	} catch {
+		return null;
+	}
+}
+function writeStored(e) {
+	e ? localStorage.setItem(STORAGE_KEY, JSON.stringify(e)) : localStorage.removeItem(STORAGE_KEY);
+}
+function announce() {
+	window.dispatchEvent(new CustomEvent(IDENTITY_CHANGED_EVENT));
+}
+window.addEventListener("storage", (e) => {
+	e.key === STORAGE_KEY && announce();
+});
+async function tokenRequest(e) {
+	let t = await fetch(`${AUTH_ORIGIN}/oauth2/token`, {
+		method: "POST",
+		headers: { "Content-Type": "application/x-www-form-urlencoded" },
+		body: new URLSearchParams({
+			client_id: CLIENT_ID,
+			...e
+		})
+	}), n = await t.json();
+	if (!t.ok) throw Error(n.error ?? `token endpoint ${t.status}`);
+	return n;
+}
+var refreshing = null;
+async function getAccessToken() {
+	let e = readStored();
+	return e ? e.expiresAt - EXPIRY_SKEW_MS > Date.now() ? e.accessToken : (refreshing ??= (async () => {
+		try {
+			let t = await tokenRequest({
+				grant_type: "refresh_token",
+				refresh_token: e.refreshToken
+			}), n = {
+				...e,
+				accessToken: t.access_token,
+				idToken: t.id_token,
+				expiresAt: Date.now() + t.expires_in * 1e3
+			};
+			return writeStored(n), n.accessToken;
+		} catch {
+			return writeStored(null), announce(), null;
+		} finally {
+			refreshing = null;
+		}
+	})(), refreshing) : null;
+}
+async function authMetadata() {
+	let e = await getAccessToken();
+	return e ? { authorization: `Bearer ${e}` } : {};
+}
+//#endregion
+//#region src/chatSubscriptionClient.js
+var client = new import_chat_grpc_web_pb.ChatServicePromiseClient("http://localhost:8080"), VISITOR_ID_KEY = "widgetgrid:visitorId";
+async function identityMetadata() {
+	let e = localStorage.getItem(VISITOR_ID_KEY);
+	return e || (e = crypto.randomUUID(), localStorage.setItem(VISITOR_ID_KEY, e)), {
+		"visitor-id": e,
+		...await authMetadata()
+	};
 }
 var RECONNECT_DELAY_MS = 2e3;
 function subscribeChatEvents(e) {
@@ -6091,11 +6346,12 @@ function subscribeChatEvents(e) {
 			r = null, o();
 		}, RECONNECT_DELAY_MS));
 	}
-	function o() {
-		n = client.subscribeChatEvents(new import_chat_pb.SubscribeChatEventsRequest(), identityMetadata()), n.on("data", (t) => e(t.toObject())), n.on("error", i), n.on("end", i);
+	async function o() {
+		let r = await identityMetadata();
+		t || (n = client.subscribeChatEvents(new import_chat_pb.SubscribeChatEventsRequest(), r), n.on("data", (t) => e(t.toObject())), n.on("error", i), n.on("end", i));
 	}
 	return o(), () => {
-		t = !0, r && clearTimeout(r), n.cancel();
+		t = !0, r && clearTimeout(r), n?.cancel();
 	};
 }
 //#endregion
