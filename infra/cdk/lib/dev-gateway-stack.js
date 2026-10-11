@@ -1,39 +1,19 @@
-import { fileURLToPath } from 'node:url';
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
 import { Stack, CfnOutput } from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import * as elbv2Actions from 'aws-cdk-lib/aws-elasticloadbalancingv2-actions';
-import * as cognito from 'aws-cdk-lib/aws-cognito';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as route53Targets from 'aws-cdk-lib/aws-route53-targets';
 import { ENVOY_GATEWAY_NODE_PORT } from './eks-stack.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DEV_HOST = 'dev.pie-laboratories.com';
-// Downloaded from the "customer managed SAML 2.0 application" set up by
-// hand in the IAM Identity Center console (see infra/cdk/README.md step 4
-// -- no CloudFormation resource exists for creating that application
-// itself). Not sensitive -- SAML IdP metadata is meant to be shared with
-// service providers, same as an OIDC issuer's JWKS endpoint.
-//
-// Read eagerly (not lazily inside the stack) and passed as content, not a
-// path: UserPoolIdentityProviderSamlMetadata.file() takes the actual XML
-// string despite the "file" name (confirmed by reading aws-cdk-lib's own
-// source -- the parameter is literally called `fileContent`) -- passing a
-// path string through directly, which is what this looked like it wanted,
-// makes Cognito reject it outright ("Input XML is invalid") since it tries
-// to parse the path itself as XML.
-const SAML_METADATA_XML = readFileSync(path.join(__dirname, '../identity-center-saml-metadata.xml'), 'utf8');
 
-// Everything here is expected to change a lot once the real app (currently
-// only proven locally via local-k8s/) gets deployed on top of it -- kept
-// separate from DnsStack for exactly that reason.
 export class DevGatewayStack extends Stack {
   constructor(scope, id, props) {
     super(scope, id, props);
-    const { hostedZone, certificate } = props;
+    // Sign-in comes from WidgetgridIdentityStack (shared with prod); this
+    // stack only uses its dev-ALB client for the authenticate-cognito gate.
+    const { hostedZone, certificate, userPool, userPoolDomain, devAlbClient } = props;
 
     // Private subnets + 1 NAT gateway (up from 0): the EKS node group and
     // RDS instance (WidgetgridEksStack/WidgetgridRdsStack) now need
@@ -98,59 +78,6 @@ export class DevGatewayStack extends Stack {
       target: route53.RecordTarget.fromAlias(new route53Targets.LoadBalancerTarget(alb)),
     });
 
-    // selfSignUpEnabled: false -- SSO via Identity Center is confirmed
-    // working (plan step 6), so the bootstrap fallback path is retired.
-    const userPool = new cognito.UserPool(this, 'UserPool', {
-      userPoolName: 'widgetgrid-dev',
-      selfSignUpEnabled: false,
-      signInAliases: { email: true },
-    });
-
-    // Domain prefix must be globally unique across all of Cognito in this
-    // partition, not just this account -- "widgetgrid-dev" is a guess at
-    // something unclaimed; if `cdk deploy` fails on this specifically,
-    // that's why, and a different prefix is the fix (not a code bug).
-    const userPoolDomain = userPool.addDomain('UserPoolDomain', {
-      cognitoDomain: { domainPrefix: 'widgetgrid-dev' },
-    });
-
-    // Identity Center is the IdP, Cognito is the SAML service provider --
-    // the ACS URL/audience entered on Identity Center's side
-    // (https://<UserPoolDomainUrl>/saml2/idpresponse and
-    // urn:amazon:cognito:sp:<userPoolId>, see the README) are what makes
-    // this the other half of that trust relationship.
-    const identityCenterProvider = new cognito.UserPoolIdentityProviderSaml(this, 'IdentityCenterSaml', {
-      userPool,
-      name: 'IdentityCenter',
-      metadata: cognito.UserPoolIdentityProviderSamlMetadata.file(SAML_METADATA_XML),
-      // Identity Center's Subject is mapped to email (format emailAddress)
-      // for the NameID/federated-user-identity itself, but Cognito still
-      // needs a real attribute statement to populate the user's email --
-      // that's the separate "email" attribute row added on the Identity
-      // Center application's attribute mapping page.
-      attributeMapping: {
-        email: cognito.ProviderAttribute.other('email'),
-      },
-    });
-
-    const userPoolClient = userPool.addClient('UserPoolClient', {
-      generateSecret: true, // required for ALB's Cognito auth action
-      oAuth: {
-        flows: { authorizationCodeGrant: true },
-        scopes: [cognito.OAuthScope.OPENID, cognito.OAuthScope.EMAIL],
-        // Fixed path ALB's Cognito auth action expects the OAuth callback
-        // on -- not configurable on the ALB side, so this has to match
-        // exactly.
-        callbackUrls: [`https://${DEV_HOST}/oauth2/idpresponse`],
-      },
-      // COGNITO dropped (plan step 6) -- Identity Center SSO is confirmed
-      // working, so it's the only supported IdP now.
-      supportedIdentityProviders: [
-        cognito.UserPoolClientIdentityProvider.custom(identityCenterProvider.providerName),
-      ],
-    });
-    userPoolClient.node.addDependency(identityCenterProvider);
-
     // Set via `-c envoyTargetGroupArn=<arn>` on this stack's next deploy,
     // AFTER WidgetgridEksStack has deployed and printed its
     // EnvoyTargetGroupArn output -- not a live CDK cross-stack construct
@@ -179,14 +106,12 @@ export class DevGatewayStack extends Stack {
       // rule for now.
       defaultAction: new elbv2Actions.AuthenticateCognitoAction({
         userPool,
-        userPoolClient,
+        userPoolClient: devAlbClient,
         userPoolDomain,
         next,
       }),
     });
 
     new CfnOutput(this, 'DevUrl', { value: `https://${DEV_HOST}` });
-    new CfnOutput(this, 'UserPoolId', { value: userPool.userPoolId });
-    new CfnOutput(this, 'UserPoolDomainUrl', { value: userPoolDomain.baseUrl() });
   }
 }

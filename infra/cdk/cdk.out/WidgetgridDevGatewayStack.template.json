@@ -554,29 +554,22 @@
      {
       "AuthenticateCognitoConfig": {
        "UserPoolArn": {
-        "Fn::GetAtt": [
-         "UserPool6BA7E5F2",
-         "Arn"
-        ]
+        "Fn::ImportValue": "WidgetgridIdentityStack:ExportsOutputFnGetAttUserPool6BA7E5F2Arn686ACC00"
        },
        "UserPoolClientId": {
-        "Ref": "UserPoolUserPoolClient40176907"
+        "Fn::ImportValue": "WidgetgridIdentityStack:ExportsOutputRefUserPoolDevAlbClient6B61DCF015FC0BF2"
        },
        "UserPoolDomain": {
-        "Ref": "UserPoolUserPoolDomain9F01E991"
+        "Fn::ImportValue": "WidgetgridIdentityStack:ExportsOutputRefUserPoolUserPoolDomain9F01E991C1F75B8B"
        }
       },
       "Order": 1,
       "Type": "authenticate-cognito"
      },
      {
-      "FixedResponseConfig": {
-       "ContentType": "text/plain",
-       "MessageBody": "widgetgrid dev -- nothing deployed here yet",
-       "StatusCode": "200"
-      },
       "Order": 2,
-      "Type": "fixed-response"
+      "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:913318903667:targetgroup/Widget-Envoy-PQP90CASKUKM/fb3e430fac837778",
+      "Type": "forward"
      }
     ],
     "LoadBalancerArn": {
@@ -622,114 +615,10 @@
     "aws:cdk:path": "WidgetgridDevGatewayStack/DevAliasRecord/Resource"
    }
   },
-  "UserPool6BA7E5F2": {
-   "Type": "AWS::Cognito::UserPool",
-   "Properties": {
-    "AccountRecoverySetting": {
-     "RecoveryMechanisms": [
-      {
-       "Name": "verified_phone_number",
-       "Priority": 1
-      },
-      {
-       "Name": "verified_email",
-       "Priority": 2
-      }
-     ]
-    },
-    "AdminCreateUserConfig": {
-     "AllowAdminCreateUserOnly": true
-    },
-    "AutoVerifiedAttributes": [
-     "email"
-    ],
-    "EmailVerificationMessage": "The verification code to your new account is {####}",
-    "EmailVerificationSubject": "Verify your new account",
-    "SmsVerificationMessage": "The verification code to your new account is {####}",
-    "UserPoolName": "widgetgrid-dev",
-    "UsernameAttributes": [
-     "email"
-    ],
-    "VerificationMessageTemplate": {
-     "DefaultEmailOption": "CONFIRM_WITH_CODE",
-     "EmailMessage": "The verification code to your new account is {####}",
-     "EmailSubject": "Verify your new account",
-     "SmsMessage": "The verification code to your new account is {####}"
-    }
-   },
-   "UpdateReplacePolicy": "Retain",
-   "DeletionPolicy": "Retain",
-   "Metadata": {
-    "aws:cdk:path": "WidgetgridDevGatewayStack/UserPool/Resource"
-   }
-  },
-  "UserPoolUserPoolDomain9F01E991": {
-   "Type": "AWS::Cognito::UserPoolDomain",
-   "Properties": {
-    "Domain": "widgetgrid-dev",
-    "UserPoolId": {
-     "Ref": "UserPool6BA7E5F2"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "WidgetgridDevGatewayStack/UserPool/UserPoolDomain/Resource"
-   }
-  },
-  "UserPoolUserPoolClient40176907": {
-   "Type": "AWS::Cognito::UserPoolClient",
-   "Properties": {
-    "AllowedOAuthFlows": [
-     "code"
-    ],
-    "AllowedOAuthFlowsUserPoolClient": true,
-    "AllowedOAuthScopes": [
-     "openid",
-     "email"
-    ],
-    "CallbackURLs": [
-     "https://dev.pie-laboratories.com/oauth2/idpresponse"
-    ],
-    "GenerateSecret": true,
-    "SupportedIdentityProviders": [
-     {
-      "Ref": "IdentityCenterSaml7DDC803F"
-     }
-    ],
-    "UserPoolId": {
-     "Ref": "UserPool6BA7E5F2"
-    }
-   },
-   "DependsOn": [
-    "IdentityCenterSaml7DDC803F"
-   ],
-   "Metadata": {
-    "aws:cdk:path": "WidgetgridDevGatewayStack/UserPool/UserPoolClient/Resource"
-   }
-  },
-  "IdentityCenterSaml7DDC803F": {
-   "Type": "AWS::Cognito::UserPoolIdentityProvider",
-   "Properties": {
-    "AttributeMapping": {
-     "email": "email"
-    },
-    "ProviderDetails": {
-     "IDPSignout": false,
-     "MetadataFile": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><md:EntityDescriptor xmlns:md=\"urn:oasis:names:tc:SAML:2.0:metadata\" entityID=\"https://portal.sso.us-east-1.amazonaws.com/saml/assertion/OTEzMzE4OTAzNjY3X2lucy03MjIzODY4YTdjY2FkMTAz\">\n  <md:IDPSSODescriptor WantAuthnRequestsSigned=\"false\" protocolSupportEnumeration=\"urn:oasis:names:tc:SAML:2.0:protocol\">\n    <md:KeyDescriptor use=\"signing\">\n      <ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">\n        <ds:X509Data>\n          <ds:X509Certificate>MIIDBjCCAe6gAwIBAgIEBQ0T7TANBgkqhkiG9w0BAQsFADBFMRYwFAYDVQQDDA1hbWF6b25hd3MuY29tMQ0wCwYDVQQLDARJREFTMQ8wDQYDVQQKDAZBbWF6b24xCzAJBgNVBAYTAlVTMB4XDTI2MDgxNjIzMTYwOFoXDTMxMDgxNjIzMTYwOFowRTEWMBQGA1UEAwwNYW1hem9uYXdzLmNvbTENMAsGA1UECwwESURBUzEPMA0GA1UECgwGQW1hem9uMQswCQYDVQQGEwJVUzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAN2IYlAcWfQTa1VGRnXMvcLS3hbP50/jiK3qHnIYN4Ky1Lyn5ADxk0Q0KZ+6D376rL3lf3L9quPmETHI5d8cyGi4+ZzBwixt+JiIbpJns36ylHmUBYy8LedA7CDnFNVFn6a6LPRlmUVuKBBlP08nqEBWnl7+CCVxFd68UJbix/ng2vX7Ie/yhIGRm97QQQyhCnNL7T3/l5OPn6znjO2HoDsrYm1y7lU+hkgrVuRrCrGI+dHr4brnPNJOb+a2AolkTJnzDANX+ED0aV6UWfkZZlihpQh0bBlE0TDaIivmpiAPZmlWyZavVxfT3xrhHf4uOcq2dRKSCEK+ekYHuIob0N0CAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAAB1xlbydhtLDL4JZnZ5BEL6muSkmfHyLxMU7VoGIr4tCEo1c7nlPQU9xKaM3umxqrqHGfrL5sBXt20s7JINWGN62H5IM0rhs4HcKj3klBiEARrdodc32qqhiWaJ+fxU7U3LxYA2NuVvR5M9ecgQM34rp1e5OsZAQf9Qj+RWS5mDzQAvpCG8Rt7HC7028YZGUx8ZisU5UCMShc/YLfl50N63KN8Cl46LVWgBiDeO4pMHyQZXNnnPr8aSb339/7OMnXrwdtWk+z/cA4R1k7o5iPRkYiPT39XB6RH0EeB/zeSfTZNqd7GypZQI1/2vk/xJjYuP6fIvhoziLaQWLYXCR4Q==</ds:X509Certificate>\n        </ds:X509Data>\n      </ds:KeyInfo>\n    </md:KeyDescriptor>\n    <md:SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://portal.sso.us-east-1.amazonaws.com/saml/logout/OTEzMzE4OTAzNjY3X2lucy03MjIzODY4YTdjY2FkMTAz\"/>\n    <md:SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\" Location=\"https://portal.sso.us-east-1.amazonaws.com/saml/logout/OTEzMzE4OTAzNjY3X2lucy03MjIzODY4YTdjY2FkMTAz\"/>\n    <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</md:NameIDFormat>\n    <md:SingleSignOnService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://portal.sso.us-east-1.amazonaws.com/saml/assertion/OTEzMzE4OTAzNjY3X2lucy03MjIzODY4YTdjY2FkMTAz\"/>\n    <md:SingleSignOnService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\" Location=\"https://portal.sso.us-east-1.amazonaws.com/saml/assertion/OTEzMzE4OTAzNjY3X2lucy03MjIzODY4YTdjY2FkMTAz\"/>\n  </md:IDPSSODescriptor>\n</md:EntityDescriptor>\n"
-    },
-    "ProviderName": "IdentityCenter",
-    "ProviderType": "SAML",
-    "UserPoolId": {
-     "Ref": "UserPool6BA7E5F2"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "WidgetgridDevGatewayStack/IdentityCenterSaml/Resource"
-   }
-  },
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/11R30+DMBD+W/be1YnOd5xmWWKUgO7VHOWct5WWtFeWhfC/GxgbzKf7fuX6XRrJ6GkpFzM4+rkqDnNNuWwyBnUQcPTfDapINttKidWP2SYrkYRck8pCbpA7bUSpDYyfkGsc9VGLvbeKgMmaa7gDr5ukG+/Aa2A8wkkkjmpgHBdvDKMzeA2cmwwsZgb1W6JhkaEKjvi0djZUfYep0ArU4JmUtlDkoMEoMrs6kk1cVZpUX+3NQvHce+i6DTd8miPPaIbMgFvhuqOWD7KJU1TWFf2hPcqQW6HszhBb2Xx5dIm1uvOv+AJebAlkptagXOhKU3ftJDAoF7op0DDxKXG2pgJdBuXNU//9thUpehuc6n/kI3AVuBXGFij3/q6OHmV0LxezvSeau2CYSpTpef4BHoMfuD8CAAA="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1VP0WrCQBD8Ft/Pq01r31MpIpQ2JMXXstms7ep5F+72EiTk30tiMPZpZmeHYSbRyctarxbQhiVWp6XhUneFAJ4UtOG7I0x0t69RbQ52n21UFkvDWMTSkgzazHIXhb6gNDTrs5aG4JBB2NmbeSBvu2yAD5AtCLVwUZnnBoTm4J0V8pZuhmuT6UpFAH/PZEUVhNGzXLbexXrscC/0igwEYTQOqhIMWGT70yS6S+vaMI7V3h1Ur+OP/JDw7773cRCyk2fivfLDqPWT7tKc0PlqHDqygqTvVU7BRY/j7s8odZReWVeRPoaHJnnWyaNeLY6BeemjFT6Tzq/4B2PL8iGlAQAA"
    },
    "Metadata": {
     "aws:cdk:path": "WidgetgridDevGatewayStack/CDKMetadata/Default"
@@ -739,25 +628,6 @@
  "Outputs": {
   "DevUrl": {
    "Value": "https://dev.pie-laboratories.com"
-  },
-  "UserPoolId": {
-   "Value": {
-    "Ref": "UserPool6BA7E5F2"
-   }
-  },
-  "UserPoolDomainUrl": {
-   "Value": {
-    "Fn::Join": [
-     "",
-     [
-      "https://",
-      {
-       "Ref": "UserPoolUserPoolDomain9F01E991"
-      },
-      ".auth.us-east-1.amazoncognito.com"
-     ]
-    ]
-   }
   },
   "ExportsOutputRefVpc8378EB38272D6E3A": {
    "Value": {

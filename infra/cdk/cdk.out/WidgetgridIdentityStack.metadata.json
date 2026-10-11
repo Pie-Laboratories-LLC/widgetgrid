@@ -1,0 +1,401 @@
+{
+  "/WidgetgridIdentityStack": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/AWS679f53fac002430cb0da5b7982bd2287": [
+    {
+      "type": "aws:cdk:is-custom-resource-handler-singleton",
+      "data": true
+    },
+    {
+      "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+      "data": 0
+    }
+  ],
+  "/WidgetgridIdentityStack/AWSCloudFrontPartitionHostedZoneIdMap": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AWSCloudFrontPartitionHostedZoneIdMap"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new ARecord2 in aws-cdk-lib...",
+        "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:59:5)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/UserPoolId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolId"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:128:5)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/SamlAcsUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SamlAcsUrl"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:129:5)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/SpaClientId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SpaClientId"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:130:5)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/DevAlbClientId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DevAlbClientId"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:131:5)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/SamlAudience": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SamlAudience"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:132:5)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/UserPool/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPool6BA7E5F2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new UserPool2 in aws-cdk-lib...",
+        "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:41:22)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/UserPool/PreTokenGenerationCognito": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolPreTokenGenerationCognito84D0CADA"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:90:14)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/AuthCertificate/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AuthCertificateC5D33BF2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Certificate2 in aws-cdk-lib...",
+        "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:52:29)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/AuthAliasRecord/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AuthAliasRecordA07A0AA6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new ARecord2 in aws-cdk-lib...",
+        "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:59:5)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/AWS679f53fac002430cb0da5b7982bd2287/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/IdentityCenterSaml/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "IdentityCenterSaml7DDC803F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new UserPoolIdentityProviderSaml2 in aws-cdk-lib...",
+        "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:69:36)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/PreTokenGroups/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PreTokenGroupsD7895435"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:79:28)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/Exports/Output{\"Fn::GetAtt\":[\"UserPool6BA7E5F2\",\"Arn\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttUserPool6BA7E5F2Arn686ACC00"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/Exports/Output{\"Ref\":\"UserPoolDevAlbClient6B61DCF0\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefUserPoolDevAlbClient6B61DCF015FC0BF2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/Exports/Output{\"Ref\":\"UserPoolUserPoolDomain9F01E991\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefUserPoolUserPoolDomain9F01E991C1F75B8B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/UserPool/UserPoolDomain/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolUserPoolDomain9F01E991"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addDomain in aws-cdk-lib...",
+        "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:56:37)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/UserPool/DevAlbClient/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolDevAlbClient6B61DCF0"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addClient in aws-cdk-lib...",
+        "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:96:35)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/UserPool/SpaClient/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolSpaClient6B560FFA"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addClient in aws-cdk-lib...",
+        "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:109:32)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/AWS679f53fac002430cb0da5b7982bd2287/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/PreTokenGroups/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PreTokenGroupsServiceRoleBBF3F398"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:79:28)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/PreTokenGroups/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PreTokenGroupsServiceRoleDefaultPolicy5303AE49"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addToRolePolicy in aws-cdk-lib...",
+        "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:86:20)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/UserPool/UserPoolDomain/CloudFrontDomainName/Resource/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolUserPoolDomainCloudFrontDomainName3917B242"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridIdentityStack/UserPool/UserPoolDomain/CloudFrontDomainName/CustomResourcePolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolUserPoolDomainCloudFrontDomainNameCustomResourcePolicyF5EF8095"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ]
+}

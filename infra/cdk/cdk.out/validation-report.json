@@ -21,7 +21,7 @@
               "constructFqn": "aws-cdk-lib.Stack",
               "libraryVersion": "2.265.0",
               "stackTraces": [
-                "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:48: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:48:1)",
+                "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:54: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:54:1)",
                 "...node internals..."
               ]
             },
@@ -30,7 +30,7 @@
               "constructFqn": "aws-cdk-lib.Stack",
               "libraryVersion": "2.265.0",
               "stackTraces": [
-                "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:30: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:30:1)",
+                "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:36: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:36:1)",
                 "...node internals..."
               ]
             }

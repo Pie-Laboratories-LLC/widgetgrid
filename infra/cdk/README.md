@@ -45,6 +45,31 @@ application inside Identity Center has no CloudFormation resource
 enabling Identity Center itself if it isn't already on, are manual
 console actions -- see Steps 1 and 4 below.
 
+## Sign-in: `WidgetgridIdentityStack`
+
+Since 2026-10 the Cognito side lives in its own stack, shared by dev and
+prod (it used to be part of `WidgetgridDevGatewayStack`):
+
+- User pool `widgetgrid` (RETAIN) with hosted sign-in at
+  `https://auth.pie-laboratories.com`.
+- SAML identity provider `IdentityCenter`, from
+  `identity-center-saml-metadata-widgetgrid.xml` -- the metadata of the
+  Identity Center app **widgetgrid** (ACS URL
+  `https://auth.pie-laboratories.com/saml2/idpresponse`, audience
+  `urn:amazon:cognito:sp:<UserPoolId>`; Subject and an `email` attribute
+  both mapped to `${user:email}`). Groups **anonyme users** and **anonyme
+  admins** are assigned to that app; assignment is the sign-in gate.
+- `lambda/pre-token-groups`: pre-token-generation trigger that looks the
+  user up in the Identity Store by email and puts their group names in
+  `cognito:groups` (Identity Center doesn't send groups in SAML for
+  custom apps).
+- Clients: `DevAlbClient` (the dev ALB's authenticate-cognito gate) and
+  `SpaClient` (public, authorization code + PKCE, callbacks at
+  `/auth/callback` on www, apex, dev and `localhost:5173`).
+
+`WidgetgridDevGatewayStack` imports the pool from it, so deploy
+`WidgetgridIdentityStack` first whenever the reference between them changes.
+
 ## Prerequisites
 
 - AWS credentials with permission to create the resources below, available
@@ -66,7 +91,8 @@ console/script steps, in order:
 1. **Done.** IAM Identity Center enabled for this account.
 2. **Done.** `WidgetgridDnsStack` deployed.
 3. **Done.** `WidgetgridDevGatewayStack` deployed (bootstrap self-signup path).
-4. **Done.** Identity Center SAML application created; Cognito federated to it.
+4. **Done.** Identity Center SAML application created; Cognito federated to it
+   (since replaced by the shared identity stack above).
 5. **Done.** SSO login confirmed end-to-end at `https://dev.pie-laboratories.com`.
 6. **Done.** `selfSignUpEnabled: false` -- Identity Center SSO is the only
    login path now.

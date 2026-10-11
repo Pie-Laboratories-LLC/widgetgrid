@@ -2,6 +2,7 @@
 import { App } from 'aws-cdk-lib';
 import { DnsStack } from '../lib/dns-stack.js';
 import { SharedStack } from '../lib/shared-stack.js';
+import { IdentityStack } from '../lib/identity-stack.js';
 import { DevGatewayStack } from '../lib/dev-gateway-stack.js';
 import { EksStack } from '../lib/eks-stack.js';
 import { RdsStack } from '../lib/rds-stack.js';
@@ -20,10 +21,15 @@ const app = new App();
 const dns = new DnsStack(app, 'WidgetgridDnsStack', { env });
 // ECR repos used by both environments -- see shared-stack.js.
 new SharedStack(app, 'WidgetgridSharedStack', { env });
+// Cognito + Identity Center sign-in for both environments -- see identity-stack.js.
+const identity = new IdentityStack(app, 'WidgetgridIdentityStack', { env, hostedZone: dns.hostedZone });
 const devGateway = new DevGatewayStack(app, 'WidgetgridDevGatewayStack', {
   env,
   hostedZone: dns.hostedZone,
   certificate: dns.certificate,
+  userPool: identity.userPool,
+  userPoolDomain: identity.userPoolDomain,
+  devAlbClient: identity.devAlbClient,
 });
 // One-directional: both take vpc from DevGatewayStack (already deployed --
 // see dev-gateway-stack.js's comment on why it isn't the other way around).

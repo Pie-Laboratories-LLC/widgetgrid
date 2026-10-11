@@ -3,7 +3,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23 (:)",
         "...node internals..."
       ]
     }
@@ -17,7 +17,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "new SharedStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/shared-stack.js:39:5)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23 (:)",
         "...node internals..."
       ]
     }
@@ -31,7 +31,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "new SharedStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/shared-stack.js:40:5)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23 (:)",
         "...node internals..."
       ]
     }
@@ -45,7 +45,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "new SharedStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/shared-stack.js:41:5)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23 (:)",
         "...node internals..."
       ]
     }
@@ -86,7 +86,7 @@
       "data": [
         "...new Repository2 in aws-cdk-lib...",
         "new SharedStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/shared-stack.js:17:29)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23 (:)",
         "...node internals..."
       ]
     }
@@ -101,7 +101,7 @@
       "data": [
         "...new Repository2 in aws-cdk-lib...",
         "new SharedStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/shared-stack.js:22:29)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23 (:)",
         "...node internals..."
       ]
     }
@@ -116,7 +116,7 @@
       "data": [
         "...new Repository2 in aws-cdk-lib...",
         "new SharedStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/shared-stack.js:33:32)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23 (:)",
         "...node internals..."
       ]
     }

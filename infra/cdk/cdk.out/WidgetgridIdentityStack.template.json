@@ -1,0 +1,580 @@
+{
+ "Resources": {
+  "UserPool6BA7E5F2": {
+   "Type": "AWS::Cognito::UserPool",
+   "Properties": {
+    "AccountRecoverySetting": {
+     "RecoveryMechanisms": [
+      {
+       "Name": "verified_phone_number",
+       "Priority": 1
+      },
+      {
+       "Name": "verified_email",
+       "Priority": 2
+      }
+     ]
+    },
+    "AdminCreateUserConfig": {
+     "AllowAdminCreateUserOnly": true
+    },
+    "AutoVerifiedAttributes": [
+     "email"
+    ],
+    "EmailVerificationMessage": "The verification code to your new account is {####}",
+    "EmailVerificationSubject": "Verify your new account",
+    "LambdaConfig": {
+     "PreTokenGeneration": {
+      "Fn::GetAtt": [
+       "PreTokenGroupsD7895435",
+       "Arn"
+      ]
+     }
+    },
+    "SmsVerificationMessage": "The verification code to your new account is {####}",
+    "UserPoolName": "widgetgrid",
+    "UsernameAttributes": [
+     "email"
+    ],
+    "VerificationMessageTemplate": {
+     "DefaultEmailOption": "CONFIRM_WITH_CODE",
+     "EmailMessage": "The verification code to your new account is {####}",
+     "EmailSubject": "Verify your new account",
+     "SmsMessage": "The verification code to your new account is {####}"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridIdentityStack/UserPool/Resource"
+   }
+  },
+  "UserPoolUserPoolDomain9F01E991": {
+   "Type": "AWS::Cognito::UserPoolDomain",
+   "Properties": {
+    "CustomDomainConfig": {
+     "CertificateArn": {
+      "Ref": "AuthCertificateC5D33BF2"
+     }
+    },
+    "Domain": "auth.pie-laboratories.com",
+    "UserPoolId": {
+     "Ref": "UserPool6BA7E5F2"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridIdentityStack/UserPool/UserPoolDomain/Resource"
+   }
+  },
+  "UserPoolUserPoolDomainCloudFrontDomainName3917B242": {
+   "Type": "Custom::UserPoolCloudFrontDomainName",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+      "Arn"
+     ]
+    },
+    "Create": {
+     "Fn::Join": [
+      "",
+      [
+       "{\"service\":\"CognitoIdentityServiceProvider\",\"action\":\"describeUserPoolDomain\",\"parameters\":{\"Domain\":\"",
+       {
+        "Ref": "UserPoolUserPoolDomain9F01E991"
+       },
+       "\"},\"physicalResourceId\":{\"id\":\"",
+       {
+        "Ref": "UserPoolUserPoolDomain9F01E991"
+       },
+       "\"}}"
+      ]
+     ]
+    },
+    "Update": {
+     "Fn::Join": [
+      "",
+      [
+       "{\"service\":\"CognitoIdentityServiceProvider\",\"action\":\"describeUserPoolDomain\",\"parameters\":{\"Domain\":\"",
+       {
+        "Ref": "UserPoolUserPoolDomain9F01E991"
+       },
+       "\"},\"physicalResourceId\":{\"id\":\"",
+       {
+        "Ref": "UserPoolUserPoolDomain9F01E991"
+       },
+       "\"}}"
+      ]
+     ]
+    },
+    "InstallLatestAwsSdk": false
+   },
+   "DependsOn": [
+    "UserPoolUserPoolDomainCloudFrontDomainNameCustomResourcePolicyF5EF8095"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridIdentityStack/UserPool/UserPoolDomain/CloudFrontDomainName/Resource/Default"
+   }
+  },
+  "UserPoolUserPoolDomainCloudFrontDomainNameCustomResourcePolicyF5EF8095": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "cognito-idp:DescribeUserPoolDomain",
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "UserPoolUserPoolDomainCloudFrontDomainNameCustomResourcePolicyF5EF8095",
+    "Roles": [
+     {
+      "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridIdentityStack/UserPool/UserPoolDomain/CloudFrontDomainName/CustomResourcePolicy/Resource"
+   }
+  },
+  "UserPoolPreTokenGenerationCognito84D0CADA": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "PreTokenGroupsD7895435",
+      "Arn"
+     ]
+    },
+    "Principal": "cognito-idp.amazonaws.com",
+    "SourceArn": {
+     "Fn::GetAtt": [
+      "UserPool6BA7E5F2",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridIdentityStack/UserPool/PreTokenGenerationCognito"
+   }
+  },
+  "UserPoolDevAlbClient6B61DCF0": {
+   "Type": "AWS::Cognito::UserPoolClient",
+   "Properties": {
+    "AllowedOAuthFlows": [
+     "code"
+    ],
+    "AllowedOAuthFlowsUserPoolClient": true,
+    "AllowedOAuthScopes": [
+     "openid",
+     "email"
+    ],
+    "CallbackURLs": [
+     "https://dev.pie-laboratories.com/oauth2/idpresponse"
+    ],
+    "GenerateSecret": true,
+    "SupportedIdentityProviders": [
+     {
+      "Ref": "IdentityCenterSaml7DDC803F"
+     }
+    ],
+    "UserPoolId": {
+     "Ref": "UserPool6BA7E5F2"
+    }
+   },
+   "DependsOn": [
+    "IdentityCenterSaml7DDC803F"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridIdentityStack/UserPool/DevAlbClient/Resource"
+   }
+  },
+  "UserPoolSpaClient6B560FFA": {
+   "Type": "AWS::Cognito::UserPoolClient",
+   "Properties": {
+    "AllowedOAuthFlows": [
+     "code"
+    ],
+    "AllowedOAuthFlowsUserPoolClient": true,
+    "AllowedOAuthScopes": [
+     "openid",
+     "email",
+     "profile"
+    ],
+    "CallbackURLs": [
+     "https://www.pie-laboratories.com/auth/callback",
+     "https://pie-laboratories.com/auth/callback",
+     "https://dev.pie-laboratories.com/auth/callback",
+     "http://localhost:5173/auth/callback"
+    ],
+    "GenerateSecret": false,
+    "LogoutURLs": [
+     "https://www.pie-laboratories.com/",
+     "https://pie-laboratories.com/",
+     "https://dev.pie-laboratories.com/",
+     "http://localhost:5173/"
+    ],
+    "PreventUserExistenceErrors": "ENABLED",
+    "SupportedIdentityProviders": [
+     {
+      "Ref": "IdentityCenterSaml7DDC803F"
+     }
+    ],
+    "UserPoolId": {
+     "Ref": "UserPool6BA7E5F2"
+    }
+   },
+   "DependsOn": [
+    "IdentityCenterSaml7DDC803F"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridIdentityStack/UserPool/SpaClient/Resource"
+   }
+  },
+  "AuthCertificateC5D33BF2": {
+   "Type": "AWS::CertificateManager::Certificate",
+   "Properties": {
+    "DomainName": "auth.pie-laboratories.com",
+    "DomainValidationOptions": [
+     {
+      "DomainName": "auth.pie-laboratories.com",
+      "HostedZoneId": "Z0519890WM0HGBX8Z6QT"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "WidgetgridIdentityStack/AuthCertificate"
+     }
+    ],
+    "ValidationMethod": "DNS"
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridIdentityStack/AuthCertificate/Resource"
+   }
+  },
+  "AuthAliasRecordA07A0AA6": {
+   "Type": "AWS::Route53::RecordSet",
+   "Properties": {
+    "AliasTarget": {
+     "DNSName": {
+      "Fn::GetAtt": [
+       "UserPoolUserPoolDomainCloudFrontDomainName3917B242",
+       "DomainDescription.CloudFrontDistribution"
+      ]
+     },
+     "HostedZoneId": {
+      "Fn::FindInMap": [
+       "AWSCloudFrontPartitionHostedZoneIdMap",
+       {
+        "Ref": "AWS::Partition"
+       },
+       "zoneId"
+      ]
+     }
+    },
+    "HostedZoneId": "Z0519890WM0HGBX8Z6QT",
+    "Name": "auth.pie-laboratories.com.",
+    "Type": "A"
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridIdentityStack/AuthAliasRecord/Resource"
+   }
+  },
+  "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridIdentityStack/AWS679f53fac002430cb0da5b7982bd2287/ServiceRole/Resource"
+   }
+  },
+  "AWS679f53fac002430cb0da5b7982bd22872D164C4C": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-913318903667-us-east-1",
+     "S3Key": "9b8fce7ae7f25ef82fdbaf6b72523b99d0875c0c9c826642819fb51f11d9b125.zip"
+    },
+    "Handler": "index.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs24.x",
+    "Timeout": 120
+   },
+   "DependsOn": [
+    "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridIdentityStack/AWS679f53fac002430cb0da5b7982bd2287/Resource",
+    "aws:asset:path": "asset.9b8fce7ae7f25ef82fdbaf6b72523b99d0875c0c9c826642819fb51f11d9b125",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "IdentityCenterSaml7DDC803F": {
+   "Type": "AWS::Cognito::UserPoolIdentityProvider",
+   "Properties": {
+    "AttributeMapping": {
+     "email": "email"
+    },
+    "ProviderDetails": {
+     "IDPSignout": false,
+     "MetadataFile": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><md:EntityDescriptor xmlns:md=\"urn:oasis:names:tc:SAML:2.0:metadata\" entityID=\"https://portal.sso.us-east-1.amazonaws.com/saml/assertion/OTEzMzE4OTAzNjY3X2lucy03MjIzMDM2YTMyOTlkYTVi\">\n  <md:IDPSSODescriptor WantAuthnRequestsSigned=\"false\" protocolSupportEnumeration=\"urn:oasis:names:tc:SAML:2.0:protocol\">\n    <md:KeyDescriptor use=\"signing\">\n      <ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">\n        <ds:X509Data>\n          <ds:X509Certificate>MIIDBzCCAe+gAwIBAgIFAOYGkoswDQYJKoZIhvcNAQELBQAwRTEWMBQGA1UEAwwNYW1hem9uYXdzLmNvbTENMAsGA1UECwwESURBUzEPMA0GA1UECgwGQW1hem9uMQswCQYDVQQGEwJVUzAeFw0yNjEwMTExOTE5NDNaFw0zMTEwMTExOTE5NDNaMEUxFjAUBgNVBAMMDWFtYXpvbmF3cy5jb20xDTALBgNVBAsMBElEQVMxDzANBgNVBAoMBkFtYXpvbjELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDSYv0591YnpA7RG8lYdqMADxR5BIesHLCA7nQ6NJmSzWSlBhTHpkRlgFsVgDIqRwABQFUIkzbTR8TQpBUiP+GffBsk/NWS/wAQKeyYfpl9vBt2R2dVTNlv4ul2ILWKOm+FbXGbf4CuReRxFHrcBSRPmVs1VQE1u2eeYn/iVZeBDerJMl3nj2TducPrKikKg/EsmCcZDFFdIN9JoPiGY6ypK914ktNuLY9M8PhHd5iTZJSLyAMD2hC9y0hx4AqubqIn+JyHszyFibuFUUIdihwb8vr+uwd0QdWSv5s4It+QezbTjbqL9MKM42KhaqtBC8ihesPTIofnvgjhg+URmybXAgMBAAEwDQYJKoZIhvcNAQELBQADggEBALFD1Og8n6qlp4fA7tLkxfxEkIz4vwJ30bmvR8Gqntzb4f4EKMgHIv9RMZeRb+jAguMlAS9ZX4oRCQyCMMW0Smhluix91BSbYEUHaDZNXME/iFalYjfRrPDH9DLHW5ztrgbtd+cmNaRdy5bx0WdQm75bljM1BWWNUkO2MxXqwg8ikLTRUmgnmdBJyc3LD2yvpgsGSF95JMM/C+y/aZIQCIi26nw3HUoIvaMzhHwQ9UgABdQQGpNZww5SexawsOujJhJw5D2RlEE/p68UHhoU5KGkmeeykaHH2Q1tzVqKL9HGSwAv/uSzYJ/VfuK1lInHFPN6hjAwABkQfpz5yca1lvM=</ds:X509Certificate>\n        </ds:X509Data>\n      </ds:KeyInfo>\n    </md:KeyDescriptor>\n    <md:SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://portal.sso.us-east-1.amazonaws.com/saml/logout/OTEzMzE4OTAzNjY3X2lucy03MjIzMDM2YTMyOTlkYTVi\"/>\n    <md:SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\" Location=\"https://portal.sso.us-east-1.amazonaws.com/saml/logout/OTEzMzE4OTAzNjY3X2lucy03MjIzMDM2YTMyOTlkYTVi\"/>\n    <md:NameIDFormat/>\n    <md:SingleSignOnService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://portal.sso.us-east-1.amazonaws.com/saml/assertion/OTEzMzE4OTAzNjY3X2lucy03MjIzMDM2YTMyOTlkYTVi\"/>\n    <md:SingleSignOnService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\" Location=\"https://portal.sso.us-east-1.amazonaws.com/saml/assertion/OTEzMzE4OTAzNjY3X2lucy03MjIzMDM2YTMyOTlkYTVi\"/>\n  </md:IDPSSODescriptor>\n</md:EntityDescriptor>\n"
+    },
+    "ProviderName": "IdentityCenter",
+    "ProviderType": "SAML",
+    "UserPoolId": {
+     "Ref": "UserPool6BA7E5F2"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridIdentityStack/IdentityCenterSaml/Resource"
+   }
+  },
+  "PreTokenGroupsServiceRoleBBF3F398": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridIdentityStack/PreTokenGroups/ServiceRole/Resource"
+   }
+  },
+  "PreTokenGroupsServiceRoleDefaultPolicy5303AE49": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "identitystore:GetUserId",
+        "identitystore:ListGroupMembershipsForMember",
+        "identitystore:DescribeGroup"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "PreTokenGroupsServiceRoleDefaultPolicy5303AE49",
+    "Roles": [
+     {
+      "Ref": "PreTokenGroupsServiceRoleBBF3F398"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridIdentityStack/PreTokenGroups/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "PreTokenGroupsD7895435": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-913318903667-us-east-1",
+     "S3Key": "0732b5af406af664801abc627283122e2614c948fce868d164ce24b2059ad8ab.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "IDENTITY_STORE_ID": "d-90667a98cd"
+     }
+    },
+    "Handler": "index.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "PreTokenGroupsServiceRoleBBF3F398",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs22.x",
+    "Timeout": 5
+   },
+   "DependsOn": [
+    "PreTokenGroupsServiceRoleDefaultPolicy5303AE49",
+    "PreTokenGroupsServiceRoleBBF3F398"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridIdentityStack/PreTokenGroups/Resource",
+    "aws:asset:path": "asset.0732b5af406af664801abc627283122e2614c948fce868d164ce24b2059ad8ab",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/12OQW/CMAyFfwv34LEydgemSTtMq1rtjEJqKkOToNgBoar/fUppt46Tv/f89OwMstcVLGb6ynNTneYN7aEtRZuT0lfetcbXjsRD+80Ycu8btT24Xx7hzVtNbroanFFuG0In08DgjPKjQicktzz4C1UYSm3/nXrcd6rRdl9paEtydYPi3Xt0Rsj3b+QYLDEnNbVH7hRpC23uGzK3Pn+nwjeYZJqdMhiEDmS0oNVO1xig3f55KTiRnQo+Cq6W0K4LND5UfVNPJUqneLnTzCgM6zQUL2ETzQllozldiyze7gKyj8Egw/rK294rBks9ylQ/cF9Ziq7J1Wnxqc/nAb+inKN0yvkK4chPl+wFsmdYzI5MNA/RCVmE4j5/ALKSxQ8QAgAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridIdentityStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Mappings": {
+  "AWSCloudFrontPartitionHostedZoneIdMap": {
+   "aws": {
+    "zoneId": "Z2FDTNDATAQYW2"
+   },
+   "aws-cn": {
+    "zoneId": "Z3RFFRIM2A3IF5"
+   }
+  }
+ },
+ "Outputs": {
+  "UserPoolId": {
+   "Value": {
+    "Ref": "UserPool6BA7E5F2"
+   }
+  },
+  "SamlAcsUrl": {
+   "Value": "https://auth.pie-laboratories.com/saml2/idpresponse"
+  },
+  "SpaClientId": {
+   "Value": {
+    "Ref": "UserPoolSpaClient6B560FFA"
+   }
+  },
+  "DevAlbClientId": {
+   "Value": {
+    "Ref": "UserPoolDevAlbClient6B61DCF0"
+   }
+  },
+  "SamlAudience": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "urn:amazon:cognito:sp:",
+      {
+       "Ref": "UserPool6BA7E5F2"
+      }
+     ]
+    ]
+   }
+  },
+  "ExportsOutputFnGetAttUserPool6BA7E5F2Arn686ACC00": {
+   "Value": {
+    "Fn::GetAtt": [
+     "UserPool6BA7E5F2",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "WidgetgridIdentityStack:ExportsOutputFnGetAttUserPool6BA7E5F2Arn686ACC00"
+   }
+  },
+  "ExportsOutputRefUserPoolDevAlbClient6B61DCF015FC0BF2": {
+   "Value": {
+    "Ref": "UserPoolDevAlbClient6B61DCF0"
+   },
+   "Export": {
+    "Name": "WidgetgridIdentityStack:ExportsOutputRefUserPoolDevAlbClient6B61DCF015FC0BF2"
+   }
+  },
+  "ExportsOutputRefUserPoolUserPoolDomain9F01E991C1F75B8B": {
+   "Value": {
+    "Ref": "UserPoolUserPoolDomain9F01E991"
+   },
+   "Export": {
+    "Name": "WidgetgridIdentityStack:ExportsOutputRefUserPoolUserPoolDomain9F01E991C1F75B8B"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
