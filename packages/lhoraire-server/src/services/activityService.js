@@ -151,8 +151,9 @@ export function createActivityHandlers({ pool }) {
           const link = toProtoLink(v, subject.id);
           await addEvent(client, { issueId: subject.id, actorId: caller.userId, kind: 'link_added', newValue: { kind: link.kind, issue: link.otherIssueKey } });
         }
-        for (const projectId of new Set([issue.project_id, other.project_id])) {
-          await recordChange(client, { projectId, issueId: issue.id, kind: 'links_changed' });
+        // Both ends, so each issue's open dialog hears about it.
+        for (const end of [issue, other]) {
+          await recordChange(client, { projectId: end.project_id, issueId: end.id, kind: 'links_changed' });
         }
         return { link: toProtoLink(view, issue.id) };
       });
@@ -166,12 +167,10 @@ export function createActivityHandlers({ pool }) {
         const views = [];
         for (const issueId of ends) views.push([issueId, toProtoLink(await loadLinkView(client, id, issueId), issueId)]);
         await client.query('DELETE FROM lhoraire.issue_links WHERE id = $1', [id]);
-        const projects = new Set();
         for (const [issueId, link] of views) {
           await addEvent(client, { issueId, actorId: caller.userId, kind: 'link_removed', oldValue: { kind: link.kind, issue: link.otherIssueKey } });
-          projects.add((await loadIssue(client, issueId)).project_id);
+          await recordChange(client, { projectId: (await loadIssue(client, issueId)).project_id, issueId, kind: 'links_changed' });
         }
-        for (const projectId of projects) await recordChange(client, { projectId, issueId: ends[0], kind: 'links_changed' });
         return {};
       });
     },

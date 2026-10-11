@@ -492,3 +492,41 @@ service IssueService {
   rpc RemoveLink(RemoveLinkRequest) returns (RemoveLinkResponse);
   rpc GetIssueHistory(GetIssueHistoryRequest) returns (GetIssueHistoryResponse);
 }
+
+// ---------------------------------------------------------------------------
+// Live updates. Every committed write is a numbered change; streams push
+// them as they commit. A client keeps the highest seq it has seen and
+// passes it as after_seq when reconnecting to get what it missed. Changes
+// say what moved, not the new data: refetch what you show.
+
+message ChangeEvent {
+  int64 seq = 1;
+  // hello (first message: seq is the current change number) | heartbeat
+  // (keep-alive, ignore) | resync_required (reload everything, then carry
+  // on from the next change) | a change kind such as issue_updated,
+  // comments_changed, issue_type_changed, project_updated ...
+  string kind = 2;
+  // Empty = global (e.g. a global issue type changed).
+  string project_id = 3;
+  // Empty = several issues or none in particular.
+  string issue_id = 4;
+}
+
+message SubscribeProjectRequest {
+  string project_id = 1;
+  // 0 = no replay, just live changes from now.
+  int64 after_seq = 2;
+}
+
+message SubscribeIssueRequest {
+  string issue_id = 1;
+  int64 after_seq = 2;
+}
+
+service ChangeService {
+  // The project's changes plus global ones (tree view).
+  rpc SubscribeProject(SubscribeProjectRequest) returns (stream ChangeEvent);
+  // One issue's changes plus project-wide bulk changes that may affect it
+  // (edit dialog).
+  rpc SubscribeIssue(SubscribeIssueRequest) returns (stream ChangeEvent);
+}
