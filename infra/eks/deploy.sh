@@ -50,6 +50,7 @@ ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
 SERVER_REPO="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/widgetgrid-server"
 STATIC_REPO="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/widgetgrid-static"
 EMBUSCADE_REPO="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/embuscade-server"
+LHORAIRE_REPO="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/lhoraire-server"
 
 rds_outputs=$(aws cloudformation describe-stacks --region "$REGION" --stack-name "$RDS_STACK" --query 'Stacks[0].Outputs' --output json)
 DB_SECRET_ARN=$(echo "$rds_outputs" | jq -r '.[] | select(.OutputKey=="DbSecretArn") | .OutputValue')
@@ -92,6 +93,7 @@ IMAGE_TAG="${ENV}-$(git rev-parse --short HEAD)-$(date +%s)"
 SERVER_IMAGE="${SERVER_REPO}:${IMAGE_TAG}"
 STATIC_IMAGE="${STATIC_REPO}:${IMAGE_TAG}"
 EMBUSCADE_IMAGE="${EMBUSCADE_REPO}:${IMAGE_TAG}"
+LHORAIRE_IMAGE="${LHORAIRE_REPO}:${IMAGE_TAG}"
 MIGRATE_IMAGE="${SERVER_REPO}:migrate-${IMAGE_TAG}"  # shares the server repo -- one-off, not worth its own ECR repo
 
 aws ecr get-login-password --region "$REGION" | \
@@ -99,6 +101,8 @@ aws ecr get-login-password --region "$REGION" | \
 
 docker build -f packages/server/Dockerfile -t "$SERVER_IMAGE" .
 docker push "$SERVER_IMAGE"
+docker build -f packages/lhoraire-server/Dockerfile -t "$LHORAIRE_IMAGE" .
+docker push "$LHORAIRE_IMAGE"
 
 # packages/static-server/Dockerfile needs widgets/solitaire's build, which
 # needs the sibling ~/GIT/solitaire repo's own `npm run build` output --
@@ -196,6 +200,11 @@ kubectl create secret generic widgetgrid-server-secret \
   --from-literal=VAPID_PRIVATE_KEY="${VAPID_PRIVATE_KEY:-}" \
   --namespace widgetgrid \
   --dry-run=client -o yaml | kubectl apply -f -
+# lhoraire-server needs only the database (see its manifest).
+kubectl create secret generic lhoraire-server-secret \
+  --from-literal=DATABASE_URL="$DATABASE_URL" \
+  --namespace widgetgrid \
+  --dry-run=client -o yaml | kubectl apply -f -
 
 echo
 echo "== running migrations =="
@@ -226,10 +235,11 @@ kubectl get jobs -n widgetgrid -o name | grep '^job.batch/seed-' | grep -v "$SEE
 
 echo
 echo "== applying app manifests =="
-export SERVER_IMAGE STATIC_IMAGE EMBUSCADE_IMAGE BLOG_S3_BUCKET BLOG_ASSETS_BASE_URL
+export SERVER_IMAGE STATIC_IMAGE EMBUSCADE_IMAGE LHORAIRE_IMAGE BLOG_S3_BUCKET BLOG_ASSETS_BASE_URL
 envsubst < infra/eks/manifests/widgetgrid-server.yaml | kubectl apply -f -
 envsubst < infra/eks/manifests/static-server.yaml | kubectl apply -f -
 envsubst < infra/eks/manifests/embuscade-server.yaml | kubectl apply -f -
+envsubst < infra/eks/manifests/lhoraire-server.yaml | kubectl apply -f -
 kubectl apply -f infra/eks/manifests/envoy-gateway.yaml
 # Pick up a rebuilt image on re-runs: the tag changes every run (unlike
 # local-k8s/setup.sh's fixed :local), so this is normally implicit via the
@@ -244,8 +254,11 @@ echo "== waiting for pods to be ready (includes their injected Consul sidecars) 
 kubectl wait --for=condition=ready pod -l app=widgetgrid-server -n widgetgrid --timeout=180s
 kubectl wait --for=condition=ready pod -l app=static-server -n widgetgrid --timeout=180s
 kubectl wait --for=condition=ready pod -l app=embuscade-server -n widgetgrid --timeout=180s
+kubectl wait --for=condition=ready pod -l app=lhoraire-server -n widgetgrid --timeout=180s
 kubectl rollout status deployment/envoy-gateway -n widgetgrid --timeout=180s
-kubectl wait --for=condition=ready pod -l app=envoy-gateway -n widgetgrid --timeout=180s
+# No separate pod wait for envoy-gateway: rollout status above already
+# means ready, and a pod wait races with superseded pods when this run
+# both changed its spec and restarted it (two rollouts back to back).
 
 echo
 echo "== target group health =="

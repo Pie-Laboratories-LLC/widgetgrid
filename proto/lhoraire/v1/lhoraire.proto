@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package lhoraire.v1;
+
+// l'horaire: project-based, fully hierarchical issue tracking. Served by
+// packages/lhoraire-server; every call needs a Cognito access token
+// ("authorization: Bearer <jwt>") whose cognito:groups includes
+// "anonyme admins". Timestamps are ISO-8601 strings, ids are UUIDs.
+//
+// Requests that would otherwise have no fields carry requested_at_ms: a
+// zero-length gRPC-Web body gets silently dropped before reaching the
+// server (see widgetgrid.v1 auth.proto's history of that bug).
+
+message Project {
+  string id = 1;
+  // Issue key prefix: "ffdb" in ffdb-1. Lowercase letters/digits, 2-10
+  // characters, starting with a letter. Immutable.
+  string key = 2;
+  string name = 3;
+  // "#rrggbb"
+  string color = 4;
+  string created_at = 5;
+  string modified_at = 6;
+}
+
+message ListProjectsRequest {
+  int64 requested_at_ms = 1;
+}
+message ListProjectsResponse {
+  repeated Project projects = 1;
+}
+
+message GetProjectRequest {
+  string key = 1;
+}
+message GetProjectResponse {
+  Project project = 1;
+}
+
+message CreateProjectRequest {
+  string key = 1;
+  string name = 2;
+  string color = 3;
+}
+message CreateProjectResponse {
+  Project project = 1;
+}
+
+message UpdateProjectRequest {
+  string id = 1;
+  string name = 2;
+  string color = 3;
+}
+message UpdateProjectResponse {
+  Project project = 1;
+}
+
+message DeleteProjectRequest {
+  string id = 1;
+}
+message DeleteProjectResponse {}
+
+service ProjectService {
+  rpc ListProjects(ListProjectsRequest) returns (ListProjectsResponse);
+  rpc GetProject(GetProjectRequest) returns (GetProjectResponse);
+  rpc CreateProject(CreateProjectRequest) returns (CreateProjectResponse);
+  // Name and colour only; the key never changes.
+  rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse);
+  // Deletes the project with all its issues and project-specific types.
+  rpc DeleteProject(DeleteProjectRequest) returns (DeleteProjectResponse);
+}

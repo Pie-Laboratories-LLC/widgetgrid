@@ -15,7 +15,9 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 COPY packages/db/package.json packages/db/package.json
+COPY packages/lhoraire-server/package.json packages/lhoraire-server/package.json
 COPY packages/server/package.json packages/server/package.json
+COPY packages/auth-node/package.json packages/auth-node/package.json
 COPY packages/auth-web/package.json packages/auth-web/package.json
 COPY packages/proto-gen-web/package.json packages/proto-gen-web/package.json
 COPY packages/static-server/package.json packages/static-server/package.json
@@ -38,7 +40,7 @@ COPY infra/cdk/package.json infra/cdk/package.json
 # install-time scripts (that requirement -- grpc-tools' protoc binary,
 # protoc-gen-grpc-web -- is a proto-codegen-time concern for the *client*
 # side, see docs/LOCAL_DEV_PREREQUISITES.md; this image never runs codegen).
-RUN npm ci --omit=dev --ignore-scripts --workspace packages/server --workspace packages/db --include-workspace-root
+RUN npm ci --omit=dev --ignore-scripts --workspace packages/server --workspace packages/db --workspace packages/auth-node --include-workspace-root
 
 
 FROM node:24-alpine
@@ -49,6 +51,8 @@ COPY --from=deps --chown=node:node /app/node_modules ./node_modules
 COPY --from=deps --chown=node:node /app/package.json ./package.json
 COPY --chown=node:node packages/db/package.json packages/db/package.json
 COPY --chown=node:node packages/db/src packages/db/src
+COPY --chown=node:node packages/auth-node/package.json packages/auth-node/package.json
+COPY --chown=node:node packages/auth-node/src packages/auth-node/src
 COPY --chown=node:node packages/server/package.json packages/server/package.json
 COPY --chown=node:node packages/server/src packages/server/src
 COPY --chown=node:node proto proto

@@ -36,8 +36,16 @@ export class SharedStack extends Stack {
       removalPolicy: RemovalPolicy.RETAIN,
     });
 
+    // l'horaire's gRPC server (packages/lhoraire-server).
+    this.lhoraireRepository = new ecr.Repository(this, 'LhoraireRepository', {
+      repositoryName: 'lhoraire-server',
+      imageScanOnPush: true,
+      removalPolicy: RemovalPolicy.RETAIN,
+    });
+
     new CfnOutput(this, 'ServerRepositoryUri', { value: this.serverRepository.repositoryUri });
     new CfnOutput(this, 'StaticRepositoryUri', { value: this.staticRepository.repositoryUri });
     new CfnOutput(this, 'EmbuscadeRepositoryUri', { value: this.embuscadeRepository.repositoryUri });
+    new CfnOutput(this, 'LhoraireRepositoryUri', { value: this.lhoraireRepository.repositoryUri });
   }
 }

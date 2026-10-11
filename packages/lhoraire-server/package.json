@@ -1,0 +1,23 @@
+{
+  "name": "@widgetgrid/lhoraire-server",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "l'horaire: project-based hierarchical issue tracking (gRPC). See the l'horaire design doc.",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "test": "node --test --test-concurrency=1"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "1.14.4",
+    "@grpc/proto-loader": "0.8.1",
+    "@widgetgrid/auth-node": "*",
+    "@widgetgrid/db": "*"
+  },
+  "devDependencies": {
+    "node-pg-migrate": "9.0.0",
+    "pg": "8.23.0"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "@widgetgrid/auth-node",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Server-side Cognito token verification and caller resolution, shared by widgetgrid-server and lhoraire-server.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@widgetgrid/db": "*",
+    "aws-jwt-verify": "5.2.1"
+  }
+}

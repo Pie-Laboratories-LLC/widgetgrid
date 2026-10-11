@@ -42,6 +42,20 @@
     "aws:cdk:path": "WidgetgridSharedStack/EmbuscadeRepository/Resource"
    }
   },
+  "LhoraireRepository10FA72E6": {
+   "Type": "AWS::ECR::Repository",
+   "Properties": {
+    "ImageScanningConfiguration": {
+     "ScanOnPush": true
+    },
+    "RepositoryName": "lhoraire-server"
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridSharedStack/LhoraireRepository/Resource"
+   }
+  },
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
@@ -198,6 +212,56 @@
       "/",
       {
        "Ref": "EmbuscadeRepository73CC49B0"
+      }
+     ]
+    ]
+   }
+  },
+  "LhoraireRepositoryUri": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      {
+       "Fn::Select": [
+        4,
+        {
+         "Fn::Split": [
+          ":",
+          {
+           "Fn::GetAtt": [
+            "LhoraireRepository10FA72E6",
+            "Arn"
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      ".dkr.ecr.",
+      {
+       "Fn::Select": [
+        3,
+        {
+         "Fn::Split": [
+          ":",
+          {
+           "Fn::GetAtt": [
+            "LhoraireRepository10FA72E6",
+            "Arn"
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      ".",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "LhoraireRepository10FA72E6"
       }
      ]
     ]

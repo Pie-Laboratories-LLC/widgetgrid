@@ -16,7 +16,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new SharedStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/shared-stack.js:39:5)",
+        "new SharedStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/shared-stack.js:46:5)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23 (:)",
         "...node internals..."
       ]
@@ -30,7 +30,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new SharedStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/shared-stack.js:40:5)",
+        "new SharedStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/shared-stack.js:47:5)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23 (:)",
         "...node internals..."
       ]
@@ -44,7 +44,21 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new SharedStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/shared-stack.js:41:5)",
+        "new SharedStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/shared-stack.js:48:5)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridSharedStack/LhoraireRepositoryUri": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "LhoraireRepositoryUri"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new SharedStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/shared-stack.js:49:5)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23 (:)",
         "...node internals..."
       ]
@@ -116,6 +130,21 @@
       "data": [
         "...new Repository2 in aws-cdk-lib...",
         "new SharedStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/shared-stack.js:33:32)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridSharedStack/LhoraireRepository/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "LhoraireRepository10FA72E6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Repository2 in aws-cdk-lib...",
+        "new SharedStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/shared-stack.js:40:31)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:23 (:)",
         "...node internals..."
       ]

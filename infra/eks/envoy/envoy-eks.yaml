@@ -65,6 +65,8 @@ static_resources:
                           route: { cluster: widgetgrid_backend, timeout: 0s }
                         - match: { prefix: "/widgetgrid.v1.PushService" }
                           route: { cluster: widgetgrid_backend, timeout: 0s }
+                        - match: { prefix: "/lhoraire.v1." }
+                          route: { cluster: lhoraire_backend, timeout: 0s }
                         - match: { prefix: "/embuscade-ws" }
                           route: { cluster: embuscade_backend, timeout: 0s }
                         # Everything else: the static SPA/widget bundles,
@@ -99,6 +101,25 @@ static_resources:
               - endpoint:
                   address:
                     socket_address: { address: 127.0.0.1, port_value: 50051 }
+
+    # Same pattern, for lhoraire-server (see
+    # infra/eks/manifests/lhoraire-server.yaml) -- gRPC, HTTP/2.
+    - name: lhoraire_backend
+      connect_timeout: 5s
+      type: STATIC
+      lb_policy: ROUND_ROBIN
+      typed_extension_protocol_options:
+        envoy.extensions.upstreams.http.v3.HttpProtocolOptions:
+          "@type": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions
+          explicit_http_config:
+            http2_protocol_options: {}
+      load_assignment:
+        cluster_name: lhoraire_backend
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address: { address: 127.0.0.1, port_value: 50061 }
 
     # Same pattern, for static-server (see
     # infra/eks/manifests/static-server.yaml) -- plain HTTP/1.1, not gRPC.

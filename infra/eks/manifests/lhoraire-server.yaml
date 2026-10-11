@@ -1,0 +1,81 @@
+# l'horaire's gRPC server (packages/lhoraire-server), reached from the
+# Envoy edge gateway through its Consul Connect upstream on 127.0.0.1:50061
+# (see envoy-gateway.yaml / infra/eks/envoy/envoy-eks.yaml). Same shape as
+# widgetgrid-server.yaml: one replica, Connect sidecar for mTLS, and the
+# same 24h route timeout so long-lived live-update streams aren't cut.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lhoraire-server
+  namespace: widgetgrid
+  labels:
+    app: lhoraire-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lhoraire-server
+  template:
+    metadata:
+      labels:
+        app: lhoraire-server
+      annotations:
+        consul.hashicorp.com/connect-inject: "true"
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: lhoraire-server
+          image: ${LHORAIRE_IMAGE}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 50061
+              name: grpc
+          # DATABASE_URL only -- this server needs nothing else from
+          # widgetgrid-server's secret (VAPID, phone, ...). Created by
+          # infra/eks/deploy.sh.
+          envFrom:
+            - secretRef:
+                name: lhoraire-server-secret
+          readinessProbe:
+            tcpSocket: { port: 50061 }
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket: { port: 50061 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lhoraire-server
+  namespace: widgetgrid
+spec:
+  selector:
+    app: lhoraire-server
+  ports:
+    - port: 50061
+      targetPort: 50061
+      name: grpc
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: lhoraire-server
+  namespace: widgetgrid
+spec:
+  protocol: grpc
+  localRequestTimeoutMs: 86400000
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceRouter
+metadata:
+  name: lhoraire-server
+  namespace: widgetgrid
+spec:
+  routes:
+    - match:
+        http:
+          pathPrefix: /
+      destination:
+        requestTimeout: 24h
