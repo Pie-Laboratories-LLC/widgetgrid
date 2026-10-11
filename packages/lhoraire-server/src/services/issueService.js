@@ -5,6 +5,7 @@ import { rankAfter, rankBetween } from '../ranks.js';
 import { loadWorkflow, insertWorkflow, asTemplate } from '../workflow.js';
 
 export const SEVERITIES = ['na', 'minor', 'normal', 'serious', 'blocker'];
+export const END_REASONS = ['completed', 'wont_complete', 'obsolete', 'already_addressed'];
 const KEY_PATTERN = /^([a-z][a-z0-9]{1,9})-(\d+)$/;
 const SELECT_ISSUE = `SELECT i.*, p.key AS project_key FROM lhoraire.issues i JOIN lhoraire.projects p ON p.id = i.project_id`;
 
@@ -271,6 +272,57 @@ export function createIssueHandlers({ pool }) {
         }
         await recordChange(client, { projectId: issue.project_id, issueId: issue.id, kind: 'issue_moved' });
         return { issue: toProtoIssue(await loadIssue(client, issue.id)) };
+      });
+    },
+
+    async TransitionIssue({ id, version, toStateId, endReason, endDescription }, caller) {
+      return withTransaction(pool, async (client) => {
+        const issue = await loadIssue(client, id, { lock: true });
+        checkVersion(issue, version);
+        if (!issue.assignee_id) throw conflict('Assign the issue before changing its state.');
+        if (!toStateId) throw invalid('Choose the state to move it to.');
+        const from = await getState(client, issue.state_id);
+        const to = await getState(client, toStateId);
+        if (!to || to.issue_type_id !== issue.issue_type_id) throw invalid("That state isn't part of this issue's workflow.");
+        if (from.is_terminal) throw conflict(`"${from.name}" is final: closed issues can't change state.`);
+        const allowed = await client.query(
+          'SELECT 1 FROM lhoraire.workflow_transitions WHERE from_state_id = $1 AND to_state_id = $2',
+          [from.id, to.id],
+        );
+        if (!allowed.rows[0]) throw conflict(`The workflow doesn't allow "${from.name}" -> "${to.name}".`);
+
+        let reason = null;
+        let why = null;
+        if (to.is_terminal) {
+          if (!END_REASONS.includes(endReason)) throw invalid(`Closing needs an end reason: ${END_REASONS.join(', ')}.`);
+          why = endDescription.trim();
+          if (!why) throw invalid('Say why it was closed.');
+          reason = endReason;
+          const open = await client.query(
+            `SELECT i.number FROM lhoraire.issues i JOIN lhoraire.workflow_states s ON s.id = i.state_id
+             WHERE i.parent_id = $1 AND NOT s.is_terminal ORDER BY i.number`,
+            [issue.id],
+          );
+          if (open.rows.length) {
+            const keys = open.rows.map((r) => issueKey(issue.project_key, r.number)).join(', ');
+            throw conflict(`Close its children first: ${keys}.`);
+          }
+        } else if (endReason || endDescription.trim()) {
+          throw invalid('An end reason only goes with a terminal state.');
+        }
+
+        await client.query(
+          `UPDATE lhoraire.issues SET state_id = $2, end_reason = $3, end_description = $4,
+             version = version + 1, modified_at = now(), modified_by = $5
+           WHERE id = $1`,
+          [issue.id, to.id, reason, why, caller.userId],
+        );
+        await addEvent(client, {
+          issueId: issue.id, actorId: caller.userId, kind: 'transition', field: 'state',
+          oldValue: from.name, newValue: reason ? { state: to.name, endReason: reason, endDescription: why } : to.name,
+        });
+        await recordChange(client, { projectId: issue.project_id, issueId: issue.id, kind: 'issue_updated' });
+        return { issue: toProtoIssue(await loadIssue(client, issue.id), { withDescription: true }) };
       });
     },
 

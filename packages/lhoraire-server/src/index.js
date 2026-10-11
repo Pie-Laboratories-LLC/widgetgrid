@@ -8,6 +8,7 @@ import { createHandlers } from './grpc.js';
 import { createProjectHandlers } from './services/projectService.js';
 import { createIssueTypeHandlers } from './services/issueTypeService.js';
 import { createIssueHandlers } from './services/issueService.js';
+import { createActivityHandlers } from './services/activityService.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const HOST = process.env.GRPC_SERVER_HOST ?? '127.0.0.1';
@@ -32,7 +33,7 @@ export function addServices(server, { pool, authContext }) {
   const proto = loadProto();
   server.addService(proto.ProjectService.service, createHandlers(authContext, createProjectHandlers({ pool })));
   server.addService(proto.IssueTypeService.service, createHandlers(authContext, createIssueTypeHandlers({ pool })));
-  server.addService(proto.IssueService.service, createHandlers(authContext, createIssueHandlers({ pool })));
+  server.addService(proto.IssueService.service, createHandlers(authContext, { ...createIssueHandlers({ pool }), ...createActivityHandlers({ pool }) }));
   return server;
 }
 
