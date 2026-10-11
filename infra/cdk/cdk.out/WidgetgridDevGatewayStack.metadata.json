@@ -25,31 +25,6 @@
       ]
     }
   ],
-  "/WidgetgridDevGatewayStack/EnvoyTargetGroup": [
-    {
-      "type": "aws:cdk:warning",
-      "data": "Cannot register listener on imported target group -- security groups might need to be updated manually [ack: @aws-cdk/aws-elbv2:albTargetGroupCannotRegisterListener]",
-      "trace": [
-        "Annotations.addMessage (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/annotations.js:1:3506)",
-        "Annotations.addWarningV2 (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/annotations.js:1:2194)",
-        "ImportedApplicationTargetGroup.registerListener (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-elasticloadbalancingv2/lib/alb/application-target-group.js:1:19696)",
-        "TargetGroupListenerAction.bind (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-elasticloadbalancingv2/lib/alb/application-listener-action.js:1:6835)",
-        "AuthenticateCognitoAction.bind (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-elasticloadbalancingv2/lib/alb/application-listener-action.js:1:5645)",
-        "AuthenticateCognitoAction.bind (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-elasticloadbalancingv2-actions/lib/cognito-action.js:1:3029)",
-        "WrappedClass.setDefaultAction (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-elasticloadbalancingv2/lib/alb/application-listener.js:1:18622)",
-        "new ApplicationListener2 (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-elasticloadbalancingv2/lib/alb/application-listener.js:1:13046)",
-        "new ApplicationListener2 (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/no-box-stack-traces.js:1:345)",
-        "new ApplicationListener2 (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/prop-injectable.js:1:855)",
-        "WrappedClass.addListener (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-elasticloadbalancingv2/lib/alb/application-load-balancer.js:1:21572)",
-        "WrappedClass.<anonymous> (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/metadata-resource.js:1:2059)",
-        "new DevGatewayStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/dev-gateway-stack.js:102:9)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:26:20",
-        "ModuleJob.run (node:internal/modules/esm/module_job:561:25)",
-        "async node:internal/modules/esm/loader:647:26",
-        "async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)"
-      ]
-    }
-  ],
   "/WidgetgridDevGatewayStack/DevUrl": [
     {
       "type": "aws:cdk:logicalId",

@@ -67,6 +67,14 @@ prod (it used to be part of `WidgetgridDevGatewayStack`):
   `SpaClient` (public, authorization code + PKCE, callbacks at
   `/auth/callback` on www, apex, dev and `localhost:5173`).
 
+Browsers stay signed in for 90 days (`SpaClient` refresh-token lifetime).
+If a device is lost, revoke every session for that user right away:
+
+```
+aws cognito-idp admin-user-global-sign-out --user-pool-id us-east-1_DC0Ukf8jA \
+  --username IdentityCenter_<their email>
+```
+
 `WidgetgridDevGatewayStack` imports the pool from it, so deploy
 `WidgetgridIdentityStack` first whenever the reference between them changes.
 

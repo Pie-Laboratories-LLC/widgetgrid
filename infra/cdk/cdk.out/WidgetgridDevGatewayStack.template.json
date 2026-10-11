@@ -567,9 +567,13 @@
       "Type": "authenticate-cognito"
      },
      {
+      "FixedResponseConfig": {
+       "ContentType": "text/plain",
+       "MessageBody": "widgetgrid dev -- nothing deployed here yet",
+       "StatusCode": "200"
+      },
       "Order": 2,
-      "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:913318903667:targetgroup/Widget-Envoy-PQP90CASKUKM/fb3e430fac837778",
-      "Type": "forward"
+      "Type": "fixed-response"
      }
     ],
     "LoadBalancerArn": {

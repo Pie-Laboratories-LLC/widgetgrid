@@ -4,10 +4,10 @@ import * as defaultAuthRepo from '@widgetgrid/db/src/authRepo.js';
 import * as defaultUsersRepo from '@widgetgrid/db/src/usersRepo.js';
 import { isOwnerOnline, subscribePresence } from '../presenceBus.js';
 
-// Matches the SPA client's refresh-token lifetime (Cognito default, 30
-// days): a presence session shouldn't outlive the browser's ability to
-// stay signed in.
-const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+// Matches the SPA client's refresh-token lifetime (90 days, see
+// infra/cdk/lib/identity-stack.js): a session record shouldn't outlive the
+// browser's ability to stay signed in.
+const SESSION_TTL_MS = 90 * 24 * 60 * 60 * 1000;
 
 // ownerEmail: the one Identity Center email that gets role 'owner' on sign-in
 // (OWNER_EMAIL, see index.js). Everyone else who signs in is a 'member'.

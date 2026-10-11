@@ -116,6 +116,12 @@ export class IdentityStack extends Stack {
       },
       supportedIdentityProviders: idp,
       preventUserExistenceErrors: true,
+      // How long the browser stays signed in without seeing Identity
+      // Center again (Cognito's default is 30 days). 90 keeps phone
+      // sign-ins to a few a year; a lost device is handled by revoking
+      // sessions (see infra/cdk/README.md). Access/ID tokens stay 1 hour,
+      // so group changes still apply within the hour.
+      refreshTokenValidity: Duration.days(90),
     });
     spaClient.node.addDependency(identityCenterProvider);
 

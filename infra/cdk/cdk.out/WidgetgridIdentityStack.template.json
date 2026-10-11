@@ -221,11 +221,15 @@
      "http://localhost:5173/"
     ],
     "PreventUserExistenceErrors": "ENABLED",
+    "RefreshTokenValidity": 129600,
     "SupportedIdentityProviders": [
      {
       "Ref": "IdentityCenterSaml7DDC803F"
      }
     ],
+    "TokenValidityUnits": {
+     "RefreshToken": "minutes"
+    },
     "UserPoolId": {
      "Ref": "UserPool6BA7E5F2"
     }
