@@ -15,6 +15,8 @@ import { createAuthService } from './services/authService.js';
 import { createChatService } from './services/chatService.js';
 import { createConsoleSmsSender, createSnsSmsSender } from './smsSender.js';
 import { createAuthContext, createCognitoVerifiers } from './authContext.js';
+import { createPushSender } from './pushSender.js';
+import { createPushService } from './services/pushService.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const HOST = process.env.GRPC_SERVER_HOST ?? '127.0.0.1';
@@ -50,6 +52,10 @@ const SMS_PROVIDER = process.env.SMS_PROVIDER ?? 'console';
 // The Identity Center email that becomes role 'owner' on sign-in (chat
 // server side, presence). Everyone else who signs in is a 'member'.
 const OWNER_EMAIL = process.env.OWNER_EMAIL ?? '';
+// Web Push (owner chat alerts) -- see pushSender.js. Unset = push disabled.
+const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY ?? '';
+const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY ?? '';
+const VAPID_SUBJECT = process.env.VAPID_SUBJECT || 'mailto:webmaster@pie-laboratories.com';
 
 export function startServer() {
   const pool = getPool();
@@ -66,13 +72,15 @@ export function startServer() {
 
   const { verifyAccessToken, verifyIdToken } = createCognitoVerifiers();
   const authContext = createAuthContext({ pool, verifyAccessToken });
+  const pushSender = createPushSender({ pool, publicKey: VAPID_PUBLIC_KEY, privateKey: VAPID_PRIVATE_KEY, subject: VAPID_SUBJECT });
 
   const server = new grpc.Server();
   server.addService(proto.PageService.service, createPageService({ pool, pagesRepo, layoutNodesRepo }));
   server.addService(proto.WidgetService.service, createWidgetService({ pool, widgetsRepo }));
   server.addService(proto.BlogService.service, createBlogService({ blogSource, blogChangeNotifier }));
   server.addService(proto.AuthService.service, createAuthService({ pool, verifyIdToken, ownerEmail: OWNER_EMAIL }));
-  server.addService(proto.ChatService.service, createChatService({ pool, authContext, ownerPhoneNumber: OWNER_PHONE_NUMBER, smsSender }));
+  server.addService(proto.PushService.service, createPushService({ pool, authContext, pushSender }));
+  server.addService(proto.ChatService.service, createChatService({ pool, authContext, pushSender, ownerPhoneNumber: OWNER_PHONE_NUMBER, smsSender }));
 
   return new Promise((resolve, reject) => {
     server.bindAsync(`${HOST}:${PORT}`, grpc.ServerCredentials.createInsecure(), (err, boundPort) => {

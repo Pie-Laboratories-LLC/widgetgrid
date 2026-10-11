@@ -59,6 +59,7 @@ async function main() {
     path.join(PROTO_ROOT, 'widgetgrid/v1/blog.proto'),
     path.join(PROTO_ROOT, 'widgetgrid/v1/auth.proto'),
     path.join(PROTO_ROOT, 'widgetgrid/v1/chat.proto'),
+    path.join(PROTO_ROOT, 'widgetgrid/v1/push.proto'),
   ];
 
   console.log(`${PROTOC} ${args.join(' ')}`);

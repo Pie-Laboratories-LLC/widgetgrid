@@ -1,9 +1,9 @@
 import grpc from '@grpc/grpc-js';
 import * as chatRepo from '@widgetgrid/db/src/chatRepo.js';
-import * as authRepo from '@widgetgrid/db/src/authRepo.js';
 import * as chatNotificationRepo from '@widgetgrid/db/src/chatNotificationRepo.js';
 import { getVisitorId } from '../authContext.js';
 import { publishChatEvent, subscribeChatEvents } from '../chatBus.js';
+import { ownerConnected, isOwnerOnline } from '../presenceBus.js';
 
 // "not more than once an hour" -- a global throttle (not per-chat): the
 // point is protecting the owner's phone from being spammed, not making
@@ -37,7 +37,7 @@ function permissionDenied(callback, message) {
   callback({ code: grpc.status.PERMISSION_DENIED, message });
 }
 
-export function createChatService({ pool, authContext, ownerPhoneNumber, smsSender }) {
+export function createChatService({ pool, authContext, pushSender, ownerPhoneNumber, smsSender }) {
   // Confirms a visitor-supplied chat_id actually belongs to them --
   // without this, any visitor could read/post into any chat by guessing a
   // UUID (chat_id is always explicit in every RPC, even visitor calls --
@@ -52,12 +52,19 @@ export function createChatService({ pool, authContext, ownerPhoneNumber, smsSend
     return chat;
   }
 
-  // "If I'm not logged in, I'd like to be texted... but not more than once
-  // an hour" -- checked (and, on a send, recorded) here rather than
-  // unconditionally, since the owner being logged in already means they'll
-  // see this live in the browser (badge/list), no text needed.
+  // Owner not on the site (presenceBus.js) -> tell them. Web Push goes to
+  // every browser the owner enabled, every time; the notification's tag is
+  // the chat, so a phone shows one entry per conversation that updates
+  // rather than a stack. SMS is the older channel, kept for when 10DLC is
+  // approved and still limited to one text an hour.
   async function notifyOwnerIfOffline(chat, body) {
-    if (await authRepo.hasActiveSession(pool)) return;
+    if (isOwnerOnline()) return;
+    await pushSender.sendToOwner({
+      title: `New message from ${chat.label}`,
+      body,
+      tag: `chat-${chat.id}`,
+      url: '/?view=chat',
+    });
     const throttleCutoff = new Date(Date.now() - NOTIFICATION_THROTTLE_MS);
     if (await chatNotificationRepo.wasNotifiedSince(pool, throttleCutoff)) return;
     await chatNotificationRepo.recordNotification(pool);
@@ -107,7 +114,11 @@ export function createChatService({ pool, authContext, ownerPhoneNumber, smsSend
           isNewChat: false,
           chatLabel: chat.label,
         });
-        if (sender === 'visitor') await notifyOwnerIfOffline(chat, body);
+        // Not awaited: a slow or failing push/SMS must not delay or fail
+        // the visitor's own send.
+        if (sender === 'visitor') {
+          notifyOwnerIfOffline(chat, body).catch((err) => console.error('owner notification failed:', err));
+        }
         callback(null, { message: toProtoMessage(messageRow) });
       } catch (err) {
         callback({ code: err.code ?? grpc.status.INTERNAL, message: err.message });
@@ -188,13 +199,18 @@ export function createChatService({ pool, authContext, ownerPhoneNumber, smsSend
         return;
       }
 
+      // The owner's page holding this stream open is what "owner online"
+      // means -- see presenceBus.js.
+      const release = isOwner ? ownerConnected() : () => {};
       const unsubscribe = subscribeChatEvents((event) => {
         if (!isOwner && event.visitorId !== visitorId) return;
         // visitorId is internal to chatBus.js, not part of chat.proto's
         // ChatEvent -- stripped here rather than sent over the wire.
         call.write({ chatId: event.chatId, message: event.message, isNewChat: event.isNewChat, chatLabel: event.chatLabel });
       });
-      call.on('cancelled', unsubscribe);
+      const close = () => { unsubscribe(); release(); };
+      call.on('cancelled', close);
+      call.on('error', close);
     },
   };
 }

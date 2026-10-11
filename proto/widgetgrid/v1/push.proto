@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package widgetgrid.v1;
+
+// Web Push notifications for the owner (visitor chat alerts). The browser
+// subscribes with the push service using this server's VAPID public key,
+// then registers that subscription here. See pushService.js / sw.js.
+//
+// The requested_at_ms fields are never read -- they only keep these
+// requests from serializing to zero bytes, which gets silently dropped on
+// the way to the server (see auth.proto's history of that bug).
+
+message GetPushConfigRequest {
+  int64 requested_at_ms = 1;
+}
+message GetPushConfigResponse {
+  // Empty when push isn't configured on this server.
+  string vapid_public_key = 1;
+}
+
+message RegisterPushSubscriptionRequest {
+  string endpoint = 1;
+  string p256dh = 2;
+  string auth = 3;
+  string user_agent = 4;
+}
+message RegisterPushSubscriptionResponse {}
+
+message RemovePushSubscriptionRequest {
+  string endpoint = 1;
+}
+message RemovePushSubscriptionResponse {}
+
+message SendTestPushRequest {
+  int64 requested_at_ms = 1;
+}
+message SendTestPushResponse {
+  // How many of the owner's browsers the push services accepted it for.
+  int32 delivered = 1;
+}
+
+service PushService {
+  rpc GetPushConfig(GetPushConfigRequest) returns (GetPushConfigResponse);
+  // Owner only.
+  rpc RegisterPushSubscription(RegisterPushSubscriptionRequest) returns (RegisterPushSubscriptionResponse);
+  // Owner only.
+  rpc RemovePushSubscription(RemovePushSubscriptionRequest) returns (RemovePushSubscriptionResponse);
+  // Owner only.
+  rpc SendTestPush(SendTestPushRequest) returns (SendTestPushResponse);
+}

@@ -76,6 +76,12 @@ export default {
   },
   created() {
     window.addEventListener('widgetgrid:navigate', this.onNavigate);
+    // ?view=chat (etc.) opens straight to that view -- how a tapped push
+    // notification lands on chat (see packages/web-app/public/sw.js).
+    const initialView = new URLSearchParams(window.location.search).get('view');
+    if (['blog', 'solitaire', 'embuscade', 'chat'].includes(initialView)) {
+      this.onNavigate({ detail: { view: initialView } });
+    }
     import(/* @vite-ignore */ '/widgets/blog.js').then((mod) => {
       this.blogComponent = mod.default ?? mod;
     });

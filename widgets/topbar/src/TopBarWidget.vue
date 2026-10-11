@@ -102,6 +102,12 @@ export default {
     // click that caused them), so this stays correct even if something
     // other than these two buttons ever triggers navigation.
     window.addEventListener('widgetgrid:navigate', this.onNavigate);
+    // ?view=chat (etc.) opens straight to that view -- how a tapped push
+    // notification lands on chat (see packages/web-app/public/sw.js).
+    const initialView = new URLSearchParams(window.location.search).get('view');
+    if (['blog', 'solitaire', 'embuscade', 'chat'].includes(initialView)) {
+      this.onNavigate({ detail: { view: initialView } });
+    }
     // MainWidget.vue's own scroll container is what actually knows this --
     // see its comment for why this is a window event, not a shared store.
     window.addEventListener('widgetgrid:scroll', this.onScroll);

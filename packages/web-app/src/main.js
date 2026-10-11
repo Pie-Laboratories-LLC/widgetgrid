@@ -14,5 +14,17 @@ if (isSignInCallback()) {
   await completeSignIn({ grpcWebOrigin: import.meta.env.VITE_GRPC_WEB_ORIGIN ?? '' });
 }
 
+// Service worker for Web Push notifications (public/sw.js). A tapped
+// notification on an already-open page arrives here as a message and is
+// relayed as the same navigate event the topbar icons send.
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch((err) => console.warn('service worker registration failed:', err));
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data?.type === 'navigate' && event.data.view) {
+      window.dispatchEvent(new CustomEvent('widgetgrid:navigate', { detail: { view: event.data.view } }));
+    }
+  });
+}
+
 const [{ default: App }, { router }] = await Promise.all([import('./App.vue'), import('./router')]);
 createApp(App).use(createPinia()).use(router).mount('#app');

@@ -2,6 +2,7 @@
   <div class="widget widget-chat">
     <div v-if="isOwner" class="chat-shell">
       <aside class="chat-list">
+        <PushControls />
         <p v-if="status === 'loading'" class="chat-status">Loading…</p>
         <p v-else-if="chats.length === 0" class="chat-status">No conversations yet.</p>
         <div
@@ -64,6 +65,7 @@
 
 <script>
 import { chatClient, isSignedInOwner } from './chatClient.js';
+import PushControls from './PushControls.vue';
 import { subscribeOwnerPresence } from './presenceSubscriptionClient.js';
 
 // Chats still get this auto-generated label at creation time (see
@@ -74,6 +76,7 @@ const AUTO_LABEL = /^chat\d+$/;
 
 export default {
   name: 'ChatWidget',
+  components: { PushControls },
   props: {
     data: { type: Object, required: true },
     title: { type: String, default: '' },

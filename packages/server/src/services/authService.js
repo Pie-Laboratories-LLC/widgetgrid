@@ -2,7 +2,7 @@ import crypto from 'node:crypto';
 import grpc from '@grpc/grpc-js';
 import * as defaultAuthRepo from '@widgetgrid/db/src/authRepo.js';
 import * as defaultUsersRepo from '@widgetgrid/db/src/usersRepo.js';
-import { publishPresence, subscribePresence } from '../presenceBus.js';
+import { isOwnerOnline, subscribePresence } from '../presenceBus.js';
 
 // Matches the SPA client's refresh-token lifetime (Cognito default, 30
 // days): a presence session shouldn't outlive the browser's ability to
@@ -42,7 +42,6 @@ export function createAuthService({
           userId: user.id,
           expiresAt: new Date(Date.now() + SESSION_TTL_MS),
         });
-        publishPresence(true);
         callback(null, { sessionToken, role: user.role });
       } catch (err) {
         callback({ code: grpc.status.INTERNAL, message: err.message });
@@ -51,10 +50,9 @@ export function createAuthService({
 
     async Logout(call, callback) {
       try {
+        // Presence follows the owner's open chat streams (presenceBus.js);
+        // signing out closes this page's, so nothing to publish here.
         if (call.request.token) await authRepo.deleteSession(pool, call.request.token);
-        // hasActiveSession, not a flat "false": another device could still
-        // be signed in.
-        publishPresence(await authRepo.hasActiveSession(pool));
         callback(null, {});
       } catch (err) {
         callback({ code: grpc.status.INTERNAL, message: err.message });
@@ -63,10 +61,9 @@ export function createAuthService({
 
     async SubscribeOwnerPresence(call) {
       // Current state immediately on subscribe, not just future changes --
-      // otherwise a page loaded while already signed in elsewhere would
-      // show the chat icon greyed out until the next sign-in/out.
-      const online = await authRepo.hasActiveSession(pool);
-      call.write({ online });
+      // otherwise the chat icon would stay greyed out until the owner next
+      // came or went.
+      call.write({ online: isOwnerOnline() });
 
       const unsubscribe = subscribePresence((nowOnline) => call.write({ online: nowOnline }));
       call.on('cancelled', unsubscribe);
