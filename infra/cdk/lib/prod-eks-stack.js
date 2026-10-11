@@ -5,6 +5,7 @@ import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import { addonVersion, addCoreAddons } from './eks-versions.js';
 import { ENVOY_GATEWAY_NODE_PORT } from './eks-stack.js';
 
 // Same person deploys both environments -- see eks-stack.js's identical
@@ -12,6 +13,9 @@ import { ENVOY_GATEWAY_NODE_PORT } from './eks-stack.js';
 // AccessEntry is the only way kubectl/helm from infra/eks/deploy.sh work
 // at all, no aws-auth ConfigMap fallback).
 const DEPLOYING_USER_ARN = 'arn:aws:iam::913318903667:user/mlemay';
+
+// See eks-stack.js's K8S_VERSION comment.
+const K8S_VERSION = '1.36';
 
 // Prod's public-facing sibling of EksStack (dev) -- see
 // infra/cdk/lib/prod-gateway-stack.js's header comment for why this is a
@@ -40,7 +44,7 @@ export class ProdEksStack extends Stack {
       // eks-stack.js's identical comment; V1_32 is the newest version with
       // a published EKS-optimized AMI in this account/region as of when
       // that was confirmed.
-      version: eks.KubernetesVersion.V1_32,
+      version: eks.KubernetesVersion.of(K8S_VERSION),
       vpc,
       vpcSubnets: [{ subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS }],
       authenticationMode: eks.AuthenticationMode.API,
@@ -79,6 +83,7 @@ export class ProdEksStack extends Stack {
       vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
       securityGroup: nodeSecurityGroup,
       mapRole: false,
+      machineImageType: eks.MachineImageType.BOTTLEROCKET,
     });
 
     new eks.AccessEntry(this, 'NodeAccessEntry', {
@@ -91,6 +96,7 @@ export class ProdEksStack extends Stack {
     const podIdentityAgent = new eks.Addon(this, 'PodIdentityAgentAddon', {
       cluster,
       addonName: 'eks-pod-identity-agent',
+      addonVersion: addonVersion(K8S_VERSION, 'eks-pod-identity-agent'),
     });
 
     const ebsCsiRole = new iam.Role(this, 'EbsCsiDriverRole', {
@@ -111,8 +117,11 @@ export class ProdEksStack extends Stack {
     const ebsCsiAddon = new eks.Addon(this, 'EbsCsiDriverAddon', {
       cluster,
       addonName: 'aws-ebs-csi-driver',
+      addonVersion: addonVersion(K8S_VERSION, 'aws-ebs-csi-driver'),
     });
     ebsCsiAddon.node.addDependency(ebsCsiPodIdentity);
+
+    addCoreAddons(this, cluster, K8S_VERSION);
 
     // Own bucket -- genuinely fresh, no content copied from dev's (see the
     // deploy plan's "Post-deploy manual steps"). Same public-images/

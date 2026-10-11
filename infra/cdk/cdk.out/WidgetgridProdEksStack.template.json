@@ -392,7 +392,7 @@
     },
     "Config": {
      "name": "widgetgrid-prod",
-     "version": "1.32",
+     "version": "1.36",
      "roleArn": {
       "Fn::GetAtt": [
        "ClusterRoleFA261979",
@@ -728,7 +728,7 @@
       }
      },
      "ImageId": {
-      "Ref": "SsmParameterValueawsserviceeksoptimizedami132amazonlinux2recommendedimageidC96584B6F00A464EAD1953AFF4B05118Parameter"
+      "Ref": "SsmParameterValueawsservicebottlerocketawsk8s136x8664latestimageidC96584B6F00A464EAD1953AFF4B05118Parameter"
      },
      "InstanceType": "t3.medium",
      "Monitoring": {
@@ -801,25 +801,25 @@
        "Fn::Join": [
         "",
         [
-         "#!/bin/bash\nset -o xtrace\n/etc/eks/bootstrap.sh ",
-         {
-          "Ref": "Cluster9EE0221C"
-         },
-         " --kubelet-extra-args \"--node-labels lifecycle=OnDemand\" --apiserver-endpoint '",
+         "\n[settings.kubernetes]\napi-server=\"",
          {
           "Fn::GetAtt": [
            "Cluster9EE0221C",
            "Endpoint"
           ]
          },
-         "' --b64-cluster-ca '",
+         "\"\ncluster-certificate=\"",
          {
           "Fn::GetAtt": [
            "Cluster9EE0221C",
            "CertificateAuthorityData"
           ]
          },
-         "' --use-max-pods true\n/opt/aws/bin/cfn-signal --exit-code $? --stack WidgetgridProdEksStack --resource ClusterNodeGroupASGA3C3BF4C --region us-east-1"
+         "\"\ncluster-name=\"",
+         {
+          "Ref": "Cluster9EE0221C"
+         },
+         "\""
         ]
        ]
       }
@@ -1219,6 +1219,7 @@
    "Type": "AWS::EKS::Addon",
    "Properties": {
     "AddonName": "eks-pod-identity-agent",
+    "AddonVersion": "v1.3.10-eksbuild.3",
     "ClusterName": {
      "Ref": "Cluster9EE0221C"
     }
@@ -1290,6 +1291,7 @@
    "Type": "AWS::EKS::Addon",
    "Properties": {
     "AddonName": "aws-ebs-csi-driver",
+    "AddonVersion": "v1.66.0-eksbuild.1",
     "ClusterName": {
      "Ref": "Cluster9EE0221C"
     }
@@ -1299,6 +1301,48 @@
    ],
    "Metadata": {
     "aws:cdk:path": "WidgetgridProdEksStack/EbsCsiDriverAddon/Resource"
+   }
+  },
+  "VpcCniAddon1E0771BE": {
+   "Type": "AWS::EKS::Addon",
+   "Properties": {
+    "AddonName": "vpc-cni",
+    "AddonVersion": "v1.22.4-eksbuild.3",
+    "ClusterName": {
+     "Ref": "Cluster9EE0221C"
+    },
+    "ResolveConflicts": "OVERWRITE"
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridProdEksStack/VpcCniAddon/Resource"
+   }
+  },
+  "KubeProxyAddon98326ED4": {
+   "Type": "AWS::EKS::Addon",
+   "Properties": {
+    "AddonName": "kube-proxy",
+    "AddonVersion": "v1.36.0-eksbuild.25",
+    "ClusterName": {
+     "Ref": "Cluster9EE0221C"
+    },
+    "ResolveConflicts": "OVERWRITE"
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridProdEksStack/KubeProxyAddon/Resource"
+   }
+  },
+  "CoreDnsAddon631C3DCC": {
+   "Type": "AWS::EKS::Addon",
+   "Properties": {
+    "AddonName": "coredns",
+    "AddonVersion": "v1.14.7-eksbuild.10",
+    "ClusterName": {
+     "Ref": "Cluster9EE0221C"
+    },
+    "ResolveConflicts": "OVERWRITE"
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridProdEksStack/CoreDnsAddon/Resource"
    }
   },
   "BlogBucket3E358F18": {
@@ -1678,9 +1722,9 @@
   }
  },
  "Parameters": {
-  "SsmParameterValueawsserviceeksoptimizedami132amazonlinux2recommendedimageidC96584B6F00A464EAD1953AFF4B05118Parameter": {
+  "SsmParameterValueawsservicebottlerocketawsk8s136x8664latestimageidC96584B6F00A464EAD1953AFF4B05118Parameter": {
    "Type": "AWS::SSM::Parameter::Value<String>",
-   "Default": "/aws/service/eks/optimized-ami/1.32/amazon-linux-2/recommended/image_id"
+   "Default": "/aws/service/bottlerocket/aws-k8s-1.36/x86_64/latest/image_id"
   },
   "BootstrapVersion": {
    "Type": "AWS::SSM::Parameter::Value<String>",

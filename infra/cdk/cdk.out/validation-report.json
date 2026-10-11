@@ -10,7 +10,7 @@
       "suppressedViolations": [
         {
           "ruleName": "W2506",
-          "description": "Parameters/SsmParameterValueawsserviceeksoptimizedami132amazonlinux2recommendedimageidC96584B6F00A464EAD1953AFF4B05118Parameter: Parameter 'SsmParameterValueawsserviceeksoptimizedami132amazonlinux2recommendedimageidC96584B6F00A464EAD1953AFF4B05118Parameter' is used as an ImageId but has Type 'AWS::SSM::Parameter::Value<String>' - consider using 'AWS::EC2::Image::Id'",
+          "description": "Parameters/SsmParameterValueawsservicebottlerocketawsk8s136x8664latestimageidC96584B6F00A464EAD1953AFF4B05118Parameter: Parameter 'SsmParameterValueawsservicebottlerocketawsk8s136x8664latestimageidC96584B6F00A464EAD1953AFF4B05118Parameter' is used as an ImageId but has Type 'AWS::SSM::Parameter::Value<String>' - consider using 'AWS::EC2::Image::Id'",
           "severity": "warning",
           "ruleMetadata": {
             "category": "Best Practice"
@@ -38,7 +38,7 @@
           "acknowledgedId": "CloudFormation-Validate::W2506",
           "reason": "SSM parameter is typed as String instead of AWS::SSM::Parameter::Value<AWS::EC2::Image::Id> for historical reasons.",
           "acknowledgedAt": "WidgetgridProdEksStack/Cluster/NodeGroup/LaunchTemplate",
-          "acknowledgedStackTrace": "    ...WrappedClass.<anonymous> in aws-cdk-lib...\n    at new ProdEksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-eks-stack.js:75:31)"
+          "acknowledgedStackTrace": "    ...WrappedClass.<anonymous> in aws-cdk-lib...\n    at new ProdEksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/prod-eks-stack.js:79:31)"
         }
       ]
     }

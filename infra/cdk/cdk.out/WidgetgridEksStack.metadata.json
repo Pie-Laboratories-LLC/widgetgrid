@@ -13,7 +13,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Cluster2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:51:21)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:58:21)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -24,7 +24,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Cluster2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:51:21)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:58:21)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -47,7 +47,7 @@
         "WrappedClass.connectAutoScalingGroupCapacity (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-eks/lib/cluster.js:1:10746)",
         "WrappedClass.addAutoScalingGroupCapacity (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/aws-eks/lib/cluster.js:1:30883)",
         "WrappedClass.<anonymous> (/home/mattc/GIT/widgetgrid/node_modules/aws-cdk-lib/core/lib/metadata-resource.js:1:2059)",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:117:31)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:118:31)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:13",
         "ModuleJob.run (node:internal/modules/esm/module_job:561:25)",
         "async node:internal/modules/esm/loader:647:26",
@@ -55,10 +55,10 @@
       ]
     }
   ],
-  "/WidgetgridEksStack/SsmParameterValue:--aws--service--eks--optimized-ami--1.32--amazon-linux-2--recommended--image_id:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+  "/WidgetgridEksStack/SsmParameterValue:--aws--service--bottlerocket--aws-k8s-1.36--x86_64--latest--image_id:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "SsmParameterValueawsserviceeksoptimizedami132amazonlinux2recommendedimageidC96584B6F00A464EAD1953AFF4B05118Parameter"
+      "data": "SsmParameterValueawsservicebottlerocketawsk8s136x8664latestimageidC96584B6F00A464EAD1953AFF4B05118Parameter"
     },
     {
       "type": "aws:cdk:creationStack",
@@ -76,7 +76,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:163:31)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:166:31)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -96,7 +96,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:229:31)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:235:31)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -110,7 +110,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:282:5)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:288:5)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -124,7 +124,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:283:5)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:289:5)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -138,7 +138,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:284:5)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:290:5)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -152,7 +152,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:285:5)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:291:5)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -166,7 +166,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:286:5)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:292:5)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -180,7 +180,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:287:5)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:293:5)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -194,7 +194,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:292:5)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:298:5)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -235,7 +235,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Cluster2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:51:21)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:58:21)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -250,7 +250,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Cluster2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:51:21)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:58:21)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -316,7 +316,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Cluster2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:51:21)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:58:21)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -363,7 +363,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Cluster2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:51:21)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:58:21)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -378,7 +378,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new AccessEntry2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:84:5)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:85:5)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -393,7 +393,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new SecurityGroup2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:99:31)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:100:31)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -408,7 +408,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:104:23)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:105:23)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -501,7 +501,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new AccessEntry2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:126:5)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:128:5)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -516,7 +516,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Addon2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:142:30)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:144:30)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -531,7 +531,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Role2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:147:24)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:150:24)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -546,7 +546,55 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Addon2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:171:25)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:174:25)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridEksStack/VpcCniAddon/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcCniAddon1E0771BE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Addon2 in aws-cdk-lib...",
+        "addCoreAddons (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-versions.js:36:19)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:181:5)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridEksStack/KubeProxyAddon/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "KubeProxyAddon98326ED4"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Addon2 in aws-cdk-lib...",
+        "addCoreAddons (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-versions.js:36:19)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:181:5)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridEksStack/CoreDnsAddon/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CoreDnsAddon631C3DCC"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Addon2 in aws-cdk-lib...",
+        "addCoreAddons (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-versions.js:36:19)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:181:5)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -561,7 +609,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Bucket2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:184:23)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:190:23)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -608,7 +656,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Role2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:220:24)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:226:24)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -623,7 +671,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Repository2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:240:29)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:246:29)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -638,7 +686,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Repository2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:246:29)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:252:29)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -653,7 +701,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Repository2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:258:32)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:264:32)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -668,7 +716,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new ApplicationTargetGroup2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:270:24)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:276:24)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -709,7 +757,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Cluster2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:51:21)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:58:21)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -724,7 +772,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Cluster2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:51:21)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:58:21)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -739,7 +787,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Cluster2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:51:21)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:58:21)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -871,7 +919,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:117:31)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:118:31)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -885,7 +933,7 @@
       },
       "trace": [
         "    ...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "    at new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:117:31)"
+        "    at new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:118:31)"
       ]
     }
   ],
@@ -898,7 +946,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:117:31)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:118:31)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -913,7 +961,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:117:31)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:118:31)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -928,7 +976,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Cluster2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:51:21)"
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:58:21)"
       ]
     }
   ],
@@ -941,7 +989,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Cluster2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:51:21)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:58:21)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)"
       ]
     }
@@ -955,7 +1003,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Cluster2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:51:21)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:58:21)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)"
       ]
     }
@@ -982,7 +1030,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Cluster2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:51:21)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:58:21)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -997,7 +1045,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Cluster2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:51:21)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:58:21)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)"
       ]
     }
@@ -1024,7 +1072,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Bucket2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:184:23)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:190:23)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -1058,7 +1106,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:223:16)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:229:16)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -1073,7 +1121,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Cluster2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:51:21)"
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:58:21)"
       ]
     }
   ],
@@ -1086,7 +1134,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Cluster2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:51:21)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:58:21)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -1101,7 +1149,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Cluster2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:51:21)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:58:21)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -1116,7 +1164,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:117:31)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:118:31)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -1131,7 +1179,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:117:31)",
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:118:31)",
         "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:27:1)",
         "...node internals..."
       ]
@@ -1211,7 +1259,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Cluster2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:51:21)"
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:58:21)"
       ]
     }
   ],
@@ -1224,7 +1272,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Cluster2 in aws-cdk-lib...",
-        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:51:21)"
+        "new EksStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:58:21)"
       ]
     }
   ],

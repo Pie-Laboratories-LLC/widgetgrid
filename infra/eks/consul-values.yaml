@@ -19,10 +19,19 @@ server:
   replicas: 1
   bootstrapExpect: 1
   storageClass: gp3
+  # With replicas: 1 the chart computes this PDB's maxUnavailable as 0,
+  # which makes `kubectl drain` retry forever on whichever node hosts the
+  # server (hit during the 2026-10 node replacement). A budget over one
+  # replica can't protect availability anyway, so drop it.
+  disruptionBudget:
+    enabled: false
 
 connectInject:
   enabled: true
   default: false
+  # Same single-replica maxUnavailable: 0 problem as server's above.
+  disruptionBudget:
+    enabled: false
 
 controller:
   enabled: true

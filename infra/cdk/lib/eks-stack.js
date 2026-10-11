@@ -5,6 +5,7 @@ import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import { addonVersion, addCoreAddons } from './eks-versions.js';
 
 // The IAM identity that runs `cdk deploy`/`kubectl`/`helm` for this stack --
 // see infra/eks/deploy.sh. With authenticationMode: API there is no
@@ -13,6 +14,12 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 // all, so this can't be discovered/fixed after the fact the way an
 // aws-auth-ConfigMap-based cluster would allow.
 const DEPLOYING_USER_ARN = 'arn:aws:iam::913318903667:user/mlemay';
+
+// Bumped one minor per `cdk deploy` during an upgrade (EKS can't skip
+// minors) -- see eks-versions.js. Staying on a minor past its standard
+// support date bills extended support at 6x the normal control-plane
+// rate ($0.60/hr vs $0.10/hr), which is what 1.32 was doing by 2026-09.
+const K8S_VERSION = '1.36';
 
 // Fixed rather than auto-assigned, same reasoning as
 // local-k8s/manifests/envoy-gateway.yaml's nodePort: 30080 -- the ALB
@@ -50,16 +57,10 @@ export class EksStack extends Stack {
     // machinery isn't avoided entirely, just never exercised by this code.
     const cluster = new eks.Cluster(this, 'Cluster', {
       clusterName: 'widgetgrid-dev',
-      // V1_32, not the newer versions aws-cdk-lib@2.265.0 knows the enum
-      // values for -- confirmed directly against this account
-      // (`aws ssm get-parameters --names /aws/service/eks/optimized-ami/<v>/amazon-linux-2/recommended/image_id`):
-      // 1.32 is the newest version with an actual published EKS-optimized
-      // AMI here, which is what addAutoScalingGroupCapacity's self-managed
-      // ASG needs to resolve at deploy time. 1.33/1.34 return no parameter
-      // at all and fail the CloudFormation changeset with "Unable to fetch
-      // parameters ... for this account" -- not a permissions issue, the
-      // AMI just doesn't exist yet for those versions in this account/region.
-      version: eks.KubernetesVersion.V1_32,
+      // Nodes run Bottlerocket (see addAutoScalingGroupCapacity below), not
+      // the EKS-optimized Amazon Linux 2 AMI: AWS stopped publishing AL2 EKS
+      // AMIs after 1.32, which is what originally pinned this cluster there.
+      version: eks.KubernetesVersion.of(K8S_VERSION),
       vpc,
       vpcSubnets: [{ subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS }],
       // API, not the default CONFIG_MAP: access is granted via AccessEntry
@@ -121,6 +122,7 @@ export class EksStack extends Stack {
       vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
       securityGroup: nodeSecurityGroup,
       mapRole: false,
+      machineImageType: eks.MachineImageType.BOTTLEROCKET,
     });
 
     new eks.AccessEntry(this, 'NodeAccessEntry', {
@@ -142,6 +144,7 @@ export class EksStack extends Stack {
     const podIdentityAgent = new eks.Addon(this, 'PodIdentityAgentAddon', {
       cluster,
       addonName: 'eks-pod-identity-agent',
+      addonVersion: addonVersion(K8S_VERSION, 'eks-pod-identity-agent'),
     });
 
     const ebsCsiRole = new iam.Role(this, 'EbsCsiDriverRole', {
@@ -171,8 +174,11 @@ export class EksStack extends Stack {
     const ebsCsiAddon = new eks.Addon(this, 'EbsCsiDriverAddon', {
       cluster,
       addonName: 'aws-ebs-csi-driver',
+      addonVersion: addonVersion(K8S_VERSION, 'aws-ebs-csi-driver'),
     });
     ebsCsiAddon.node.addDependency(ebsCsiPodIdentity);
+
+    addCoreAddons(this, cluster, K8S_VERSION);
 
     // Blog content in production (see packages/server/src/blogSource.js's
     // createS3BlogSource) -- .md files at the bucket root, each post's

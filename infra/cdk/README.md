@@ -112,3 +112,30 @@ themselves; `cdk destroy WidgetgridEksStack WidgetgridRdsStack` is the actual
 cost-saving teardown when this environment isn't needed for a while --
 `WidgetgridDnsStack`/`WidgetgridDevGatewayStack` can stay up independently
 since neither depends on the other two.
+
+**Caveat (2026-10):** `WidgetgridEksStack` still owns the `widgetgrid-server`/
+`widgetgrid-static`/`embuscade-server` ECR repos (`emptyOnDelete: true`), and
+`WidgetgridProdEksStack` imports them by name. Destroying the dev stack
+would delete prod's images -- move the repos to their own stack first.
+
+Staying on a Kubernetes minor past its standard-support date bills EKS
+extended support: $0.60/hr per cluster instead of $0.10/hr. That ran
+~$720/mo across dev+prod on 1.32 before the 2026-10 upgrade -- see below.
+
+## Kubernetes version upgrades
+
+EKS ships a new minor roughly every 4 months, each with 14 months of
+standard support (`aws eks describe-cluster-versions`). Nodes are
+Bottlerocket, whose AMI resolves from the cluster version, so an upgrade is:
+
+1. Add the next minor's addon versions to `lib/eks-versions.js` (command in
+   its header comment).
+2. Bump `K8S_VERSION` in `lib/eks-stack.js` / `lib/prod-eks-stack.js` and
+   `cdk deploy <stack> --exclusively` -- one minor per deploy, EKS can't skip.
+   `--exclusively` matters: without it CDK also redeploys the gateway stack
+   without its `-c envoyTargetGroupArn=...` context and resets the ALB
+   listener to a fixed response.
+3. Replace nodes with `infra/eks/roll-node.sh <context> <node> <target-group-arn>`,
+   one at a time, the node *without* `consul-server-0` first. Kubelets may
+   trail the control plane by up to 3 minors, so this can wait until the
+   last control-plane step (but must happen before a 4th).
