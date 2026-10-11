@@ -66,6 +66,19 @@ export const testAuthContext = {
   },
 };
 
+// Inserts an issue directly (the issue API arrives in a later slice; type
+// and workflow tests only need issues to exist). Returns its id.
+let nextNumber = 1;
+export async function insertIssue(pool, { projectId, typeId, stateId, parentId = null, summary = 'An issue', user = 'owner' }) {
+  const { rows } = await pool.query(
+    `INSERT INTO lhoraire.issues (project_id, number, parent_id, sibling_rank, issue_type_id, state_id, summary, created_by, modified_by)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $8) RETURNING id`,
+    [projectId, nextNumber, parentId, `a${nextNumber}`, typeId, stateId, summary, USERS[user].userId],
+  );
+  nextNumber += 1;
+  return rows[0].id;
+}
+
 // Calls a unary handler the way grpc-js would. Resolves with the response,
 // rejects with { code, message }.
 export function invoke(rawHandlers, method, request, user = 'owner') {

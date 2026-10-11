@@ -69,3 +69,160 @@ service ProjectService {
   // Deletes the project with all its issues and project-specific types.
   rpc DeleteProject(DeleteProjectRequest) returns (DeleteProjectResponse);
 }
+
+// ---------------------------------------------------------------------------
+// Issue types and workflows. A type is global (project_id empty) or belongs
+// to one project, and owns exactly one workflow: its states and the allowed
+// transitions between them.
+
+message IssueType {
+  string id = 1;
+  // Empty = global.
+  string project_id = 2;
+  string name = 3;
+  string icon = 4;
+  // "#rrggbb"
+  string color = 5;
+  string created_at = 6;
+  string modified_at = 7;
+}
+
+message WorkflowState {
+  string id = 1;
+  string name = 2;
+  int32 position = 3;
+  bool is_initial = 4;
+  bool is_terminal = 5;
+}
+
+message WorkflowTransition {
+  string from_state_id = 1;
+  string to_state_id = 2;
+}
+
+message Workflow {
+  repeated WorkflowState states = 1;
+  repeated WorkflowTransition transitions = 2;
+}
+
+message ListIssueTypesRequest {
+  // Empty = global types only. A project id = that project's own types,
+  // plus the global ones when include_global is set (what an issue in the
+  // project can use).
+  string project_id = 1;
+  bool include_global = 2;
+  int64 requested_at_ms = 3;
+}
+message ListIssueTypesResponse {
+  repeated IssueType issue_types = 1;
+}
+
+message GetIssueTypeRequest {
+  string id = 1;
+}
+message GetIssueTypeResponse {
+  IssueType issue_type = 1;
+  Workflow workflow = 2;
+}
+
+message CreateIssueTypeRequest {
+  // Empty = global.
+  string project_id = 1;
+  string name = 2;
+  string icon = 3;
+  string color = 4;
+  // Start from a copy of this type's workflow (a global type, or a type in
+  // the same project). Empty = the default New/Underway/Paused/Closed.
+  string copy_workflow_from_type_id = 5;
+}
+message CreateIssueTypeResponse {
+  IssueType issue_type = 1;
+  Workflow workflow = 2;
+}
+
+message UpdateIssueTypeRequest {
+  string id = 1;
+  string name = 2;
+  string icon = 3;
+  string color = 4;
+}
+message UpdateIssueTypeResponse {
+  IssueType issue_type = 1;
+}
+
+message MoveIssueTypeScopeRequest {
+  string id = 1;
+  // Empty = make it global. A project id = make it that project's own type
+  // (only from global).
+  string target_project_id = 2;
+}
+message MoveIssueTypeScopeResponse {
+  IssueType issue_type = 1;
+}
+
+message GetIssueTypeUsageRequest {
+  string id = 1;
+}
+message GetIssueTypeUsageResponse {
+  // Issues of this type.
+  int32 issue_count = 1;
+  // Issues that would go if those issues were deleted with their subtrees.
+  int32 deleted_with_subtrees_count = 2;
+  // Issues per state id.
+  map<string, int32> issues_per_state = 3;
+}
+
+message DeleteIssueTypeRequest {
+  string id = 1;
+  enum Mode {
+    // Only allowed when no issue uses the type.
+    MODE_UNSPECIFIED = 0;
+    // Move its issues to reassign_to_type_id, mapping every state that has
+    // issues through state_mapping (old state id -> new state id).
+    REASSIGN = 1;
+    // Delete its issues together with their subtrees.
+    DELETE_ISSUES = 2;
+  }
+  Mode mode = 2;
+  string reassign_to_type_id = 3;
+  map<string, string> state_mapping = 4;
+}
+message DeleteIssueTypeResponse {
+  int32 issues_reassigned = 1;
+  int32 issues_deleted = 2;
+}
+
+// One state in an UpdateWorkflow request: an existing state's id, or a
+// new state's placeholder "new:<anything>" that transitions can refer to.
+// Order in the list is the display order.
+message WorkflowStateInput {
+  string id = 1;
+  string name = 2;
+  bool is_initial = 3;
+  bool is_terminal = 4;
+}
+
+message UpdateWorkflowRequest {
+  string issue_type_id = 1;
+  repeated WorkflowStateInput states = 2;
+  // From/to are state ids or "new:" placeholders from states above.
+  repeated WorkflowTransition transitions = 3;
+  // For every removed state that issues are in: removed state id -> id or
+  // placeholder of the state to move them to.
+  map<string, string> state_mapping = 4;
+}
+message UpdateWorkflowResponse {
+  Workflow workflow = 1;
+}
+
+service IssueTypeService {
+  rpc ListIssueTypes(ListIssueTypesRequest) returns (ListIssueTypesResponse);
+  rpc GetIssueType(GetIssueTypeRequest) returns (GetIssueTypeResponse);
+  rpc CreateIssueType(CreateIssueTypeRequest) returns (CreateIssueTypeResponse);
+  rpc UpdateIssueType(UpdateIssueTypeRequest) returns (UpdateIssueTypeResponse);
+  rpc MoveIssueTypeScope(MoveIssueTypeScopeRequest) returns (MoveIssueTypeScopeResponse);
+  rpc GetIssueTypeUsage(GetIssueTypeUsageRequest) returns (GetIssueTypeUsageResponse);
+  rpc DeleteIssueType(DeleteIssueTypeRequest) returns (DeleteIssueTypeResponse);
+  // Replaces the type's whole workflow in one transaction.
+  rpc UpdateWorkflow(UpdateWorkflowRequest) returns (UpdateWorkflowResponse);
+}

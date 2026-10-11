@@ -6,6 +6,7 @@ import { getPool } from '@widgetgrid/db/src/pool.js';
 import { createAuthContext, createCognitoVerifiers } from '@widgetgrid/auth-node';
 import { createHandlers } from './grpc.js';
 import { createProjectHandlers } from './services/projectService.js';
+import { createIssueTypeHandlers } from './services/issueTypeService.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const HOST = process.env.GRPC_SERVER_HOST ?? '127.0.0.1';
@@ -29,6 +30,7 @@ export function loadProto() {
 export function addServices(server, { pool, authContext }) {
   const proto = loadProto();
   server.addService(proto.ProjectService.service, createHandlers(authContext, createProjectHandlers({ pool })));
+  server.addService(proto.IssueTypeService.service, createHandlers(authContext, createIssueTypeHandlers({ pool })));
   return server;
 }
 
