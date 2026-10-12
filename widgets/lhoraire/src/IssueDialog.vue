@@ -1,5 +1,5 @@
 <template>
-  <div class="lh-overlay" @click.self="$emit('close')" @keydown.esc="$emit('close')">
+  <div class="lh-overlay" @click.self="$emit('close')">
     <section class="lh-dialog" role="dialog" aria-modal="true" :aria-label="heading">
       <header class="lh-dialog-head">
         <span v-if="issue" class="lh-key" :style="{ background: project.color }"><TypeIcon :name="currentType.icon" />{{ issue.key }}</span>
@@ -39,6 +39,36 @@
             </select>
           </label>
           <label class="lh-field">
+            <span>Parent</span>
+            <span class="lh-inline-field">
+              <input v-model="form.parentKey" class="lh-input lh-grow" placeholder="top level" />
+              <button v-if="form.parentKey" type="button" class="lh-btn lh-btn-quiet" title="Make it a top-level issue" @click="form.parentKey = ''">Top level</button>
+            </span>
+          </label>
+          <label v-if="issue" class="lh-field">
+            <span>State</span>
+            <span v-if="currentState.isTerminal" class="lh-state-final">
+              <strong>{{ currentState.name }}</strong> — {{ endReasonLabel(issue.endReason) }}: {{ issue.endDescription }}
+            </span>
+            <select v-else v-model="form.stateId" class="lh-input" :disabled="typeChanged" :title="typeChanged ? 'Save the type change first' : ''">
+              <option :value="issue.stateId">{{ currentState.name }} (current)</option>
+              <option v-for="s in nextStates" :key="s.id" :value="s.id">→ {{ s.name }}</option>
+            </select>
+          </label>
+          <template v-if="closingNow">
+            <label class="lh-field">
+              <span>End reason</span>
+              <select v-model="form.endReason" class="lh-input" required>
+                <option value="" disabled>Choose…</option>
+                <option v-for="r in endReasons" :key="r.value" :value="r.value">{{ r.label }}</option>
+              </select>
+            </label>
+            <label class="lh-field">
+              <span>Why it was closed</span>
+              <input v-model="form.endDescription" class="lh-input" required />
+            </label>
+          </template>
+          <label class="lh-field">
             <span>Assignee</span>
             <select v-model="form.assigneeId" class="lh-input">
               <option value="">Unassigned</option>
@@ -50,9 +80,8 @@
             <textarea v-model="form.description" class="lh-input" rows="6" />
           </label>
           <div class="lh-actions lh-wide">
-            <span v-if="mode === 'create' && parent" class="lh-quiet">Child of {{ parent.key }}</span>
             <span class="lh-spacer" />
-            <button type="submit" class="lh-btn" :disabled="busy || !dirty || (typeChanged && !form.stateIdInNewType)">
+            <button type="submit" class="lh-btn" :disabled="busy || !dirty || (typeChanged && !form.stateIdInNewType) || (closingNow && (!form.endReason || !form.endDescription.trim()))">
               {{ mode === 'create' ? 'Create' : 'Save' }}
             </button>
           </div>
@@ -60,32 +89,6 @@
         <p v-if="error" class="lh-error">{{ error }}</p>
 
         <template v-if="issue">
-          <section class="lh-section">
-            <h4>State</h4>
-            <p class="lh-state-line">
-              <strong>{{ currentState.name }}</strong>
-              <span v-if="issue.endReason" class="lh-quiet"> — {{ endReasonLabel(issue.endReason) }}: {{ issue.endDescription }}</span>
-            </p>
-            <div v-if="!currentState.isTerminal" class="lh-transitions">
-              <span v-if="nextStates.length === 0" class="lh-quiet">No transitions out of this state.</span>
-              <button
-                v-for="s in nextStates" :key="s.id" type="button" class="lh-btn lh-btn-quiet"
-                :disabled="busy || !issue.assigneeId" :title="issue.assigneeId ? '' : 'Assign the issue first'"
-                @click="startTransition(s)"
-              >→ {{ s.name }}</button>
-            </div>
-            <form v-if="closing" class="lh-closing" @submit.prevent="transition(closing.state)">
-              <span>Closing as <strong>{{ closing.state.name }}</strong>:</span>
-              <select v-model="closing.endReason" class="lh-input" required>
-                <option value="" disabled>End reason…</option>
-                <option v-for="r in endReasons" :key="r.value" :value="r.value">{{ r.label }}</option>
-              </select>
-              <input v-model="closing.endDescription" class="lh-input lh-grow" placeholder="Why it was closed" required />
-              <button type="submit" class="lh-btn" :disabled="busy || !closing.endReason || !closing.endDescription.trim()">Close it</button>
-              <button type="button" class="lh-btn lh-btn-quiet" @click="closing = null">Cancel</button>
-            </form>
-          </section>
-
           <section class="lh-section">
             <h4>Links</h4>
             <ul v-if="links.length" class="lh-links">
@@ -149,6 +152,7 @@
 import { call, GRPC_CODES } from './client.js';
 import TypeIcon from './TypeIcon.vue';
 import { SEVERITIES, END_REASONS, LINK_KINDS } from './icons.js';
+import { lastOpenChild } from './tree.js';
 
 const FIELDS = ['issueTypeId', 'summary', 'description', 'severity', 'assigneeId'];
 
@@ -163,14 +167,19 @@ export default {
     types: { type: Object, required: true }, // id -> type (with workflow)
     typeList: { type: Array, required: true },
     users: { type: Object, required: true },
+    issues: { type: Array, required: true }, // the project's issues (for keys and placement)
+    isClosed: { type: Function, required: true },
   },
   emits: ['close', 'saved', 'open-issue'],
   data() {
     return {
       loading: this.mode === 'edit', busy: false, error: '', staleMessage: '',
       issue: null, comments: [], links: [], history: [],
-      form: { issueTypeId: '', summary: '', description: '', severity: 'normal', assigneeId: '', stateIdInNewType: '' },
-      closing: null, newComment: '', editingComment: null, newLink: { kind: 'depends_on', key: '' },
+      form: {
+        issueTypeId: '', summary: '', description: '', severity: 'normal', assigneeId: '', stateIdInNewType: '',
+        parentKey: this.parent?.key ?? '', stateId: '', endReason: '', endDescription: '',
+      },
+      newComment: '', editingComment: null, newLink: { kind: 'depends_on', key: '' },
       severities: SEVERITIES, endReasons: END_REASONS, linkKinds: LINK_KINDS,
     };
   },
@@ -186,6 +195,14 @@ export default {
       return transitions.filter((t) => t.fromStateId === this.issue.stateId).map((t) => states.find((s) => s.id === t.toStateId)).filter(Boolean);
     },
     typeChanged() { return this.mode === 'edit' && this.issue && this.form.issueTypeId !== this.issue.issueTypeId; },
+    originalParentKey() {
+      return this.issues.find((i) => i.id === this.issue?.parentId)?.key ?? '';
+    },
+    parentChanged() { return this.mode === 'edit' && this.form.parentKey.trim().toLowerCase() !== this.originalParentKey; },
+    stateChanged() { return this.mode === 'edit' && this.issue && this.form.stateId !== this.issue.stateId; },
+    closingNow() {
+      return this.stateChanged && !!this.currentType.workflow.states.find((s) => s.id === this.form.stateId)?.isTerminal;
+    },
     // A type change keeps open/closed: only states with the same terminal-ness.
     mappableStates() {
       const states = this.types[this.form.issueTypeId]?.workflow.states ?? [];
@@ -193,11 +210,23 @@ export default {
     },
     dirty() {
       if (this.mode === 'create') return this.form.summary.trim().length > 0;
-      return FIELDS.some((f) => this.form[f] !== this.issue[f]);
+      return FIELDS.some((f) => this.form[f] !== this.issue[f]) || this.parentChanged || this.stateChanged;
     },
   },
   watch: {
     'form.issueTypeId'() { this.form.stateIdInNewType = ''; },
+    'form.stateId'() {
+      this.form.endReason = '';
+      this.form.endDescription = '';
+    },
+  },
+  mounted() {
+    // On the window, not the overlay: after a save the focused element is
+    // re-rendered away, and Escape must still close the dialog.
+    window.addEventListener('keydown', this.onKeydown);
+  },
+  beforeUnmount() {
+    window.removeEventListener('keydown', this.onKeydown);
   },
   async created() {
     if (this.mode === 'create') {
@@ -208,6 +237,9 @@ export default {
     await this.reload();
   },
   methods: {
+    onKeydown(e) {
+      if (e.key === 'Escape') this.$emit('close');
+    },
     when(iso) { return iso ? new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : ''; },
     endReasonLabel(v) { return END_REASONS.find((r) => r.value === v)?.label ?? v; },
     linkLabel(v) { return LINK_KINDS.find((k) => k.value === v)?.label ?? v; },
@@ -240,8 +272,10 @@ export default {
         this.comments = comments;
         this.links = links;
         this.history = events;
-        this.form = { ...Object.fromEntries(FIELDS.map((f) => [f, issue[f]])), stateIdInNewType: '' };
-        this.closing = null;
+        this.form = {
+          ...Object.fromEntries(FIELDS.map((f) => [f, issue[f]])), stateIdInNewType: '',
+          parentKey: this.issues.find((i) => i.id === issue.parentId)?.key ?? '', stateId: issue.stateId, endReason: '', endDescription: '',
+        };
       } catch (err) {
         this.error = err.message;
       } finally {
@@ -249,38 +283,57 @@ export default {
       }
     },
 
+    // A typed parent key -> that issue's id ('' = top level). Must be in
+    // this project (the tree is per project).
+    async resolveParent() {
+      const key = this.form.parentKey.trim().toLowerCase();
+      if (!key) return '';
+      const local = this.issues.find((i) => i.key === key);
+      if (local) return local.id;
+      const { issue } = await call('IssueService', 'GetIssue', { key });
+      if (issue.projectId !== this.project.id) throw new Error(`${key} is in another project.`);
+      return issue.id;
+    },
+
+    // Save applies, in order: field edits, a move to the new parent, then
+    // the state change -- so assigning and starting work is one save. Rules
+    // that would fail midway are checked first, before anything is sent.
     save() {
       return this.run(async () => {
+        const parentId = await this.resolveParent();
         if (this.mode === 'create') {
           const { issue } = await call('IssueService', 'CreateIssue', {
-            projectId: this.project.id, parentId: this.parent?.id ?? '', ...Object.fromEntries(FIELDS.map((f) => [f, this.form[f]])),
+            projectId: this.project.id, parentId, ...Object.fromEntries(FIELDS.map((f) => [f, this.form[f]])),
           });
           this.$emit('saved', issue);
           this.$emit('close');
           return;
         }
-        // Only what changed; optional fields left undefined stay unset.
-        const changes = Object.fromEntries(FIELDS.filter((f) => this.form[f] !== this.issue[f]).map((f) => [f, this.form[f]]));
-        const { issue } = await call('IssueService', 'UpdateIssue', {
-          id: this.issue.id, version: this.issue.version, ...changes,
-          stateIdInNewType: this.typeChanged ? this.form.stateIdInNewType : '',
-        });
-        this.$emit('saved', issue);
-        await this.reload();
-      });
-    },
+        if (this.stateChanged && !this.form.assigneeId) throw new Error('Assign the issue before changing its state.');
+        if (this.parentChanged && parentId === this.issue.id) throw new Error("An issue can't be its own parent.");
 
-    startTransition(state) {
-      if (state.isTerminal) this.closing = { state, endReason: '', endDescription: '' };
-      else this.transition(state);
-    },
-    transition(state) {
-      return this.run(async () => {
-        const { issue } = await call('IssueService', 'TransitionIssue', {
-          id: this.issue.id, version: this.issue.version, toStateId: state.id,
-          endReason: this.closing?.endReason ?? '', endDescription: this.closing?.endDescription ?? '',
-        });
-        this.$emit('saved', issue);
+        let { version } = this.issue;
+        const changes = Object.fromEntries(FIELDS.filter((f) => this.form[f] !== this.issue[f]).map((f) => [f, this.form[f]]));
+        let latest = this.issue;
+        if (Object.keys(changes).length) {
+          ({ issue: latest } = await call('IssueService', 'UpdateIssue', {
+            id: this.issue.id, version, ...changes,
+            stateIdInNewType: this.typeChanged ? this.form.stateIdInNewType : '',
+          }));
+          version = latest.version;
+        }
+        if (this.parentChanged) {
+          const after = lastOpenChild(this.issues, parentId, this.isClosed, this.issue.id);
+          ({ issue: latest } = await call('IssueService', 'MoveIssue', { id: this.issue.id, newParentId: parentId, afterSiblingId: after?.id ?? '' }));
+          version = latest.version;
+        }
+        if (this.stateChanged && !this.typeChanged) {
+          ({ issue: latest } = await call('IssueService', 'TransitionIssue', {
+            id: this.issue.id, version, toStateId: this.form.stateId,
+            endReason: this.closingNow ? this.form.endReason : '', endDescription: this.closingNow ? this.form.endDescription : '',
+          }));
+        }
+        this.$emit('saved', latest);
         await this.reload();
       });
     },
@@ -441,11 +494,15 @@ export default {
 .lh-inline {
   display: inline;
 }
-.lh-closing {
-  margin-top: 10px;
-  padding: 10px;
-  background: #faf7ff;
-  border-radius: 8px;
+.lh-inline-field {
+  display: flex;
+  gap: 6px;
+}
+.lh-state-final {
+  font-weight: 400;
+  color: var(--lh-ink);
+  font-size: 0.92rem;
+  padding: 7px 0;
 }
 .lh-stale {
   display: flex;

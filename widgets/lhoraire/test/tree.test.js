@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { visibleRows, ancestorIds, subtreeIds, childrenIndex } from '../src/tree.js';
+import { visibleRows, ancestorIds, subtreeIds, childrenIndex, lastOpenChild } from '../src/tree.js';
 
 // root A (rank V) with children A1 (V), A2 (W); A1 has A1a; root B (U, so first).
 const issues = [
@@ -37,4 +37,19 @@ test('ranks compare as bytes, not locale order', () => {
     { id: 'upper', parentId: '', siblingRank: 'Z' },
   ]);
   assert.deepEqual(index.get('').map((i) => i.id), ['upper', 'lower']);
+});
+
+test('closed issues sink below open siblings, in creation order', () => {
+  const siblings = [
+    { id: 'open-late', parentId: '', siblingRank: 'Z', number: 1 },
+    { id: 'closed-new', parentId: '', siblingRank: 'A', number: 9 },
+    { id: 'open-early', parentId: '', siblingRank: 'B', number: 5 },
+    { id: 'closed-old', parentId: '', siblingRank: 'C', number: 2 },
+  ];
+  const closed = new Set(['closed-new', 'closed-old']);
+  const isClosed = (i) => closed.has(i.id);
+  assert.deepEqual(visibleRows(siblings, new Set(), isClosed).map((r) => r.issue.id), ['open-early', 'open-late', 'closed-old', 'closed-new']);
+  assert.equal(lastOpenChild(siblings, '', isClosed).id, 'open-late');
+  assert.equal(lastOpenChild(siblings, '', isClosed, 'open-late').id, 'open-early');
+  assert.equal(lastOpenChild([], '', isClosed), null);
 });

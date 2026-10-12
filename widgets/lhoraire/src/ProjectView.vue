@@ -36,7 +36,7 @@
     <IssueDialog
       v-if="dialog"
       :mode="dialog.mode" :issue-id="dialog.issueId" :parent="dialog.parent" :project="project"
-      :types="types" :type-list="typeList" :users="users"
+      :types="types" :type-list="typeList" :users="users" :issues="issues" :is-closed="isClosed"
       @close="dialog = null" @saved="onSaved" @open-issue="openEdit"
     />
   </div>
@@ -64,7 +64,7 @@ export default {
     };
   },
   computed: {
-    rows() { return visibleRows(this.issues, this.expanded); },
+    rows() { return visibleRows(this.issues, this.expanded, this.isClosed); },
     selected() { return this.issues.find((i) => i.id === this.selectedId) ?? null; },
   },
   async created() {
@@ -77,6 +77,8 @@ export default {
     }
   },
   methods: {
+    // Closed = in a terminal state; closed issues sort after open siblings.
+    isClosed(issue) { return !!this.states[issue.stateId]?.isTerminal; },
     async loadIssues() {
       this.issues = (await call('IssueService', 'ListIssues', { projectId: this.project.id })).issues;
     },

@@ -3,22 +3,35 @@
 
 const byRank = (a, b) => (a.siblingRank < b.siblingRank ? -1 : a.siblingRank > b.siblingRank ? 1 : 0);
 
-// parentId ('' = root) -> children sorted by rank.
-export function childrenIndex(issues) {
+// Sibling order: open issues in their manual (rank) order, then closed
+// ones at the end in creation order. isClosed(issue) says which is which;
+// without it everything sorts by rank.
+export function siblingOrder(isClosed = () => false) {
+  return (a, b) => {
+    const ca = isClosed(a);
+    const cb = isClosed(b);
+    if (ca !== cb) return ca ? 1 : -1;
+    return ca ? a.number - b.number : byRank(a, b);
+  };
+}
+
+// parentId ('' = root) -> children in sibling order.
+export function childrenIndex(issues, isClosed) {
   const index = new Map();
   for (const issue of issues) {
     const key = issue.parentId || '';
     if (!index.has(key)) index.set(key, []);
     index.get(key).push(issue);
   }
-  for (const list of index.values()) list.sort(byRank);
+  const order = siblingOrder(isClosed);
+  for (const list of index.values()) list.sort(order);
   return index;
 }
 
 // The rows a tree grid shows: depth-first, children only under expanded
 // parents. Each row: { issue, depth, hasChildren, expanded }.
-export function visibleRows(issues, expanded) {
-  const index = childrenIndex(issues);
+export function visibleRows(issues, expanded, isClosed) {
+  const index = childrenIndex(issues, isClosed);
   const rows = [];
   const walk = (parentId, depth) => {
     for (const issue of index.get(parentId) ?? []) {
@@ -42,6 +55,14 @@ export function ancestorIds(issues, id) {
     current = byId.get(current.parentId);
   }
   return out;
+}
+
+// The last open child of a parent ('' = root), excluding one issue -- where
+// a newly placed open issue goes (after it), so it stays above the closed.
+export function lastOpenChild(issues, parentId, isClosed, excludeId = '') {
+  const children = (childrenIndex(issues, isClosed).get(parentId || '') ?? [])
+    .filter((i) => i.id !== excludeId && !isClosed(i));
+  return children.at(-1) ?? null;
 }
 
 // The issue plus every descendant's id.
