@@ -193,20 +193,30 @@ message GetIssueTypeUsageResponse {
   map<string, int32> issues_per_state = 3;
 }
 
+// "Issues in this state go to that state." A list of these rather than a
+// map<string, string>: google-protobuf 4.x (the browser runtime) can't
+// encode map fields from this generated code -- jspb.Map lost
+// serializeBinary -- while plain repeated messages work everywhere.
+message StateMapping {
+  string from_state_id = 1;
+  string to_state_id = 2;
+}
+
 message DeleteIssueTypeRequest {
   string id = 1;
   enum Mode {
     // Only allowed when no issue uses the type.
     MODE_UNSPECIFIED = 0;
     // Move its issues to reassign_to_type_id, mapping every state that has
-    // issues through state_mapping (old state id -> new state id).
+    // issues through state_mappings (old state -> new state).
     REASSIGN = 1;
     // Delete its issues together with their subtrees.
     DELETE_ISSUES = 2;
   }
   Mode mode = 2;
   string reassign_to_type_id = 3;
-  map<string, string> state_mapping = 4;
+  reserved 4; // was map<string, string> state_mapping
+  repeated StateMapping state_mappings = 5;
 }
 message DeleteIssueTypeResponse {
   int32 issues_reassigned = 1;
@@ -228,9 +238,10 @@ message UpdateWorkflowRequest {
   repeated WorkflowStateInput states = 2;
   // From/to are state ids or "new:" placeholders from states above.
   repeated WorkflowTransition transitions = 3;
-  // For every removed state that issues are in: removed state id -> id or
-  // placeholder of the state to move them to.
-  map<string, string> state_mapping = 4;
+  // For every removed state that issues are in: the removed state's id ->
+  // the id or "new:" placeholder of the state to move them to.
+  reserved 4; // was map<string, string> state_mapping
+  repeated StateMapping state_mappings = 5;
 }
 message UpdateWorkflowResponse {
   Workflow workflow = 1;

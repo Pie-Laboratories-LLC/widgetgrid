@@ -79,6 +79,9 @@ export async function insertIssue(pool, { projectId, typeId, stateId, parentId =
   return rows[0].id;
 }
 
+// { from: to } -> the StateMapping list requests carry.
+export const mappings = (obj) => Object.entries(obj).map(([fromStateId, toStateId]) => ({ fromStateId, toStateId }));
+
 // Calls a unary handler the way grpc-js would. Resolves with the response,
 // rejects with { code, message }.
 export function invoke(rawHandlers, method, request, user = 'owner') {

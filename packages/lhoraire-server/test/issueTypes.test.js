@@ -2,6 +2,7 @@ import { test, before, beforeEach, after } from 'node:test';
 import assert from 'node:assert/strict';
 import grpc from '@grpc/grpc-js';
 import { getTestPool, resetData, invoke, insertIssue } from '../test-support/harness.js';
+import { mappings } from '../test-support/harness.js';
 import { createProjectHandlers } from '../src/services/projectService.js';
 import { createIssueTypeHandlers } from '../src/services/issueTypeService.js';
 
@@ -126,13 +127,13 @@ test('usage counts issues, per state, and what deleting with subtrees would remo
 test('deleting a type: free when unused, otherwise reassign or delete with subtrees', async () => {
   const p = await project('ffdb');
   const unused = await createType({ name: 'Unused' });
-  await invoke(types, 'DeleteIssueType', { id: unused.issueType.id, mode: 'MODE_UNSPECIFIED', reassignToTypeId: '', stateMapping: {} });
+  await invoke(types, 'DeleteIssueType', { id: unused.issueType.id, mode: 'MODE_UNSPECIFIED', reassignToTypeId: '', stateMappings: mappings({}) });
 
   const bug = await createType({ name: 'Bug' });
   const task = await createType({ name: 'Task2' });
   const parent = await insertIssue(pool, { projectId: p.id, typeId: bug.issueType.id, stateId: bug.workflow.states[0].id });
   await insertIssue(pool, { projectId: p.id, typeId: task.issueType.id, stateId: task.workflow.states[0].id, parentId: parent });
-  const del = (req) => invoke(types, 'DeleteIssueType', { id: bug.issueType.id, reassignToTypeId: '', stateMapping: {}, ...req });
+  const del = (req) => invoke(types, 'DeleteIssueType', { id: bug.issueType.id, reassignToTypeId: '', stateMappings: mappings({}), ...req });
 
   await assert.rejects(del({ mode: 'MODE_UNSPECIFIED' }), FAILED, 'must choose when issues exist');
   const result = await del({ mode: 'DELETE_ISSUES' });
@@ -153,7 +154,7 @@ test('reassigning a deleted type maps states, records history, and refuses bad m
     [a.id, bug.issueType.id, s(bug.workflow, 'Closed'), open],
   );
   const del = (stateMapping, extra = {}) => invoke(types, 'DeleteIssueType', {
-    id: bug.issueType.id, mode: 'REASSIGN', reassignToTypeId: task.issueType.id, stateMapping, ...extra,
+    id: bug.issueType.id, mode: 'REASSIGN', reassignToTypeId: task.issueType.id, stateMappings: mappings(stateMapping), ...extra,
   });
 
   await assert.rejects(del({ [s(bug.workflow, 'Underway')]: s(task.workflow, 'Underway') }), INVALID, 'Closed not mapped');
@@ -196,7 +197,7 @@ test('workflow editing: rename, swap names, move the initial flag, add states an
       { fromStateId: 'new:triage', toStateId: n },
       { fromStateId: n, toStateId: c },
     ],
-    stateMapping: {},
+    stateMappings: mappings({}),
   });
   assert.deepEqual(shape(next), {
     states: ['Triage*', 'Underway', 'New', 'Paused', 'Done!'],
@@ -208,7 +209,7 @@ test('workflow editing: rename, swap names, move the initial flag, add states an
 test('workflow editing refuses invalid shapes', async () => {
   const { issueType, workflow } = await createType({ name: 'Bug' });
   const [n, , , c] = workflow.states.map((s) => s.id);
-  const update = (states, transitions = []) => invoke(types, 'UpdateWorkflow', { issueTypeId: issueType.id, states, transitions, stateMapping: {} });
+  const update = (states, transitions = []) => invoke(types, 'UpdateWorkflow', { issueTypeId: issueType.id, states, transitions, stateMappings: mappings({}) });
   const st = (id, name, isInitial = false, isTerminal = false) => ({ id, name, isInitial, isTerminal });
 
   await assert.rejects(update([st(n, 'A'), st(c, 'B', false, true)]), INVALID, 'no initial state');
@@ -225,7 +226,7 @@ test('removing or re-flagging states that hold issues needs care', async () => {
   const [n, u, p, c] = workflow.states.map((s) => s.id);
   const issue = await insertIssue(pool, { projectId: proj.id, typeId: issueType.id, stateId: p });
   const st = (id, name, isInitial = false, isTerminal = false) => ({ id, name, isInitial, isTerminal });
-  const update = (states, stateMapping = {}) => invoke(types, 'UpdateWorkflow', { issueTypeId: issueType.id, states, transitions: [], stateMapping });
+  const update = (states, stateMapping = {}) => invoke(types, 'UpdateWorkflow', { issueTypeId: issueType.id, states, transitions: [], stateMappings: mappings(stateMapping) });
 
   await assert.rejects(update([st(n, 'New', true), st(u, 'Underway'), st(c, 'Closed', false, true)]), INVALID, 'Paused removed without a mapping');
   await assert.rejects(update([st(n, 'New', true), st(u, 'Underway'), st(c, 'Closed', false, true)], { [p]: c }), INVALID, 'mapped to a terminal state');

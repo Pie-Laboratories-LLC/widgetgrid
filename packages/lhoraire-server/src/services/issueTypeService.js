@@ -5,6 +5,9 @@ import { DEFAULT_WORKFLOW, loadWorkflow, insertWorkflow, asTemplate, validateWor
 
 const COLOR_PATTERN = /^#[0-9a-fA-F]{6}$/;
 
+// StateMapping list -> { fromStateId: toStateId }.
+const asMapping = (list = []) => Object.fromEntries(list.map((m) => [m.fromStateId, m.toStateId]));
+
 export function toProtoIssueType(row) {
   return {
     id: row.id,
@@ -170,7 +173,8 @@ export function createIssueTypeHandlers({ pool }) {
       };
     },
 
-    async DeleteIssueType({ id, mode, reassignToTypeId, stateMapping }, caller) {
+    async DeleteIssueType({ id, mode, reassignToTypeId, stateMappings }, caller) {
+      const stateMapping = asMapping(stateMappings);
       return withTransaction(pool, async (client) => {
         const type = await getType(client, id, { lock: true });
         const perState = await usagePerState(client, id);
@@ -236,7 +240,8 @@ export function createIssueTypeHandlers({ pool }) {
       });
     },
 
-    async UpdateWorkflow({ issueTypeId, states, transitions, stateMapping }, caller) {
+    async UpdateWorkflow({ issueTypeId, states, transitions, stateMappings }, caller) {
+      const stateMapping = asMapping(stateMappings);
       return withTransaction(pool, async (client) => {
         const type = await getType(client, issueTypeId, { lock: true });
         const current = new Map((await loadWorkflow(client, issueTypeId)).states.map((s) => [s.id, s]));

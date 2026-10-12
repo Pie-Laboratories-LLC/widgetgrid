@@ -2,7 +2,10 @@
   <div class="lh-projects">
     <header class="lh-projects-head">
       <h2>l'horaire</h2>
-      <button v-if="!creating" type="button" class="lh-btn" @click="creating = true">New project</button>
+      <span class="lh-head-actions">
+        <button type="button" class="lh-btn lh-btn-quiet" @click="$emit('types')">Issue types</button>
+        <button v-if="!creating" type="button" class="lh-btn" @click="creating = true">New project</button>
+      </span>
     </header>
 
     <form v-if="creating" class="lh-new-project" @submit.prevent="create">
@@ -32,7 +35,7 @@ import { call } from './client.js';
 
 export default {
   name: 'ProjectList',
-  emits: ['open'],
+  emits: ['open', 'types'],
   data() {
     return {
       projects: [], loading: true, error: '', creating: false, busy: false,
@@ -78,6 +81,10 @@ export default {
 .lh-projects-head h2 {
   margin: 0;
   font-size: 1.4rem;
+}
+.lh-head-actions {
+  display: flex;
+  gap: 8px;
 }
 .lh-new-project {
   display: flex;

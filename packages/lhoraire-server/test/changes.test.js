@@ -4,6 +4,7 @@ import { EventEmitter } from 'node:events';
 import pg from 'pg';
 import grpc from '@grpc/grpc-js';
 import { getTestPool, resetData, testAuthContext, USERS } from '../test-support/harness.js';
+import { mappings } from '../test-support/harness.js';
 import { createHandlers } from '../src/grpc.js';
 import { createProjectHandlers } from '../src/services/projectService.js';
 import { createIssueTypeHandlers } from '../src/services/issueTypeService.js';
@@ -132,7 +133,7 @@ test('an issue stream gets that issue\'s changes, both ends of links, and bulk c
     issueTypeId: issueType.id,
     states: (await invoke(raw.types, 'GetIssueType', { id: issueType.id })).workflow.states.map((st) => ({ id: st.id, name: st.name, isInitial: st.isInitial, isTerminal: st.isTerminal })),
     transitions: [],
-    stateMapping: {},
+    stateMappings: mappings({}),
   });
   await until(() => s.kinds().length >= 4, 'three changes');
   assert.deepEqual(s.kinds(), ['hello', 'comments_changed', 'links_changed', 'workflow_changed']);

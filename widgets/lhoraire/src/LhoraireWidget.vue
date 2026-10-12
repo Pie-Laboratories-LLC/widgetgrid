@@ -1,13 +1,15 @@
 <template>
   <div class="widget widget-lhoraire">
-    <ProjectView v-if="project" :key="project.id" :project="project" @back="project = null" @deleted="project = null" />
-    <ProjectList v-else @open="project = $event" />
+    <TypeAdmin v-if="typesScope !== null" :initial-scope="typesScope" @back="typesScope = null" />
+    <ProjectView v-else-if="project" :key="project.id" :project="project" @back="project = null" @deleted="project = null" @types="typesScope = $event" />
+    <ProjectList v-else @open="project = $event" @types="typesScope = ''" />
   </div>
 </template>
 
 <script>
 import ProjectList from './ProjectList.vue';
 import ProjectView from './ProjectView.vue';
+import TypeAdmin from './TypeAdmin.vue';
 
 // l'horaire: project-based, hierarchical issue tracking (see the design
 // doc and packages/lhoraire-server). Two modes: outside any project (the
@@ -16,13 +18,14 @@ import ProjectView from './ProjectView.vue';
 // server enforces it on every call.
 export default {
   name: 'LhoraireWidget',
-  components: { ProjectList, ProjectView },
+  components: { ProjectList, ProjectView, TypeAdmin },
   props: {
     data: { type: Object, required: true },
     title: { type: String, default: '' },
   },
   data() {
-    return { project: null };
+    // typesScope: null = not in the type admin; '' = global; a project id.
+    return { project: null, typesScope: null };
   },
 };
 </script>

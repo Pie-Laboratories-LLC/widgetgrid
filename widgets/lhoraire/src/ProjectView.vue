@@ -12,6 +12,7 @@
       <label>Colour <input v-model="settings.color" type="color" class="lh-color" /></label>
       <button type="submit" class="lh-btn" :disabled="busy || !settings.name.trim()">Save</button>
       <button type="button" class="lh-btn lh-btn-quiet" @click="showSettings = false">Close</button>
+      <button type="button" class="lh-btn lh-btn-quiet" @click="$emit('types', current.id)">Issue types…</button>
       <span class="lh-spacer" />
       <label class="lh-danger-zone">
         Type <strong>{{ current.key }}</strong> to delete the project and all its issues:
@@ -100,7 +101,7 @@ export default {
   name: 'ProjectView',
   components: { TreeGrid, IssueDialog },
   props: { project: { type: Object, required: true } },
-  emits: ['back', 'deleted'],
+  emits: ['back', 'deleted', 'types'],
   data() {
     return {
       loading: true, error: '',

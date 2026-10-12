@@ -12,13 +12,22 @@ const clients = {};
 
 const cap = (s) => s[0].toUpperCase() + s.slice(1);
 
-// Scalars -> setX; arrays -> setXList; plain objects -> getXMap() entries.
-// undefined is skipped, which is how optional fields stay unset.
-function build(Type, values) {
+// Repeated message fields, by request type and field: their element type.
+const NESTED = {
+  UpdateWorkflowRequest: { states: 'WorkflowStateInput', transitions: 'WorkflowTransition', stateMappings: 'StateMapping' },
+  DeleteIssueTypeRequest: { stateMappings: 'StateMapping' },
+};
+
+// Scalars -> setX; arrays -> setXList (elements of repeated message fields
+// built recursively); plain objects -> getXMap() entries. undefined is
+// skipped, which is how optional fields stay unset.
+function build(Type, values, typeName = '') {
   const message = new Type();
   for (const [key, value] of Object.entries(values)) {
     if (value === undefined) continue;
-    if (Array.isArray(value)) message[`set${cap(key)}List`](value);
+    const element = NESTED[typeName]?.[key];
+    if (Array.isArray(value) && element) message[`set${cap(key)}List`](value.map((v) => build(pb[element], v, element)));
+    else if (Array.isArray(value)) message[`set${cap(key)}List`](value);
     else if (value !== null && typeof value === 'object') {
       const map = message[`get${cap(key)}Map`]();
       for (const [k, v] of Object.entries(value)) map.set(k, v);
@@ -45,7 +54,7 @@ export async function call(service, method, values = {}) {
   clients[service] ??= new services[`${service}PromiseClient`](ORIGIN);
   const Request = pb[`${method}Request`];
   const rpc = method[0].toLowerCase() + method.slice(1);
-  const response = await clients[service][rpc](build(Request, values), await authMetadata());
+  const response = await clients[service][rpc](build(Request, values, `${method}Request`), await authMetadata());
   return normalize(response.toObject());
 }
 
@@ -60,5 +69,11 @@ export async function subscribe(service, method, values, { onEvent, onEnd }) {
   stream.on('end', () => onEnd?.(null));
   return stream;
 }
+
+// Exposed for tests: builds a request message exactly as call() does.
+export const buildRequest = (method, values) => build(pb[`${method}Request`], values, `${method}Request`);
+
+// DeleteIssueTypeRequest.Mode values.
+export const DELETE_MODE = { UNSPECIFIED: 0, REASSIGN: 1, DELETE_ISSUES: 2 };
 
 export const GRPC_CODES = { ABORTED: 10, FAILED_PRECONDITION: 9, INVALID_ARGUMENT: 3, NOT_FOUND: 5, PERMISSION_DENIED: 7, UNAUTHENTICATED: 16 };
