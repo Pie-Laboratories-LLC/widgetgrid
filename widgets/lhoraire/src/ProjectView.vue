@@ -63,7 +63,7 @@
     <p v-if="error" class="lh-error">{{ error }}</p>
     <p v-if="loading" class="lh-quiet">Loading…</p>
     <TreeGrid
-      v-else
+      v-else ref="grid"
       :project="current" :rows="rows" :columns="columns" :types="types" :states="states" :users="users"
       :selected-id="selectedId" :checked="checked" :plan-drop="planDrop"
       @select="selectedId = $event" @open="openEdit" @toggle="toggle"
@@ -112,6 +112,16 @@ export default {
       return `Delete ${n} issue${n === 1 ? '' : 's'}${below > 0 ? `, including ${below} below the checked ones` : ''}? This can't be undone.`;
     },
   },
+  mounted() {
+    // A click anywhere outside the grid clears the selection -- buttons
+    // included. Their own handlers run first (this listens on document, so
+    // it sees the click last), so New child / Edit still act on the row
+    // that was selected.
+    document.addEventListener('click', this.onDocumentClick);
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.onDocumentClick);
+  },
   async created() {
     try {
       await Promise.all([this.loadTypes(), this.loadIssues(), this.loadUsers(), this.loadColumns()]);
@@ -122,6 +132,10 @@ export default {
     }
   },
   methods: {
+    onDocumentClick(event) {
+      const grid = this.$refs.grid?.$el;
+      if (grid && !grid.contains(event.target)) this.selectedId = '';
+    },
     // Generic wrapper: busy flag, error display, notice cleared.
     async run(action) {
       this.busy = true;

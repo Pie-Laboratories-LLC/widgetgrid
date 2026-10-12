@@ -13,7 +13,7 @@
 
     <div
       v-for="row in rows" :key="row.issue.id" class="lh-row" role="row"
-      :class="[{ 'lh-selected': row.issue.id === selectedId, 'lh-dragging': row.issue.id === dragId }, dropClass(row.issue.id)]"
+      :class="[{ 'lh-selected': row.issue.id === selectedId, 'lh-dragging': row.issue.id === dragId, 'lh-closed': stateOf(row.issue).isTerminal }, dropClass(row.issue.id)]"
       draggable="true"
       @dragstart="onDragStart($event, row.issue)" @dragover="onDragOver($event, row.issue)"
       @drop="onDrop($event)" @dragend="clearDrag"
@@ -148,10 +148,10 @@ export default {
   border-bottom: none;
 }
 .lh-row:not(.lh-head):hover {
-  background: var(--lh-hover);
+  background-color: var(--lh-hover);
 }
 .lh-row.lh-selected {
-  background: var(--lh-selected);
+  background-color: var(--lh-selected);
 }
 .lh-head {
   position: sticky;
@@ -217,6 +217,11 @@ export default {
   color: #b35c00;
   font-weight: 600;
 }
+.lh-closed {
+  /* Closed rows: faint diagonal hatching, as an image so the hover and
+     selected background colours still show through. */
+  background-image: repeating-linear-gradient(135deg, transparent 0 7px, rgba(21, 10, 46, 0.06) 7px 10px);
+}
 .lh-dragging {
   opacity: 0.45;
 }
@@ -227,7 +232,7 @@ export default {
   box-shadow: inset 0 -3px 0 #3b4ea8;
 }
 .lh-drop-child {
-  background: #e3e8fb;
+  background-color: #e3e8fb;
   box-shadow: inset 0 0 0 2px #3b4ea8;
 }
 .lh-drop-refused {
