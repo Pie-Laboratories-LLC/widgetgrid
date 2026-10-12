@@ -22,7 +22,11 @@
 
     <div class="lh-toolbar">
       <button type="button" class="lh-btn" @click="openCreate('')">New issue</button>
-      <button type="button" class="lh-btn lh-btn-quiet" :disabled="!selected" @click="openCreate(selectedId)">New child</button>
+      <button
+        type="button" class="lh-btn lh-btn-quiet" :disabled="!selected || isClosed(selected)"
+        :title="selected && isClosed(selected) ? `${selected.key} is closed, so it can't take new children.` : ''"
+        @click="openCreate(selectedId)"
+      >New child</button>
       <button type="button" class="lh-btn lh-btn-quiet" :disabled="!selected" @click="openEdit(selectedId)">Edit</button>
       <span class="lh-spacer" />
       <template v-if="checked.size">
@@ -65,7 +69,7 @@
     <TreeGrid
       v-else ref="grid"
       :project="current" :rows="rows" :columns="columns" :types="types" :states="states" :users="users"
-      :selected-id="selectedId" :checked="checked" :plan-drop="planDrop"
+      :selected-id="selectedId" :checked="checked" :plan-drop="planDrop" :glowing="glowing"
       @select="selectedId = $event" @open="openEdit" @toggle="toggle"
       @check="check" @check-all="checkAll" @move="onDropMove"
     />
@@ -73,7 +77,7 @@
     <IssueDialog
       v-if="dialog"
       :mode="dialog.mode" :issue-id="dialog.issueId" :parent="dialog.parent" :project="current"
-      :types="types" :type-list="typeList" :users="users" :issues="issues" :is-closed="isClosed"
+      :types="types" :type-list="typeList" :users="users" :issues="issues" :is-closed="isClosed" :my-user-id="myUserId"
       @close="dialog = null" @saved="onSaved" @open-issue="openEdit"
     />
   </div>
@@ -83,6 +87,12 @@
 import { call } from './client.js';
 import { visibleRows, ancestorIds, subtreeIds, planDrop } from './tree.js';
 import { COLUMNS } from './icons.js';
+import { openLive, debounce } from './live.js';
+import { getIdentity } from '@widgetgrid/auth-web';
+
+// How long a remotely changed row glows.
+const GLOW_MS = 2500;
+const TYPE_KINDS = new Set(['issue_type_changed', 'workflow_changed']);
 import TreeGrid from './TreeGrid.vue';
 import IssueDialog from './IssueDialog.vue';
 
@@ -101,6 +111,7 @@ export default {
       current: { ...this.project }, busy: false, notice: '',
       showSettings: false, settings: { name: '', color: '', confirmKey: '' },
       bulk: null, otherProjects: [],
+      glowing: new Set(), myUserId: '', closeLive: null,
     };
   },
   computed: {
@@ -121,6 +132,7 @@ export default {
   },
   beforeUnmount() {
     document.removeEventListener('click', this.onDocumentClick);
+    this.closeLive?.();
   },
   async created() {
     try {
@@ -130,8 +142,42 @@ export default {
     } finally {
       this.loading = false;
     }
+    const me = getIdentity()?.email;
+    this.myUserId = Object.entries(this.users).find(([, email]) => email === me)?.[0] ?? '';
+    this.startLive();
   },
   methods: {
+    // Changes made anywhere else (another tab, a phone, a collaborator)
+    // refresh the tree; rows changed by someone else glow briefly.
+    startLive() {
+      const refreshIssues = debounce(() => this.refreshIssues());
+      const refreshTypes = debounce(() => this.loadTypes().catch((err) => { this.error = err.message; }));
+      this.closeLive = openLive('SubscribeProject', { projectId: this.current.id }, {
+        onChange: (event) => {
+          if (event.kind === 'project_deleted') this.$emit('deleted');
+          else if (event.kind === 'project_updated') this.refreshProject();
+          else if (TYPE_KINDS.has(event.kind)) refreshTypes();
+          if (!event.kind.startsWith('project_') && !TYPE_KINDS.has(event.kind)) refreshIssues();
+        },
+        onResync: () => Promise.all([this.loadTypes(), this.refreshIssues(), this.refreshProject()]).catch(() => {}),
+      });
+    },
+    async refreshIssues() {
+      const before = new Map(this.issues.map((i) => [i.id, i.version]));
+      await this.loadIssues();
+      const changed = this.issues.filter((i) => before.get(i.id) !== i.version && i.modifiedBy !== this.myUserId);
+      if (!changed.length) return;
+      this.glowing = new Set([...this.glowing, ...changed.map((i) => i.id)]);
+      setTimeout(() => {
+        const next = new Set(this.glowing);
+        for (const i of changed) next.delete(i.id);
+        this.glowing = next;
+      }, GLOW_MS);
+    },
+    async refreshProject() {
+      const { project } = await call('ProjectService', 'GetProject', { key: this.current.key });
+      this.current = project;
+    },
     onDocumentClick(event) {
       const grid = this.$refs.grid?.$el;
       if (grid && !grid.contains(event.target)) this.selectedId = '';

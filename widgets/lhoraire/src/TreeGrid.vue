@@ -13,7 +13,7 @@
 
     <div
       v-for="row in rows" :key="row.issue.id" class="lh-row" role="row"
-      :class="[{ 'lh-selected': row.issue.id === selectedId, 'lh-dragging': row.issue.id === dragId, 'lh-closed': stateOf(row.issue).isTerminal }, dropClass(row.issue.id)]"
+      :class="[{ 'lh-selected': row.issue.id === selectedId, 'lh-dragging': row.issue.id === dragId, 'lh-closed': stateOf(row.issue).isTerminal, 'lh-glow': glowing.has(row.issue.id) }, dropClass(row.issue.id)]"
       draggable="true"
       @dragstart="onDragStart($event, row.issue)" @dragover="onDragOver($event, row.issue)"
       @drop="onDrop($event)" @dragend="clearDrag"
@@ -71,6 +71,7 @@ export default {
     checked: { type: Set, required: true },
     // (draggedId, targetId, 'before'|'after'|'child') -> tree.js planDrop result.
     planDrop: { type: Function, required: true },
+    glowing: { type: Set, default: () => new Set() }, // ids changed elsewhere, just now
   },
   emits: ['select', 'open', 'toggle', 'check', 'check-all', 'move'],
   data() {
@@ -221,6 +222,19 @@ export default {
   /* Closed rows: faint diagonal hatching, as an image so the hover and
      selected background colours still show through. */
   background-image: repeating-linear-gradient(135deg, transparent 0 7px, rgba(21, 10, 46, 0.06) 7px 10px);
+}
+/* Changed elsewhere: a green glow that fades out. */
+.lh-glow {
+  animation: lh-glow 2.5s ease-out;
+}
+@keyframes lh-glow {
+  from {
+    background-color: #dcf5e1;
+    box-shadow: inset 0 0 0 2px #2e9e4a;
+  }
+  to {
+    box-shadow: inset 0 0 0 2px transparent;
+  }
 }
 .lh-dragging {
   opacity: 0.45;

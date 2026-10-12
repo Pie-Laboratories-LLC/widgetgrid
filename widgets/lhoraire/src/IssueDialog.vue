@@ -9,21 +9,24 @@
 
       <p v-if="loading" class="lh-quiet">Loading…</p>
       <template v-else>
+        <div v-if="deletedElsewhere" class="lh-stale" role="alert">This issue was deleted elsewhere.</div>
         <div v-if="staleMessage" class="lh-stale" role="alert">
           {{ staleMessage }}
           <button type="button" class="lh-btn lh-btn-quiet" @click="reload">Reload</button>
         </div>
 
         <form class="lh-fields" @submit.prevent="save">
-          <label class="lh-field lh-wide">
+          <label class="lh-field lh-wide" :class="mark('summary')">
             <span>Summary <small class="lh-quiet">{{ form.summary.length }}/256</small></span>
             <input v-model="form.summary" class="lh-input" maxlength="256" required autofocus />
+            <small v-if="conflicts.summary !== undefined" class="lh-conflict-note">Changed elsewhere to: {{ conflicts.summary }}</small>
           </label>
-          <label class="lh-field">
+          <label class="lh-field" :class="mark('issueTypeId')">
             <span>Type</span>
             <select v-model="form.issueTypeId" class="lh-input">
               <option v-for="t in typeList" :key="t.id" :value="t.id">{{ t.name }}{{ t.projectId ? '' : ' (global)' }}</option>
             </select>
+            <small v-if="conflicts.issueTypeId !== undefined" class="lh-conflict-note">Changed elsewhere to: {{ describeValue('issueTypeId', conflicts.issueTypeId) }}</small>
           </label>
           <label v-if="typeChanged" class="lh-field">
             <span>State in {{ types[form.issueTypeId]?.name }}</span>
@@ -32,20 +35,23 @@
               <option v-for="s in mappableStates" :key="s.id" :value="s.id">{{ s.name }}</option>
             </select>
           </label>
-          <label class="lh-field">
+          <label class="lh-field" :class="mark('severity')">
             <span>Severity</span>
             <select v-model="form.severity" class="lh-input">
               <option v-for="s in severities" :key="s.value" :value="s.value">{{ s.label }}</option>
             </select>
+            <small v-if="conflicts.severity !== undefined" class="lh-conflict-note">Changed elsewhere to: {{ describeValue('severity', conflicts.severity) }}</small>
           </label>
-          <label class="lh-field">
+          <label class="lh-field" :class="mark('parentKey')">
             <span>Parent</span>
             <span class="lh-inline-field">
               <input v-model="form.parentKey" class="lh-input lh-grow" placeholder="top level" />
               <button v-if="form.parentKey" type="button" class="lh-btn lh-btn-quiet" title="Make it a top-level issue" @click="form.parentKey = ''">Top level</button>
             </span>
+            <small v-if="parentProblem" class="lh-field-error">{{ parentProblem }}</small>
+            <small v-if="conflicts.parentKey !== undefined" class="lh-conflict-note">Changed elsewhere to: {{ conflicts.parentKey || 'top level' }}</small>
           </label>
-          <label v-if="issue" class="lh-field">
+          <label v-if="issue" class="lh-field" :class="mark('stateId')">
             <span>State</span>
             <span v-if="currentState.isTerminal" class="lh-state-final">
               <strong>{{ currentState.name }}</strong> — {{ endReasonLabel(issue.endReason) }}: {{ issue.endDescription }}
@@ -54,6 +60,7 @@
               <option :value="issue.stateId">{{ currentState.name }} (current)</option>
               <option v-for="s in nextStates" :key="s.id" :value="s.id">→ {{ s.name }}</option>
             </select>
+            <small v-if="conflicts.stateId !== undefined" class="lh-conflict-note">Changed elsewhere to: {{ describeValue('stateId', conflicts.stateId) }}</small>
           </label>
           <template v-if="closingNow">
             <label class="lh-field">
@@ -68,20 +75,22 @@
               <input v-model="form.endDescription" class="lh-input" required />
             </label>
           </template>
-          <label class="lh-field">
+          <label class="lh-field" :class="mark('assigneeId')">
             <span>Assignee</span>
             <select v-model="form.assigneeId" class="lh-input">
               <option value="">Unassigned</option>
               <option v-for="(email, id) in users" :key="id" :value="id">{{ email }}</option>
             </select>
+            <small v-if="conflicts.assigneeId !== undefined" class="lh-conflict-note">Changed elsewhere to: {{ describeValue('assigneeId', conflicts.assigneeId) }}</small>
           </label>
-          <label class="lh-field lh-wide">
+          <label class="lh-field lh-wide" :class="mark('description')">
             <span>Description</span>
             <textarea v-model="form.description" class="lh-input" rows="6" />
+            <small v-if="conflicts.description !== undefined" class="lh-conflict-note">Changed elsewhere to: {{ conflicts.description || '(empty)' }}</small>
           </label>
           <div class="lh-actions lh-wide">
             <span class="lh-spacer" />
-            <button type="submit" class="lh-btn" :disabled="busy || !dirty || (typeChanged && !form.stateIdInNewType) || (closingNow && (!form.endReason || !form.endDescription.trim()))">
+            <button type="submit" class="lh-btn" :disabled="busy || !dirty || !!parentProblem || (typeChanged && !form.stateIdInNewType) || (closingNow && (!form.endReason || !form.endDescription.trim()))">
               {{ mode === 'create' ? 'Create' : 'Save' }}
             </button>
           </div>
@@ -110,7 +119,7 @@
 
           <section class="lh-section">
             <h4>Comments</h4>
-            <article v-for="c in comments" :key="c.id" class="lh-comment">
+            <article v-for="c in comments" :key="c.id" class="lh-comment" :class="{ 'lh-glow': glow[`comment:${c.id}`] }">
               <header class="lh-quiet">
                 {{ users[c.createdBy] ?? 'someone' }} · {{ when(c.createdAt) }}
                 <span v-if="c.editedAt"> · edited by {{ users[c.editedBy] ?? 'someone' }} {{ when(c.editedAt) }}</span>
@@ -152,7 +161,12 @@
 import { call, GRPC_CODES } from './client.js';
 import TypeIcon from './TypeIcon.vue';
 import { SEVERITIES, END_REASONS, LINK_KINDS } from './icons.js';
-import { lastOpenChild } from './tree.js';
+import { lastOpenChild, subtreeIds } from './tree.js';
+import { openLive, debounce } from './live.js';
+
+const GLOW_MS = 2500;
+// Everything in the top form that a remote change can touch.
+const LIVE_FIELDS = ['issueTypeId', 'summary', 'description', 'severity', 'assigneeId', 'parentKey', 'stateId'];
 
 const FIELDS = ['issueTypeId', 'summary', 'description', 'severity', 'assigneeId'];
 
@@ -169,6 +183,7 @@ export default {
     users: { type: Object, required: true },
     issues: { type: Array, required: true }, // the project's issues (for keys and placement)
     isClosed: { type: Function, required: true },
+    myUserId: { type: String, default: '' },
   },
   emits: ['close', 'saved', 'open-issue'],
   data() {
@@ -179,7 +194,11 @@ export default {
         issueTypeId: '', summary: '', description: '', severity: 'normal', assigneeId: '', stateIdInNewType: '',
         parentKey: this.parent?.key ?? '', stateId: '', endReason: '', endDescription: '',
       },
-      newComment: '', editingComment: null, newLink: { kind: 'depends_on', key: '' },
+      newComment: '',
+      // field -> true while it glows green (changed elsewhere, applied);
+      // conflicts: field -> the other value (changed elsewhere while you
+      // were editing it; yours is kept and outlined red).
+      glow: {}, conflicts: {}, deletedElsewhere: false, closeLive: null, editingComment: null, newLink: { kind: 'depends_on', key: '' },
       severities: SEVERITIES, endReasons: END_REASONS, linkKinds: LINK_KINDS,
     };
   },
@@ -197,6 +216,18 @@ export default {
     typeChanged() { return this.mode === 'edit' && this.issue && this.form.issueTypeId !== this.issue.issueTypeId; },
     originalParentKey() {
       return this.issues.find((i) => i.id === this.issue?.parentId)?.key ?? '';
+    },
+    // Caught as you type for parents in this project's tree (the server
+    // re-checks everything on save).
+    parentProblem() {
+      const key = this.form.parentKey.trim().toLowerCase();
+      if (!key || (this.mode === 'edit' && !this.parentChanged)) return '';
+      const parent = this.issues.find((i) => i.key === key);
+      if (!parent) return '';
+      if (this.isClosed(parent)) return `${parent.key} is closed, so it can't take new children.`;
+      if (this.issue && parent.id === this.issue.id) return "An issue can't be its own parent.";
+      if (this.issue && subtreeIds(this.issues, this.issue.id).includes(parent.id)) return `${parent.key} is inside this issue -- an issue can't move under itself.`;
+      return '';
     },
     parentChanged() { return this.mode === 'edit' && this.form.parentKey.trim().toLowerCase() !== this.originalParentKey; },
     stateChanged() { return this.mode === 'edit' && this.issue && this.form.stateId !== this.issue.stateId; },
@@ -227,6 +258,7 @@ export default {
   },
   beforeUnmount() {
     window.removeEventListener('keydown', this.onKeydown);
+    this.closeLive?.();
   },
   async created() {
     if (this.mode === 'create') {
@@ -235,8 +267,73 @@ export default {
       return;
     }
     await this.reload();
+    const refresh = debounce(() => this.mergeRemote());
+    this.closeLive = openLive('SubscribeIssue', { issueId: this.issueId }, { onChange: refresh, onResync: refresh });
   },
   methods: {
+    mark(field) {
+      return { 'lh-glow': this.glow[field], 'lh-conflict': this.conflicts[field] !== undefined };
+    },
+    flash(key) {
+      this.glow = { ...this.glow, [key]: true };
+      setTimeout(() => {
+        const next = { ...this.glow };
+        delete next[key];
+        this.glow = next;
+      }, GLOW_MS);
+    },
+    describeValue(field, value) {
+      if (field === 'issueTypeId') return this.types[value]?.name ?? value;
+      if (field === 'assigneeId') return value ? this.users[value] ?? value : 'unassigned';
+      if (field === 'severity') return this.severities.find((s) => s.value === value)?.label ?? value;
+      if (field === 'stateId') return this.currentType.workflow.states.find((s) => s.id === value)?.name ?? value;
+      return value;
+    },
+    // The form's view of an issue: its fields plus the parent's key.
+    formValues(issue) {
+      return {
+        ...Object.fromEntries(FIELDS.map((f) => [f, issue[f]])),
+        parentKey: this.issues.find((i) => i.id === issue.parentId)?.key ?? '',
+        stateId: issue.stateId,
+      };
+    },
+    // A change arrived for this issue: fetch it and merge field by field.
+    // Untouched fields take the new value and glow; fields you've edited
+    // that also changed keep your value and are outlined, showing theirs.
+    async mergeRemote() {
+      if (!this.issue || this.busy) return;
+      let next;
+      try {
+        ({ issue: next } = await call('IssueService', 'GetIssue', { id: this.issueId }));
+      } catch (err) {
+        if (err.code === GRPC_CODES.NOT_FOUND) this.deletedElsewhere = true;
+        return;
+      }
+      const base = this.formValues(this.issue);
+      const theirs = this.formValues(next);
+      const conflicts = { ...this.conflicts };
+      for (const f of LIVE_FIELDS) {
+        if (theirs[f] === base[f]) continue;
+        if (this.form[f] === base[f]) {
+          this.form[f] = theirs[f];
+          this.flash(f);
+        } else if (this.form[f] !== theirs[f]) {
+          conflicts[f] = theirs[f];
+        }
+      }
+      this.conflicts = conflicts;
+      this.issue = next; // saves now build on the latest version
+      const seen = new Set(this.comments.map((c) => c.id));
+      const [{ comments }, { links }, { events }] = await Promise.all([
+        call('IssueService', 'ListComments', { issueId: this.issueId }),
+        call('IssueService', 'ListLinks', { issueId: this.issueId }),
+        call('IssueService', 'GetIssueHistory', { issueId: this.issueId }),
+      ]);
+      for (const c of comments) if (!seen.has(c.id) && c.createdBy !== this.myUserId) this.flash(`comment:${c.id}`);
+      this.comments = comments;
+      this.links = links;
+      this.history = events;
+    },
     onKeydown(e) {
       if (e.key === 'Escape') this.$emit('close');
     },
@@ -272,10 +369,8 @@ export default {
         this.comments = comments;
         this.links = links;
         this.history = events;
-        this.form = {
-          ...Object.fromEntries(FIELDS.map((f) => [f, issue[f]])), stateIdInNewType: '',
-          parentKey: this.issues.find((i) => i.id === issue.parentId)?.key ?? '', stateId: issue.stateId, endReason: '', endDescription: '',
-        };
+        this.form = { ...this.formValues(issue), stateIdInNewType: '', endReason: '', endDescription: '' };
+        this.conflicts = {};
       } catch (err) {
         this.error = err.message;
       } finally {
@@ -493,6 +588,31 @@ export default {
 }
 .lh-inline {
   display: inline;
+}
+.lh-glow {
+  animation: lh-glow 2.5s ease-out;
+  border-radius: 6px;
+}
+@keyframes lh-glow {
+  from {
+    background-color: #dcf5e1;
+    box-shadow: 0 0 0 3px #2e9e4a;
+  }
+  to {
+    box-shadow: 0 0 0 3px transparent;
+  }
+}
+.lh-conflict .lh-input {
+  outline: 2px solid var(--lh-danger);
+  outline-offset: 1px;
+}
+.lh-conflict-note {
+  color: var(--lh-danger);
+  font-weight: 600;
+}
+.lh-field-error {
+  color: var(--lh-danger);
+  font-weight: 400;
 }
 .lh-inline-field {
   display: flex;
