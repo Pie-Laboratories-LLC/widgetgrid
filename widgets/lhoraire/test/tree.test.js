@@ -53,3 +53,33 @@ test('closed issues sink below open siblings, in creation order', () => {
   assert.equal(lastOpenChild(siblings, '', isClosed, 'open-late').id, 'open-early');
   assert.equal(lastOpenChild([], '', isClosed), null);
 });
+
+test('drop planning: before, after, child, and the refusals with reasons', async () => {
+  const { planDrop } = await import('../src/tree.js');
+  // P (open) > [a (open), b (open), c (closed)]; Q (closed root); R (open root)
+  const list = [
+    { id: 'P', key: 'x-1', parentId: '', siblingRank: 'A', number: 1 },
+    { id: 'a', key: 'x-2', parentId: 'P', siblingRank: 'A', number: 2 },
+    { id: 'b', key: 'x-3', parentId: 'P', siblingRank: 'B', number: 3 },
+    { id: 'c', key: 'x-4', parentId: 'P', siblingRank: 'C', number: 4 },
+    { id: 'Q', key: 'x-5', parentId: '', siblingRank: 'B', number: 5 },
+    { id: 'R', key: 'x-6', parentId: '', siblingRank: 'C', number: 6 },
+  ];
+  const closed = new Set(['c', 'Q']);
+  const isClosed = (i) => closed.has(i.id);
+  const plan = (d, t, p) => planDrop(list, isClosed, d, t, p);
+
+  assert.deepEqual(plan('b', 'a', 'before'), { ok: true, newParentId: 'P', afterSiblingId: '' }, 'to the front');
+  assert.deepEqual(plan('a', 'b', 'after'), { ok: true, newParentId: 'P', afterSiblingId: 'b' });
+  assert.deepEqual(plan('R', 'b', 'before'), { ok: true, newParentId: 'P', afterSiblingId: 'a' }, 're-parent between siblings');
+  assert.deepEqual(plan('a', 'R', 'child'), { ok: true, newParentId: 'R', afterSiblingId: '' });
+  assert.deepEqual(plan('R', 'P', 'child'), { ok: true, newParentId: 'P', afterSiblingId: 'b' }, 'after the last open child, above the closed');
+  assert.deepEqual(plan('a', 'P', 'after'), { ok: true, newParentId: '', afterSiblingId: 'P' }, 'out to top level');
+
+  assert.match(plan('P', 'a', 'child').reason, /can't move under itself/);
+  assert.match(plan('a', 'Q', 'child').reason, /x-5 is closed/);
+  assert.match(plan('a', 'c', 'after').reason, /creation order/, 'next to a closed sibling');
+  assert.match(plan('c', 'a', 'before').reason, /creation order/, 'reordering a closed issue');
+  assert.deepEqual(plan('c', 'R', 'before'), { ok: true, newParentId: '', afterSiblingId: 'R' }, 'a closed issue can still change parent (lands after the last open root)');
+  assert.match(plan('a', 'a', 'child').reason, /somewhere else/);
+});

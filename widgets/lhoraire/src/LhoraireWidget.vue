@@ -1,6 +1,6 @@
 <template>
   <div class="widget widget-lhoraire">
-    <ProjectView v-if="project" :key="project.id" :project="project" @back="project = null" />
+    <ProjectView v-if="project" :key="project.id" :project="project" @back="project = null" @deleted="project = null" />
     <ProjectList v-else @open="project = $event" />
   </div>
 </template>

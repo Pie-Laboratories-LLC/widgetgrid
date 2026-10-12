@@ -13,7 +13,10 @@
 
     <div
       v-for="row in rows" :key="row.issue.id" class="lh-row" role="row"
-      :class="{ 'lh-selected': row.issue.id === selectedId }"
+      :class="[{ 'lh-selected': row.issue.id === selectedId, 'lh-dragging': row.issue.id === dragId }, dropClass(row.issue.id)]"
+      draggable="true"
+      @dragstart="onDragStart($event, row.issue)" @dragover="onDragOver($event, row.issue)"
+      @drop="onDrop($event)" @dragend="clearDrag"
       :aria-level="row.depth + 1" :aria-expanded="row.hasChildren ? row.expanded : undefined"
       :aria-selected="row.issue.id === selectedId"
       @click="$emit('select', row.issue.id)" @dblclick="$emit('open', row.issue.id)"
@@ -41,6 +44,10 @@
         <span v-else-if="c.id === 'modified'">{{ shortDate(row.issue.modifiedAt) }}</span>
       </span>
     </div>
+
+    <div v-if="drop && !drop.ok" class="lh-drop-reason" :style="{ left: `${pointer.x + 14}px`, top: `${pointer.y + 14}px` }" role="status">
+      {{ drop.reason }}
+    </div>
   </div>
 </template>
 
@@ -62,8 +69,13 @@ export default {
     users: { type: Object, required: true }, // id -> email
     selectedId: { type: String, default: '' },
     checked: { type: Set, required: true },
+    // (draggedId, targetId, 'before'|'after'|'child') -> tree.js planDrop result.
+    planDrop: { type: Function, required: true },
   },
-  emits: ['select', 'open', 'toggle', 'check', 'check-all'],
+  emits: ['select', 'open', 'toggle', 'check', 'check-all', 'move'],
+  data() {
+    return { dragId: '', drop: null, pointer: { x: 0, y: 0 } };
+  },
   computed: {
     shownColumns() {
       return this.columns.map((id) => COLUMNS.find((c) => c.id === id)).filter(Boolean);
@@ -76,6 +88,36 @@ export default {
     },
   },
   methods: {
+    onDragStart(event, issue) {
+      this.dragId = issue.id;
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', issue.key);
+    },
+    // Top quarter = before, bottom quarter = after, middle = child.
+    onDragOver(event, target) {
+      if (!this.dragId) return;
+      const rect = event.currentTarget.getBoundingClientRect();
+      const y = (event.clientY - rect.top) / rect.height;
+      const position = y < 0.25 ? 'before' : y > 0.75 ? 'after' : 'child';
+      const plan = this.planDrop(this.dragId, target.id, position);
+      this.drop = { targetId: target.id, position, ...plan };
+      this.pointer = { x: event.clientX, y: event.clientY };
+      event.preventDefault(); // allow the drop event (refusals are handled there)
+      event.dataTransfer.dropEffect = plan.ok ? 'move' : 'none';
+    },
+    onDrop(event) {
+      event.preventDefault();
+      if (this.drop?.ok) this.$emit('move', this.dragId, this.drop);
+      this.clearDrag();
+    },
+    clearDrag() {
+      this.dragId = '';
+      this.drop = null;
+    },
+    dropClass(id) {
+      if (this.drop?.targetId !== id) return '';
+      return this.drop.ok ? `lh-drop-${this.drop.position}` : 'lh-drop-refused';
+    },
     shortDate,
     personName,
     typeOf(issue) { return this.types[issue.issueTypeId] ?? UNKNOWN_TYPE; },
@@ -174,6 +216,34 @@ export default {
 .lh-sev-serious {
   color: #b35c00;
   font-weight: 600;
+}
+.lh-dragging {
+  opacity: 0.45;
+}
+.lh-drop-before {
+  box-shadow: inset 0 3px 0 #3b4ea8;
+}
+.lh-drop-after {
+  box-shadow: inset 0 -3px 0 #3b4ea8;
+}
+.lh-drop-child {
+  background: #e3e8fb;
+  box-shadow: inset 0 0 0 2px #3b4ea8;
+}
+.lh-drop-refused {
+  box-shadow: inset 0 0 0 2px var(--lh-danger);
+}
+.lh-drop-reason {
+  position: fixed;
+  z-index: 300;
+  max-width: 280px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--lh-danger);
+  color: #fff;
+  font-size: 0.8rem;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 .lh-empty {
   padding: 24px;

@@ -76,3 +76,42 @@ export function subtreeIds(issues, id) {
   walk(id);
   return out;
 }
+
+// Where a drag-and-drop puts an issue, or why it can't go there.
+// position: 'before' | 'after' (the target's sibling) | 'child' (under the
+// target, after its last open child). Returns
+// { ok: true, newParentId, afterSiblingId } or { ok: false, reason }.
+// Mirrors lhoraire-server's rules so the tree can explain a refusal while
+// hovering instead of after the drop.
+export function planDrop(issues, isClosed, draggedId, targetId, position) {
+  const byId = new Map(issues.map((i) => [i.id, i]));
+  const dragged = byId.get(draggedId);
+  const target = byId.get(targetId);
+  if (!dragged || !target) return { ok: false, reason: 'That issue is gone -- reload.' };
+  if (draggedId === targetId) return { ok: false, reason: 'Drop it somewhere else.' };
+  if (subtreeIds(issues, draggedId).includes(targetId)) {
+    return { ok: false, reason: `${target.key} is inside ${dragged.key} -- an issue can't move under itself.` };
+  }
+
+  const newParentId = position === 'child' ? target.id : target.parentId || '';
+  const newParent = newParentId ? byId.get(newParentId) : null;
+  const parentChanges = newParentId !== (dragged.parentId || '');
+  if (newParent && isClosed(newParent) && parentChanges) {
+    return { ok: false, reason: `${newParent.key} is closed, so it can't take new children.` };
+  }
+
+  if (position === 'child') {
+    return { ok: true, newParentId, afterSiblingId: lastOpenChild(issues, newParentId, isClosed, draggedId)?.id ?? '' };
+  }
+  if (isClosed(dragged)) {
+    if (!parentChanges) return { ok: false, reason: 'Closed issues stay at the end, in creation order.' };
+    return { ok: true, newParentId, afterSiblingId: lastOpenChild(issues, newParentId, isClosed, draggedId)?.id ?? '' };
+  }
+  if (isClosed(target)) {
+    return { ok: false, reason: 'Closed issues stay at the end, in creation order -- drop it next to an open issue.' };
+  }
+  if (position === 'after') return { ok: true, newParentId, afterSiblingId: target.id };
+  const open = (childrenIndex(issues, isClosed).get(newParentId) ?? []).filter((i) => !isClosed(i) && i.id !== draggedId);
+  const at = open.findIndex((i) => i.id === target.id);
+  return { ok: true, newParentId, afterSiblingId: at > 0 ? open[at - 1].id : '' };
+}
