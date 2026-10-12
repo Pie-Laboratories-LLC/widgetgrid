@@ -3,6 +3,8 @@ import { recordChange } from '../changes.js';
 
 const KEY_PATTERN = /^[a-z][a-z0-9]{1,9}$/;
 const COLOR_PATTERN = /^#[0-9a-fA-F]{6}$/;
+export const COLUMNS = ['type', 'state', 'severity', 'assignee', 'created', 'modified'];
+export const DEFAULT_COLUMNS = ['type', 'state', 'severity', 'assignee'];
 
 export function toProtoProject(row) {
   return {
@@ -64,6 +66,26 @@ export function createProjectHandlers({ pool }) {
         await recordChange(client, { projectId: id, kind: 'project_updated' });
         return { project: toProtoProject(rows[0]) };
       });
+    },
+
+    async GetColumnPrefs({ projectId }, caller) {
+      const { rows } = await pool.query(
+        'SELECT columns FROM lhoraire.user_column_prefs WHERE user_id = $1 AND project_id = $2',
+        [caller.userId, projectId],
+      );
+      return { columns: rows[0]?.columns ?? DEFAULT_COLUMNS };
+    },
+
+    async SetColumnPrefs({ projectId, columns }, caller) {
+      const unknown = columns.filter((c) => !COLUMNS.includes(c));
+      if (unknown.length) throw invalid(`Unknown column(s): ${unknown.join(', ')}.`);
+      const unique = [...new Set(columns)];
+      await pool.query(
+        `INSERT INTO lhoraire.user_column_prefs (user_id, project_id, columns) VALUES ($1, $2, $3)
+         ON CONFLICT (user_id, project_id) DO UPDATE SET columns = EXCLUDED.columns`,
+        [caller.userId, projectId, JSON.stringify(unique)],
+      );
+      return { columns: unique };
     },
 
     async DeleteProject({ id }) {

@@ -10,6 +10,7 @@
     "dev": "vite build --watch"
   },
   "dependencies": {
+    "@widgetgrid/auth-web": "*",
     "@widgetgrid/vite-widget-lib": "*"
   },
   "devDependencies": {

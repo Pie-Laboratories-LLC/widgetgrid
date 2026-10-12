@@ -60,6 +60,16 @@ test('names and colours are validated', async () => {
   await assert.rejects(create({ color: 'red' }), { code: grpc.status.INVALID_ARGUMENT });
 });
 
+test('column choices are per person and per project, with defaults', async () => {
+  const { project } = await create({});
+  const get = (user) => invoke(projects, 'GetColumnPrefs', { projectId: project.id }, user);
+  assert.deepEqual((await get('owner')).columns, ['type', 'state', 'severity', 'assignee']);
+  await invoke(projects, 'SetColumnPrefs', { projectId: project.id, columns: ['state', 'modified', 'state'] });
+  assert.deepEqual((await get('owner')).columns, ['state', 'modified'], 'saved, de-duplicated, in order');
+  assert.deepEqual((await get('admin2')).columns, ['type', 'state', 'severity', 'assignee'], 'other people unaffected');
+  await assert.rejects(invoke(projects, 'SetColumnPrefs', { projectId: project.id, columns: ['shoe size'] }), { code: grpc.status.INVALID_ARGUMENT });
+});
+
 test('every write lands in the change feed', async () => {
   const { project } = await create({});
   await invoke(projects, 'UpdateProject', { id: project.id, name: 'x', color: '' });

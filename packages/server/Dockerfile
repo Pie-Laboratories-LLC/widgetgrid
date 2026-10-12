@@ -34,6 +34,7 @@ COPY widgets/login/package.json widgets/login/package.json
 COPY widgets/main/package.json widgets/main/package.json
 COPY widgets/solitaire/package.json widgets/solitaire/package.json
 COPY widgets/embuscade/package.json widgets/embuscade/package.json
+COPY widgets/lhoraire/package.json widgets/lhoraire/package.json
 COPY infra/cdk/package.json infra/cdk/package.json
 
 # --ignore-scripts: nothing packages/server or packages/db depend on needs

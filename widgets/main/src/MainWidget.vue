@@ -8,6 +8,8 @@
     <component v-else-if="view === 'chat'" :is="chatComponent" :data="{}" title="" />
     <p v-if="view === 'embuscade' && !embuscadeComponent" class="main-status">Loading…</p>
     <component v-else-if="view === 'embuscade'" :is="embuscadeComponent" :data="{}" title="" />
+    <p v-if="view === 'lhoraire' && !lhoraireComponent" class="main-status">Loading…</p>
+    <component v-else-if="view === 'lhoraire'" :is="lhoraireComponent" :data="{}" title="" />
   </div>
 </template>
 
@@ -54,12 +56,14 @@ const TOPBAR_MODE = {
   // Same jank reasoning as solitaire, and the game also needs the
   // vertical room.
   embuscade: 'collapsed',
+  // The issue tree scrolls inside its own grid and wants the height.
+  lhoraire: 'collapsed',
 };
 
 // Views that hide the right rail and take its width -- the games want the
 // full horizontal area. Broadcast as widgetgrid:rail (see setRailHidden)
 // so RightRailWidget.vue doesn't need its own copy of this list.
-const RAIL_HIDDEN_VIEWS = new Set(['solitaire', 'embuscade']);
+const RAIL_HIDDEN_VIEWS = new Set(['solitaire', 'embuscade', 'lhoraire']);
 
 export default {
   name: 'MainWidget',
@@ -70,7 +74,7 @@ export default {
   data() {
     return {
       view: 'blog', blogComponent: null, solitaireComponent: null, chatComponent: null,
-      embuscadeComponent: null, collapsed: false, railHidden: false,
+      embuscadeComponent: null, lhoraireComponent: null, collapsed: false, railHidden: false,
       blogReloadKey: 0,
     };
   },
@@ -79,7 +83,7 @@ export default {
     // ?view=chat (etc.) opens straight to that view -- how a tapped push
     // notification lands on chat (see packages/web-app/public/sw.js).
     const initialView = new URLSearchParams(window.location.search).get('view');
-    if (['blog', 'solitaire', 'embuscade', 'chat'].includes(initialView)) {
+    if (['blog', 'solitaire', 'embuscade', 'chat', 'lhoraire'].includes(initialView)) {
       this.onNavigate({ detail: { view: initialView } });
     }
     import(/* @vite-ignore */ '/widgets/blog.js').then((mod) => {
@@ -149,6 +153,11 @@ export default {
       if (this.view === 'chat' && !this.chatComponent) {
         import(/* @vite-ignore */ '/widgets/chat.js').then((mod) => {
           this.chatComponent = mod.default ?? mod;
+        });
+      }
+      if (this.view === 'lhoraire' && !this.lhoraireComponent) {
+        import(/* @vite-ignore */ '/widgets/lhoraire.js').then((mod) => {
+          this.lhoraireComponent = mod.default ?? mod;
         });
       }
       if (this.view === 'embuscade' && !this.embuscadeComponent) {

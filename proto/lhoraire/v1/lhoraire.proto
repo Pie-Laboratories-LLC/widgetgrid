@@ -60,6 +60,24 @@ message DeleteProjectRequest {
 }
 message DeleteProjectResponse {}
 
+// Which tree columns a person shows in a project, in order. The key and
+// summary are always shown and not listed. Known columns: type, state,
+// severity, assignee, created, modified.
+message GetColumnPrefsRequest {
+  string project_id = 1;
+}
+message GetColumnPrefsResponse {
+  repeated string columns = 1;
+}
+
+message SetColumnPrefsRequest {
+  string project_id = 1;
+  repeated string columns = 2;
+}
+message SetColumnPrefsResponse {
+  repeated string columns = 1;
+}
+
 service ProjectService {
   rpc ListProjects(ListProjectsRequest) returns (ListProjectsResponse);
   rpc GetProject(GetProjectRequest) returns (GetProjectResponse);
@@ -68,6 +86,9 @@ service ProjectService {
   rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse);
   // Deletes the project with all its issues and project-specific types.
   rpc DeleteProject(DeleteProjectRequest) returns (DeleteProjectResponse);
+  // The caller's own column choice; defaults until they set one.
+  rpc GetColumnPrefs(GetColumnPrefsRequest) returns (GetColumnPrefsResponse);
+  rpc SetColumnPrefs(SetColumnPrefsRequest) returns (SetColumnPrefsResponse);
 }
 
 // ---------------------------------------------------------------------------

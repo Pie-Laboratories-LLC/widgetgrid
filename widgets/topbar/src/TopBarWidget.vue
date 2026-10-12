@@ -56,6 +56,19 @@
         </svg>
       </button>
       <button
+        v-if="isLhoraireAdmin" type="button" class="topbar-icon" title="l'horaire" aria-label="l'horaire"
+        @click="navigate('lhoraire')"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" :stroke-width="activeView === 'lhoraire' ? 2 : 2.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 6h11" />
+          <path d="M12 12h8" />
+          <path d="M15 18h5" />
+          <path d="M5 6v.01" />
+          <path d="M8 12v.01" />
+          <path d="M11 18v.01" />
+        </svg>
+      </button>
+      <button
         type="button" class="topbar-icon" title="Chat with management" aria-label="Chat with management"
         @click="navigate('chat')"
       >
@@ -75,6 +88,10 @@
 </template>
 
 <script>
+import { getIdentity, IDENTITY_CHANGED_EVENT } from '@widgetgrid/auth-web';
+
+const isLhoraireAdmin = () => !!getIdentity()?.groups.includes('anonyme admins');
+
 // Runtime URL string, not an ES import -- see SplashWidget.vue's <script>
 // comment (same reason: Vite's build.lib mode would base64-inline this
 // image into the JS bundle otherwise).
@@ -95,6 +112,7 @@ export default {
       activeView: 'blog', collapsed: false, hasNewPost: false,
       hasNewChatMessage: false,
       loginComponent: null,
+      isLhoraireAdmin: isLhoraireAdmin(),
     };
   },
   created() {
@@ -105,7 +123,7 @@ export default {
     // ?view=chat (etc.) opens straight to that view -- how a tapped push
     // notification lands on chat (see packages/web-app/public/sw.js).
     const initialView = new URLSearchParams(window.location.search).get('view');
-    if (['blog', 'solitaire', 'embuscade', 'chat'].includes(initialView)) {
+    if (['blog', 'solitaire', 'embuscade', 'chat', 'lhoraire'].includes(initialView)) {
       this.onNavigate({ detail: { view: initialView } });
     }
     // MainWidget.vue's own scroll container is what actually knows this --
@@ -116,6 +134,7 @@ export default {
     // needs to know whether to show the badge, not what changed.
     window.addEventListener('widgetgrid:new-post', this.onNewPost);
     window.addEventListener('widgetgrid:chat-event', this.onChatEvent);
+    window.addEventListener(IDENTITY_CHANGED_EVENT, this.onIdentityChanged);
 
     // Preloaded like blog is in MainWidget.vue, not lazy on first click:
     // this widget needs to render a "log out" link immediately if the
@@ -130,8 +149,15 @@ export default {
     window.removeEventListener('widgetgrid:scroll', this.onScroll);
     window.removeEventListener('widgetgrid:new-post', this.onNewPost);
     window.removeEventListener('widgetgrid:chat-event', this.onChatEvent);
+    window.removeEventListener(IDENTITY_CHANGED_EVENT, this.onIdentityChanged);
   },
   methods: {
+    // l'horaire's icon shows only for the "anonyme admins" group (UI only;
+    // lhoraire-server enforces it). Signing out while on that view goes home.
+    onIdentityChanged() {
+      this.isLhoraireAdmin = isLhoraireAdmin();
+      if (!this.isLhoraireAdmin && this.activeView === 'lhoraire') this.navigate('blog');
+    },
     assetUrl(name) {
       return ASSET_BASE + name;
     },
