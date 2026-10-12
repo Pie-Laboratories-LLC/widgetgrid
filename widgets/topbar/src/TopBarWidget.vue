@@ -59,13 +59,22 @@
         v-if="isLhoraireAdmin" type="button" class="topbar-icon" title="l'horaire" aria-label="l'horaire"
         @click="navigate('lhoraire')"
       >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" :stroke-width="activeView === 'lhoraire' ? 2 : 2.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M9 6h11" />
-          <path d="M12 12h8" />
-          <path d="M15 18h5" />
-          <path d="M5 6v.01" />
-          <path d="M8 12v.01" />
-          <path d="M11 18v.01" />
+        <!-- Same convention as the other icons: outline when active, solid otherwise. -->
+        <svg v-if="activeView === 'lhoraire'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="9.5" y="4.75" width="11" height="2.5" rx="1.25" />
+          <rect x="12.5" y="10.75" width="8" height="2.5" rx="1.25" />
+          <rect x="15.5" y="16.75" width="5" height="2.5" rx="1.25" />
+          <circle cx="5" cy="6" r="1.75" />
+          <circle cx="8" cy="12" r="1.75" />
+          <circle cx="11" cy="18" r="1.75" />
+        </svg>
+        <svg v-else viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <rect x="9" y="4.5" width="12" height="3" rx="1.5" />
+          <rect x="12" y="10.5" width="9" height="3" rx="1.5" />
+          <rect x="15" y="16.5" width="6" height="3" rx="1.5" />
+          <circle cx="5" cy="6" r="2.25" />
+          <circle cx="8" cy="12" r="2.25" />
+          <circle cx="11" cy="18" r="2.25" />
         </svg>
       </button>
       <button

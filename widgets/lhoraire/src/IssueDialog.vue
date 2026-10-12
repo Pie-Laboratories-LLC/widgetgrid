@@ -19,14 +19,14 @@
           <label class="lh-field lh-wide" :class="mark('summary')">
             <span>Summary <small class="lh-quiet">{{ form.summary.length }}/256</small></span>
             <input v-model="form.summary" class="lh-input" maxlength="256" required autofocus />
-            <small v-if="conflicts.summary !== undefined" class="lh-conflict-note">Changed elsewhere to: {{ conflicts.summary }}</small>
+            <small v-if="hasConflict('summary')" class="lh-conflict-note">Changed elsewhere to: {{ conflicts.summary }}</small>
           </label>
           <label class="lh-field" :class="mark('issueTypeId')">
             <span>Type</span>
             <select v-model="form.issueTypeId" class="lh-input">
               <option v-for="t in typeList" :key="t.id" :value="t.id">{{ t.name }}{{ t.projectId ? '' : ' (global)' }}</option>
             </select>
-            <small v-if="conflicts.issueTypeId !== undefined" class="lh-conflict-note">Changed elsewhere to: {{ describeValue('issueTypeId', conflicts.issueTypeId) }}</small>
+            <small v-if="hasConflict('issueTypeId')" class="lh-conflict-note">Changed elsewhere to: {{ describeValue('issueTypeId', conflicts.issueTypeId) }}</small>
           </label>
           <label v-if="typeChanged" class="lh-field">
             <span>State in {{ types[form.issueTypeId]?.name }}</span>
@@ -40,7 +40,7 @@
             <select v-model="form.severity" class="lh-input">
               <option v-for="s in severities" :key="s.value" :value="s.value">{{ s.label }}</option>
             </select>
-            <small v-if="conflicts.severity !== undefined" class="lh-conflict-note">Changed elsewhere to: {{ describeValue('severity', conflicts.severity) }}</small>
+            <small v-if="hasConflict('severity')" class="lh-conflict-note">Changed elsewhere to: {{ describeValue('severity', conflicts.severity) }}</small>
           </label>
           <label class="lh-field" :class="mark('parentKey')">
             <span>Parent</span>
@@ -49,7 +49,7 @@
               <button v-if="form.parentKey" type="button" class="lh-btn lh-btn-quiet" title="Make it a top-level issue" @click="form.parentKey = ''">Top level</button>
             </span>
             <small v-if="parentProblem" class="lh-field-error">{{ parentProblem }}</small>
-            <small v-if="conflicts.parentKey !== undefined" class="lh-conflict-note">Changed elsewhere to: {{ conflicts.parentKey || 'top level' }}</small>
+            <small v-if="hasConflict('parentKey')" class="lh-conflict-note">Changed elsewhere to: {{ conflicts.parentKey || 'top level' }}</small>
           </label>
           <label v-if="issue" class="lh-field" :class="mark('stateId')">
             <span>State</span>
@@ -60,7 +60,7 @@
               <option :value="issue.stateId">{{ currentState.name }} (current)</option>
               <option v-for="s in nextStates" :key="s.id" :value="s.id">→ {{ s.name }}</option>
             </select>
-            <small v-if="conflicts.stateId !== undefined" class="lh-conflict-note">Changed elsewhere to: {{ describeValue('stateId', conflicts.stateId) }}</small>
+            <small v-if="hasConflict('stateId')" class="lh-conflict-note">Changed elsewhere to: {{ describeValue('stateId', conflicts.stateId) }}</small>
           </label>
           <template v-if="closingNow">
             <label class="lh-field">
@@ -81,12 +81,12 @@
               <option value="">Unassigned</option>
               <option v-for="(email, id) in users" :key="id" :value="id">{{ email }}</option>
             </select>
-            <small v-if="conflicts.assigneeId !== undefined" class="lh-conflict-note">Changed elsewhere to: {{ describeValue('assigneeId', conflicts.assigneeId) }}</small>
+            <small v-if="hasConflict('assigneeId')" class="lh-conflict-note">Changed elsewhere to: {{ describeValue('assigneeId', conflicts.assigneeId) }}</small>
           </label>
           <label class="lh-field lh-wide" :class="mark('description')">
             <span>Description</span>
             <textarea v-model="form.description" class="lh-input" rows="6" />
-            <small v-if="conflicts.description !== undefined" class="lh-conflict-note">Changed elsewhere to: {{ conflicts.description || '(empty)' }}</small>
+            <small v-if="hasConflict('description')" class="lh-conflict-note">Changed elsewhere to: {{ conflicts.description || '(empty)' }}</small>
           </label>
           <div class="lh-actions lh-wide">
             <span class="lh-spacer" />
@@ -272,7 +272,12 @@ export default {
   },
   methods: {
     mark(field) {
-      return { 'lh-glow': this.glow[field], 'lh-conflict': this.conflicts[field] !== undefined };
+      return { 'lh-glow': this.glow[field], 'lh-conflict': this.hasConflict(field) };
+    },
+    // Only while your value still differs from theirs: switching to their
+    // value clears the marker.
+    hasConflict(field) {
+      return this.conflicts[field] !== undefined && this.form[field] !== this.conflicts[field];
     },
     flash(key) {
       this.glow = { ...this.glow, [key]: true };
