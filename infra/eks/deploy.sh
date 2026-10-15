@@ -207,6 +207,33 @@ kubectl create secret generic lhoraire-server-secret \
   --dry-run=client -o yaml | kubectl apply -f -
 
 echo
+echo "== pre-migration RDS snapshot =="
+# A bad migration is the one deploy mistake `kubectl rollout undo` can't
+# fix, and with no dev environment in front of prod any more, nothing
+# else has run it against an RDS copy first. Manual snapshots are
+# incremental, so this is quick for a database this size. SKIP_DB_SNAPSHOT=1
+# skips it (e.g. a manifest-only redeploy right after another deploy).
+SNAPSHOT_KEEP=5
+if [ "${SKIP_DB_SNAPSHOT:-}" = 1 ]; then
+  echo "SKIP_DB_SNAPSHOT=1 -- skipping"
+else
+  DB_INSTANCE_ID=$(aws cloudformation describe-stack-resource --region "$REGION" --stack-name "$RDS_STACK" \
+    --logical-resource-id InstanceC1063A87 --query 'StackResourceDetail.PhysicalResourceId' --output text)
+  SNAPSHOT_ID="predeploy-${IMAGE_TAG}"
+  aws rds create-db-snapshot --region "$REGION" \
+    --db-instance-identifier "$DB_INSTANCE_ID" --db-snapshot-identifier "$SNAPSHOT_ID" \
+    --query 'DBSnapshot.DBSnapshotIdentifier' --output text
+  aws rds wait db-snapshot-available --region "$REGION" --db-snapshot-identifier "$SNAPSHOT_ID"
+  echo "snapshot ${SNAPSHOT_ID} available"
+  # Keep the newest $SNAPSHOT_KEEP pre-deploy snapshots for this instance;
+  # anything older is deleted. Other manual snapshots are left alone.
+  aws rds describe-db-snapshots --region "$REGION" --db-instance-identifier "$DB_INSTANCE_ID" --snapshot-type manual \
+    --query 'DBSnapshots[?starts_with(DBSnapshotIdentifier, `predeploy-`)].[SnapshotCreateTime,DBSnapshotIdentifier]' --output text \
+    | sort -r | tail -n +$((SNAPSHOT_KEEP + 1)) | awk '{ print $2 }' \
+    | xargs -r -n1 aws rds delete-db-snapshot --region "$REGION" --query 'DBSnapshot.DBSnapshotIdentifier' --output text --db-snapshot-identifier
+fi
+
+echo
 echo "== running migrations =="
 MIGRATE_JOB_NAME="migrate-${IMAGE_TAG}"
 export MIGRATE_JOB_NAME MIGRATE_IMAGE
@@ -264,6 +291,10 @@ echo
 echo "== target group health =="
 aws elbv2 describe-target-health --region "$REGION" --target-group-arn "$TARGET_GROUP_ARN" \
   --query 'TargetHealthDescriptions[].TargetHealth.State' --output text
+
+echo
+echo "== smoke check =="
+infra/eks/smoke-check.sh "$ENV" || echo "Smoke check failed -- see above. Pre-migration snapshot: ${SNAPSHOT_ID:-none}" >&2
 
 cat <<EOF
 
