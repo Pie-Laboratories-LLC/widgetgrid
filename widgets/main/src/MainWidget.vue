@@ -16,6 +16,7 @@
 <script>
 import { subscribeNewPosts } from './blogSubscriptionClient.js';
 import { subscribeChatEvents } from './chatSubscriptionClient.js';
+import { startActivityReporter } from './activityReporter.js';
 
 // The main content area's own switcher: this is the one widget the "home"
 // page's layout actually places here (see packages/db/seeds/seed.mjs) --
@@ -130,12 +131,17 @@ export default {
       });
     };
     window.addEventListener('widgetgrid:identity-changed', this.onIdentityChanged);
+
+    // Lets chat alerts skip this device while it's in front of the owner
+    // (see activityReporter.js). Here for the same page-lifetime reason.
+    this.stopActivityReporter = startActivityReporter();
   },
   beforeUnmount() {
     window.removeEventListener('widgetgrid:navigate', this.onNavigate);
     window.removeEventListener('widgetgrid:identity-changed', this.onIdentityChanged);
     this.unsubscribeNewPosts();
     this.unsubscribeChatEvents();
+    this.stopActivityReporter();
   },
   computed: {
     topbarMode() {

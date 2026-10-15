@@ -37,7 +37,7 @@ function permissionDenied(callback, message) {
   callback({ code: grpc.status.PERMISSION_DENIED, message });
 }
 
-export function createChatService({ pool, authContext, pushSender, ownerPhoneNumber, smsSender }) {
+export function createChatService({ pool, authContext, pushSender, deviceActivity, ownerPhoneNumber, smsSender }) {
   // Confirms a visitor-supplied chat_id actually belongs to them --
   // without this, any visitor could read/post into any chat by guessing a
   // UUID (chat_id is always explicit in every RPC, even visitor calls --
@@ -52,19 +52,21 @@ export function createChatService({ pool, authContext, pushSender, ownerPhoneNum
     return chat;
   }
 
-  // Owner not on the site (presenceBus.js) -> tell them. Web Push goes to
-  // every browser the owner enabled, every time; the notification's tag is
-  // the chat, so a phone shows one entry per conversation that updates
-  // rather than a stack. SMS is the older channel, kept for when 10DLC is
-  // approved and still limited to one text an hour.
-  async function notifyOwnerIfOffline(chat, body) {
-    if (isOwnerOnline()) return;
+  // Web Push goes to every browser the owner enabled except one with the
+  // site on screen right now (deviceActivity.js) -- a locked phone or a
+  // background tab still gets it while another device is in use. The
+  // notification's tag is the chat, so a phone shows one entry per
+  // conversation that updates rather than a stack. SMS is the older
+  // channel, kept for when 10DLC is approved: only when the site isn't
+  // open anywhere (presenceBus.js), and at most one text an hour.
+  async function notifyOwner(chat, body) {
     await pushSender.sendToOwner({
       title: `New message from ${chat.label}`,
       body,
       tag: `chat-${chat.id}`,
       url: '/?view=chat',
-    });
+    }, { skip: deviceActivity.isActive });
+    if (isOwnerOnline()) return;
     const throttleCutoff = new Date(Date.now() - NOTIFICATION_THROTTLE_MS);
     if (await chatNotificationRepo.wasNotifiedSince(pool, throttleCutoff)) return;
     await chatNotificationRepo.recordNotification(pool);
@@ -117,7 +119,7 @@ export function createChatService({ pool, authContext, pushSender, ownerPhoneNum
         // Not awaited: a slow or failing push/SMS must not delay or fail
         // the visitor's own send.
         if (sender === 'visitor') {
-          notifyOwnerIfOffline(chat, body).catch((err) => console.error('owner notification failed:', err));
+          notifyOwner(chat, body).catch((err) => console.error('owner notification failed:', err));
         }
         callback(null, { message: toProtoMessage(messageRow) });
       } catch (err) {

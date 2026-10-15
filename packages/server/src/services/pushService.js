@@ -4,7 +4,7 @@ import * as defaultRepo from '@widgetgrid/db/src/pushSubscriptionsRepo.js';
 // Registration side of Web Push (pushSender.js does the sending). Only the
 // owner registers browsers today -- the only notifications are owner chat
 // alerts.
-export function createPushService({ pool, authContext, pushSender, repo = defaultRepo }) {
+export function createPushService({ pool, authContext, pushSender, deviceActivity, repo = defaultRepo }) {
   async function requireOwner(call) {
     const caller = await authContext.getCaller(call);
     if (caller?.role !== 'owner') {
@@ -43,6 +43,21 @@ export function createPushService({ pool, authContext, pushSender, repo = defaul
       try {
         await requireOwner(call);
         await repo.removeByEndpoint(pool, call.request.endpoint);
+        callback(null, {});
+      } catch (err) {
+        fail(callback, err);
+      }
+    },
+
+    async ReportActivity(call, callback) {
+      try {
+        await requireOwner(call);
+        const { endpoint, tabId, active } = call.request;
+        if (!endpoint || !tabId) {
+          callback({ code: grpc.status.INVALID_ARGUMENT, message: 'endpoint and tab_id are required' });
+          return;
+        }
+        deviceActivity.report(endpoint, tabId, active);
         callback(null, {});
       } catch (err) {
         fail(callback, err);

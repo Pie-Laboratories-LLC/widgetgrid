@@ -68,6 +68,8 @@ export async function enablePush() {
   request.setAuth(keys.auth);
   request.setUserAgent(navigator.userAgent);
   await client.registerPushSubscription(request, await authMetadata());
+  // widgets/main/src/activityReporter.js starts reporting for this browser.
+  window.dispatchEvent(new CustomEvent('widgetgrid:push-changed'));
 }
 
 export async function disablePush() {
@@ -78,6 +80,7 @@ export async function disablePush() {
   request.setEndpoint(subscription.endpoint);
   await client.removePushSubscription(request, await authMetadata());
   await subscription.unsubscribe();
+  window.dispatchEvent(new CustomEvent('widgetgrid:push-changed'));
 }
 
 // Returns how many of the owner's browsers the push services accepted it for.

@@ -19,13 +19,15 @@ export function createPushSender({ pool, publicKey, privateKey, subject, repo = 
     // payload: { title, body, tag, url } -- read by packages/web-app/public/sw.js.
     // Returns how many browsers accepted it. Subscriptions the push
     // service reports gone (404/410: uninstalled, permission revoked) are
-    // deleted; other failures are logged and skipped.
-    async sendToOwner(payload) {
+    // deleted; other failures are logged and skipped. skip(endpoint) ->
+    // true leaves that browser out (chat alerts pass deviceActivity's
+    // isActive so the device showing the site isn't notified).
+    async sendToOwner(payload, { skip = () => false } = {}) {
       if (!enabled) {
         console.log(`[push disabled] would notify owner: ${payload.title}`);
         return 0;
       }
-      const subscriptions = await repo.listForOwner(pool);
+      const subscriptions = (await repo.listForOwner(pool)).filter((s) => !skip(s.endpoint));
       const results = await Promise.all(subscriptions.map(async (s) => {
         try {
           await send({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, JSON.stringify(payload), options);

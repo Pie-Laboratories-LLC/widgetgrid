@@ -31,6 +31,19 @@ message RemovePushSubscriptionRequest {
 }
 message RemovePushSubscriptionResponse {}
 
+// Sent by every owner page whose browser has a push subscription: active
+// when the page is visible and focused (re-sent every 10s while it stays
+// that way), inactive when it's hidden, blurred or closed. Chat alerts skip
+// a browser with an active page -- see packages/server/src/deviceActivity.js.
+message ReportActivityRequest {
+  // This browser's push subscription endpoint.
+  string endpoint = 1;
+  // Random per page load; every tab of a browser shares its endpoint.
+  string tab_id = 2;
+  bool active = 3;
+}
+message ReportActivityResponse {}
+
 message SendTestPushRequest {
   int64 requested_at_ms = 1;
 }
@@ -46,5 +59,7 @@ service PushService {
   // Owner only.
   rpc RemovePushSubscription(RemovePushSubscriptionRequest) returns (RemovePushSubscriptionResponse);
   // Owner only.
+  rpc ReportActivity(ReportActivityRequest) returns (ReportActivityResponse);
+  // Owner only. Goes to every browser, active or not.
   rpc SendTestPush(SendTestPushRequest) returns (SendTestPushResponse);
 }

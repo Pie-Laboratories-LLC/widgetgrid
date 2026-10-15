@@ -55,3 +55,14 @@ test('subscriptions the push service reports gone are deleted; others are kept',
   }
   assert.deepEqual(repo.removed, ['https://gone']);
 });
+
+test('skip leaves the matching browsers out', async () => {
+  const calls = [];
+  const sender = createPushSender({
+    pool: {}, publicKey: 'pub', privateKey: 'priv', subject: 'mailto:x@example.com', repo: fakeRepo(['https://phone', 'https://desktop']),
+    send: async (sub) => { calls.push(sub.endpoint); },
+  });
+  const delivered = await sender.sendToOwner({ title: 't' }, { skip: (endpoint) => endpoint === 'https://desktop' });
+  assert.equal(delivered, 1);
+  assert.deepEqual(calls, ['https://phone']);
+});

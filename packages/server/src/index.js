@@ -17,6 +17,7 @@ import { createConsoleSmsSender, createSnsSmsSender } from './smsSender.js';
 import { createAuthContext, createCognitoVerifiers } from './authContext.js';
 import { createPushSender } from './pushSender.js';
 import { createPushService } from './services/pushService.js';
+import { createDeviceActivity } from './deviceActivity.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const HOST = process.env.GRPC_SERVER_HOST ?? '127.0.0.1';
@@ -73,14 +74,15 @@ export function startServer() {
   const { verifyAccessToken, verifyIdToken } = createCognitoVerifiers();
   const authContext = createAuthContext({ pool, verifyAccessToken });
   const pushSender = createPushSender({ pool, publicKey: VAPID_PUBLIC_KEY, privateKey: VAPID_PRIVATE_KEY, subject: VAPID_SUBJECT });
+  const deviceActivity = createDeviceActivity();
 
   const server = new grpc.Server();
   server.addService(proto.PageService.service, createPageService({ pool, pagesRepo, layoutNodesRepo }));
   server.addService(proto.WidgetService.service, createWidgetService({ pool, widgetsRepo }));
   server.addService(proto.BlogService.service, createBlogService({ blogSource, blogChangeNotifier }));
   server.addService(proto.AuthService.service, createAuthService({ pool, verifyIdToken, ownerEmail: OWNER_EMAIL }));
-  server.addService(proto.PushService.service, createPushService({ pool, authContext, pushSender }));
-  server.addService(proto.ChatService.service, createChatService({ pool, authContext, pushSender, ownerPhoneNumber: OWNER_PHONE_NUMBER, smsSender }));
+  server.addService(proto.PushService.service, createPushService({ pool, authContext, pushSender, deviceActivity }));
+  server.addService(proto.ChatService.service, createChatService({ pool, authContext, pushSender, deviceActivity, ownerPhoneNumber: OWNER_PHONE_NUMBER, smsSender }));
 
   return new Promise((resolve, reject) => {
     server.bindAsync(`${HOST}:${PORT}`, grpc.ServerCredentials.createInsecure(), (err, boundPort) => {
