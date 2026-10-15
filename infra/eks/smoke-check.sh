@@ -88,8 +88,10 @@ if [ -z "$CLUSTER_NAME" ]; then
 else
   if pods=$(kubectl --context "$KCTX" get pods -n widgetgrid --no-headers 2>&1); then
     # Columns: NAME READY STATUS RESTARTS AGE. Completed migrate/seed Job
-    # pods are expected; anything else must be Running with all containers ready.
-    bad=$(echo "$pods" | awk '$3 != "Completed" { split($2, r, "/"); if ($3 != "Running" || r[1] != r[2]) print $1" "$2" "$3 }')
+    # pods are expected, and so are Terminating ones -- the previous
+    # release's pods are still shutting down when deploy.sh runs this.
+    # Anything else must be Running with all containers ready.
+    bad=$(echo "$pods" | awk '$3 != "Completed" && $3 != "Terminating" { split($2, r, "/"); if ($3 != "Running" || r[1] != r[2]) print $1" "$2" "$3 }')
     if [ -z "$bad" ]; then pass "widgetgrid pods running and ready"; else fail "widgetgrid pods running and ready" "$(echo $bad)"; fi
     # Restarts on pods younger than this deploy point at a crash loop that
     # happened to be up when the readiness wait passed.
