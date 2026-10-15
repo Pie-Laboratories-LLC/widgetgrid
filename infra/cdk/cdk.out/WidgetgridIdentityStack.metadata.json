@@ -3,7 +3,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -28,7 +28,7 @@
       "data": [
         "...new ARecord2 in aws-cdk-lib...",
         "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:59:5)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -42,7 +42,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:134:5)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -56,7 +56,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:135:5)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -70,7 +70,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:136:5)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -84,7 +84,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:137:5)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -98,7 +98,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:138:5)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -139,7 +139,7 @@
       "data": [
         "...new UserPool2 in aws-cdk-lib...",
         "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:41:22)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -154,7 +154,7 @@
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
         "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:90:14)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -169,7 +169,7 @@
       "data": [
         "...new Certificate2 in aws-cdk-lib...",
         "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:52:29)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -184,7 +184,7 @@
       "data": [
         "...new ARecord2 in aws-cdk-lib...",
         "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:59:5)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -212,7 +212,7 @@
       "data": [
         "...new UserPoolIdentityProviderSaml2 in aws-cdk-lib...",
         "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:69:36)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -227,7 +227,7 @@
       "data": [
         "...new Function2 in aws-cdk-lib...",
         "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:79:28)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -236,45 +236,6 @@
     {
       "type": "aws:cdk:logicalId",
       "data": "CDKMetadata"
-    },
-    {
-      "type": "aws:cdk:creationStack",
-      "data": [
-        "...aws-cdk-lib, node internals...",
-        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
-      ]
-    }
-  ],
-  "/WidgetgridIdentityStack/Exports/Output{\"Fn::GetAtt\":[\"UserPool6BA7E5F2\",\"Arn\"]}": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "ExportsOutputFnGetAttUserPool6BA7E5F2Arn686ACC00"
-    },
-    {
-      "type": "aws:cdk:creationStack",
-      "data": [
-        "...aws-cdk-lib, node internals...",
-        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
-      ]
-    }
-  ],
-  "/WidgetgridIdentityStack/Exports/Output{\"Ref\":\"UserPoolDevAlbClient6B61DCF0\"}": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "ExportsOutputRefUserPoolDevAlbClient6B61DCF015FC0BF2"
-    },
-    {
-      "type": "aws:cdk:creationStack",
-      "data": [
-        "...aws-cdk-lib, node internals...",
-        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
-      ]
-    }
-  ],
-  "/WidgetgridIdentityStack/Exports/Output{\"Ref\":\"UserPoolUserPoolDomain9F01E991\"}": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "ExportsOutputRefUserPoolUserPoolDomain9F01E991C1F75B8B"
     },
     {
       "type": "aws:cdk:creationStack",
@@ -294,7 +255,7 @@
       "data": [
         "...WrappedClass.addDomain in aws-cdk-lib...",
         "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:56:37)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -309,7 +270,7 @@
       "data": [
         "...WrappedClass.addClient in aws-cdk-lib...",
         "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:96:35)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -324,7 +285,7 @@
       "data": [
         "...WrappedClass.addClient in aws-cdk-lib...",
         "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:109:32)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -352,7 +313,7 @@
       "data": [
         "...new Function2 in aws-cdk-lib...",
         "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:79:28)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -367,7 +328,7 @@
       "data": [
         "...WrappedClass.addToRolePolicy in aws-cdk-lib...",
         "new IdentityStack (file:///home/mattc/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:86:20)",
-        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25: (file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:25:1)",
+        "file:///home/mattc/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }

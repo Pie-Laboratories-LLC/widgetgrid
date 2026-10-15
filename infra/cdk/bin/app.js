@@ -3,9 +3,6 @@ import { App } from 'aws-cdk-lib';
 import { DnsStack } from '../lib/dns-stack.js';
 import { SharedStack } from '../lib/shared-stack.js';
 import { IdentityStack } from '../lib/identity-stack.js';
-import { DevGatewayStack } from '../lib/dev-gateway-stack.js';
-import { EksStack } from '../lib/eks-stack.js';
-import { RdsStack } from '../lib/rds-stack.js';
 import { ProdGatewayStack } from '../lib/prod-gateway-stack.js';
 import { ProdEksStack } from '../lib/prod-eks-stack.js';
 import { ProdRdsStack } from '../lib/prod-rds-stack.js';
@@ -22,31 +19,17 @@ const dns = new DnsStack(app, 'WidgetgridDnsStack', { env });
 // ECR repos used by both environments -- see shared-stack.js.
 new SharedStack(app, 'WidgetgridSharedStack', { env });
 // Cognito + Identity Center sign-in for both environments -- see identity-stack.js.
-const identity = new IdentityStack(app, 'WidgetgridIdentityStack', { env, hostedZone: dns.hostedZone });
-const devGateway = new DevGatewayStack(app, 'WidgetgridDevGatewayStack', {
-  env,
-  hostedZone: dns.hostedZone,
-  certificate: dns.certificate,
-  userPool: identity.userPool,
-  userPoolDomain: identity.userPoolDomain,
-  devAlbClient: identity.devAlbClient,
-});
-// One-directional: both take vpc from DevGatewayStack (already deployed --
-// see dev-gateway-stack.js's comment on why it isn't the other way around).
-const eks = new EksStack(app, 'WidgetgridEksStack', {
-  env,
-  vpc: devGateway.vpc,
-  albSecurityGroup: devGateway.albSecurityGroup,
-});
-new RdsStack(app, 'WidgetgridRdsStack', {
-  env,
-  vpc: devGateway.vpc,
-  nodeSecurityGroup: eks.nodeSecurityGroup,
-});
+new IdentityStack(app, 'WidgetgridIdentityStack', { env, hostedZone: dns.hostedZone });
+// Dev (WidgetgridDevGatewayStack/EksStack/RdsStack) was torn down
+// 2026-10-14: development happens on local kind and releases go straight to
+// prod, checked by infra/eks/smoke-check.sh. The stack classes stay in lib/
+// so dev can be stood up temporarily for an infrastructure change (an EKS
+// upgrade, a Consul chart bump) -- restore the block below from git
+// history, deploy, test, `cdk destroy` again.
 
 // Prod: fully separate VPC/cluster/RDS from dev's, no shared props between
 // the two environments anywhere here -- see infra/cdk/lib/prod-gateway-stack.js's
-// header comment. Same one-directional wiring pattern as dev's trio above.
+// header comment. Same one-directional wiring pattern dev's stacks used.
 const prodGateway = new ProdGatewayStack(app, 'WidgetgridProdGatewayStack', {
   env,
   hostedZone: dns.hostedZone,

@@ -518,33 +518,6 @@
      ]
     ]
    }
-  },
-  "ExportsOutputFnGetAttUserPool6BA7E5F2Arn686ACC00": {
-   "Value": {
-    "Fn::GetAtt": [
-     "UserPool6BA7E5F2",
-     "Arn"
-    ]
-   },
-   "Export": {
-    "Name": "WidgetgridIdentityStack:ExportsOutputFnGetAttUserPool6BA7E5F2Arn686ACC00"
-   }
-  },
-  "ExportsOutputRefUserPoolDevAlbClient6B61DCF015FC0BF2": {
-   "Value": {
-    "Ref": "UserPoolDevAlbClient6B61DCF0"
-   },
-   "Export": {
-    "Name": "WidgetgridIdentityStack:ExportsOutputRefUserPoolDevAlbClient6B61DCF015FC0BF2"
-   }
-  },
-  "ExportsOutputRefUserPoolUserPoolDomain9F01E991C1F75B8B": {
-   "Value": {
-    "Ref": "UserPoolUserPoolDomain9F01E991"
-   },
-   "Export": {
-    "Name": "WidgetgridIdentityStack:ExportsOutputRefUserPoolUserPoolDomain9F01E991C1F75B8B"
-   }
   }
  },
  "Parameters": {
