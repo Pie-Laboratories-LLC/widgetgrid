@@ -17,11 +17,29 @@ export const BEFORE_NAVIGATE_EVENT = 'widgetgrid:before-navigate';
 
 const VIEW_PATHS = {
   blog: '/blog',
+  games: '/games',
   solitaire: '/games/solitaire',
   embuscade: '/games/embuscade',
+  site: '/site',
   lhoraire: '/site/lhoraire',
   chat: '/chat',
 };
+
+// Which topbar icon a view sits under -- the section pages (/games,
+// /site) and everything reached from them.
+const VIEW_SECTIONS = {
+  blog: 'blog',
+  games: 'games',
+  solitaire: 'games',
+  embuscade: 'games',
+  site: 'site',
+  lhoraire: 'site',
+  chat: 'chat',
+};
+
+export function sectionOf(view) {
+  return VIEW_SECTIONS[view] ?? null;
+}
 
 // How each view wants the fixed topbar and right rail. topbar: 'scroll'
 // (the default) shrinks/expands as MainWidget.vue's content scrolls;

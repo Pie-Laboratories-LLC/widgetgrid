@@ -12,12 +12,36 @@
       <time class="post-date" :datetime="post.publishedAt">{{ formatDate(post.publishedAt) }}</time>
       <div class="post-body" v-html="post.slug === expandedSlug ? post.contentHtml : post.synopsisHtml"></div>
     </article>
+    <!-- Contact panel: pinned to the bottom-right of the visible area
+         (sticky, zero-height anchor) rather than to the end of the posts.
+         Pointer devices see it while hovering the blog; touch devices,
+         which can't hover, get a toggle button instead. -->
+    <div class="contact-anchor">
+      <div class="contact" :class="{ 'contact-open': contactOpen }">
+        <div id="blog-contact-panel" class="contact-panel">
+          <span class="contact-address">{{ WEBMASTER }}</span>
+          <a class="contact-button" :href="`mailto:${WEBMASTER}`">Email</a>
+        </div>
+        <button
+          type="button" class="contact-toggle" aria-label="Contact" aria-controls="blog-contact-panel"
+          :aria-expanded="contactOpen ? 'true' : 'false'" @click="contactOpen = !contactOpen"
+        >
+          <!-- Tabler Icons "mail" (MIT). -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
+            <path d="M3 7l9 6l9 -6" />
+          </svg>
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { sitePath, parseSitePath, navigate } from '@widgetgrid/site-routes';
 import { blogClient } from './blogClient.js';
+
+const WEBMASTER = 'webmaster@pie-laboratories.com';
 
 export default {
   name: 'BlogWidget',
@@ -26,7 +50,7 @@ export default {
     title: { type: String, default: '' },
   },
   data() {
-    return { posts: [], status: 'loading' };
+    return { posts: [], status: 'loading', contactOpen: false, WEBMASTER };
   },
   computed: {
     // data.post is the post the URL names (/blog/<slug>, passed down by
@@ -154,5 +178,99 @@ export default {
 .post-body :deep(img) {
   max-width: 100%;
   height: auto;
+}
+
+.contact-anchor {
+  position: sticky;
+  bottom: 0;
+  height: 0;
+  z-index: 5;
+}
+
+.contact {
+  position: absolute;
+  right: 0;
+  bottom: 16px;
+  display: flex;
+  /* Panel stacked above the toggle (touch), not beside it: beside it, the
+     open panel ran off the left edge of a phone-width content column. */
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.contact-panel {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgb(5, 5, 5);
+  color: #f4ead9;
+  font-size: 0.85rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  transition: opacity 0.2s ease;
+}
+
+.contact-address {
+  white-space: nowrap;
+}
+
+.contact-button {
+  padding: 4px 12px;
+  border: 1px solid rgba(244, 234, 217, 0.4);
+  border-radius: 6px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.contact-button:hover,
+.contact-button:focus-visible {
+  background: rgba(244, 234, 217, 0.12);
+}
+
+.contact-toggle {
+  display: none;
+  padding: 10px;
+  border: none;
+  border-radius: 999px;
+  background: rgb(5, 5, 5);
+  color: #f4ead9;
+  line-height: 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+
+.contact-toggle svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Pointer devices: hidden until the pointer is over the blog (or focus is
+   inside the panel, so it's reachable by keyboard). */
+@media (hover: hover) {
+  .contact-panel {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .widget-blog:hover .contact-panel,
+  .contact-panel:focus-within {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* Touch devices: the toggle button, and the panel only while it's open. */
+@media (hover: none) {
+  .contact-toggle {
+    display: block;
+  }
+
+  .contact:not(.contact-open) .contact-panel {
+    display: none;
+  }
 }
 </style>

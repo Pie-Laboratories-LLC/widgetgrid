@@ -13,15 +13,14 @@
       class="topbar-logo"
       @click="onLogoClick"
     />
-    <div class="topbar-brand">
-      <span class="topbar-brand-name">Pie Laboratories, LLC.</span>
-      <a class="topbar-brand-email" href="mailto:webmaster@pie-laboratories.com">webmaster@pie-laboratories.com</a>
-    </div>
+    <!-- The webmaster address lives in the blog's contact panel now
+         (BlogWidget.vue), not here. -->
+    <div class="topbar-brand">Pie Laboratories, LLC.</div>
     <nav class="topbar-menu-slot">
       <!-- Active = outline ("empty"), inactive = filled -- the user's own
            convention, not the more common filled-means-active. -->
       <button type="button" class="topbar-icon" title="Home" aria-label="Home" @click="onHomeClick">
-        <svg v-if="activeView === 'blog'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <svg v-if="activeSection === 'blog'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
           <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
           <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
@@ -31,57 +30,49 @@
         </svg>
         <span v-if="hasNewPost" class="topbar-badge" aria-hidden="true">!</span>
       </button>
-      <button type="button" class="topbar-icon" title="Solitaire" aria-label="Solitaire" @click="go('solitaire')">
-        <svg v-if="activeView === 'solitaire'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M3.604 7.197l7.138 -3.109a.96 .96 0 0 1 1.27 .527l4.924 11.902a1 1 0 0 1 -.514 1.304l-7.137 3.109a.96 .96 0 0 1 -1.271 -.527l-4.924 -11.903a1 1 0 0 1 .514 -1.304l0 .001" />
-          <path d="M15 4h1a1 1 0 0 1 1 1v3.5" />
-          <path d="M20 6c.264 .112 .52 .217 .768 .315a1 1 0 0 1 .53 1.311l-2.298 5.374" />
+      <button type="button" class="topbar-icon" title="Games" aria-label="Games" @click="go('games')">
+        <svg v-if="activeSection === 'games'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 7h12a4 4 0 0 1 4 4v2a4 4 0 0 1 -4 4h-1.5l-2 -2h-5l-2 2h-1.5a4 4 0 0 1 -4 -4v-2a4 4 0 0 1 4 -4z" />
+          <path d="M5.5 12h4" />
+          <path d="M7.5 10v4" />
+          <path d="M16 10.5h.01" />
+          <path d="M18 13h.01" />
         </svg>
-        <svg v-else viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M10.348 3.169l-7.15 3.113a2 2 0 0 0 -1.03 2.608l4.92 11.895a1.96 1.96 0 0 0 2.59 1.063l7.142 -3.11a2.002 2.002 0 0 0 1.036 -2.611l-4.92 -11.894a1.96 1.96 0 0 0 -2.588 -1.064z" />
-          <path d="M16 3a2 2 0 0 1 1.995 1.85l.005 .15v3.5a1 1 0 0 1 -1.993 .117l-.007 -.117v-3.5h-1a1 1 0 0 1 -.117 -1.993l.117 -.007h1z" />
-          <path d="M19.08 5.61a1 1 0 0 1 1.31 -.53c.257 .108 .505 .21 .769 .314a2 2 0 0 1 1.114 2.479l-.056 .146l-2.298 5.374a1 1 0 0 1 -1.878 -.676l.04 -.11l2.296 -5.371l-.366 -.148l-.402 -.167a1 1 0 0 1 -.53 -1.312z" />
-        </svg>
-      </button>
-      <button type="button" class="topbar-icon" title="Embuscade" aria-label="Embuscade" @click="go('embuscade')">
-        <svg v-if="activeView === 'embuscade'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M5.5 13h13a3.5 3.5 0 0 1 0 7h-13a3.5 3.5 0 0 1 0 -7z" />
-          <path d="M7 13v-2a2 2 0 0 1 2 -2h5a2 2 0 0 1 2 2v2" />
-          <path d="M16 10.5h5" />
-        </svg>
-        <svg v-else viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M5.5 13h13a3.5 3.5 0 0 1 0 7h-13a3.5 3.5 0 0 1 0 -7z" />
-          <path d="M9 8h5a3 3 0 0 1 3 3v1h-11v-1a3 3 0 0 1 3 -3z" />
-          <path d="M16 9.5h6v2h-6z" />
+        <svg v-else viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd" aria-hidden="true">
+          <path d="M6 7h12a4 4 0 0 1 4 4v2a4 4 0 0 1 -4 4h-1.5l-2 -2h-5l-2 2h-1.5a4 4 0 0 1 -4 -4v-2a4 4 0 0 1 4 -4z
+                   M6.75 9.75h1.5v1.5h1.5v1.5h-1.5v1.5h-1.5v-1.5h-1.5v-1.5h1.5z
+                   M14.9 10.5a1.1 1.1 0 1 0 2.2 0a1.1 1.1 0 1 0 -2.2 0z
+                   M16.9 13a1.1 1.1 0 1 0 2.2 0a1.1 1.1 0 1 0 -2.2 0z" />
         </svg>
       </button>
-      <button
-        v-if="isLhoraireAdmin" type="button" class="topbar-icon" title="l'horaire" aria-label="l'horaire"
-        @click="go('lhoraire')"
-      >
-        <!-- Same convention as the other icons: outline when active, solid otherwise. -->
-        <svg v-if="activeView === 'lhoraire'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="9.5" y="4.75" width="11" height="2.5" rx="1.25" />
-          <rect x="12.5" y="10.75" width="8" height="2.5" rx="1.25" />
-          <rect x="15.5" y="16.75" width="5" height="2.5" rx="1.25" />
-          <circle cx="5" cy="6" r="1.75" />
-          <circle cx="8" cy="12" r="1.75" />
-          <circle cx="11" cy="18" r="1.75" />
+      <button type="button" class="topbar-icon" title="Site" aria-label="Site" @click="go('site')">
+        <svg v-if="activeSection === 'site'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+          <path d="M3.6 9h16.8" />
+          <path d="M3.6 15h16.8" />
+          <path d="M11.5 3a17 17 0 0 0 0 18" />
+          <path d="M12.5 3a17 17 0 0 1 0 18" />
         </svg>
         <svg v-else viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <rect x="9" y="4.5" width="12" height="3" rx="1.5" />
-          <rect x="12" y="10.5" width="9" height="3" rx="1.5" />
-          <rect x="15" y="16.5" width="6" height="3" rx="1.5" />
-          <circle cx="5" cy="6" r="2.25" />
-          <circle cx="8" cy="12" r="2.25" />
-          <circle cx="11" cy="18" r="2.25" />
+          <!-- Solid globe with its grid lines cut out (mask), the filled
+               counterpart to the outline globe above. -->
+          <mask id="topbar-site-mask">
+            <rect width="24" height="24" fill="#fff" />
+            <g fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round">
+              <path d="M2 9h20" />
+              <path d="M2 15h20" />
+              <path d="M11.5 2.2a17 17 0 0 0 0 19.6" />
+              <path d="M12.5 2.2a17 17 0 0 1 0 19.6" />
+            </g>
+          </mask>
+          <circle cx="12" cy="12" r="10" mask="url(#topbar-site-mask)" />
         </svg>
       </button>
       <button
         type="button" class="topbar-icon" title="Chat with management" aria-label="Chat with management"
         @click="go('chat')"
       >
-        <svg v-if="activeView === 'chat'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <svg v-if="activeSection === 'chat'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M8 9h8" />
           <path d="M8 13h6" />
           <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12" />
@@ -99,7 +90,7 @@
 <script>
 import { getIdentity, IDENTITY_CHANGED_EVENT } from '@widgetgrid/auth-web';
 import {
-  currentSiteRoute, viewChrome, sitePath, navigate, ROUTE_EVENT,
+  currentSiteRoute, viewChrome, sectionOf, sitePath, navigate, ROUTE_EVENT,
 } from '@widgetgrid/site-routes';
 
 const isLhoraireAdmin = () => !!getIdentity()?.groups.includes('anonyme admins');
@@ -109,10 +100,10 @@ const isLhoraireAdmin = () => !!getIdentity()?.groups.includes('anonyme admins')
 // image into the JS bundle otherwise).
 const ASSET_BASE = '/widgets/topbar-assets/';
 
-// Icon paths are from Tabler Icons (MIT) -- "home", "cards" and "message",
-// each in both outline and filled variants (see template for how they're
-// used). The Embuscade tank icon is hand-drawn in the same 24x24
-// outline/filled style.
+// Icon paths for "home", "message" (chat) and the outline "world" (Site)
+// are from Tabler Icons (MIT), in both outline and filled variants (see
+// template for how they're used). The Games gamepad and the filled globe
+// are hand-drawn in the same 24x24 outline/filled style.
 export default {
   name: 'TopBarWidget',
   props: {
@@ -163,9 +154,17 @@ export default {
     window.removeEventListener('widgetgrid:chat-event', this.onChatEvent);
     window.removeEventListener(IDENTITY_CHANGED_EVENT, this.onIdentityChanged);
   },
+  computed: {
+    // Which icon is lit: a section page and everything under it share one
+    // (Games for /games and both games, Site for /site and l'horaire).
+    activeSection() {
+      return sectionOf(this.activeView);
+    },
+  },
   methods: {
-    // l'horaire's icon shows only for the "anonyme admins" group (UI only;
-    // lhoraire-server enforces it). Signing out while on that view goes home.
+    // l'horaire is only for the "anonyme admins" group (UI only;
+    // lhoraire-server enforces it) -- MainWidget.vue lists it on the Site
+    // page for them alone. Signing out while on that view goes home.
     onIdentityChanged() {
       this.isLhoraireAdmin = isLhoraireAdmin();
       if (!this.isLhoraireAdmin && this.activeView === 'lhoraire') navigate('/');
@@ -286,28 +285,10 @@ export default {
   display: none;
   flex-shrink: 0;
   white-space: nowrap;
-  flex-direction: column;
-  justify-content: center;
   margin-left: 16px;
   color: #f4ead9;
-  line-height: 1.3;
-}
-
-.topbar-brand-name {
   font-weight: 600;
   font-size: 1rem;
-}
-
-.topbar-brand-email {
-  font-size: 0.8rem;
-  opacity: 0.75;
-  color: inherit;
-  text-decoration: none;
-}
-
-.topbar-brand-email:hover {
-  opacity: 1;
-  text-decoration: underline;
 }
 
 .topbar-menu-slot {

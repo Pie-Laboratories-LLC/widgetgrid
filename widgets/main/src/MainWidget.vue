@@ -8,13 +8,17 @@
     <component v-else-if="view === 'chat'" :is="chatComponent" :data="{}" title="" />
     <p v-if="view === 'embuscade' && !embuscadeComponent" class="main-status">Loading…</p>
     <component v-else-if="view === 'embuscade'" :is="embuscadeComponent" :data="{}" title="" />
+    <SectionPage v-if="view === 'games'" heading="Games" :entries="gameEntries" />
+    <SectionPage v-if="view === 'site'" heading="Site" :entries="siteEntries" />
     <p v-if="view === 'lhoraire' && !lhoraireComponent" class="main-status">Loading…</p>
     <component v-else-if="view === 'lhoraire'" :is="lhoraireComponent" :data="{}" title="" />
   </div>
 </template>
 
 <script>
+import { getIdentity } from '@widgetgrid/auth-web';
 import { currentSiteRoute, viewChrome, ROUTE_EVENT } from '@widgetgrid/site-routes';
+import SectionPage from './SectionPage.vue';
 import { subscribeNewPosts } from './blogSubscriptionClient.js';
 import { subscribeChatEvents } from './chatSubscriptionClient.js';
 import { startActivityReporter } from './activityReporter.js';
@@ -45,8 +49,19 @@ const SCROLL_THRESHOLD = 10;
 // can start in the right state on a deep link without waiting to hear
 // from this widget.
 
+const GAME_ENTRIES = [
+  { view: 'solitaire', title: 'Solitaire', description: 'Klondike solitaire: seven columns, four suits, ace to king.' },
+  {
+    view: 'embuscade', title: 'Embuscade',
+    description: 'A tank shooter in a maze, with powerups. Play online against friends or AI opponents.',
+  },
+];
+
+const isLhoraireAdmin = () => !!getIdentity()?.groups.includes('anonyme admins');
+
 export default {
   name: 'MainWidget',
+  components: { SectionPage },
   props: {
     data: { type: Object, required: true },
     title: { type: String, default: '' },
@@ -55,7 +70,7 @@ export default {
     return {
       view: null, post: null, blogComponent: null, solitaireComponent: null, chatComponent: null,
       embuscadeComponent: null, lhoraireComponent: null, collapsed: false, railHidden: false,
-      blogReloadKey: 0,
+      blogReloadKey: 0, isLhoraireAdmin: isLhoraireAdmin(),
     };
   },
   created() {
@@ -101,6 +116,7 @@ export default {
     // even after successfully logging in -- see LoginWidget.vue, which
     // dispatches this event on both login success and logout.
     this.onIdentityChanged = () => {
+      this.isLhoraireAdmin = isLhoraireAdmin();
       this.unsubscribeChatEvents();
       this.unsubscribeChatEvents = subscribeChatEvents((event) => {
         window.dispatchEvent(new CustomEvent('widgetgrid:chat-event', { detail: event }));
@@ -122,6 +138,20 @@ export default {
   computed: {
     topbarMode() {
       return viewChrome(this.view).topbar;
+    },
+    gameEntries() {
+      return GAME_ENTRIES;
+    },
+    // l'horaire is listed only for the "anonyme admins" group (UI only;
+    // lhoraire-server enforces it).
+    siteEntries() {
+      const entries = [
+        { view: 'messages', title: 'Message boards', description: 'Feedback and discussion about the games and the site.', soon: true },
+      ];
+      if (this.isLhoraireAdmin) {
+        entries.push({ view: 'lhoraire', title: "l'horaire", description: 'Projects, issues and workflows.' });
+      }
+      return entries;
     },
   },
   methods: {

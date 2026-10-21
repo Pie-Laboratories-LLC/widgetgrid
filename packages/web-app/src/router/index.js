@@ -24,7 +24,7 @@ router.beforeEach((to, from) => {
   // ?view=chat was the deep link before paths existed; push notifications
   // already sitting on someone's phone still carry it.
   if (typeof to.query.view === 'string') return { path: sitePath(to.query.view), replace: true };
-  // A section path with no view behind it (yet) -- e.g. /games -- shows
+  // A section path with no view behind it (yet) -- e.g. /site/messages -- shows
   // the blog rather than a "page not found".
   if (isSitePath(to.path) && !parseSitePath(to.path)) return { path: '/', replace: true };
 
