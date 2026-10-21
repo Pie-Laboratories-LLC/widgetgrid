@@ -8,7 +8,7 @@
 // Server-side needs none of this: @grpc/proto-loader reads the .proto files
 // directly at process startup (see packages/server/src/loadProto.js).
 import { execFileSync } from 'node:child_process';
-import { access } from 'node:fs/promises';
+import { access, rm } from 'node:fs/promises';
 import path from 'node:path';
 
 const REPO_ROOT = path.resolve(import.meta.dirname, '../..');
@@ -69,6 +69,15 @@ async function main() {
   console.log(`${PROTOC} ${args.join(' ')}`);
   execFileSync(PROTOC, args, { stdio: 'inherit' });
   console.log(`Generated browser proto/grpc-web JS into ${OUT_DIR}`);
+
+  // packages/web-app's dev server pre-bundles these stubs (its vite.config.js
+  // optimizeDeps.include) and only re-bundles when the lockfile or its
+  // config changes -- not when the stubs themselves do. A stale bundle kept
+  // serving the old auth stubs after a field was added, so sign-in called
+  // a getter that didn't exist and silently failed. Dropping the cache here
+  // makes the next dev-server start re-bundle from what was just generated.
+  await rm(path.join(REPO_ROOT, 'packages/web-app/node_modules/.vite'), { recursive: true, force: true });
+  console.log('Cleared packages/web-app\'s Vite dependency cache -- restart `npm run dev:web` if it is running.');
 }
 
 async function exists(p) {
