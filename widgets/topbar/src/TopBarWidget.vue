@@ -260,6 +260,13 @@ export default {
   display: block;
   height: 255px;
   width: auto;
+  /* The logo is what gives way when the icons need the room -- never the
+     icons, which would otherwise run off the right edge (they did, on
+     every phone). Shrinking below its natural width trims the image's
+     dark left/right edges (cover, centered) rather than squashing it. */
+  flex-shrink: 1;
+  min-width: 0;
+  object-fit: cover;
   cursor: pointer;
   transition: height 0.25s ease;
 }
@@ -270,9 +277,15 @@ export default {
 
 /* No explicit vertical-centering rule needed -- .widget-topbar is already
    `display: flex; align-items: center`, so this sits centered against the
-   logo (and shrinks with it) for free as a flex sibling. */
+   logo (and shrinks with it) for free as a flex sibling. Only shown from
+   960px up (see the media query below): under that, the full-size logo,
+   this, the nav icons and the log in/out link don't all fit on one row,
+   and the icons matter more. Not overlaid on the logo instead -- the logo
+   shrinks to 64px tall on scroll, leaving nothing to overlay. */
 .topbar-brand {
-  display: flex;
+  display: none;
+  flex-shrink: 0;
+  white-space: nowrap;
   flex-direction: column;
   justify-content: center;
   margin-left: 16px;
@@ -298,7 +311,7 @@ export default {
 }
 
 .topbar-menu-slot {
-  flex: 1;
+  flex: 1 0 auto;
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -365,6 +378,30 @@ export default {
 
   .topbar-logo {
     height: 128px;
+  }
+
+  /* Phone widths: four icons plus log in/out have ~205px next to the
+     170px-wide logo on a 375px screen -- smaller icons, tighter gaps and
+     edge padding make them fit (34px tap targets), and the logo's
+     flex-shrink above covers anything narrower. */
+  .topbar-menu-slot {
+    gap: 4px;
+    padding-right: 6px;
+  }
+
+  .topbar-icon {
+    padding: 5px;
+  }
+
+  .topbar-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (min-width: 960px) {
+  .topbar-brand {
+    display: flex;
   }
 }
 </style>
