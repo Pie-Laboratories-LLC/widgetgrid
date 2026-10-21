@@ -20,6 +20,7 @@ COPY packages/server/package.json packages/server/package.json
 COPY packages/auth-node/package.json packages/auth-node/package.json
 COPY packages/auth-web/package.json packages/auth-web/package.json
 COPY packages/site-routes/package.json packages/site-routes/package.json
+COPY packages/markup/package.json packages/markup/package.json
 COPY packages/turnstile-web/package.json packages/turnstile-web/package.json
 COPY packages/proto-gen-web/package.json packages/proto-gen-web/package.json
 COPY packages/static-server/package.json packages/static-server/package.json
@@ -39,13 +40,14 @@ COPY widgets/embuscade/package.json widgets/embuscade/package.json
 COPY widgets/lhoraire/package.json widgets/lhoraire/package.json
 COPY widgets/subscribe/package.json widgets/subscribe/package.json
 COPY widgets/account/package.json widgets/account/package.json
+COPY widgets/board/package.json widgets/board/package.json
 COPY infra/cdk/package.json infra/cdk/package.json
 
 # --ignore-scripts: nothing packages/server or packages/db depend on needs
 # install-time scripts (that requirement -- grpc-tools' protoc binary,
 # protoc-gen-grpc-web -- is a proto-codegen-time concern for the *client*
 # side, see docs/LOCAL_DEV_PREREQUISITES.md; this image never runs codegen).
-RUN npm ci --omit=dev --ignore-scripts --workspace packages/server --workspace packages/db --workspace packages/auth-node --include-workspace-root
+RUN npm ci --omit=dev --ignore-scripts --workspace packages/server --workspace packages/db --workspace packages/auth-node --workspace packages/markup --include-workspace-root
 
 
 FROM node:24-alpine
@@ -58,6 +60,8 @@ COPY --chown=node:node packages/db/package.json packages/db/package.json
 COPY --chown=node:node packages/db/src packages/db/src
 COPY --chown=node:node packages/auth-node/package.json packages/auth-node/package.json
 COPY --chown=node:node packages/auth-node/src packages/auth-node/src
+COPY --chown=node:node packages/markup/package.json packages/markup/package.json
+COPY --chown=node:node packages/markup/src packages/markup/src
 COPY --chown=node:node packages/server/package.json packages/server/package.json
 COPY --chown=node:node packages/server/src packages/server/src
 COPY --chown=node:node proto proto

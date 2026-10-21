@@ -1,0 +1,174 @@
+syntax = "proto3";
+
+package widgetgrid.v1;
+
+// The message boards (/site/messages): sections -> threads -> nested
+// replies, newest first, no voting. Anyone can read; posting needs a
+// signed-in account with a username (see account.proto) that isn't
+// banned. Bodies are Markdown in packages/markup's "post" profile
+// (colour as :red[text]); the server renders them. Ids are decimal
+// strings (bigint in Postgres).
+
+message BoardSection {
+  string slug = 1;
+  string name = 2;
+  string description = 3;
+  int32 thread_count = 4;
+}
+
+// Who's looking, for what the UI offers.
+message BoardViewer {
+  bool signed_in = 1;
+  string username = 2;
+  // Signed in, has a username, not banned.
+  bool can_post = 3;
+  bool banned = 4;
+  // The owner or an anonyme admin: hide/unhide posts, ban/unban users.
+  bool moderator = 5;
+}
+
+message ThreadSummary {
+  string id = 1;
+  string title = 2;
+  string author = 3;
+  string created_at = 4;
+  int32 reply_count = 5;
+  string last_reply_at = 6;
+  // Hidden by a moderator (listed only to moderators).
+  bool removed = 7;
+}
+
+message BoardPost {
+  string id = 1;
+  // Empty on the thread's own post.
+  string parent_id = 2;
+  string author = 3;
+  // Thread post only.
+  string title = 4;
+  string body_html = 5;
+  // The Markdown source -- only on the viewer's own posts, for editing.
+  string body = 6;
+  string created_at = 7;
+  // Empty unless edited.
+  string edited_at = 8;
+  // Deleted by its author; body empty.
+  bool deleted = 9;
+  // Hidden by a moderator; body empty except for moderators.
+  bool removed = 10;
+  bool mine = 11;
+  // The viewer's own posts only.
+  bool notify_replies = 12;
+  // Moderators only: whether the author is banned.
+  bool author_banned = 13;
+}
+
+message ListSectionsRequest {}
+
+message ListSectionsResponse {
+  repeated BoardSection sections = 1;
+  BoardViewer viewer = 2;
+}
+
+message ListThreadsRequest {
+  string section = 1;
+  // A thread id: continue after it (the previous page's next_before).
+  string before = 2;
+}
+
+message ListThreadsResponse {
+  BoardSection section = 1;
+  repeated ThreadSummary threads = 2;
+  // Empty when there are no more.
+  string next_before = 3;
+  BoardViewer viewer = 4;
+}
+
+message GetThreadRequest {
+  string thread_id = 1;
+}
+
+message GetThreadResponse {
+  BoardSection section = 1;
+  // The thread post first, then every reply, newest first; parent_id
+  // builds the tree.
+  repeated BoardPost posts = 2;
+  BoardViewer viewer = 3;
+}
+
+message CreateThreadRequest {
+  string section = 1;
+  string title = 2;
+  string body = 3;
+  bool notify_replies = 4;
+}
+
+message CreateThreadResponse {
+  string thread_id = 1;
+}
+
+message ReplyRequest {
+  string parent_id = 1;
+  string body = 2;
+  bool notify_replies = 3;
+}
+
+message ReplyResponse {
+  BoardPost post = 1;
+}
+
+message EditPostRequest {
+  string post_id = 1;
+  string body = 2;
+  // Thread posts only; ignored on replies.
+  string title = 3;
+}
+
+message EditPostResponse {
+  BoardPost post = 1;
+}
+
+message DeletePostRequest {
+  string post_id = 1;
+}
+
+message DeletePostResponse {}
+
+message SetReplyNotificationsRequest {
+  string post_id = 1;
+  bool enabled = 2;
+}
+
+message SetReplyNotificationsResponse {}
+
+message HidePostRequest {
+  string post_id = 1;
+  bool hidden = 2;
+}
+
+message HidePostResponse {}
+
+message BanUserRequest {
+  string username = 1;
+  bool banned = 2;
+  string reason = 3;
+}
+
+message BanUserResponse {}
+
+service BoardService {
+  rpc ListSections(ListSectionsRequest) returns (ListSectionsResponse);
+  rpc ListThreads(ListThreadsRequest) returns (ListThreadsResponse);
+  rpc GetThread(GetThreadRequest) returns (GetThreadResponse);
+  // UNAUTHENTICATED (signed out), FAILED_PRECONDITION (no username yet),
+  // PERMISSION_DENIED (banned), RESOURCE_EXHAUSTED (posting too fast),
+  // INVALID_ARGUMENT (empty/too long). Messages are written for the form.
+  rpc CreateThread(CreateThreadRequest) returns (CreateThreadResponse);
+  rpc Reply(ReplyRequest) returns (ReplyResponse);
+  // Own posts only.
+  rpc EditPost(EditPostRequest) returns (EditPostResponse);
+  rpc DeletePost(DeletePostRequest) returns (DeletePostResponse);
+  rpc SetReplyNotifications(SetReplyNotificationsRequest) returns (SetReplyNotificationsResponse);
+  // Moderators only.
+  rpc HidePost(HidePostRequest) returns (HidePostResponse);
+  rpc BanUser(BanUserRequest) returns (BanUserResponse);
+}

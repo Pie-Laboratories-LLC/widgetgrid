@@ -1,0 +1,14 @@
+{
+  "name": "@widgetgrid/markup",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "The site's Markdown: a safe subset plus named-palette colour (:red[text]). Shared by message board posts (rendered by widgetgrid-server, previewed in the browser) and the mini-game's help text.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "marked": "18.0.9"
+  }
+}

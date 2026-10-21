@@ -10,6 +10,8 @@
     <component v-else-if="view === 'embuscade'" :is="embuscadeComponent" :data="{}" title="" />
     <SectionPage v-if="view === 'games'" heading="Games" :entries="gameEntries" />
     <SectionPage v-if="view === 'site'" heading="Site" :entries="siteEntries" />
+    <p v-if="view === 'messages' && !boardComponent" class="main-status">Loading…</p>
+    <component v-else-if="view === 'messages'" :is="boardComponent" :data="{ board }" title="" />
     <p v-if="isAccountView && !accountComponent" class="main-status">Loading…</p>
     <component v-else-if="isAccountView" :is="accountComponent" :data="{ view }" title="" />
     <p v-if="view === 'subscribe' && !subscribeComponent" class="main-status">Loading…</p>
@@ -75,7 +77,7 @@ export default {
   data() {
     return {
       view: null, post: null, blogComponent: null, solitaireComponent: null, chatComponent: null,
-      embuscadeComponent: null, lhoraireComponent: null, subscribeComponent: null, accountComponent: null, collapsed: false, railHidden: false,
+      embuscadeComponent: null, lhoraireComponent: null, subscribeComponent: null, accountComponent: null, boardComponent: null, board: null, collapsed: false, railHidden: false,
       blogReloadKey: 0, isLhoraireAdmin: isLhoraireAdmin(), signedIn: !!getIdentity(),
     };
   },
@@ -161,7 +163,7 @@ export default {
           ? { view: 'account', title: 'Your account', description: 'Your username and email, and logging out.' }
           : { view: 'login', title: 'Log in or register', description: 'An account lets you post on the message boards.' },
         { view: 'subscribe', title: 'Email updates', description: 'An email whenever a new blog post goes up.' },
-        { view: 'messages', title: 'Message boards', description: 'Feedback and discussion about the games and the site.', soon: true },
+        { view: 'messages', title: 'Message boards', description: 'Feedback and discussion about the games and the site.' },
       ];
       if (this.isLhoraireAdmin) {
         entries.push({ view: 'lhoraire', title: "l'horaire", description: 'Projects, issues and workflows.' });
@@ -171,8 +173,14 @@ export default {
   },
   methods: {
     onRoute(event) {
-      const { view, post = null, forceReload = false } = event.detail;
+      const { view, post = null, board = null, forceReload = false } = event.detail;
       this.post = post;
+      // Moving between board pages is the same view, so the scroll reset
+      // below doesn't happen -- do it here (a #post- link scrolls itself).
+      if (view === 'messages' && this.view === 'messages' && JSON.stringify(board) !== JSON.stringify(this.board) && this.$el) {
+        this.$el.scrollTop = 0;
+      }
+      this.board = board;
       // TopBarWidget.vue sets this when the home icon carried the new-post
       // badge: bumping the :key above forces BlogWidget to remount (fresh
       // fetch) even if we're already on the blog view, where a plain view
@@ -195,6 +203,11 @@ export default {
       if (this.view === 'lhoraire' && !this.lhoraireComponent) {
         import(/* @vite-ignore */ '/widgets/lhoraire.js').then((mod) => {
           this.lhoraireComponent = mod.default ?? mod;
+        });
+      }
+      if (this.view === 'messages' && !this.boardComponent) {
+        import(/* @vite-ignore */ '/widgets/board.js').then((mod) => {
+          this.boardComponent = mod.default ?? mod;
         });
       }
       if (ACCOUNT_VIEWS.includes(this.view) && !this.accountComponent) {

@@ -22,6 +22,7 @@ const VIEW_PATHS = {
   embuscade: '/games/embuscade',
   site: '/site',
   lhoraire: '/site/lhoraire',
+  messages: '/site/messages',
   subscribe: '/site/subscribe',
   login: '/site/login',
   register: '/site/register',
@@ -38,6 +39,7 @@ const VIEW_SECTIONS = {
   embuscade: 'games',
   site: 'site',
   lhoraire: 'site',
+  messages: 'site',
   subscribe: 'site',
   login: 'site',
   register: 'site',
@@ -80,12 +82,17 @@ export function viewChrome(view) {
 const SITE_SECTIONS = new Set(['blog', 'games', 'site', 'chat']);
 
 // { view, post } for a home-page path, or null if it isn't one. "/" is the
-// blog; "/blog/<post>" is the blog with that post open.
+// blog; "/blog/<post>" is the blog with that post open. The message boards
+// add board: { section, thread } -- "/site/messages" (sections),
+// "/site/messages/<section>" (its threads), "/site/messages/<section>/<id>"
+// (a thread; a #post-<id> hash points at a reply in it).
 export function parseSitePath(pathname) {
   const path = pathname.replace(/\/+$/, '') || '/';
   if (path === '/') return { view: 'blog', post: null };
   const blog = /^\/blog(?:\/([^/]+))?$/.exec(path);
   if (blog) return { view: 'blog', post: blog[1] ? decodeURIComponent(blog[1]) : null };
+  const board = /^\/site\/messages(?:\/([a-z0-9-]+)(?:\/(\d+))?)?$/.exec(path);
+  if (board) return { view: 'messages', post: null, board: { section: board[1] ?? null, thread: board[2] ?? null } };
   for (const [view, viewPath] of Object.entries(VIEW_PATHS)) {
     if (path === viewPath) return { view, post: null };
   }
@@ -95,6 +102,14 @@ export function parseSitePath(pathname) {
 export function sitePath(view, post = null) {
   if (view === 'blog' && post) return `/blog/${encodeURIComponent(post)}`;
   return VIEW_PATHS[view] ?? '/';
+}
+
+// A message board page: the sections, one section's threads, or a thread
+// (optionally at one post in it).
+export function boardPath({ section = null, thread = null, post = null } = {}) {
+  if (!section) return VIEW_PATHS.messages;
+  if (!thread) return `${VIEW_PATHS.messages}/${section}`;
+  return `${VIEW_PATHS.messages}/${section}/${thread}${post && post !== thread ? `#post-${post}` : ''}`;
 }
 
 // True for "/" and anything under a home-page section, including paths
