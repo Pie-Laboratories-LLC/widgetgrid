@@ -6,15 +6,20 @@
          that transition mid-flight. width/height attrs are just accurate
          intrinsic-size hints for each asset -- actual displayed size is
          CSS-driven so it can animate. -->
-    <img
-      :src="collapsed ? assetUrl('logo-h64.png') : assetUrl('logo-h255.png')"
-      :width="collapsed ? 85 : 339" :height="collapsed ? 64 : 255"
-      :alt="data?.alt || 'Pie Laboratories LLC'"
-      class="topbar-logo"
-    />
+    <!-- The logo and the name both go to "/" (not /blog, where the Home
+         icon goes). display: contents on the link, so the <img> itself
+         stays the flex item that shrinks/trims (see .topbar-logo). -->
+    <a class="topbar-home-link" href="/" @click="goRoot">
+      <img
+        :src="collapsed ? assetUrl('logo-h64.png') : assetUrl('logo-h255.png')"
+        :width="collapsed ? 85 : 339" :height="collapsed ? 64 : 255"
+        :alt="data?.alt || 'Pie Laboratories LLC'"
+        class="topbar-logo"
+      />
+    </a>
     <!-- The webmaster address lives in the blog's contact panel now
          (BlogWidget.vue), not here. -->
-    <div class="topbar-brand">Pie Laboratories, LLC.</div>
+    <a class="topbar-brand" href="/" @click="goRoot">Pie Laboratories, LLC.</a>
     <nav class="topbar-menu-slot">
       <!-- Active = outline ("empty"), inactive = filled -- the user's own
            convention, not the more common filled-means-active. -->
@@ -242,6 +247,11 @@ export default {
     // already looking at the blog when a new post shows up. The badge
     // clears in onRoute, once the navigation has actually happened (it
     // may be vetoed).
+    goRoot(event) {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      navigate('/');
+    },
     onHomeClick() {
       navigate(sitePath('blog'), { forceReload: this.hasNewPost });
     },
@@ -303,6 +313,10 @@ export default {
    this, the nav icons and the log in/out link don't all fit on one row,
    and the icons matter more. Not overlaid on the logo instead -- the logo
    shrinks to 64px tall on scroll, leaving nothing to overlay. */
+.topbar-home-link {
+  display: contents;
+}
+
 .topbar-brand {
   display: none;
   flex-shrink: 0;
@@ -311,6 +325,12 @@ export default {
   color: #f4ead9;
   font-weight: 600;
   font-size: 1rem;
+  text-decoration: none;
+}
+
+.topbar-brand:hover,
+.topbar-brand:focus-visible {
+  text-decoration: underline;
 }
 
 .topbar-menu-slot {
