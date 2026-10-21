@@ -21,14 +21,30 @@
       <p v-if="!threads.length" class="board-muted board-empty">No threads yet. Start the first one.</p>
       <ol class="board-threads">
         <li v-for="thread in threads" :key="thread.id" class="board-thread" :class="{ 'board-thread-removed': thread.removed }">
-          <a class="board-thread-title" :href="threadPath(thread)" @click="go(threadPath(thread), $event)">{{ thread.title }}</a>
-          <span class="board-muted board-thread-meta">
+          <!-- [+] opens a thread with replies in place, as a reply tree; one
+               without replies has no toggle and sits flush left. -->
+          <div class="board-thread-head">
+            <button
+              v-if="thread.replyCount" type="button" class="board-collapse" :aria-expanded="!!open[thread.id]"
+              :title="open[thread.id] ? 'Hide replies' : 'Show replies'" @click="toggle(thread)"
+            >{{ open[thread.id] ? '[–]' : '[+]' }}</button>
+            <a class="board-thread-title" :href="threadPath(thread)" @click="go(threadPath(thread), $event)">{{ thread.title }}</a>
+          </div>
+          <span class="board-muted board-thread-meta" :class="{ 'board-thread-meta-indented': thread.replyCount }">
             <template v-if="thread.removed">[removed] · </template>
             {{ thread.author || '[deleted]' }} ·
             <time :datetime="thread.createdAt" :title="exactTime(thread.createdAt)">{{ relativeTime(thread.createdAt) }}</time> ·
             {{ thread.replyCount }} {{ thread.replyCount === 1 ? 'reply' : 'replies' }}<template v-if="thread.lastReplyAt">,
               latest <time :datetime="thread.lastReplyAt" :title="exactTime(thread.lastReplyAt)">{{ relativeTime(thread.lastReplyAt) }}</time></template>
           </span>
+          <template v-if="open[thread.id]">
+            <p v-if="open[thread.id].status === 'loading'" class="board-muted board-thread-meta-indented">Loading…</p>
+            <p v-else-if="open[thread.id].status === 'error'" class="board-error board-thread-meta-indented">{{ open[thread.id].error }}</p>
+            <ThreadOutline
+              v-else :posts="open[thread.id].posts" :parent-id="thread.id"
+              :section-slug="sectionSlug" :thread-id="thread.id"
+            />
+          </template>
         </li>
       </ol>
       <button v-if="nextBefore" type="button" class="board-button board-button-quiet" :disabled="loadingMore" @click="loadMore">More threads</button>
@@ -41,12 +57,13 @@ import { boardPath, navigate } from '@widgetgrid/site-routes';
 import { boardClient, describe, relativeTime, exactTime } from './boardClient.js';
 import Composer from './Composer.vue';
 import PostingNotice from './PostingNotice.vue';
+import ThreadOutline from './ThreadOutline.vue';
 
 // /site/messages/<section>: its threads, newest first, 30 at a time, and
 // starting a new one.
 export default {
   name: 'ThreadsPage',
-  components: { Composer, PostingNotice },
+  components: { Composer, PostingNotice, ThreadOutline },
   props: {
     sectionSlug: { type: String, required: true },
   },
@@ -56,6 +73,8 @@ export default {
       status: 'loading', error: '', loadingMore: false,
       composing: false, posting: false, postError: '',
       paths: { boards: boardPath() },
+      // threadId -> { status, posts, error } for threads opened in place.
+      open: {},
     };
   },
   async created() {
@@ -73,6 +92,19 @@ export default {
     exactTime,
     threadPath(thread) {
       return boardPath({ section: this.sectionSlug, thread: thread.id });
+    },
+    async toggle(thread) {
+      if (this.open[thread.id]) {
+        delete this.open[thread.id];
+        return;
+      }
+      this.open[thread.id] = { status: 'loading', posts: [], error: '' };
+      try {
+        const { posts } = await boardClient.getThread(thread.id);
+        if (this.open[thread.id]) this.open[thread.id] = { status: 'ready', posts, error: '' };
+      } catch (err) {
+        if (this.open[thread.id]) this.open[thread.id] = { status: 'error', posts: [], error: describe(err) };
+      }
     },
     async loadMore() {
       this.loadingMore = true;
@@ -120,6 +152,27 @@ export default {
   gap: 2px;
   padding: 10px 0;
   border-bottom: 1px solid #eee;
+}
+
+.board-thread-head {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+}
+
+/* Lines up under the title when a [+] sits in front of it. */
+.board-thread-meta-indented {
+  padding-left: 30px;
+}
+
+.board-collapse {
+  padding: 0;
+  border: none;
+  background: none;
+  color: #888;
+  font-family: monospace;
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 .board-thread-title {
