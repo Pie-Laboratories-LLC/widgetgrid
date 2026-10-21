@@ -29,8 +29,21 @@
         </svg>
         <span v-if="hasNewPost" class="topbar-badge" aria-hidden="true">!</span>
       </button>
+      <!-- Inside a section, its icon shows where: the game being played, or
+           l'horaire / the message boards. Always the outline form there,
+           since the section is active. -->
       <button type="button" class="topbar-icon" title="Games" aria-label="Games" @click="go('games')">
-        <svg v-if="activeSection === 'games'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <svg v-if="activeView === 'solitaire'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3.604 7.197l7.138 -3.109a.96 .96 0 0 1 1.27 .527l4.924 11.902a1 1 0 0 1 -.514 1.304l-7.137 3.109a.96 .96 0 0 1 -1.271 -.527l-4.924 -11.903a1 1 0 0 1 .514 -1.304l0 .001" />
+          <path d="M15 4h1a1 1 0 0 1 1 1v3.5" />
+          <path d="M20 6c.264 .112 .52 .217 .768 .315a1 1 0 0 1 .53 1.311l-2.298 5.374" />
+        </svg>
+        <svg v-else-if="activeView === 'embuscade'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5.5 13h13a3.5 3.5 0 0 1 0 7h-13a3.5 3.5 0 0 1 0 -7z" />
+          <path d="M7 13v-2a2 2 0 0 1 2 -2h5a2 2 0 0 1 2 2v2" />
+          <path d="M16 10.5h5" />
+        </svg>
+        <svg v-else-if="activeSection === 'games'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M6 7h12a4 4 0 0 1 4 4v2a4 4 0 0 1 -4 4h-1.5l-2 -2h-5l-2 2h-1.5a4 4 0 0 1 -4 -4v-2a4 4 0 0 1 4 -4z" />
           <path d="M5.5 12h4" />
           <path d="M7.5 10v4" />
@@ -45,7 +58,25 @@
         </svg>
       </button>
       <button type="button" class="topbar-icon" title="Site" aria-label="Site" @click="go('site')">
-        <svg v-if="activeSection === 'site'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <svg v-if="activeView === 'lhoraire'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="9.5" y="4.75" width="11" height="2.5" rx="1.25" />
+          <rect x="12.5" y="10.75" width="8" height="2.5" rx="1.25" />
+          <rect x="15.5" y="16.75" width="5" height="2.5" rx="1.25" />
+          <circle cx="5" cy="6" r="1.75" />
+          <circle cx="8" cy="12" r="1.75" />
+          <circle cx="11" cy="18" r="1.75" />
+        </svg>
+        <!-- Message boards: l'horaire's cascade (each row further in, as
+             replies indent) with plus signs for bullets. -->
+        <svg v-else-if="activeView === 'messages'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="9.5" y="4.75" width="11" height="2.5" rx="1.25" />
+          <rect x="12.5" y="10.75" width="8" height="2.5" rx="1.25" />
+          <rect x="15.5" y="16.75" width="5" height="2.5" rx="1.25" />
+          <path d="M3.5 6h3M5 4.5v3" />
+          <path d="M6.5 12h3M8 10.5v3" />
+          <path d="M9.5 18h3M11 16.5v3" />
+        </svg>
+        <svg v-else-if="activeSection === 'site'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
           <path d="M3.6 9h16.8" />
           <path d="M3.6 15h16.8" />
@@ -99,10 +130,11 @@ const isLhoraireAdmin = () => !!getIdentity()?.groups.includes('anonyme admins')
 // image into the JS bundle otherwise).
 const ASSET_BASE = '/widgets/topbar-assets/';
 
-// Icon paths for "home", "message" (chat) and the outline "world" (Site)
-// are from Tabler Icons (MIT), in both outline and filled variants (see
-// template for how they're used). The Games gamepad and the filled globe
-// are hand-drawn in the same 24x24 outline/filled style.
+// Icon paths for "home", "message" (chat), "cards" (Solitaire) and the
+// outline "world" (Site) are from Tabler Icons (MIT), in both outline and
+// filled variants (see template for how they're used). The Games gamepad,
+// the filled globe, the Embuscade tank and the l'horaire / message board
+// bullet lists are hand-drawn in the same 24x24 style.
 export default {
   name: 'TopBarWidget',
   props: {
