@@ -1,23 +1,28 @@
 <template>
   <div class="widget widget-main" :class="{ 'main-collapsed': collapsed, 'main-no-rail': railHidden }" @scroll="onScroll">
-    <p v-if="view === 'blog' && !blogComponent" class="main-status">Loading…</p>
-    <component v-else-if="view === 'blog'" :is="blogComponent" :key="blogReloadKey" :data="{ post }" title="" />
-    <p v-else-if="view === 'solitaire' && !solitaireComponent" class="main-status">Loading…</p>
-    <component v-else-if="view === 'solitaire'" :is="solitaireComponent" :data="{}" title="" />
-    <p v-if="view === 'chat' && !chatComponent" class="main-status">Loading…</p>
-    <component v-else-if="view === 'chat'" :is="chatComponent" :data="{}" title="" />
-    <p v-if="view === 'embuscade' && !embuscadeComponent" class="main-status">Loading…</p>
-    <component v-else-if="view === 'embuscade'" :is="embuscadeComponent" :data="{}" title="" />
-    <SectionPage v-if="view === 'games'" heading="Games" :entries="gameEntries" />
-    <SectionPage v-if="view === 'site'" heading="Site" :entries="siteEntries" />
-    <p v-if="view === 'messages' && !boardComponent" class="main-status">Loading…</p>
-    <component v-else-if="view === 'messages'" :is="boardComponent" :data="{ board }" title="" />
-    <p v-if="isAccountView && !accountComponent" class="main-status">Loading…</p>
-    <component v-else-if="isAccountView" :is="accountComponent" :data="{ view }" title="" />
-    <p v-if="view === 'subscribe' && !subscribeComponent" class="main-status">Loading…</p>
-    <component v-else-if="view === 'subscribe'" :is="subscribeComponent" :data="{}" title="" />
-    <p v-if="view === 'lhoraire' && !lhoraireComponent" class="main-status">Loading…</p>
-    <component v-else-if="view === 'lhoraire'" :is="lhoraireComponent" :data="{}" title="" />
+    <!-- Height passes straight through (the full-height views -- chat,
+         the games, l'horaire -- size to it), except while the topbar is
+         shrunk by scrolling: see .main-inner-held. -->
+    <div class="main-inner" :class="{ 'main-inner-held': collapsed && topbarMode === 'scroll' }">
+      <p v-if="view === 'blog' && !blogComponent" class="main-status">Loading…</p>
+      <component v-else-if="view === 'blog'" :is="blogComponent" :key="blogReloadKey" :data="{ post }" title="" />
+      <p v-else-if="view === 'solitaire' && !solitaireComponent" class="main-status">Loading…</p>
+      <component v-else-if="view === 'solitaire'" :is="solitaireComponent" :data="{}" title="" />
+      <p v-if="view === 'chat' && !chatComponent" class="main-status">Loading…</p>
+      <component v-else-if="view === 'chat'" :is="chatComponent" :data="{}" title="" />
+      <p v-if="view === 'embuscade' && !embuscadeComponent" class="main-status">Loading…</p>
+      <component v-else-if="view === 'embuscade'" :is="embuscadeComponent" :data="{}" title="" />
+      <SectionPage v-if="view === 'games'" heading="Games" :entries="gameEntries" />
+      <SectionPage v-if="view === 'site'" heading="Site" :entries="siteEntries" />
+      <p v-if="view === 'messages' && !boardComponent" class="main-status">Loading…</p>
+      <component v-else-if="view === 'messages'" :is="boardComponent" :data="{ board }" title="" />
+      <p v-if="isAccountView && !accountComponent" class="main-status">Loading…</p>
+      <component v-else-if="isAccountView" :is="accountComponent" :data="{ view }" title="" />
+      <p v-if="view === 'subscribe' && !subscribeComponent" class="main-status">Loading…</p>
+      <component v-else-if="view === 'subscribe'" :is="subscribeComponent" :data="{}" title="" />
+      <p v-if="view === 'lhoraire' && !lhoraireComponent" class="main-status">Loading…</p>
+      <component v-else-if="view === 'lhoraire'" :is="lhoraireComponent" :data="{}" title="" />
+    </div>
   </div>
 </template>
 
@@ -239,9 +244,21 @@ export default {
     // window (see TopBarWidget.vue/RightRailWidget.vue). Only matters in
     // 'scroll' mode -- in 'collapsed' mode the bar stays pinned regardless
     // of scroll position, set once already by onRoute.
+    //
+    // Shrinks past SCROLL_THRESHOLD -- or on reaching the bottom of a page
+    // that overflows by less than that, so any page with a scrollbar can
+    // shrink it. Expands only back at the very top: the gap between the two
+    // keeps it from flickering around the threshold, and .main-inner-held
+    // keeps the shrunk page scrolled down until then.
     onScroll(event) {
       if (this.topbarMode !== 'scroll') return;
-      this.setCollapsed(event.target.scrollTop > SCROLL_THRESHOLD);
+      const el = event.target;
+      if (!this.collapsed) {
+        const atBottom = el.scrollTop > 0 && el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
+        if (el.scrollTop > SCROLL_THRESHOLD || atBottom) this.setCollapsed(true);
+      } else if (el.scrollTop <= 0) {
+        this.setCollapsed(false);
+      }
     },
     setRailHidden(value) {
       if (value === this.railHidden) return;
@@ -273,6 +290,22 @@ export default {
   overflow-y: auto;
   box-sizing: border-box;
   transition: margin-top 0.25s ease, height 0.25s ease;
+}
+
+/* Shrinking the topbar on scroll gives this container 191px more height
+   (127px on a phone). Content only a little taller than the expanded
+   space then fits entirely, the browser snaps scrollTop back to 0, the
+   topbar expands again, and the page bounces -- the topbar could never
+   be shrunk. While shrunk by scrolling, the content is held at least
+   SCROLL_THRESHOLD + 1px taller than the container, so it stays scrolled
+   down -- onScroll expands it only back at the very top. */
+.main-inner {
+  height: 100%;
+}
+
+.main-inner-held {
+  height: auto;
+  min-height: calc(100% + 11px);
 }
 
 /* The rail is hidden in this view (viewChrome), so there's nothing
