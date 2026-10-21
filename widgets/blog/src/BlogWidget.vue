@@ -19,8 +19,13 @@
     <div class="contact-anchor">
       <div class="contact" :class="{ 'contact-open': contactOpen }">
         <div id="blog-contact-panel" class="contact-panel">
-          <span class="contact-address">{{ WEBMASTER }}</span>
-          <a class="contact-button" :href="`mailto:${WEBMASTER}`">Email</a>
+          <a class="contact-address" :href="`mailto:${WEBMASTER}`">{{ WEBMASTER }}</a>
+          <span class="contact-buttons">
+            <a class="contact-button" :href="subscribePath" @click="onSubscribeClick">Subscribe</a>
+            <!-- A real file URL (packages/static-server serves it), so no
+                 in-app navigation: browsers show or offer the feed. -->
+            <a class="contact-button" href="/rss.xml">RSS</a>
+          </span>
         </div>
         <button
           type="button" class="contact-toggle" aria-label="Contact" aria-controls="blog-contact-panel"
@@ -53,6 +58,9 @@ export default {
     return { posts: [], status: 'loading', contactOpen: false, WEBMASTER };
   },
   computed: {
+    subscribePath() {
+      return sitePath('subscribe');
+    },
     // data.post is the post the URL names (/blog/<slug>, passed down by
     // MainWidget.vue); with none, or one that doesn't exist, the newest
     // is open.
@@ -78,6 +86,11 @@ export default {
       });
   },
   methods: {
+    onSubscribeClick(event) {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      navigate(this.subscribePath);
+    },
     // Brings the URL's post to the top of MainWidget.vue's scroll
     // container -- on a deep link, and on clicking a post further down
     // (the one above it collapsing would otherwise leave it wherever that
@@ -216,6 +229,18 @@ export default {
 
 .contact-address {
   white-space: nowrap;
+  color: inherit;
+  text-decoration: none;
+}
+
+.contact-address:hover,
+.contact-address:focus-visible {
+  text-decoration: underline;
+}
+
+.contact-buttons {
+  display: flex;
+  gap: 8px;
 }
 
 .contact-button {

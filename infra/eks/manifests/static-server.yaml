@@ -24,6 +24,10 @@ spec:
         app: static-server
       annotations:
         consul.hashicorp.com/connect-inject: "true"
+        # widgetgrid-server, for /rss.xml and /email/unsubscribe (see
+        # packages/static-server/src/edgeRoutes.js): the sidecar listens on
+        # 127.0.0.1:50051 and carries the call over the mesh.
+        consul.hashicorp.com/connect-service-upstreams: "widgetgrid-server:50051"
     spec:
       # false, not the k8s default true: without this, Kubernetes injects a
       # Docker-links-style `STATIC_SERVER_PORT=tcp://<clusterIP>:8081` env
@@ -43,6 +47,9 @@ spec:
           ports:
             - containerPort: 8081
               name: http
+          env:
+            - name: WIDGETGRID_GRPC_ADDR
+              value: "127.0.0.1:50051"
           # No app-level health endpoint (sirv doesn't provide one) -- a
           # bare TCP check is a reasonable stand-in, same reasoning as
           # widgetgrid-server.yaml's probes.

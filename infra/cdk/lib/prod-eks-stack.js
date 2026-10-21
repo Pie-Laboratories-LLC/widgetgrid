@@ -7,6 +7,7 @@ import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { addonVersion, addCoreAddons } from './eks-versions.js';
 import { ENVOY_GATEWAY_NODE_PORT } from './eks-stack.js';
+import { EMAIL_DOMAIN } from './dns-stack.js';
 
 // Same person deploys both environments -- see eks-stack.js's identical
 // constant for the full reasoning (authenticationMode: API means this
@@ -153,6 +154,12 @@ export class ProdEksStack extends Stack {
       resources: ['*'],
     }));
     this.blogBucket.grantRead(serverRole);
+    // Blog subscription emails (packages/server/src/emailSender.js), from
+    // the SES domain identity in dns-stack.js only.
+    serverRole.addToPolicy(new iam.PolicyStatement({
+      actions: ['ses:SendEmail'],
+      resources: [this.formatArn({ service: 'ses', resource: 'identity', resourceName: EMAIL_DOMAIN })],
+    }));
 
     const serverPodIdentity = new eks.CfnPodIdentityAssociation(this, 'WidgetgridServerPodIdentity', {
       clusterName: cluster.clusterName,

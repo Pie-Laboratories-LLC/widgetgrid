@@ -18,6 +18,10 @@ import { createAuthContext, createCognitoVerifiers } from './authContext.js';
 import { createPushSender } from './pushSender.js';
 import { createPushService } from './services/pushService.js';
 import { createDeviceActivity } from './deviceActivity.js';
+import { createConsoleEmailSender, createSesEmailSender } from './emailSender.js';
+import { createTurnstileVerifier } from './turnstile.js';
+import { createSubscriptionService } from './services/subscriptionService.js';
+import { createPostMailer } from './postMailer.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const HOST = process.env.GRPC_SERVER_HOST ?? '127.0.0.1';
@@ -57,6 +61,20 @@ const OWNER_EMAIL = process.env.OWNER_EMAIL ?? '';
 const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY ?? '';
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY ?? '';
 const VAPID_SUBJECT = process.env.VAPID_SUBJECT || 'mailto:webmaster@pie-laboratories.com';
+// The public origin every absolute link in an email or the RSS feed is
+// built on. `||` for the same envsubst-empty-string reason as
+// BLOG_ASSETS_BASE_URL above.
+const SITE_ORIGIN = process.env.SITE_ORIGIN || 'http://localhost:5173';
+// 'console' (default, local dev) logs emails instead of sending; 'ses'
+// (infra/eks/manifests/widgetgrid-server.yaml) sends via Amazon SES -- see
+// emailSender.js.
+const EMAIL_PROVIDER = process.env.EMAIL_PROVIDER ?? 'console';
+const EMAIL_FROM = process.env.EMAIL_FROM || 'Pie Laboratories <news@pie-laboratories.com>';
+const EMAIL_REPLY_TO = process.env.EMAIL_REPLY_TO || 'webmaster@pie-laboratories.com';
+// Unset = captcha checks skipped (local dev) -- see turnstile.js.
+const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY ?? '';
+// How often postMailer.js looks for a post to email subscribers about.
+const POST_MAILER_INTERVAL_MS = Number(process.env.POST_MAILER_INTERVAL_MS ?? 60_000);
 
 export function startServer() {
   const pool = getPool();
@@ -75,14 +93,21 @@ export function startServer() {
   const authContext = createAuthContext({ pool, verifyAccessToken });
   const pushSender = createPushSender({ pool, publicKey: VAPID_PUBLIC_KEY, privateKey: VAPID_PRIVATE_KEY, subject: VAPID_SUBJECT });
   const deviceActivity = createDeviceActivity();
+  const emailSender = EMAIL_PROVIDER === 'ses'
+    ? createSesEmailSender({ from: EMAIL_FROM, replyTo: EMAIL_REPLY_TO })
+    : createConsoleEmailSender();
+  const captcha = createTurnstileVerifier({ secretKey: TURNSTILE_SECRET_KEY });
 
   const server = new grpc.Server();
   server.addService(proto.PageService.service, createPageService({ pool, pagesRepo, layoutNodesRepo }));
   server.addService(proto.WidgetService.service, createWidgetService({ pool, widgetsRepo }));
-  server.addService(proto.BlogService.service, createBlogService({ blogSource, blogChangeNotifier }));
+  server.addService(proto.BlogService.service, createBlogService({ blogSource, blogChangeNotifier, siteOrigin: SITE_ORIGIN }));
   server.addService(proto.AuthService.service, createAuthService({ pool, verifyIdToken, ownerEmail: OWNER_EMAIL }));
   server.addService(proto.PushService.service, createPushService({ pool, authContext, pushSender, deviceActivity }));
   server.addService(proto.ChatService.service, createChatService({ pool, authContext, pushSender, deviceActivity, ownerPhoneNumber: OWNER_PHONE_NUMBER, smsSender }));
+  server.addService(proto.SubscriptionService.service, createSubscriptionService({ pool, authContext, emailSender, captcha, siteOrigin: SITE_ORIGIN }));
+
+  createPostMailer({ pool, blogSource, emailSender, siteOrigin: SITE_ORIGIN, intervalMs: POST_MAILER_INTERVAL_MS }).start();
 
   return new Promise((resolve, reject) => {
     server.bindAsync(`${HOST}:${PORT}`, grpc.ServerCredentials.createInsecure(), (err, boundPort) => {

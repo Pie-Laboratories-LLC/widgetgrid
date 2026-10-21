@@ -3,6 +3,7 @@ import vue from '@vitejs/plugin-vue';
 import { externalizeVue } from '@widgetgrid/vite-widget-lib/externalizeVue.js';
 import path from 'node:path';
 import sirv from 'sirv';
+import { createEdgeRoutes } from '../static-server/src/edgeRoutes.js';
 
 // The blog widget's rendered HTML has root-relative image URLs
 // (/blog-assets/<postDir>/<file> -- see blogSource.js's rewriteImageHref),
@@ -22,8 +23,23 @@ function serveBlogAssets() {
   };
 }
 
+// /rss.xml and /email/unsubscribe, served in production by
+// packages/static-server's edgeRoutes.js -- mounted here too so they work
+// against a local backend. They speak plain gRPC to widgetgrid-server
+// (WIDGETGRID_GRPC_ADDR); with the local-k8s/ rig that's a port-forward,
+// see local-k8s/README.md.
+function serveEdgeRoutes() {
+  return {
+    name: 'serve-edge-routes',
+    configureServer(server) {
+      const edgeRoutes = createEdgeRoutes({ grpcAddr: process.env.WIDGETGRID_GRPC_ADDR ?? '127.0.0.1:50051' });
+      server.middlewares.use((req, res, next) => edgeRoutes(req, res, next));
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [vue(), externalizeVue(), serveBlogAssets()],
+  plugins: [vue(), externalizeVue(), serveBlogAssets(), serveEdgeRoutes()],
   optimizeDeps: {
     exclude: ['vue'],
     // @widgetgrid/proto-gen-web (proto/scripts/gen-web.mjs's output) is

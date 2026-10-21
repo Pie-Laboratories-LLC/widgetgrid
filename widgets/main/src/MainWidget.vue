@@ -10,6 +10,8 @@
     <component v-else-if="view === 'embuscade'" :is="embuscadeComponent" :data="{}" title="" />
     <SectionPage v-if="view === 'games'" heading="Games" :entries="gameEntries" />
     <SectionPage v-if="view === 'site'" heading="Site" :entries="siteEntries" />
+    <p v-if="view === 'subscribe' && !subscribeComponent" class="main-status">Loading…</p>
+    <component v-else-if="view === 'subscribe'" :is="subscribeComponent" :data="{}" title="" />
     <p v-if="view === 'lhoraire' && !lhoraireComponent" class="main-status">Loading…</p>
     <component v-else-if="view === 'lhoraire'" :is="lhoraireComponent" :data="{}" title="" />
   </div>
@@ -69,7 +71,7 @@ export default {
   data() {
     return {
       view: null, post: null, blogComponent: null, solitaireComponent: null, chatComponent: null,
-      embuscadeComponent: null, lhoraireComponent: null, collapsed: false, railHidden: false,
+      embuscadeComponent: null, lhoraireComponent: null, subscribeComponent: null, collapsed: false, railHidden: false,
       blogReloadKey: 0, isLhoraireAdmin: isLhoraireAdmin(),
     };
   },
@@ -146,6 +148,7 @@ export default {
     // lhoraire-server enforces it).
     siteEntries() {
       const entries = [
+        { view: 'subscribe', title: 'Email updates', description: 'An email whenever a new blog post goes up.' },
         { view: 'messages', title: 'Message boards', description: 'Feedback and discussion about the games and the site.', soon: true },
       ];
       if (this.isLhoraireAdmin) {
@@ -180,6 +183,11 @@ export default {
       if (this.view === 'lhoraire' && !this.lhoraireComponent) {
         import(/* @vite-ignore */ '/widgets/lhoraire.js').then((mod) => {
           this.lhoraireComponent = mod.default ?? mod;
+        });
+      }
+      if (this.view === 'subscribe' && !this.subscribeComponent) {
+        import(/* @vite-ignore */ '/widgets/subscribe.js').then((mod) => {
+          this.subscribeComponent = mod.default ?? mod;
         });
       }
       if (this.view === 'embuscade' && !this.embuscadeComponent) {

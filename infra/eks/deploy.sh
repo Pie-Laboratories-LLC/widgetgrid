@@ -99,9 +99,17 @@ MIGRATE_IMAGE="${SERVER_REPO}:migrate-${IMAGE_TAG}"  # shares the server repo --
 aws ecr get-login-password --region "$REGION" | \
   docker login --username AWS --password-stdin "${SERVER_REPO%%/*}"
 
-docker build -f packages/server/Dockerfile -t "$SERVER_IMAGE" .
+# The EKS nodes are x86-64 (t3.medium, see infra/cdk/lib/prod-eks-stack.js).
+# Without an explicit platform, Docker builds for the host's own
+# architecture -- arm64 on an Apple Silicon Mac -- and those images fail
+# on the nodes with "exec format error" (the static image doesn't even
+# build there: grpc-web publishes no linux-arm64 protoc plugin). Docker
+# Desktop emulates amd64, so this works from either kind of machine, just
+# slower on a Mac.
+IMAGE_PLATFORM=linux/amd64
+docker build --platform "$IMAGE_PLATFORM" -f packages/server/Dockerfile -t "$SERVER_IMAGE" .
 docker push "$SERVER_IMAGE"
-docker build -f packages/lhoraire-server/Dockerfile -t "$LHORAIRE_IMAGE" .
+docker build --platform "$IMAGE_PLATFORM" -f packages/lhoraire-server/Dockerfile -t "$LHORAIRE_IMAGE" .
 docker push "$LHORAIRE_IMAGE"
 
 # packages/static-server/Dockerfile needs widgets/solitaire's build, which
@@ -132,15 +140,25 @@ rm -rf widgets/embuscade/.vendor-src
 mkdir -p widgets/embuscade/.vendor-src/packages/client
 cp -r "${EMBUSCADE_SRC_DIR}/packages/client/dist" widgets/embuscade/.vendor-src/packages/client/dist
 
-docker build -f packages/static-server/Dockerfile -t "$STATIC_IMAGE" .
+# The Turnstile site key (public -- the subscribe form's captcha) is baked
+# into the widget bundles at build time. Read straight out of .env rather
+# than sourcing it here: .env is only sourced further down, deliberately
+# (see the widgetgrid-server secret step). Without it the bundles fall
+# back to Cloudflare's always-pass test key, which the real secret key
+# then rejects -- so subscribing would fail in production.
+TURNSTILE_SITE_KEY_BUILD=$( [ -f .env ] && sed -n 's/^TURNSTILE_SITE_KEY=//p' .env | tail -1 )
+if [ -z "$TURNSTILE_SITE_KEY_BUILD" ]; then
+  echo "WARNING: no TURNSTILE_SITE_KEY in .env -- the subscribe form's captcha will not work in production." >&2
+fi
+docker build --platform "$IMAGE_PLATFORM" -f packages/static-server/Dockerfile --build-arg VITE_TURNSTILE_SITE_KEY="$TURNSTILE_SITE_KEY_BUILD" -t "$STATIC_IMAGE" .
 docker push "$STATIC_IMAGE"
 rm -rf widgets/solitaire/.vendor-src widgets/embuscade/.vendor-src
-docker build -f infra/eks/migrate.Dockerfile -t "$MIGRATE_IMAGE" .
+docker build --platform "$IMAGE_PLATFORM" -f infra/eks/migrate.Dockerfile -t "$MIGRATE_IMAGE" .
 docker push "$MIGRATE_IMAGE"
 
 echo
 echo "== embuscade-server image (from ${EMBUSCADE_SRC_DIR}'s own Dockerfile -- a separate repo/build, not part of this one) =="
-docker build -t "$EMBUSCADE_IMAGE" "$EMBUSCADE_SRC_DIR"
+docker build --platform "$IMAGE_PLATFORM" -t "$EMBUSCADE_IMAGE" "$EMBUSCADE_SRC_DIR"
 docker push "$EMBUSCADE_IMAGE"
 
 echo
@@ -198,6 +216,7 @@ kubectl create secret generic widgetgrid-server-secret \
   --from-literal=OWNER_EMAIL="${OWNER_EMAIL:-}" \
   --from-literal=VAPID_PUBLIC_KEY="${VAPID_PUBLIC_KEY:-}" \
   --from-literal=VAPID_PRIVATE_KEY="${VAPID_PRIVATE_KEY:-}" \
+  --from-literal=TURNSTILE_SECRET_KEY="${TURNSTILE_SECRET_KEY:-}" \
   --namespace widgetgrid \
   --dry-run=client -o yaml | kubectl apply -f -
 # lhoraire-server needs only the database (see its manifest).

@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package widgetgrid.v1;
+
+// Email updates on new blog posts (/site/subscribe). Double opt-in: a
+// subscription is pending until the emailed confirmation link is used --
+// except a signed-in caller subscribing their own account email, which
+// Cognito/Identity Center has already verified.
+
+message SubscribeRequest {
+  string email = 1;
+  // Cloudflare Turnstile response token from the form. Not needed for the
+  // signed-in own-address case.
+  string captcha_token = 2;
+}
+
+message SubscribeResponse {
+  // "confirmation_sent" or "subscribed". The former is also the answer for
+  // an address that's already subscribed, so the form can't be used to
+  // find out who is.
+  string outcome = 1;
+}
+
+message ConfirmSubscriptionRequest {
+  string token = 1;
+}
+
+message ConfirmSubscriptionResponse {
+  string email = 1;
+}
+
+message UnsubscribeRequest {
+  string token = 1;
+}
+
+message UnsubscribeResponse {
+  // Empty when the token matched nothing (already unsubscribed) -- still
+  // a success: the address isn't subscribed either way.
+  string email = 1;
+}
+
+service SubscriptionService {
+  rpc Subscribe(SubscribeRequest) returns (SubscribeResponse);
+  // NOT_FOUND for an unknown, already-used or expired link.
+  rpc ConfirmSubscription(ConfirmSubscriptionRequest) returns (ConfirmSubscriptionResponse);
+  rpc Unsubscribe(UnsubscribeRequest) returns (UnsubscribeResponse);
+}

@@ -1,8 +1,10 @@
 import { Stack } from 'aws-cdk-lib';
 import { HostedZone, MxRecord, TxtRecord } from 'aws-cdk-lib/aws-route53';
 import { Certificate, CertificateValidation } from 'aws-cdk-lib/aws-certificatemanager';
+import { EmailIdentity, Identity } from 'aws-cdk-lib/aws-ses';
 
 const DOMAIN = 'pie-laboratories.com';
+export const EMAIL_DOMAIN = DOMAIN;
 
 // Split from DevGatewayStack deliberately: this holds the two things that
 // should almost never be torn down/recreated -- the hosted zone and the
@@ -53,6 +55,28 @@ export class DnsStack extends Stack {
     new TxtRecord(this, 'MailSpf', {
       zone: this.hostedZone,
       values: ['v=spf1 include:spf.improvmx.com ~all'],
+    });
+
+    // Outbound mail from the site itself (blog subscription confirmations
+    // and new-post emails, see packages/server/src/emailSender.js) goes
+    // through SES -- separate from the inbound forwarding above, which it
+    // doesn't touch. publicHostedZone has CDK write the three DKIM CNAMEs
+    // into this zone, and the custom MAIL FROM gets its own MX + SPF on the
+    // mail. subdomain -- so the root SPF record above (ImprovMX's) stays
+    // as is, while SPF and DKIM both align with the From domain for DMARC.
+    // A new SES account starts in the sandbox (sends only to verified
+    // addresses) -- production access is requested once, by hand, in the
+    // SES console.
+    new EmailIdentity(this, 'EmailIdentity', {
+      identity: Identity.publicHostedZone(this.hostedZone),
+      mailFromDomain: `mail.${DOMAIN}`,
+    });
+    // Monitor-only (p=none): asks receivers to report, enforces nothing.
+    // Gmail and Yahoo expect a DMARC record from anyone sending in bulk.
+    new TxtRecord(this, 'MailDmarc', {
+      zone: this.hostedZone,
+      recordName: '_dmarc',
+      values: [`v=DMARC1; p=none; rua=mailto:webmaster@${DOMAIN}`],
     });
   }
 }

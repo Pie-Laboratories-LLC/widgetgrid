@@ -62,6 +62,14 @@ spec:
               value: ${BLOG_S3_BUCKET}
             - name: BLOG_ASSETS_BASE_URL
               value: ${BLOG_ASSETS_BASE_URL}
+            # Blog subscription emails via SES (see emailSender.js; the
+            # domain identity is infra/cdk/lib/dns-stack.js). SITE_ORIGIN
+            # is what every emailed and RSS link is built on.
+            # TURNSTILE_SECRET_KEY comes from widgetgrid-server-secret.
+            - name: EMAIL_PROVIDER
+              value: ses
+            - name: SITE_ORIGIN
+              value: https://www.pie-laboratories.com
           envFrom:
             - secretRef:
                 name: widgetgrid-server-secret

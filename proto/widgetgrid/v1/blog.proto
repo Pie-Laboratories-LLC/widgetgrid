@@ -54,8 +54,18 @@ message NewPostEvent {
   string published_at = 3;
 }
 
+message GetFeedRequest {}
+
+message GetFeedResponse {
+  // The whole RSS 2.0 document (see packages/server/src/rssFeed.js).
+  string rss_xml = 1;
+}
+
 service BlogService {
   rpc ListBlogPosts(ListBlogPostsRequest) returns (ListBlogPostsResponse);
+  // The blog as RSS, for packages/static-server's /rss.xml -- called
+  // over the mesh, not from browsers.
+  rpc GetFeed(GetFeedRequest) returns (GetFeedResponse);
   // Server push for "a new post appeared in the content source" (see
   // packages/server/src/blogChangeNotifier.js for what actually detects
   // that). grpc-web supports server-streaming in-browser fine -- no

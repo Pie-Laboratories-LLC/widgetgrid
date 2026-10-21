@@ -54,6 +54,12 @@ RUN npm run proto:fetch-plugin && npm run proto:gen-web
 # (vendor-vue.mjs + copy-widgets.mjs) copies each widget's dist/*.js into
 # web-app's public/ before `vite build` runs, so it needs to find them
 # already built.
+# The subscribe form's public Turnstile site key (infra/eks/deploy.sh
+# passes it from .env); Vite bakes VITE_* environment variables into the
+# bundles.
+ARG VITE_TURNSTILE_SITE_KEY=
+ENV VITE_TURNSTILE_SITE_KEY=$VITE_TURNSTILE_SITE_KEY
+
 RUN npm run build:widgets
 RUN npm run build:web
 RUN npm run assemble-static
@@ -83,6 +89,8 @@ COPY widgets/blog/package.json widgets/blog/package.json
 RUN npm ci --omit=dev --ignore-scripts --workspace packages/static-server --include-workspace-root
 
 COPY --chown=node:node packages/static-server/src packages/static-server/src
+# edgeRoutes.js loads blog.proto/subscription.proto at runtime.
+COPY --chown=node:node proto proto
 COPY --from=build --chown=node:node /app/dist-static ./dist-static
 
 USER node

@@ -1,9 +1,13 @@
 import { createServer } from 'node:http';
 import path from 'node:path';
 import sirv from 'sirv';
+import { createEdgeRoutes } from './edgeRoutes.js';
 
 const PORT = process.env.STATIC_SERVER_PORT ?? '8081';
 const DIR = path.resolve(import.meta.dirname, process.env.STATIC_DIR ?? '../../../dist-static');
+// widgetgrid-server, for /rss.xml and /email/unsubscribe (see
+// edgeRoutes.js) -- this pod's Consul upstream in EKS.
+const WIDGETGRID_GRPC_ADDR = process.env.WIDGETGRID_GRPC_ADDR ?? '127.0.0.1:50051';
 
 // single: true falls back to index.html for any request that doesn't match
 // a real file on disk -- so client-side routes (e.g. /some-page-slug) work,
@@ -27,6 +31,8 @@ const DIR = path.resolve(import.meta.dirname, process.env.STATIC_DIR ?? '../../.
 // content hasn't actually changed.
 const serve = sirv(DIR, { single: true, etag: true, maxAge: 0 });
 
-createServer((req, res) => serve(req, res)).listen(PORT, () => {
+const edgeRoutes = createEdgeRoutes({ grpcAddr: WIDGETGRID_GRPC_ADDR });
+
+createServer((req, res) => edgeRoutes(req, res, () => serve(req, res))).listen(PORT, () => {
   console.log(`static server serving ${DIR} on http://127.0.0.1:${PORT}`);
 });

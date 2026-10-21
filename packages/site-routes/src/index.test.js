@@ -12,6 +12,7 @@ test('parseSitePath maps each view path, with or without a trailing slash', () =
   assert.deepEqual(parseSitePath('/games/embuscade/'), { view: 'embuscade', post: null });
   assert.deepEqual(parseSitePath('/site/'), { view: 'site', post: null });
   assert.deepEqual(parseSitePath('/site/lhoraire'), { view: 'lhoraire', post: null });
+  assert.deepEqual(parseSitePath('/site/subscribe'), { view: 'subscribe', post: null });
   assert.deepEqual(parseSitePath('/chat'), { view: 'chat', post: null });
 });
 
@@ -22,7 +23,7 @@ test('parseSitePath returns null for anything that is not a view', () => {
 });
 
 test('sitePath round-trips through parseSitePath', () => {
-  for (const view of ['blog', 'games', 'solitaire', 'embuscade', 'site', 'lhoraire', 'chat']) {
+  for (const view of ['blog', 'games', 'solitaire', 'embuscade', 'site', 'lhoraire', 'subscribe', 'chat']) {
     assert.equal(parseSitePath(sitePath(view)).view, view);
   }
   assert.deepEqual(parseSitePath(sitePath('blog', 'what-the')), { view: 'blog', post: 'what-the' });

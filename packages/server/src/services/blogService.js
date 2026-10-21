@@ -1,11 +1,21 @@
 import grpc from '@grpc/grpc-js';
+import { buildRssFeed } from '../rssFeed.js';
 
-export function createBlogService({ blogSource, blogChangeNotifier }) {
+export function createBlogService({ blogSource, blogChangeNotifier, siteOrigin }) {
   return {
     async ListBlogPosts(call, callback) {
       try {
         const posts = await blogSource.listPosts();
         callback(null, { posts });
+      } catch (err) {
+        callback({ code: grpc.status.INTERNAL, message: err.message });
+      }
+    },
+
+    async GetFeed(call, callback) {
+      try {
+        const posts = await blogSource.listPosts();
+        callback(null, { rssXml: buildRssFeed({ siteOrigin, posts }) });
       } catch (err) {
         callback({ code: grpc.status.INTERNAL, message: err.message });
       }

@@ -22,6 +22,7 @@ const VIEW_PATHS = {
   embuscade: '/games/embuscade',
   site: '/site',
   lhoraire: '/site/lhoraire',
+  subscribe: '/site/subscribe',
   chat: '/chat',
 };
 
@@ -34,6 +35,7 @@ const VIEW_SECTIONS = {
   embuscade: 'games',
   site: 'site',
   lhoraire: 'site',
+  subscribe: 'site',
   chat: 'chat',
 };
 

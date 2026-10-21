@@ -75,6 +75,17 @@ EOF
 npm run build:widgets
 npm run dev:web
 ```
+`/rss.xml` and `/email/unsubscribe` (packages/static-server's
+edgeRoutes.js, which the Vite dev server mounts too) call
+widgetgrid-server over plain gRPC rather than through this gateway, so
+they need a port-forward running alongside `dev:web`:
+```
+kubectl port-forward -n widgetgrid deploy/widgetgrid-server 50051:50051
+```
+Emails (subscription confirmations, new-post emails) aren't sent locally
+-- they're printed to widgetgrid-server's log, confirmation links
+included: `kubectl logs -n widgetgrid deploy/widgetgrid-server -c widgetgrid-server`.
+
 (Embuscade needs ~/GIT/embuscade's `packages/client` built first --
 see widgets/embuscade/scripts/vendor-embuscade.mjs. setup.sh builds and
 deploys its server from the same repo, or skips it if it isn't there.)
