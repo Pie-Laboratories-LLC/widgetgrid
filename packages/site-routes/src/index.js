@@ -71,6 +71,10 @@ const VIEW_CHROME = {
   chat: { topbar: 'collapsed', railHidden: false },
   // The issue tree scrolls inside its own grid and wants the room.
   lhoraire: { topbar: 'collapsed', railHidden: true },
+  // Nested replies need the width -- with the rail, a phone left a deep
+  // reply a narrow column. The topbar still shrinks on scroll, as on the
+  // blog.
+  messages: { topbar: 'scroll', railHidden: true },
 };
 
 export function viewChrome(view) {
