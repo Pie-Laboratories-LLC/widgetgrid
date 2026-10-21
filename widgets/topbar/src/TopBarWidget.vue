@@ -11,7 +11,6 @@
       :width="collapsed ? 85 : 339" :height="collapsed ? 64 : 255"
       :alt="data?.alt || 'Pie Laboratories LLC'"
       class="topbar-logo"
-      @click="onLogoClick"
     />
     <!-- The webmaster address lives in the blog's contact panel now
          (BlogWidget.vue), not here. -->
@@ -140,9 +139,8 @@ export default {
     window.addEventListener(IDENTITY_CHANGED_EVENT, this.onIdentityChanged);
 
     // Preloaded like blog is in MainWidget.vue, not lazy on first click:
-    // this widget needs to render a "log out" link immediately if the
-    // owner's browser already holds a session (see LoginWidget.vue), not
-    // just after the 5-click gesture reveals the login panel.
+    // its "Log in" / "Log out" link is part of the bar from the start (see
+    // LoginWidget.vue).
     import(/* @vite-ignore */ '/widgets/login.js').then((mod) => {
       this.loginComponent = mod.default ?? mod;
     });
@@ -200,13 +198,6 @@ export default {
     // separate top-level badge needed for that case.
     onChatEvent() {
       if (this.activeView !== 'chat') this.hasNewChatMessage = true;
-    },
-    // LoginWidget.vue listens for this on window to run its own 5-clicks-
-    // within-2-seconds detection -- it owns that state machine (and the
-    // click-count reset timer), this only relays the raw click since it's
-    // the widget that actually owns the logo DOM element.
-    onLogoClick() {
-      window.dispatchEvent(new CustomEvent('widgetgrid:logo-click'));
     },
     // A request to the host app, which owns the router (and asks the view
     // being left whether it may go -- e.g. EmbuscadeWidget.vue mid-game).
@@ -266,7 +257,6 @@ export default {
   flex-shrink: 1;
   min-width: 0;
   object-fit: cover;
-  cursor: pointer;
   transition: height 0.25s ease;
 }
 

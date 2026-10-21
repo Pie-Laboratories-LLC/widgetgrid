@@ -22,6 +22,8 @@ import { createConsoleEmailSender, createSesEmailSender } from './emailSender.js
 import { createTurnstileVerifier } from './turnstile.js';
 import { createSubscriptionService } from './services/subscriptionService.js';
 import { createPostMailer } from './postMailer.js';
+import { createCognitoRegistrar, createConsoleRegistrar } from './registrar.js';
+import { createAccountService } from './services/accountService.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const HOST = process.env.GRPC_SERVER_HOST ?? '127.0.0.1';
@@ -73,6 +75,13 @@ const EMAIL_FROM = process.env.EMAIL_FROM || 'Pie Laboratories <news@pie-laborat
 const EMAIL_REPLY_TO = process.env.EMAIL_REPLY_TO || 'webmaster@pie-laboratories.com';
 // Unset = captcha checks skipped (local dev) -- see turnstile.js.
 const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY ?? '';
+// 'console' (default, local dev) keeps registrations in memory and logs
+// the verification code; 'cognito' (the EKS manifest) signs up in the real
+// user pool through its registration app client -- see registrar.js. The
+// client id/secret come from widgetgrid-server-secret (infra/eks/deploy.sh).
+const REGISTRAR = process.env.REGISTRAR ?? 'console';
+const COGNITO_REGISTRATION_CLIENT_ID = process.env.COGNITO_REGISTRATION_CLIENT_ID ?? '';
+const COGNITO_REGISTRATION_CLIENT_SECRET = process.env.COGNITO_REGISTRATION_CLIENT_SECRET ?? '';
 // How often postMailer.js looks for a post to email subscribers about.
 const POST_MAILER_INTERVAL_MS = Number(process.env.POST_MAILER_INTERVAL_MS ?? 60_000);
 
@@ -97,6 +106,9 @@ export function startServer() {
     ? createSesEmailSender({ from: EMAIL_FROM, replyTo: EMAIL_REPLY_TO })
     : createConsoleEmailSender();
   const captcha = createTurnstileVerifier({ secretKey: TURNSTILE_SECRET_KEY });
+  const registrar = REGISTRAR === 'cognito'
+    ? createCognitoRegistrar({ clientId: COGNITO_REGISTRATION_CLIENT_ID, clientSecret: COGNITO_REGISTRATION_CLIENT_SECRET })
+    : createConsoleRegistrar();
 
   const server = new grpc.Server();
   server.addService(proto.PageService.service, createPageService({ pool, pagesRepo, layoutNodesRepo }));
@@ -106,6 +118,7 @@ export function startServer() {
   server.addService(proto.PushService.service, createPushService({ pool, authContext, pushSender, deviceActivity }));
   server.addService(proto.ChatService.service, createChatService({ pool, authContext, pushSender, deviceActivity, ownerPhoneNumber: OWNER_PHONE_NUMBER, smsSender }));
   server.addService(proto.SubscriptionService.service, createSubscriptionService({ pool, authContext, emailSender, captcha, siteOrigin: SITE_ORIGIN }));
+  server.addService(proto.AccountService.service, createAccountService({ pool, authContext, registrar, captcha }));
 
   createPostMailer({ pool, blogSource, emailSender, siteOrigin: SITE_ORIGIN, intervalMs: POST_MAILER_INTERVAL_MS }).start();
 

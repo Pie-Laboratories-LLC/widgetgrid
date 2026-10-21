@@ -12,6 +12,7 @@
     "test:e2e": "node src/e2eClientTest.js"
   },
   "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.1111.0",
     "@aws-sdk/client-s3": "^3.1111.0",
     "@aws-sdk/client-sesv2": "^3.1111.0",
     "@aws-sdk/client-sns": "^3.1111.0",

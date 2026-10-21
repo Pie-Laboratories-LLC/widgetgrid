@@ -1,0 +1,8 @@
+{
+  "name": "@widgetgrid/turnstile-web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Loads and renders the Cloudflare Turnstile captcha. Shared by the widgets with forms anyone can submit (subscribe, register); bundled into each.",
+  "main": "src/index.js"
+}

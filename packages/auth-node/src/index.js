@@ -53,6 +53,8 @@ export function createAuthContext({ pool, verifyAccessToken, users = usersRepo }
       sub: user.cognito_sub,
       email: user.email,
       role: user.role,
+      // Null until chosen -- see accountService.js.
+      username: user.username ?? null,
       groups: claims['cognito:groups'] ?? [],
     };
     // Never cache past the token's own expiry.
@@ -63,6 +65,13 @@ export function createAuthContext({ pool, verifyAccessToken, users = usersRepo }
 
   return {
     getCaller,
+    // Drops this call's cached caller, so a change just made to the user
+    // row (e.g. a username chosen) is seen on the next call rather than
+    // up to CALLER_CACHE_MS later.
+    forget(call) {
+      const header = call.metadata.get('authorization')[0];
+      if (header?.startsWith('Bearer ')) cache.delete(header.slice('Bearer '.length));
+    },
     async isOwner(call) {
       return (await getCaller(call))?.role === 'owner';
     },

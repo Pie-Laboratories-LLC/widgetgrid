@@ -19,6 +19,9 @@ message RegisterSignInResponse {
   // Presence session for Logout; empty unless the caller is the owner.
   string session_token = 1;
   string role = 2;
+  // The user's public username; empty until they have one (see
+  // account.proto).
+  string username = 3;
 }
 
 message LogoutRequest {

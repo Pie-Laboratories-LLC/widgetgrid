@@ -4,6 +4,7 @@
 // in SAML assertions for custom apps, so it's looked up here by the email
 // the assertion does carry. Any lookup failure throws, which fails the
 // sign-in -- deliberately closed rather than issuing a token with no groups.
+// Site-registered accounts skip the lookup entirely (see the handler).
 import {
   IdentitystoreClient,
   GetUserIdCommand,
@@ -15,6 +16,11 @@ const client = new IdentitystoreClient({});
 const IdentityStoreId = process.env.IDENTITY_STORE_ID;
 
 export const handler = async (event) => {
+  // Accounts registered on the site itself (Cognito's own user directory,
+  // see ../pre-sign-up) aren't in Identity Center and have no groups --
+  // only federated users carry an `identities` attribute.
+  if (!event.request.userAttributes.identities) return event;
+
   const email = event.request.userAttributes.email;
   if (!email) throw new Error('no email attribute on user');
 

@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package widgetgrid.v1;
+
+// On-site registration (/site/register) and usernames. Logging in itself
+// stays on Cognito's hosted page (see packages/auth-web); this covers what
+// that page can't: the captcha, the username, and routing every sign-up
+// through the server so neither can be skipped. Flow: Register -> Cognito
+// emails a code -> ConfirmRegistration -> the browser logs in on the
+// hosted page -> AuthService.RegisterSignIn creates the users row and
+// claims the reserved username.
+
+message CheckUsernameRequest {
+  string username = 1;
+}
+
+message CheckUsernameResponse {
+  bool available = 1;
+  // Why not, when it isn't: a sentence for the form ("Usernames are 3-20
+  // letters, digits, _ or -." / "That username is taken.").
+  string problem = 2;
+}
+
+message RegisterRequest {
+  string email = 1;
+  string username = 2;
+  string password = 3;
+  // Cloudflare Turnstile response token.
+  string captcha_token = 4;
+}
+
+message RegisterResponse {}
+
+message ConfirmRegistrationRequest {
+  string email = 1;
+  // The 6-digit code Cognito emailed.
+  string code = 2;
+}
+
+message ConfirmRegistrationResponse {}
+
+message ResendRegistrationCodeRequest {
+  string email = 1;
+}
+
+message ResendRegistrationCodeResponse {}
+
+message ChooseUsernameRequest {
+  string username = 1;
+}
+
+message ChooseUsernameResponse {
+  // The caller's username now -- usernames are fixed once set, so if they
+  // already had one, it's that one, not the requested name.
+  string username = 1;
+}
+
+service AccountService {
+  rpc CheckUsername(CheckUsernameRequest) returns (CheckUsernameResponse);
+  // INVALID_ARGUMENT (bad email/username/password), ALREADY_EXISTS
+  // (username taken, or an account with that email exists),
+  // PERMISSION_DENIED (captcha). Messages are written for the form.
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc ConfirmRegistration(ConfirmRegistrationRequest) returns (ConfirmRegistrationResponse);
+  rpc ResendRegistrationCode(ResendRegistrationCodeRequest) returns (ResendRegistrationCodeResponse);
+  // Signed in, no username yet (Identity Center accounts, or a
+  // registration whose reservation lapsed before first sign-in).
+  rpc ChooseUsername(ChooseUsernameRequest) returns (ChooseUsernameResponse);
+}

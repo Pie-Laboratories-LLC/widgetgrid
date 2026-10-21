@@ -23,6 +23,9 @@ const VIEW_PATHS = {
   site: '/site',
   lhoraire: '/site/lhoraire',
   subscribe: '/site/subscribe',
+  login: '/site/login',
+  register: '/site/register',
+  account: '/site/account',
   chat: '/chat',
 };
 
@@ -36,6 +39,9 @@ const VIEW_SECTIONS = {
   site: 'site',
   lhoraire: 'site',
   subscribe: 'site',
+  login: 'site',
+  register: 'site',
+  account: 'site',
   chat: 'chat',
 };
 

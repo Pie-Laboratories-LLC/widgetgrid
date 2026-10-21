@@ -55,6 +55,20 @@ LHORAIRE_REPO="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/lhoraire-server"
 rds_outputs=$(aws cloudformation describe-stacks --region "$REGION" --stack-name "$RDS_STACK" --query 'Stacks[0].Outputs' --output json)
 DB_SECRET_ARN=$(echo "$rds_outputs" | jq -r '.[] | select(.OutputKey=="DbSecretArn") | .OutputValue')
 
+# widgetgrid-server signs people up through the user pool's registration
+# client (packages/server/src/registrar.js), which has a secret --
+# CloudFormation doesn't output secrets, so it's read from Cognito itself.
+identity_outputs=$(aws cloudformation describe-stacks --region "$REGION" --stack-name WidgetgridIdentityStack --query 'Stacks[0].Outputs' --output json)
+USER_POOL_ID=$(echo "$identity_outputs" | jq -r '.[] | select(.OutputKey=="UserPoolId") | .OutputValue')
+REGISTRATION_CLIENT_ID=$(echo "$identity_outputs" | jq -r '.[] | select(.OutputKey=="RegistrationClientId") | .OutputValue')
+if [ -z "$REGISTRATION_CLIENT_ID" ] || [ "$REGISTRATION_CLIENT_ID" = "null" ]; then
+  echo "WidgetgridIdentityStack has no RegistrationClientId output -- deploy it first (cdk deploy WidgetgridIdentityStack)." >&2
+  exit 1
+fi
+REGISTRATION_CLIENT_SECRET=$(aws cognito-idp describe-user-pool-client --region "$REGION" \
+  --user-pool-id "$USER_POOL_ID" --client-id "$REGISTRATION_CLIENT_ID" \
+  --query 'UserPoolClient.ClientSecret' --output text)
+
 # envsubst silently substitutes an empty string for any unset/empty
 # variable rather than failing -- confirmed the hard way that a manually
 # reproduced deploy step missing one of these produced a deployed manifest
@@ -217,6 +231,8 @@ kubectl create secret generic widgetgrid-server-secret \
   --from-literal=VAPID_PUBLIC_KEY="${VAPID_PUBLIC_KEY:-}" \
   --from-literal=VAPID_PRIVATE_KEY="${VAPID_PRIVATE_KEY:-}" \
   --from-literal=TURNSTILE_SECRET_KEY="${TURNSTILE_SECRET_KEY:-}" \
+  --from-literal=COGNITO_REGISTRATION_CLIENT_ID="$REGISTRATION_CLIENT_ID" \
+  --from-literal=COGNITO_REGISTRATION_CLIENT_SECRET="$REGISTRATION_CLIENT_SECRET" \
   --namespace widgetgrid \
   --dry-run=client -o yaml | kubectl apply -f -
 # lhoraire-server needs only the database (see its manifest).

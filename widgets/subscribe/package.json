@@ -11,6 +11,7 @@
     "@widgetgrid/auth-web": "*",
     "@widgetgrid/proto-gen-web": "*",
     "@widgetgrid/site-routes": "*",
+    "@widgetgrid/turnstile-web": "*",
     "@widgetgrid/vite-widget-lib": "*",
     "google-protobuf": "4.0.2",
     "grpc-web": "2.0.2"

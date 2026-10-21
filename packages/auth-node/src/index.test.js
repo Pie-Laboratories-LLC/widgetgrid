@@ -39,7 +39,7 @@ test('a verified token with no users row is anonymous (RegisterSignIn never ran)
 test('owner role comes from the users table, groups from the token', async () => {
   const { ctx } = context();
   const caller = await ctx.getCaller(call({ authorization: 'Bearer tok-sub-owner' }));
-  assert.deepEqual(caller, { userId: 'u1', sub: 'sub-owner', email: 'owner@example.com', role: 'owner', groups: ['anonyme users'] });
+  assert.deepEqual(caller, { userId: 'u1', sub: 'sub-owner', email: 'owner@example.com', role: 'owner', username: null, groups: ['anonyme users'] });
   assert.equal(await ctx.isOwner(call({ authorization: 'Bearer tok-sub-owner' })), true);
 });
 
@@ -54,4 +54,13 @@ test('a resolved caller is cached per token', async () => {
   await ctx.getCaller(c);
   await ctx.getCaller(c);
   assert.equal(lookups(), 1);
+});
+
+test('forget drops the cached caller so the next call looks the user up again', async () => {
+  const { ctx, lookups } = context();
+  const c = call({ authorization: 'Bearer tok-sub-owner' });
+  await ctx.getCaller(c);
+  ctx.forget(c);
+  await ctx.getCaller(c);
+  assert.equal(lookups(), 2);
 });

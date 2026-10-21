@@ -55,30 +55,8 @@
 <script>
 import { getIdentity, IDENTITY_CHANGED_EVENT } from '@widgetgrid/auth-web';
 import { sitePath, navigate } from '@widgetgrid/site-routes';
+import { renderTurnstile } from '@widgetgrid/turnstile-web';
 import { subscriptionClient } from './subscriptionClient.js';
-
-// Public site key (the secret half is widgetgrid-server's
-// TURNSTILE_SECRET_KEY). Defaults to Cloudflare's always-passes test key,
-// so the widget behaves for real in local dev; production builds get the
-// real key via VITE_TURNSTILE_SITE_KEY (see infra/eks/deploy.sh).
-const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA';
-const TURNSTILE_SCRIPT = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
-
-let turnstileLoading = null;
-function loadTurnstile() {
-  turnstileLoading ??= new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = TURNSTILE_SCRIPT;
-    script.async = true;
-    script.onload = () => resolve(window.turnstile);
-    script.onerror = () => {
-      turnstileLoading = null;
-      reject(new Error('captcha failed to load'));
-    };
-    document.head.appendChild(script);
-  });
-  return turnstileLoading;
-}
 
 // gRPC-Web errors carry the server's message; anything else (network) gets
 // a generic one.
@@ -135,7 +113,7 @@ export default {
   },
   beforeUnmount() {
     window.removeEventListener(IDENTITY_CHANGED_EVENT, this.onIdentityChanged);
-    if (this.captchaWidgetId !== undefined) window.turnstile?.remove(this.captchaWidgetId);
+    this.captcha?.remove();
   },
   methods: {
     onIdentityChanged() {
@@ -143,14 +121,11 @@ export default {
     },
     async renderCaptcha() {
       try {
-        const turnstile = await loadTurnstile();
-        if (!this.$refs.captcha) return; // navigated away while loading
-        this.captchaWidgetId = turnstile.render(this.$refs.captcha, {
-          sitekey: TURNSTILE_SITE_KEY,
-          callback: (token) => { this.captchaToken = token; },
-          'expired-callback': () => { this.captchaToken = ''; },
-          'error-callback': () => { this.captchaToken = ''; },
-        });
+        if (!this.$refs.captcha) return;
+        const captcha = await renderTurnstile(this.$refs.captcha, (token) => { this.captchaToken = token; });
+        // Navigated away while the script was loading.
+        if (this.$.isUnmounted) captcha.remove();
+        else this.captcha = captcha;
       } catch (err) {
         this.status = 'error';
         this.error = "The captcha couldn't load. Check your connection or ad blocker and reload the page.";
@@ -169,7 +144,7 @@ export default {
         this.error = describe(err);
         // A Turnstile token is single-use -- get a fresh one for a retry.
         this.captchaToken = '';
-        if (this.captchaWidgetId !== undefined) window.turnstile?.reset(this.captchaWidgetId);
+        this.captcha?.reset();
       }
     },
     async confirm() {

@@ -20,6 +20,7 @@ COPY packages/server/package.json packages/server/package.json
 COPY packages/auth-node/package.json packages/auth-node/package.json
 COPY packages/auth-web/package.json packages/auth-web/package.json
 COPY packages/site-routes/package.json packages/site-routes/package.json
+COPY packages/turnstile-web/package.json packages/turnstile-web/package.json
 COPY packages/proto-gen-web/package.json packages/proto-gen-web/package.json
 COPY packages/static-server/package.json packages/static-server/package.json
 COPY packages/vite-widget-lib/package.json packages/vite-widget-lib/package.json
@@ -37,6 +38,7 @@ COPY widgets/solitaire/package.json widgets/solitaire/package.json
 COPY widgets/embuscade/package.json widgets/embuscade/package.json
 COPY widgets/lhoraire/package.json widgets/lhoraire/package.json
 COPY widgets/subscribe/package.json widgets/subscribe/package.json
+COPY widgets/account/package.json widgets/account/package.json
 COPY infra/cdk/package.json infra/cdk/package.json
 
 # --ignore-scripts: nothing packages/server or packages/db depend on needs

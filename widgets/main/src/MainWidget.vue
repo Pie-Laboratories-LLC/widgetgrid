@@ -10,6 +10,8 @@
     <component v-else-if="view === 'embuscade'" :is="embuscadeComponent" :data="{}" title="" />
     <SectionPage v-if="view === 'games'" heading="Games" :entries="gameEntries" />
     <SectionPage v-if="view === 'site'" heading="Site" :entries="siteEntries" />
+    <p v-if="isAccountView && !accountComponent" class="main-status">Loading…</p>
+    <component v-else-if="isAccountView" :is="accountComponent" :data="{ view }" title="" />
     <p v-if="view === 'subscribe' && !subscribeComponent" class="main-status">Loading…</p>
     <component v-else-if="view === 'subscribe'" :is="subscribeComponent" :data="{}" title="" />
     <p v-if="view === 'lhoraire' && !lhoraireComponent" class="main-status">Loading…</p>
@@ -59,6 +61,8 @@ const GAME_ENTRIES = [
   },
 ];
 
+const ACCOUNT_VIEWS = ['login', 'register', 'account'];
+
 const isLhoraireAdmin = () => !!getIdentity()?.groups.includes('anonyme admins');
 
 export default {
@@ -71,8 +75,8 @@ export default {
   data() {
     return {
       view: null, post: null, blogComponent: null, solitaireComponent: null, chatComponent: null,
-      embuscadeComponent: null, lhoraireComponent: null, subscribeComponent: null, collapsed: false, railHidden: false,
-      blogReloadKey: 0, isLhoraireAdmin: isLhoraireAdmin(),
+      embuscadeComponent: null, lhoraireComponent: null, subscribeComponent: null, accountComponent: null, collapsed: false, railHidden: false,
+      blogReloadKey: 0, isLhoraireAdmin: isLhoraireAdmin(), signedIn: !!getIdentity(),
     };
   },
   created() {
@@ -110,7 +114,7 @@ export default {
 
     // subscribeChatEvents() reads the owner token/visitor id ONCE, at the
     // moment it's called -- which for the owner's own browser is normally
-    // BEFORE they've clicked through the 5-click login flow (this widget
+    // BEFORE they've logged in (this widget
     // mounts at page load, login happens later in the same page session).
     // Without re-subscribing here, this stream would stay open under the
     // pre-login (anonymous visitor) identity for the rest of the page's
@@ -119,6 +123,7 @@ export default {
     // dispatches this event on both login success and logout.
     this.onIdentityChanged = () => {
       this.isLhoraireAdmin = isLhoraireAdmin();
+      this.signedIn = !!getIdentity();
       this.unsubscribeChatEvents();
       this.unsubscribeChatEvents = subscribeChatEvents((event) => {
         window.dispatchEvent(new CustomEvent('widgetgrid:chat-event', { detail: event }));
@@ -141,6 +146,10 @@ export default {
     topbarMode() {
       return viewChrome(this.view).topbar;
     },
+    // /site/login, /site/register, /site/account: one widget (widgets/account).
+    isAccountView() {
+      return ACCOUNT_VIEWS.includes(this.view);
+    },
     gameEntries() {
       return GAME_ENTRIES;
     },
@@ -148,6 +157,9 @@ export default {
     // lhoraire-server enforces it).
     siteEntries() {
       const entries = [
+        this.signedIn
+          ? { view: 'account', title: 'Your account', description: 'Your username and email, and logging out.' }
+          : { view: 'login', title: 'Log in or register', description: 'An account lets you post on the message boards.' },
         { view: 'subscribe', title: 'Email updates', description: 'An email whenever a new blog post goes up.' },
         { view: 'messages', title: 'Message boards', description: 'Feedback and discussion about the games and the site.', soon: true },
       ];
@@ -183,6 +195,11 @@ export default {
       if (this.view === 'lhoraire' && !this.lhoraireComponent) {
         import(/* @vite-ignore */ '/widgets/lhoraire.js').then((mod) => {
           this.lhoraireComponent = mod.default ?? mod;
+        });
+      }
+      if (ACCOUNT_VIEWS.includes(this.view) && !this.accountComponent) {
+        import(/* @vite-ignore */ '/widgets/account.js').then((mod) => {
+          this.accountComponent = mod.default ?? mod;
         });
       }
       if (this.view === 'subscribe' && !this.subscribeComponent) {

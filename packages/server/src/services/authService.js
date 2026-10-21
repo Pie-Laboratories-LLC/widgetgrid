@@ -2,6 +2,8 @@ import crypto from 'node:crypto';
 import grpc from '@grpc/grpc-js';
 import * as defaultAuthRepo from '@widgetgrid/db/src/authRepo.js';
 import * as defaultUsersRepo from '@widgetgrid/db/src/usersRepo.js';
+import * as defaultUsernamesRepo from '@widgetgrid/db/src/usernamesRepo.js';
+import { RESERVATION_TTL_MS } from './accountService.js';
 import { isOwnerOnline, subscribePresence } from '../presenceBus.js';
 
 // Matches the SPA client's refresh-token lifetime (90 days, see
@@ -17,6 +19,8 @@ export function createAuthService({
   ownerEmail,
   authRepo = defaultAuthRepo,
   usersRepo = defaultUsersRepo,
+  usernamesRepo = defaultUsernamesRepo,
+  now = () => Date.now(),
 }) {
   return {
     async RegisterSignIn(call, callback) {
@@ -32,8 +36,21 @@ export function createAuthService({
         const becomeOwner = !!ownerEmail && email.toLowerCase() === ownerEmail.toLowerCase();
         const user = await usersRepo.upsertOnSignIn(pool, { sub: claims.sub, email, becomeOwner });
 
+        // First sign-in after registering: the username reserved then
+        // (accountService.js's Register) becomes theirs now that the row
+        // exists. No reservation (Identity Center accounts, or one that
+        // lapsed) leaves it empty -- they choose one when it's needed.
+        let username = user.username ?? '';
+        if (!username) {
+          const reservedAfter = new Date(now() - RESERVATION_TTL_MS);
+          const reserved = await usernamesRepo.findReservationByEmail(pool, { email, reservedAfter });
+          if (reserved) {
+            username = await usernamesRepo.claimForUser(pool, { userId: user.id, username: reserved, email, reservedAfter }) ?? '';
+          }
+        }
+
         if (user.role !== 'owner') {
-          callback(null, { sessionToken: '', role: user.role });
+          callback(null, { sessionToken: '', role: user.role, username });
           return;
         }
         const sessionToken = crypto.randomBytes(32).toString('hex');
@@ -42,7 +59,7 @@ export function createAuthService({
           userId: user.id,
           expiresAt: new Date(Date.now() + SESSION_TTL_MS),
         });
-        callback(null, { sessionToken, role: user.role });
+        callback(null, { sessionToken, role: user.role, username });
       } catch (err) {
         callback({ code: grpc.status.INTERNAL, message: err.message });
       }

@@ -8,9 +8,13 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as route53Targets from 'aws-cdk-lib/aws-route53-targets';
 import { Certificate, CertificateValidation } from 'aws-cdk-lib/aws-certificatemanager';
+import { EMAIL_DOMAIN } from './dns-stack.js';
 
 export const AUTH_HOST = 'auth.pie-laboratories.com';
 const IDENTITY_STORE_ID = 'd-90667a98cd';
+// The app client widgetgrid-server signs people up through -- the only
+// one the pre-sign-up trigger accepts (see lambda/pre-sign-up).
+const REGISTRATION_CLIENT_NAME = 'widgetgrid-registration';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Per-application metadata from the Identity Center "widgetgrid" SAML app
 // (each Identity Center app has its own entity id/SSO URL).
@@ -38,10 +42,35 @@ export class IdentityStack extends Stack {
     // RETAIN: recreating the pool changes its id, which is baked into the
     // Identity Center SAML app's audience -- a replacement would break
     // sign-in until that's re-entered by hand in the console.
+    //
+    // Two kinds of account share it: Identity Center users (the SAML
+    // provider below) and people who register on the site itself
+    // (/site/register, 2026-10). Self sign-up is on for the latter, but
+    // only through widgetgrid-server's registration client -- the
+    // pre-sign-up trigger refuses every other route in. Everything changed
+    // here for registration (self sign-up, auto-verify, email settings,
+    // account recovery) updates the pool in place; signInAliases is the
+    // one setting that would replace it, and it's unchanged.
     const userPool = new cognito.UserPool(this, 'UserPool', {
       userPoolName: 'widgetgrid',
-      selfSignUpEnabled: false,
+      selfSignUpEnabled: true,
       signInAliases: { email: true },
+      autoVerify: { email: true },
+      accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
+      // Verification codes and password resets go out through SES from the
+      // site's own domain (the identity is in dns-stack.js), not Cognito's
+      // built-in sender, which is capped at 50 emails a day.
+      email: cognito.UserPoolEmail.withSES({
+        fromEmail: `noreply@${EMAIL_DOMAIN}`,
+        fromName: 'Pie Laboratories',
+        replyTo: `webmaster@${EMAIL_DOMAIN}`,
+        sesVerifiedDomain: EMAIL_DOMAIN,
+      }),
+      userVerification: {
+        emailSubject: 'Your Pie Laboratories verification code',
+        emailBody: 'Your verification code is {####}. Enter it on the registration page to finish creating your account.',
+        emailStyle: cognito.VerificationEmailStyle.CODE,
+      },
       removalPolicy: RemovalPolicy.RETAIN,
     });
 
@@ -89,6 +118,25 @@ export class IdentityStack extends Stack {
     }));
     userPool.addTrigger(cognito.UserPoolOperation.PRE_TOKEN_GENERATION, preTokenGroups);
 
+    const preSignUp = new lambda.Function(this, 'PreSignUp', {
+      runtime: lambda.Runtime.NODEJS_22_X,
+      handler: 'index.handler',
+      code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/pre-sign-up')),
+      timeout: Duration.seconds(5),
+      environment: {
+        REGISTRATION_CLIENT_NAME,
+        REGISTER_URL: `https://www.${EMAIL_DOMAIN}/site/register`,
+      },
+    });
+    // Any pool in the account, by ARN pattern rather than this pool's ARN:
+    // the trigger is attached to this pool, so referencing it here would be
+    // a circular dependency.
+    preSignUp.addToRolePolicy(new iam.PolicyStatement({
+      actions: ['cognito-idp:DescribeUserPoolClient'],
+      resources: [this.formatArn({ service: 'cognito-idp', resource: 'userpool', resourceName: '*' })],
+    }));
+    userPool.addTrigger(cognito.UserPoolOperation.PRE_SIGN_UP, preSignUp);
+
     const idp = [cognito.UserPoolClientIdentityProvider.custom(identityCenterProvider.providerName)];
 
     // The dev ALB's authenticate-cognito action: confidential client, and
@@ -104,8 +152,10 @@ export class IdentityStack extends Stack {
     });
     devAlbClient.node.addDependency(identityCenterProvider);
 
-    // The widgetgrid SPA's own sign-in (5 clicks on the logo): public
+    // The widgetgrid SPA's own sign-in (the topbar's "Log in"): public
     // client, authorization code + PKCE, tokens sent as Bearer on gRPC-web.
+    // The hosted page offers both kinds of account: Cognito's own email +
+    // password form (site-registered users) and the Identity Center button.
     const spaClient = userPool.addClient('SpaClient', {
       generateSecret: false,
       oAuth: {
@@ -114,7 +164,7 @@ export class IdentityStack extends Stack {
         callbackUrls: SPA_ORIGINS.map((o) => `${o}/auth/callback`),
         logoutUrls: SPA_ORIGINS.map((o) => `${o}/`),
       },
-      supportedIdentityProviders: idp,
+      supportedIdentityProviders: [...idp, cognito.UserPoolClientIdentityProvider.COGNITO],
       preventUserExistenceErrors: true,
       // How long the browser stays signed in without seeing Identity
       // Center again (Cognito's default is 30 days). 90 keeps phone
@@ -125,6 +175,17 @@ export class IdentityStack extends Stack {
     });
     spaClient.node.addDependency(identityCenterProvider);
 
+    // widgetgrid-server's registration client (packages/server/src/registrar.js):
+    // SignUp / ConfirmSignUp / ResendConfirmationCode only, no OAuth. The
+    // secret is what makes it server-only; infra/eks/deploy.sh reads it
+    // into widgetgrid-server-secret.
+    const registrationClient = userPool.addClient('RegistrationClient', {
+      userPoolClientName: REGISTRATION_CLIENT_NAME,
+      generateSecret: true,
+      disableOAuth: true,
+      supportedIdentityProviders: [cognito.UserPoolClientIdentityProvider.COGNITO],
+    });
+
     this.userPool = userPool;
     this.userPoolDomain = userPoolDomain;
     this.devAlbClient = devAlbClient;
@@ -134,6 +195,7 @@ export class IdentityStack extends Stack {
     new CfnOutput(this, 'UserPoolId', { value: userPool.userPoolId });
     new CfnOutput(this, 'SamlAcsUrl', { value: `https://${AUTH_HOST}/saml2/idpresponse` });
     new CfnOutput(this, 'SpaClientId', { value: spaClient.userPoolClientId });
+    new CfnOutput(this, 'RegistrationClientId', { value: registrationClient.userPoolClientId });
     new CfnOutput(this, 'DevAlbClientId', { value: devAlbClient.userPoolClientId });
     new CfnOutput(this, 'SamlAudience', { value: `urn:amazon:cognito:sp:${userPool.userPoolId}` });
   }

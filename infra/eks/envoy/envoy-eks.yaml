@@ -67,6 +67,8 @@ static_resources:
                           route: { cluster: widgetgrid_backend, timeout: 0s }
                         - match: { prefix: "/widgetgrid.v1.SubscriptionService" }
                           route: { cluster: widgetgrid_backend, timeout: 0s }
+                        - match: { prefix: "/widgetgrid.v1.AccountService" }
+                          route: { cluster: widgetgrid_backend, timeout: 0s }
                         - match: { prefix: "/lhoraire.v1." }
                           route: { cluster: lhoraire_backend, timeout: 0s }
                         - match: { prefix: "/embuscade-ws" }

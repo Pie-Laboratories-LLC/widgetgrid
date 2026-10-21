@@ -3,12 +3,14 @@ import assert from 'node:assert/strict';
 import grpc from '@grpc/grpc-js';
 import { createAuthService } from './authService.js';
 
-function fakeDeps({ claims = { sub: 's1', email: 'Owner@Example.com' }, existingRole } = {}) {
+function fakeDeps({ claims = { sub: 's1', email: 'Owner@Example.com' }, existingRole, reservations = {} } = {}) {
   const sessions = [];
   const upserts = [];
+  const claimed = [];
   return {
     sessions,
     upserts,
+    claimed,
     deps: {
       pool: {},
       ownerEmail: 'owner@example.com',
@@ -21,6 +23,13 @@ function fakeDeps({ claims = { sub: 's1', email: 'Owner@Example.com' }, existing
           upserts.push(args);
           const role = args.becomeOwner ? 'owner' : (existingRole ?? 'member');
           return { id: 'u1', cognito_sub: args.sub, email: args.email, role };
+        },
+      },
+      usernamesRepo: {
+        async findReservationByEmail(_pool, { email }) { return reservations[email] ?? null; },
+        async claimForUser(_pool, args) {
+          claimed.push(args);
+          return args.username;
         },
       },
       authRepo: {
@@ -59,7 +68,7 @@ test('the configured owner email (case-insensitive) becomes owner and gets a pre
 test('anyone else signs in as a member with no presence session', async () => {
   const { deps, sessions } = fakeDeps({ claims: { sub: 's2', email: 'friend@example.com' } });
   const { response } = await invoke(createAuthService(deps), 'RegisterSignIn', { idToken: 'good' });
-  assert.deepEqual(response, { sessionToken: '', role: 'member' });
+  assert.deepEqual(response, { sessionToken: '', role: 'member', username: '' });
   assert.equal(sessions.length, 0);
 });
 
@@ -75,4 +84,15 @@ test('Logout removes the presence session', async () => {
   const { response } = await invoke(service, 'RegisterSignIn', { idToken: 'good' });
   await invoke(service, 'Logout', { token: response.sessionToken });
   assert.equal(sessions.length, 0);
+});
+
+test('first sign-in after registering claims the reserved username', async () => {
+  const { deps, claimed } = fakeDeps({
+    claims: { sub: 's3', email: 'new@example.com' },
+    reservations: { 'new@example.com': 'NewPerson' },
+  });
+  const { response } = await invoke(createAuthService(deps), 'RegisterSignIn', { idToken: 'good' });
+  assert.equal(response.username, 'NewPerson');
+  assert.equal(claimed[0].userId, 'u1');
+  assert.equal(claimed[0].email, 'new@example.com');
 });

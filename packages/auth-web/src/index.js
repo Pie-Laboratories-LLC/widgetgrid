@@ -1,7 +1,8 @@
 // Browser-side sign-in against the shared Cognito user pool
 // (infra/cdk/lib/identity-stack.js): authorization code + PKCE through the
-// hosted UI at auth.pie-laboratories.com, which hands off to IAM Identity
-// Center. Shared by packages/web-app (completes the redirect) and every
+// hosted UI at auth.pie-laboratories.com, which offers both kinds of
+// account -- the email + password form for people who registered on the
+// site (/site/register), and a button through to IAM Identity Center. Shared by packages/web-app (completes the redirect) and every
 // widget that makes authenticated calls (bundled into each; they all read
 // and write the same localStorage entry, so any one of them can refresh).
 import { RegisterSignInRequest, LogoutRequest } from '@widgetgrid/proto-gen-web/widgetgrid/v1/auth_pb.js';
@@ -11,7 +12,6 @@ import { AuthServicePromiseClient } from '@widgetgrid/proto-gen-web/widgetgrid/v
 // derived from the page's own origin (each one is registered on the client).
 const AUTH_ORIGIN = 'https://auth.pie-laboratories.com';
 const CLIENT_ID = 'bvec1bfa2e7srgjf237e2m3ja';
-const IDENTITY_PROVIDER = 'IdentityCenter';
 export const CALLBACK_PATH = '/auth/callback';
 
 const STORAGE_KEY = 'widgetgrid:auth';
@@ -79,10 +79,12 @@ function decodeClaims(jwt) {
 }
 
 // Starts sign-in: a full-page redirect to the hosted UI. Returns to
-// CALLBACK_PATH, where the web app calls completeSignIn().
+// CALLBACK_PATH, where the web app calls completeSignIn(), which then
+// puts the address back to returnTo -- by default wherever this was
+// called from (the login page passes the page the visitor came from).
 let signInStarting = false;
 
-export async function startSignIn() {
+export async function startSignIn({ returnTo } = {}) {
   if (signInStarting) return;
   signInStarting = true;
   const verifier = randomString(48);
@@ -97,7 +99,7 @@ export async function startSignIn() {
   localStorage.setItem(PKCE_PREFIX + state, JSON.stringify({
     verifier,
     startedAt: Date.now(),
-    returnTo: window.location.pathname + window.location.search,
+    returnTo: returnTo ?? window.location.pathname + window.location.search,
   }));
   const params = new URLSearchParams({
     response_type: 'code',
@@ -106,7 +108,6 @@ export async function startSignIn() {
     scope: 'openid email profile',
     code_challenge: challenge,
     code_challenge_method: 'S256',
-    identity_provider: IDENTITY_PROVIDER,
     state,
   });
   window.location.assign(`${AUTH_ORIGIN}/oauth2/authorize?${params}`);
@@ -161,6 +162,7 @@ export async function completeSignIn({ grpcWebOrigin = '' } = {}) {
       expiresAt: Date.now() + tokens.expires_in * 1000,
       sessionToken: '',
       role: 'member',
+      username: '',
       // Which callback produced this sign-in, so a repeat run of the same
       // callback recognises it's already done.
       state,
@@ -172,6 +174,7 @@ export async function completeSignIn({ grpcWebOrigin = '' } = {}) {
       .registerSignIn(request, { authorization: `Bearer ${tokens.access_token}` });
     stored.sessionToken = response.getSessionToken();
     stored.role = response.getRole();
+    stored.username = response.getUsername();
     writeStored(stored);
     announce();
   } catch (err) {
@@ -230,10 +233,21 @@ export function getIdentity() {
       email: claims.email,
       groups: claims['cognito:groups'] ?? [],
       role: stored.role,
+      // '' until chosen (see proto/widgetgrid/v1/account.proto).
+      username: stored.username ?? '',
     };
   } catch {
     return null;
   }
+}
+
+// Records the username just chosen (AccountService.ChooseUsername) on the
+// stored sign-in, so getIdentity() has it without signing in again.
+export function setUsername(username) {
+  const stored = readStored();
+  if (!stored) return;
+  writeStored({ ...stored, username });
+  announce();
 }
 
 // Local sign-out: forgets the tokens and ends the owner presence session.
