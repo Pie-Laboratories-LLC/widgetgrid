@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { isSignInCallback, completeSignIn } from '@widgetgrid/auth-web';
+import { navigate } from '@widgetgrid/site-routes';
 
 // Returning from the Cognito hosted UI lands on /auth/callback (see
 // packages/auth-web). Finish that first: completeSignIn puts the address
@@ -16,13 +17,15 @@ if (isSignInCallback()) {
 
 // Service worker for Web Push notifications (public/sw.js). A tapped
 // notification on an already-open page arrives here as a message and is
-// relayed as the same navigate event the topbar icons send.
+// relayed as the same navigate request the topbar icons send. A service
+// worker from before paths existed still posts { view } -- the router
+// turns ?view= into the right path.
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js').catch((err) => console.warn('service worker registration failed:', err));
   navigator.serviceWorker.addEventListener('message', (event) => {
-    if (event.data?.type === 'navigate' && event.data.view) {
-      window.dispatchEvent(new CustomEvent('widgetgrid:navigate', { detail: { view: event.data.view } }));
-    }
+    if (event.data?.type !== 'navigate') return;
+    const path = event.data.path ?? (event.data.view && `/?view=${encodeURIComponent(event.data.view)}`);
+    if (path) navigate(path);
   });
 }
 

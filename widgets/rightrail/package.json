@@ -8,6 +8,7 @@
     "dev": "vite build --watch"
   },
   "dependencies": {
+    "@widgetgrid/site-routes": "*",
     "@widgetgrid/vite-widget-lib": "*"
   },
   "devDependencies": {

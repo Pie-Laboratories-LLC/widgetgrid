@@ -3,6 +3,8 @@ syntax = "proto3";
 package widgetgrid.v1;
 
 message BlogPost {
+  // The source filename's slug part in URL form (see blogSource.js's
+  // routeSlug) -- the post's own page is /blog/<slug>.
   string slug = 1;
   string title = 2;
   // Rendered HTML of the file's "# SYNOPSIS" section only.

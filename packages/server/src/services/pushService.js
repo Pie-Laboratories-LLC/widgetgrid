@@ -71,7 +71,7 @@ export function createPushService({ pool, authContext, pushSender, deviceActivit
           title: 'Pie Laboratories',
           body: 'Test notification: push is working.',
           tag: 'test',
-          url: '/?view=chat',
+          url: '/chat',
         });
         callback(null, { delivered });
       } catch (err) {

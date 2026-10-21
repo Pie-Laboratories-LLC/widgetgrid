@@ -1,0 +1,11 @@
+{
+  "name": "@widgetgrid/site-routes",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "URL path <-> view mapping for the home page's views, and the window events that carry navigation. Shared by packages/web-app and the widgets.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node --test"
+  }
+}

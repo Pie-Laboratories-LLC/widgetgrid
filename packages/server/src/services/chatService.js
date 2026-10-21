@@ -64,7 +64,7 @@ export function createChatService({ pool, authContext, pushSender, deviceActivit
       title: `New message from ${chat.label}`,
       body,
       tag: `chat-${chat.id}`,
-      url: '/?view=chat',
+      url: '/chat',
     }, { skip: deviceActivity.isActive });
     if (isOwnerOnline()) return;
     const throttleCutoff = new Date(Date.now() - NOTIFICATION_THROTTLE_MS);

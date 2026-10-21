@@ -31,7 +31,7 @@
         </svg>
         <span v-if="hasNewPost" class="topbar-badge" aria-hidden="true">!</span>
       </button>
-      <button type="button" class="topbar-icon" title="Solitaire" aria-label="Solitaire" @click="navigate('solitaire')">
+      <button type="button" class="topbar-icon" title="Solitaire" aria-label="Solitaire" @click="go('solitaire')">
         <svg v-if="activeView === 'solitaire'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M3.604 7.197l7.138 -3.109a.96 .96 0 0 1 1.27 .527l4.924 11.902a1 1 0 0 1 -.514 1.304l-7.137 3.109a.96 .96 0 0 1 -1.271 -.527l-4.924 -11.903a1 1 0 0 1 .514 -1.304l0 .001" />
           <path d="M15 4h1a1 1 0 0 1 1 1v3.5" />
@@ -43,7 +43,7 @@
           <path d="M19.08 5.61a1 1 0 0 1 1.31 -.53c.257 .108 .505 .21 .769 .314a2 2 0 0 1 1.114 2.479l-.056 .146l-2.298 5.374a1 1 0 0 1 -1.878 -.676l.04 -.11l2.296 -5.371l-.366 -.148l-.402 -.167a1 1 0 0 1 -.53 -1.312z" />
         </svg>
       </button>
-      <button type="button" class="topbar-icon" title="Embuscade" aria-label="Embuscade" @click="navigate('embuscade')">
+      <button type="button" class="topbar-icon" title="Embuscade" aria-label="Embuscade" @click="go('embuscade')">
         <svg v-if="activeView === 'embuscade'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M5.5 13h13a3.5 3.5 0 0 1 0 7h-13a3.5 3.5 0 0 1 0 -7z" />
           <path d="M7 13v-2a2 2 0 0 1 2 -2h5a2 2 0 0 1 2 2v2" />
@@ -57,7 +57,7 @@
       </button>
       <button
         v-if="isLhoraireAdmin" type="button" class="topbar-icon" title="l'horaire" aria-label="l'horaire"
-        @click="navigate('lhoraire')"
+        @click="go('lhoraire')"
       >
         <!-- Same convention as the other icons: outline when active, solid otherwise. -->
         <svg v-if="activeView === 'lhoraire'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -79,7 +79,7 @@
       </button>
       <button
         type="button" class="topbar-icon" title="Chat with management" aria-label="Chat with management"
-        @click="navigate('chat')"
+        @click="go('chat')"
       >
         <svg v-if="activeView === 'chat'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M8 9h8" />
@@ -98,6 +98,9 @@
 
 <script>
 import { getIdentity, IDENTITY_CHANGED_EVENT } from '@widgetgrid/auth-web';
+import {
+  currentSiteRoute, viewChrome, sitePath, navigate, ROUTE_EVENT,
+} from '@widgetgrid/site-routes';
 
 const isLhoraireAdmin = () => !!getIdentity()?.groups.includes('anonyme admins');
 
@@ -117,24 +120,24 @@ export default {
     title: { type: String, default: '' },
   },
   data() {
+    // Starting state from the address bar -- see RightRailWidget.vue's
+    // data() for why this can't wait for MainWidget.vue's events.
+    const { view } = currentSiteRoute();
     return {
-      activeView: 'blog', collapsed: false, hasNewPost: false,
+      activeView: view, collapsed: viewChrome(view).topbar === 'collapsed', hasNewPost: false,
       hasNewChatMessage: false,
       loginComponent: null,
       isLhoraireAdmin: isLhoraireAdmin(),
     };
   },
   created() {
-    // Listens for its own dispatched events too (not just reacting to the
-    // click that caused them), so this stays correct even if something
-    // other than these two buttons ever triggers navigation.
-    window.addEventListener('widgetgrid:navigate', this.onNavigate);
-    // ?view=chat (etc.) opens straight to that view -- how a tapped push
-    // notification lands on chat (see packages/web-app/public/sw.js).
-    const initialView = new URLSearchParams(window.location.search).get('view');
-    if (['blog', 'solitaire', 'embuscade', 'chat', 'lhoraire'].includes(initialView)) {
-      this.onNavigate({ detail: { view: initialView } });
-    }
+    // The host's announcement of every completed navigation, whatever
+    // caused it (these icons, the back button, a notification tap) -- so
+    // the active icon follows the URL, not just this widget's own clicks.
+    window.addEventListener(ROUTE_EVENT, this.onRoute);
+    // l'horaire is admins-only; a deep link to it from anyone else lands
+    // on the blog instead (UI only -- lhoraire-server enforces it).
+    if (this.activeView === 'lhoraire' && !this.isLhoraireAdmin) navigate('/', { replace: true });
     // MainWidget.vue's own scroll container is what actually knows this --
     // see its comment for why this is a window event, not a shared store.
     window.addEventListener('widgetgrid:scroll', this.onScroll);
@@ -154,7 +157,7 @@ export default {
     });
   },
   beforeUnmount() {
-    window.removeEventListener('widgetgrid:navigate', this.onNavigate);
+    window.removeEventListener(ROUTE_EVENT, this.onRoute);
     window.removeEventListener('widgetgrid:scroll', this.onScroll);
     window.removeEventListener('widgetgrid:new-post', this.onNewPost);
     window.removeEventListener('widgetgrid:chat-event', this.onChatEvent);
@@ -165,13 +168,14 @@ export default {
     // lhoraire-server enforces it). Signing out while on that view goes home.
     onIdentityChanged() {
       this.isLhoraireAdmin = isLhoraireAdmin();
-      if (!this.isLhoraireAdmin && this.activeView === 'lhoraire') this.navigate('blog');
+      if (!this.isLhoraireAdmin && this.activeView === 'lhoraire') navigate('/');
     },
     assetUrl(name) {
       return ASSET_BASE + name;
     },
-    onNavigate(event) {
+    onRoute(event) {
       this.activeView = event.detail.view;
+      if (event.detail.forceReload) this.hasNewPost = false;
       // Opening the chat view is what "reads" it, same idea as the home
       // icon's badge clearing on click.
       if (this.activeView === 'chat') this.hasNewChatMessage = false;
@@ -205,32 +209,19 @@ export default {
     onLogoClick() {
       window.dispatchEvent(new CustomEvent('widgetgrid:logo-click'));
     },
-    // Fired (cancelable) before every navigate: the current view's widget
-    // can preventDefault() to veto leaving it -- e.g. EmbuscadeWidget.vue
-    // asking for confirmation mid-game. Same view -> nothing to leave, so
-    // no event.
-    canLeaveFor(view) {
-      if (view === this.activeView) return true;
-      return window.dispatchEvent(new CustomEvent('widgetgrid:before-navigate', {
-        detail: { from: this.activeView, to: view }, cancelable: true,
-      }));
+    // A request to the host app, which owns the router (and asks the view
+    // being left whether it may go -- e.g. EmbuscadeWidget.vue mid-game).
+    go(view) {
+      navigate(sitePath(view));
     },
-    // widgets/main/src/MainWidget.vue listens for this on window -- see its
-    // comment for why a window event, not a shared store, is what connects
-    // two independently-built widgets.
-    navigate(view) {
-      if (!this.canLeaveFor(view)) return;
-      window.dispatchEvent(new CustomEvent('widgetgrid:navigate', { detail: { view } }));
-    },
-    // Separate from navigate('blog') above: this one also clears the badge
-    // and tells MainWidget.vue to force a fresh fetch (forceReload) --
-    // needed because a plain view-change wouldn't remount BlogWidget if
-    // you're already looking at the blog when a new post shows up.
+    // Separate from go('blog') above: this one also clears the badge and
+    // tells MainWidget.vue to force a fresh fetch (forceReload) -- needed
+    // because a plain navigation wouldn't remount BlogWidget if you're
+    // already looking at the blog when a new post shows up. The badge
+    // clears in onRoute, once the navigation has actually happened (it
+    // may be vetoed).
     onHomeClick() {
-      if (!this.canLeaveFor('blog')) return;
-      const forceReload = this.hasNewPost;
-      this.hasNewPost = false;
-      window.dispatchEvent(new CustomEvent('widgetgrid:navigate', { detail: { view: 'blog', forceReload } }));
+      navigate(sitePath('blog'), { forceReload: this.hasNewPost });
     },
   },
 };

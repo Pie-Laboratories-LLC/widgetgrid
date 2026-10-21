@@ -41,6 +41,8 @@ const ICONS = [
   },
 ];
 
+import { currentSiteRoute, viewChrome } from '@widgetgrid/site-routes';
+
 export default {
   name: 'RightRailWidget',
   props: {
@@ -48,7 +50,11 @@ export default {
     title: { type: String, default: '' },
   },
   data() {
-    return { collapsed: false, hidden: false };
+    // Starting state from the address bar: on a deep link (e.g. a
+    // bookmarked game) MainWidget.vue may have announced the view before
+    // this widget mounted. Its events keep it in step from then on.
+    const chrome = viewChrome(currentSiteRoute().view);
+    return { collapsed: chrome.topbar === 'collapsed', hidden: chrome.railHidden };
   },
   computed: {
     // data.links.<key> lets the real destination URLs be set later via the
@@ -63,7 +69,7 @@ export default {
     // see its comment for why this is a window event, not a shared store.
     window.addEventListener('widgetgrid:scroll', this.onScroll);
     // Same idea for which views hide the rail entirely (the games) --
-    // MainWidget.vue owns that list, see its RAIL_HIDDEN_VIEWS.
+    // see viewChrome() in @widgetgrid/site-routes.
     window.addEventListener('widgetgrid:rail', this.onRail);
   },
   beforeUnmount() {

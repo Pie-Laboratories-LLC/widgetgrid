@@ -37,7 +37,8 @@ export function createLocalBlogSource({ dir, assetsBaseUrl = '/blog-assets' }) {
 
       const posts = [];
       for (const { name, match } of files) {
-        const [, rawDateTime, slug] = match;
+        const [, rawDateTime, fileSlug] = match;
+        const slug = routeSlug(fileSlug);
         const publishedAt = toIsoDateTime(rawDateTime);
         const raw = await readFile(path.join(dir, name), 'utf8');
         // Each post's images live in their own subdirectory (locally) / key
@@ -88,7 +89,8 @@ export function createS3BlogSource({ bucket, assetsBaseUrl = '/blog-assets' }) {
 
       const posts = [];
       for (const { key, match } of files) {
-        const [, rawDateTime, slug] = match;
+        const [, rawDateTime, fileSlug] = match;
+        const slug = routeSlug(fileSlug);
         const publishedAt = toIsoDateTime(rawDateTime);
         const object = await client.send(new GetObjectCommand({ Bucket: bucket, Key: key }));
         const raw = await object.Body.transformToString('utf8');
@@ -133,19 +135,23 @@ function rewriteImageHref(token, assetsBaseUrl, postDir) {
   token.href = `${assetsBaseUrl}/${postDir}/${token.href.replace(/^\.\//, '')}`;
 }
 
-// [see also](./2026-08-01-00-00-welcome-to-the-lab.md) -> #post-welcome-to-the-lab
-// -- there's no per-post page/route to link to yet (BlogWidget.vue renders
-// every post into one scrolling feed), so this only reaches a post that
-// happens to also be rendered in the current feed, by matching the id
-// BlogWidget.vue gives each <article> (post-<slug>). A link to a post
-// that's fallen out of the feed just won't scroll anywhere -- acceptable
-// for now, revisit if/when real per-post routing exists.
+// [see also](./2026-08-01-00-00-welcome-to-the-lab.md) -> /blog/welcome-to-the-lab
+// -- the post's own route (see @widgetgrid/site-routes). BlogWidget.vue
+// turns a click on it into an in-app navigation rather than a page load.
 function rewriteCrossPostLink(token) {
   if (token.type !== 'link' || ABSOLUTE_HREF_PATTERN.test(token.href)) return;
   const match = FILENAME_PATTERN.exec(token.href.replace(/^\.\//, ''));
   if (!match) return;
   const [, , referencedSlug] = match;
-  token.href = `#post-${referencedSlug}`;
+  token.href = `/blog/${routeSlug(referencedSlug)}`;
+}
+
+// The filename's slug part in URL form -- "A-Tale-of-Three-and-a-Half-
+// MeshCutters" -> "a-tale-of-three-and-a-half-meshcutters": lowercased,
+// each run of anything non-alphanumeric one hyphen. From the filename, not
+// the title, so editing a post's title never breaks links to it.
+export function routeSlug(fileSlug) {
+  return fileSlug.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 }
 
 // "2026-08-16-14-30" -> "2026-08-16T14:30" -- the hyphen-delimited filename

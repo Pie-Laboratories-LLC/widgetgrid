@@ -16,6 +16,7 @@
 
 <script>
 import { useRoute } from 'vue-router';
+import { isSitePath } from '@widgetgrid/site-routes';
 import { usePageStore } from '@/stores/pageStore';
 import LayoutRenderer from '@/components/LayoutRenderer.vue';
 
@@ -41,16 +42,24 @@ export default {
   beforeUnmount() {
     window.removeEventListener('widgetgrid:splash-dismissed', this.onSplashDismissed);
   },
+  computed: {
+    // Every home-page view path (/, /blog/..., /games/..., /site/...,
+    // /chat) is the "home" page -- which view shows is MainWidget.vue's
+    // business, not a different page. Anything else is "/<slug>/...".
+    pageSlug() {
+      return isSitePath(this.route.path) ? 'home' : this.route.path.split('/')[1];
+    },
+  },
   watch: {
-    // Vue Router reuses this component instance across navigations between
-    // two paths that match the same route record (e.g. /home -> /about),
-    // since only the dynamic :slug segment changes -- a mount-only hook
-    // would silently not refire, so pass 1/2 has to be driven from a watcher
-    // instead of created()/mounted().
-    'route.params.slug': {
+    // The single catch-all route (see router/index.js) means this
+    // component instance is reused across every navigation -- a mount-only
+    // hook would silently not refire, so pass 1/2 has to be driven from a
+    // watcher instead of created()/mounted(). Keyed on the page, not the
+    // path: moving between the home page's own views must not reload it.
+    pageSlug: {
       immediate: true,
       handler(slug) {
-        this.loadPageOrSplash(slug || 'home');
+        this.loadPageOrSplash(slug);
       },
     },
   },
@@ -61,12 +70,15 @@ export default {
     // so it clears when the browser closes and splash shows again next
     // session) rather than anything server-side -- "have you seen this in
     // this browser session" has no reason to touch the backend at all.
+    // Only on the bare "/": a deep link (a bookmark, a shared post) goes
+    // straight to what it names, and counts as having seen it.
     loadPageOrSplash(slug) {
-      if (slug === 'home' && !hasSeenSplash()) {
+      if (slug === 'home' && this.route.path === '/' && !hasSeenSplash()) {
         markSplashSeen();
         this.store.loadPage('splash');
         return;
       }
+      if (slug === 'home') markSplashSeen();
       this.store.loadPage(slug);
     },
     onSplashDismissed() {

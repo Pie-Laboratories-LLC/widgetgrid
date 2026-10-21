@@ -19,6 +19,7 @@ COPY packages/lhoraire-server/package.json packages/lhoraire-server/package.json
 COPY packages/server/package.json packages/server/package.json
 COPY packages/auth-node/package.json packages/auth-node/package.json
 COPY packages/auth-web/package.json packages/auth-web/package.json
+COPY packages/site-routes/package.json packages/site-routes/package.json
 COPY packages/proto-gen-web/package.json packages/proto-gen-web/package.json
 COPY packages/static-server/package.json packages/static-server/package.json
 COPY packages/vite-widget-lib/package.json packages/vite-widget-lib/package.json

@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { sitePath, parseSitePath, navigate } from '@widgetgrid/site-routes';
 import { blogClient } from './blogClient.js';
 
 export default {
@@ -25,34 +26,67 @@ export default {
     title: { type: String, default: '' },
   },
   data() {
-    return { posts: [], status: 'loading', expandedSlug: null };
+    return { posts: [], status: 'loading' };
+  },
+  computed: {
+    // data.post is the post the URL names (/blog/<slug>, passed down by
+    // MainWidget.vue); with none, or one that doesn't exist, the newest
+    // is open.
+    expandedSlug() {
+      const named = this.posts.find((p) => p.slug === this.data.post);
+      return named?.slug ?? this.posts[0]?.slug ?? null;
+    },
+  },
+  watch: {
+    'data.post'() {
+      this.scrollToPost();
+    },
   },
   created() {
     blogClient.listBlogPosts()
       .then((res) => {
         this.posts = res.posts;
-        this.expandedSlug = res.posts[0]?.slug ?? null; // newest open by default
         this.status = 'ready';
+        this.scrollToPost();
       })
       .catch(() => {
         this.status = 'error';
       });
   },
   methods: {
+    // Brings the URL's post to the top of MainWidget.vue's scroll
+    // container -- on a deep link, and on clicking a post further down
+    // (the one above it collapsing would otherwise leave it wherever that
+    // shifted it to).
+    scrollToPost() {
+      if (!this.data.post) return;
+      this.$nextTick(() => {
+        document.getElementById(`post-${this.expandedSlug}`)?.scrollIntoView({ block: 'start' });
+      });
+    },
     formatDate(isoDateTime) {
       return new Date(isoDateTime).toLocaleDateString('en-US', {
         year: 'numeric', month: 'long', day: 'numeric',
       });
     },
-    // Only one post is ever expanded -- clicking a collapsed (synopsis)
-    // post opens it and implicitly closes whichever was open before, since
-    // that's just what setting expandedSlug to a new value does. A real
-    // link inside a synopsis (e.g. a cross-post link, see blogSource.js's
-    // rewriteCrossPostLink) should still just navigate, not also fight
-    // with this for what's expanded.
+    // Only one post is ever expanded, the one the URL names -- clicking a
+    // collapsed (synopsis) post navigates to its /blog/<slug>, which opens
+    // it and implicitly closes whichever was open before. A link to one of
+    // the site's own views (e.g. a cross-post link, see blogSource.js's
+    // rewriteCrossPostLink) becomes an in-app navigation instead of a full
+    // page load; any other link just behaves as a link.
     onPostClick(post, event) {
-      if (event.target.closest('a')) return;
-      this.expandedSlug = post.slug;
+      const link = event.target.closest('a');
+      if (link) {
+        const url = new URL(link.href, window.location.href);
+        const plainClick = !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
+        if (plainClick && url.origin === window.location.origin && !link.target && parseSitePath(url.pathname)) {
+          event.preventDefault();
+          navigate(url.pathname + url.search + url.hash);
+        }
+        return;
+      }
+      if (post.slug !== this.expandedSlug) navigate(sitePath('blog', post.slug));
     },
   },
 };

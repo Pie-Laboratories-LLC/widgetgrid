@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@widgetgrid/auth-web": "*",
+    "@widgetgrid/site-routes": "*",
     "@widgetgrid/vite-widget-lib": "*"
   },
   "devDependencies": {

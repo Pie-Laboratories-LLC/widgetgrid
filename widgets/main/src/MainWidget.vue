@@ -1,7 +1,7 @@
 <template>
   <div class="widget widget-main" :class="{ 'main-collapsed': collapsed, 'main-no-rail': railHidden }" @scroll="onScroll">
     <p v-if="view === 'blog' && !blogComponent" class="main-status">Loading…</p>
-    <component v-else-if="view === 'blog'" :is="blogComponent" :key="blogReloadKey" :data="{}" title="" />
+    <component v-else-if="view === 'blog'" :is="blogComponent" :key="blogReloadKey" :data="{ post }" title="" />
     <p v-else-if="view === 'solitaire' && !solitaireComponent" class="main-status">Loading…</p>
     <component v-else-if="view === 'solitaire'" :is="solitaireComponent" :data="{}" title="" />
     <p v-if="view === 'chat' && !chatComponent" class="main-status">Loading…</p>
@@ -14,17 +14,19 @@
 </template>
 
 <script>
+import { currentSiteRoute, viewChrome, ROUTE_EVENT } from '@widgetgrid/site-routes';
 import { subscribeNewPosts } from './blogSubscriptionClient.js';
 import { subscribeChatEvents } from './chatSubscriptionClient.js';
 import { startActivityReporter } from './activityReporter.js';
 
 // The main content area's own switcher: this is the one widget the "home"
 // page's layout actually places here (see packages/db/seeds/seed.mjs) --
-// what it shows internally (blog or solitaire) is a runtime
-// choice, not a layout one, driven by "widgetgrid:navigate" events the
-// topbar dispatches on window (see TopBarWidget.vue). A window event, not
-// some shared store: the topbar and this widget are independently built
-// and dynamically loaded, with no other channel between them.
+// what it shows internally (blog, a game, chat...) is a runtime choice,
+// not a layout one, driven by the URL: the host app owns the router and
+// announces each route on window (ROUTE_EVENT, see @widgetgrid/site-routes
+// for the path <-> view mapping). A window event, not some shared store:
+// this widget is independently built and dynamically loaded, with no
+// other channel to the host.
 //
 // This also owns clearing the fixed topbar/right rail and being the
 // scrolling container (margin-top/margin-right/height/overflow below) --
@@ -38,33 +40,10 @@ import { startActivityReporter } from './activityReporter.js';
 // sync if any of these change.
 const SCROLL_THRESHOLD = 10;
 
-// Per-view topbar behavior. 'scroll' (the default for anything not listed
-// here -- add an entry as future views need something other than that
-// default) shrinks/expands as this widget's own content scrolls, same as
-// today. 'collapsed' pins it compact the whole time that view is active,
-// ignoring scroll entirely. Solitaire is 'collapsed': scroll-driven
-// toggling made the page feel janky while playing, since dragging cards
-// near the top of the board kept crossing SCROLL_THRESHOLD back and forth,
-// re-triggering the shrink/expand transition on every crossing.
-const TOPBAR_MODE = {
-  solitaire: 'collapsed',
-  // Chat owns its own internal scroll region (see widgets/chat's
-  // .chat-messages), so this widget's own scroll container never
-  // overflows while it's showing -- same "avoid a scroll-driven toggle
-  // that never actually gets triggered by anything" reasoning as
-  // solitaire, not a jank fix like solitaire's was.
-  chat: 'collapsed',
-  // Same jank reasoning as solitaire, and the game also needs the
-  // vertical room.
-  embuscade: 'collapsed',
-  // The issue tree scrolls inside its own grid and wants the height.
-  lhoraire: 'collapsed',
-};
-
-// Views that hide the right rail and take its width -- the games want the
-// full horizontal area. Broadcast as widgetgrid:rail (see setRailHidden)
-// so RightRailWidget.vue doesn't need its own copy of this list.
-const RAIL_HIDDEN_VIEWS = new Set(['solitaire', 'embuscade', 'lhoraire']);
+// Per-view topbar/rail behavior (topbar mode, whether the rail hides) is
+// viewChrome() in @widgetgrid/site-routes -- shared, so the topbar and rail
+// can start in the right state on a deep link without waiting to hear
+// from this widget.
 
 export default {
   name: 'MainWidget',
@@ -74,19 +53,16 @@ export default {
   },
   data() {
     return {
-      view: 'blog', blogComponent: null, solitaireComponent: null, chatComponent: null,
+      view: null, post: null, blogComponent: null, solitaireComponent: null, chatComponent: null,
       embuscadeComponent: null, lhoraireComponent: null, collapsed: false, railHidden: false,
       blogReloadKey: 0,
     };
   },
   created() {
-    window.addEventListener('widgetgrid:navigate', this.onNavigate);
-    // ?view=chat (etc.) opens straight to that view -- how a tapped push
-    // notification lands on chat (see packages/web-app/public/sw.js).
-    const initialView = new URLSearchParams(window.location.search).get('view');
-    if (['blog', 'solitaire', 'embuscade', 'chat', 'lhoraire'].includes(initialView)) {
-      this.onNavigate({ detail: { view: initialView } });
-    }
+    window.addEventListener(ROUTE_EVENT, this.onRoute);
+    // This mounts after the host's first ROUTE_EVENT has gone by -- a
+    // bookmarked /games/solitaire starts from the address bar instead.
+    this.onRoute({ detail: currentSiteRoute() });
     import(/* @vite-ignore */ '/widgets/blog.js').then((mod) => {
       this.blogComponent = mod.default ?? mod;
     });
@@ -137,7 +113,7 @@ export default {
     this.stopActivityReporter = startActivityReporter();
   },
   beforeUnmount() {
-    window.removeEventListener('widgetgrid:navigate', this.onNavigate);
+    window.removeEventListener(ROUTE_EVENT, this.onRoute);
     window.removeEventListener('widgetgrid:identity-changed', this.onIdentityChanged);
     this.unsubscribeNewPosts();
     this.unsubscribeChatEvents();
@@ -145,12 +121,22 @@ export default {
   },
   computed: {
     topbarMode() {
-      return TOPBAR_MODE[this.view] ?? 'scroll';
+      return viewChrome(this.view).topbar;
     },
   },
   methods: {
-    onNavigate(event) {
-      this.view = event.detail.view;
+    onRoute(event) {
+      const { view, post = null, forceReload = false } = event.detail;
+      this.post = post;
+      // TopBarWidget.vue sets this when the home icon carried the new-post
+      // badge: bumping the :key above forces BlogWidget to remount (fresh
+      // fetch) even if we're already on the blog view, where a plain view
+      // change wouldn't otherwise cause Vue to recreate it.
+      if (forceReload) this.blogReloadKey += 1;
+      // Moving between posts (/blog/a -> /blog/b) is the same view:
+      // BlogWidget scrolls to the post itself.
+      if (view === this.view) return;
+      this.view = view;
       if (this.view === 'solitaire' && !this.solitaireComponent) {
         import(/* @vite-ignore */ '/widgets/solitaire.js').then((mod) => {
           this.solitaireComponent = mod.default ?? mod;
@@ -171,24 +157,20 @@ export default {
           this.embuscadeComponent = mod.default ?? mod;
         });
       }
-      // TopBarWidget.vue sets this when the home icon carried the new-post
-      // badge: bumping the :key above forces BlogWidget to remount (fresh
-      // fetch) even if we're already on the blog view, where a plain view
-      // change wouldn't otherwise cause Vue to recreate it.
-      if (event.detail.forceReload) this.blogReloadKey += 1;
       // Fresh view starts scrolled to top -- this element persists across
       // view switches (only its content changes), so scrollTop would
       // otherwise carry over from whatever the previous view left it at.
-      this.$el.scrollTop = 0;
+      // (Not yet mounted on the first call, from created().)
+      if (this.$el) this.$el.scrollTop = 0;
       this.setCollapsed(this.topbarMode === 'collapsed');
-      this.setRailHidden(RAIL_HIDDEN_VIEWS.has(this.view));
+      this.setRailHidden(viewChrome(this.view).railHidden);
     },
     // This element is the only thing that actually scrolls on the page
     // (the fixed topbar/rail don't, and nothing else does either), so it's
     // the one place that can know the topbar should shrink -- broadcast on
     // window (see TopBarWidget.vue/RightRailWidget.vue). Only matters in
     // 'scroll' mode -- in 'collapsed' mode the bar stays pinned regardless
-    // of scroll position, set once already by onNavigate.
+    // of scroll position, set once already by onRoute.
     onScroll(event) {
       if (this.topbarMode !== 'scroll') return;
       this.setCollapsed(event.target.scrollTop > SCROLL_THRESHOLD);
@@ -225,7 +207,7 @@ export default {
   transition: margin-top 0.25s ease, height 0.25s ease;
 }
 
-/* The rail is hidden in this view (RAIL_HIDDEN_VIEWS), so there's nothing
+/* The rail is hidden in this view (viewChrome), so there's nothing
    to clear on the right. */
 .widget-main.main-no-rail {
   margin-right: 0;
