@@ -2,9 +2,11 @@
   <article :id="`post-${post.id}`" class="board-post" :class="{ 'board-post-root': root, 'board-post-removed': post.removed }">
     <h2 v-if="root && !editing">{{ post.title }}</h2>
     <header class="board-post-meta">
+      <!-- Only on posts with replies -- one without sits flush left. On the
+           thread's own post it folds the reply tree, not the post. -->
       <button
-        v-if="!root" type="button" class="board-collapse" :aria-expanded="!collapsed"
-        :title="collapsed ? 'Expand' : 'Collapse'" @click="collapsed = !collapsed"
+        v-if="replyCount" type="button" class="board-collapse" :aria-expanded="!collapsed"
+        :title="collapsed ? 'Show replies' : 'Hide replies'" @click="toggle"
       >{{ collapsed ? '[+]' : '[–]' }}</button>
       <strong v-if="post.author">{{ post.author }}</strong><span v-else>[deleted]</span>
       <a class="board-post-time" :href="board.threadPath(post.id)" :title="exactTime(post.createdAt)">{{ relativeTime(post.createdAt) }}</a>
@@ -14,7 +16,7 @@
       <span v-if="collapsed && replyCount" class="board-muted">({{ replyCount }} more)</span>
     </header>
 
-    <template v-if="!collapsed">
+    <template v-if="root || !collapsed">
       <Composer
         v-if="editing" :with-title="root" :initial-title="post.title" :initial-body="post.body"
         :initial-notify="post.notifyReplies" submit-label="Save" cancellable autofocus
@@ -76,6 +78,8 @@ export default {
     root: { type: Boolean, default: false },
     depth: { type: Number, default: 0 },
   },
+  // Root only: ThreadPage lists the thread's replies, so it does the hiding.
+  emits: ['toggle-replies'],
   data() {
     return {
       collapsed: false, editing: false, replyingTo: false, busy: false, error: '',
@@ -98,6 +102,10 @@ export default {
   methods: {
     relativeTime,
     exactTime,
+    toggle() {
+      this.collapsed = !this.collapsed;
+      if (this.root) this.$emit('toggle-replies', this.collapsed);
+    },
     async sendReply(payload) {
       this.busy = true;
       this.error = await this.board.reply(this.post, payload);

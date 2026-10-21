@@ -7,7 +7,7 @@
     <p v-if="status === 'loading'" class="board-muted">Loading…</p>
     <p v-else-if="status === 'error'" class="board-error">{{ error }}</p>
     <template v-else>
-      <PostItem :post="root" root />
+      <PostItem :post="root" root @toggle-replies="repliesHidden = $event" />
       <p v-if="actionError" class="board-error">{{ actionError }}</p>
 
       <Composer
@@ -17,7 +17,9 @@
       <PostingNotice v-else-if="!viewer.canPost" :viewer="viewer" />
 
       <p v-if="!children(root.id).length" class="board-muted">No replies yet.</p>
-      <PostItem v-for="post in children(root.id)" :key="post.id" :post="post" :depth="0" />
+      <template v-else-if="!repliesHidden">
+        <PostItem v-for="post in children(root.id)" :key="post.id" :post="post" :depth="0" />
+      </template>
     </template>
   </div>
 </template>
@@ -46,7 +48,7 @@ export default {
     return {
       section: null, posts: [], viewer: null,
       status: 'loading', error: '', actionError: '',
-      replying: false, replyError: '',
+      replying: false, replyError: '', repliesHidden: false,
     };
   },
   computed: {
