@@ -230,7 +230,28 @@ export class EksStack extends Stack {
       actions: ['sns:Publish'],
       resources: ['*'],
     }));
-    this.blogBucket.grantRead(serverRole);
+    // Read and write: publishing a post on the site (authorService.js)
+    // writes its .md and images here.
+    this.blogBucket.grantReadWrite(serverRole);
+
+    // Uploaded images -- board screenshots and blog drafts' images
+    // (packages/server/src/mediaStore.js). Private: widgetgrid-server
+    // serves every byte through the site, which is what lets hiding a post
+    // or holding an image actually stop it being seen.
+    this.mediaBucket = new s3.Bucket(this, 'MediaBucket', {
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      encryption: s3.BucketEncryption.S3_MANAGED,
+      enforceSSL: true,
+      removalPolicy: RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+    });
+    this.mediaBucket.grantReadWrite(serverRole);
+    // Screening board images (moderation.js). No resource-level ARNs for
+    // this action.
+    serverRole.addToPolicy(new iam.PolicyStatement({
+      actions: ['rekognition:DetectModerationLabels'],
+      resources: ['*'],
+    }));
     // Subscription, reply and new-post emails -- see prod-eks-stack.js.
     serverRole.addToPolicy(new iam.PolicyStatement({
       actions: ['ses:SendEmail'],
@@ -265,6 +286,7 @@ export class EksStack extends Stack {
     new CfnOutput(this, 'EnvoyTargetGroupArn', { value: this.targetGroup.targetGroupArn });
     new CfnOutput(this, 'ClusterName', { value: cluster.clusterName });
     new CfnOutput(this, 'BlogBucketName', { value: this.blogBucket.bucketName });
+    new CfnOutput(this, 'MediaBucketName', { value: this.mediaBucket.bucketName });
     // Feed into BLOG_ASSETS_BASE_URL (infra/eks/manifests/widgetgrid-server.yaml)
     // -- the bucket's own public REST endpoint, not a website-hosting URL
     // (static website hosting was never enabled; plain object GETs are all

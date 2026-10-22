@@ -77,6 +77,13 @@ spec:
               value: cognito
             - name: SITE_ORIGIN
               value: ${SITE_ORIGIN}
+            # Uploaded images (mediaStore.js) in the environment's private
+            # MediaBucket; board images screened by Rekognition
+            # (moderation.js).
+            - name: MEDIA_S3_BUCKET
+              value: ${MEDIA_S3_BUCKET}
+            - name: IMAGE_MODERATION
+              value: rekognition
           envFrom:
             - secretRef:
                 name: widgetgrid-server-secret

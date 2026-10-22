@@ -153,7 +153,28 @@ export class ProdEksStack extends Stack {
       actions: ['sns:Publish'],
       resources: ['*'],
     }));
-    this.blogBucket.grantRead(serverRole);
+    // Read and write: publishing a post on the site (authorService.js)
+    // writes its .md and images here.
+    this.blogBucket.grantReadWrite(serverRole);
+
+    // Uploaded images -- board screenshots and blog drafts' images
+    // (packages/server/src/mediaStore.js). Private: widgetgrid-server
+    // serves every byte through the site, which is what lets hiding a post
+    // or holding an image actually stop it being seen.
+    this.mediaBucket = new s3.Bucket(this, 'MediaBucket', {
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      encryption: s3.BucketEncryption.S3_MANAGED,
+      enforceSSL: true,
+      // Retained: people's uploads, not something to lose with the stack.
+      removalPolicy: RemovalPolicy.RETAIN,
+    });
+    this.mediaBucket.grantReadWrite(serverRole);
+    // Screening board images (moderation.js). No resource-level ARNs for
+    // this action.
+    serverRole.addToPolicy(new iam.PolicyStatement({
+      actions: ['rekognition:DetectModerationLabels'],
+      resources: ['*'],
+    }));
     // Blog subscription emails (packages/server/src/emailSender.js), from
     // the SES domain identity in dns-stack.js only.
     serverRole.addToPolicy(new iam.PolicyStatement({
@@ -192,6 +213,7 @@ export class ProdEksStack extends Stack {
     new CfnOutput(this, 'EnvoyTargetGroupArn', { value: this.targetGroup.targetGroupArn });
     new CfnOutput(this, 'ClusterName', { value: cluster.clusterName });
     new CfnOutput(this, 'BlogBucketName', { value: this.blogBucket.bucketName });
+    new CfnOutput(this, 'MediaBucketName', { value: this.mediaBucket.bucketName });
     new CfnOutput(this, 'BlogBucketPublicUrl', { value: `https://${this.blogBucket.bucketRegionalDomainName}` });
 
     this.nodeSecurityGroup = nodeSecurityGroup;

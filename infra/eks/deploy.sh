@@ -45,6 +45,7 @@ CLUSTER_NAME=$(echo "$eks_outputs" | jq -r '.[] | select(.OutputKey=="ClusterNam
 TARGET_GROUP_ARN=$(echo "$eks_outputs" | jq -r '.[] | select(.OutputKey=="EnvoyTargetGroupArn") | .OutputValue')
 BLOG_S3_BUCKET=$(echo "$eks_outputs" | jq -r '.[] | select(.OutputKey=="BlogBucketName") | .OutputValue')
 BLOG_ASSETS_BASE_URL=$(echo "$eks_outputs" | jq -r '.[] | select(.OutputKey=="BlogBucketPublicUrl") | .OutputValue')
+MEDIA_S3_BUCKET=$(echo "$eks_outputs" | jq -r '.[] | select(.OutputKey=="MediaBucketName") | .OutputValue // empty')
 # The ECR repos are shared by both environments (WidgetgridSharedStack,
 # see infra/cdk/lib/shared-stack.js), so both push to these same URIs
 # regardless of $ENV.
@@ -90,7 +91,7 @@ REGISTRATION_CLIENT_SECRET=$(aws cognito-idp describe-user-pool-client --region 
 # with a blank BLOG_ASSETS_BASE_URL and broken image links, no error
 # anywhere in the chain. Failing loudly here, before that template ever
 # gets rendered, is cheap insurance against the same mistake recurring.
-for var in CLUSTER_NAME SERVER_REPO STATIC_REPO EMBUSCADE_REPO TARGET_GROUP_ARN BLOG_S3_BUCKET BLOG_ASSETS_BASE_URL DB_SECRET_ARN; do
+for var in CLUSTER_NAME SERVER_REPO STATIC_REPO EMBUSCADE_REPO TARGET_GROUP_ARN BLOG_S3_BUCKET BLOG_ASSETS_BASE_URL MEDIA_S3_BUCKET DB_SECRET_ARN; do
   if [ -z "${!var}" ]; then
     echo "Missing/empty required value: $var (check WidgetgridEksStack/WidgetgridRdsStack outputs)" >&2
     exit 1
@@ -322,7 +323,7 @@ kubectl get jobs -n widgetgrid -o name | grep '^job.batch/seed-' | grep -v "$SEE
 
 echo
 echo "== applying app manifests =="
-export SERVER_IMAGE STATIC_IMAGE EMBUSCADE_IMAGE LHORAIRE_IMAGE BLOG_S3_BUCKET BLOG_ASSETS_BASE_URL SITE_ORIGIN
+export SERVER_IMAGE STATIC_IMAGE EMBUSCADE_IMAGE LHORAIRE_IMAGE BLOG_S3_BUCKET BLOG_ASSETS_BASE_URL MEDIA_S3_BUCKET SITE_ORIGIN
 envsubst < infra/eks/manifests/widgetgrid-server.yaml | kubectl apply -f -
 envsubst < infra/eks/manifests/static-server.yaml | kubectl apply -f -
 envsubst < infra/eks/manifests/embuscade-server.yaml | kubectl apply -f -
