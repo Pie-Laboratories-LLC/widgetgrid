@@ -7,7 +7,7 @@
       <button
         v-if="replyCount" type="button" class="board-collapse" :aria-expanded="!collapsed"
         :title="collapsed ? 'Show replies' : 'Hide replies'" @click="toggle"
-      >{{ collapsed ? '[+]' : '[–]' }}</button>
+      >{{ collapsed ? '▶\uFE0E' : '▼\uFE0E' }}</button>
       <strong v-if="post.author">{{ post.author }}</strong><span v-else>[deleted]</span>
       <a class="board-post-time" :href="board.threadPath(post.id)" :title="exactTime(post.createdAt)">{{ relativeTime(post.createdAt) }}</a>
       <span v-if="post.editedAt" class="board-muted" :title="`Edited ${exactTime(post.editedAt)}`">(edited)</span>
@@ -151,12 +151,15 @@ export default {
   margin-bottom: 4px;
 }
 
+/* Fixed width, so the author name doesn't shift between ▶ and ▼. */
 .board-collapse {
+  width: 14px;
   padding: 0;
   border: none;
   background: none;
   color: #888;
-  font-family: monospace;
+  font-size: 0.75rem;
+  text-align: center;
   cursor: pointer;
 }
 

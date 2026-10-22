@@ -21,13 +21,13 @@
       <p v-if="!threads.length" class="board-muted board-empty">No threads yet. Start the first one.</p>
       <ol class="board-threads">
         <li v-for="thread in threads" :key="thread.id" class="board-thread" :class="{ 'board-thread-removed': thread.removed }">
-          <!-- [+] opens a thread with replies in place, as a reply tree; one
+          <!-- ▶ opens a thread with replies in place, as a reply tree; one
                without replies has no toggle and sits flush left. -->
           <div class="board-thread-head">
             <button
               v-if="thread.replyCount" type="button" class="board-collapse" :aria-expanded="!!open[thread.id]"
               :title="open[thread.id] ? 'Hide replies' : 'Show replies'" @click="toggle(thread)"
-            >{{ open[thread.id] ? '[–]' : '[+]' }}</button>
+            >{{ open[thread.id] ? '▼\uFE0E' : '▶\uFE0E' }}</button>
             <a class="board-thread-title" :href="threadPath(thread)" @click="go(threadPath(thread), $event)">{{ thread.title }}</a>
           </div>
           <span class="board-muted board-thread-meta" :class="{ 'board-thread-meta-indented': thread.replyCount }">
@@ -160,17 +160,21 @@ export default {
   align-items: baseline;
 }
 
-/* Lines up under the title when a [+] sits in front of it. */
+/* Lines up under the title when a ▶ sits in front of it. */
 .board-thread-meta-indented {
-  padding-left: 30px;
+  padding-left: 20px;
 }
 
+/* Fixed width: ▶ and ▼ differ in most fonts, and the title shouldn't
+   shift when one becomes the other. */
 .board-collapse {
+  width: 14px;
   padding: 0;
   border: none;
   background: none;
   color: #888;
-  font-family: monospace;
+  font-size: 0.75rem;
+  text-align: center;
   cursor: pointer;
   flex-shrink: 0;
 }
