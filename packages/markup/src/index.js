@@ -2,8 +2,10 @@ import { Marked } from 'marked';
 
 // The site's Markdown, for anything people write: message board posts and
 // the mini-game's help text. Standard Markdown (GitHub's flavour) minus
-// raw HTML, plus one addition -- colour, written as a "generic directive"
-// (the proposed CommonMark extension remark and others support):
+// raw HTML, with one change -- _text_ is underlined, not italic (*text* is
+// italic; Markdown otherwise has no underline) -- and one addition --
+// colour, written as a "generic directive" (the proposed CommonMark
+// extension remark and others support):
 //
 //   Mind the :red[**lava**] and take the :green[left] path.
 //
@@ -93,6 +95,12 @@ function createMarked(profileName) {
   marked.use({
     extensions: [colourDirective],
     renderer: {
+      // _text_ underlines; *text* stays italic. Markdown's own rules decide
+      // what counts, so snake_case_words are left alone.
+      em({ tokens, raw }) {
+        const inner = this.parser.parseInline(tokens);
+        return raw.startsWith('_') ? `<u>${inner}</u>` : `<em>${inner}</em>`;
+      },
       // Raw HTML is never passed through -- shown as the text it is.
       html({ text }) {
         return escapeHtml(text);

@@ -22,6 +22,7 @@
         <tbody>
           <tr><td><code>**bold**</code></td><td><strong>bold</strong></td></tr>
           <tr><td><code>*italic*</code></td><td><em>italic</em></td></tr>
+          <tr><td><code>_underline_</code></td><td><u>underline</u></td></tr>
           <tr><td><code>~~struck~~</code></td><td><del>struck</del></td></tr>
           <tr><td><code>`code`</code></td><td><code>code</code></td></tr>
           <tr><td><code>[link](https://…)</code></td><td>a link (plain URLs work too)</td></tr>

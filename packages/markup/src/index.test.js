@@ -58,3 +58,9 @@ test('single newlines are line breaks, as people expect when typing a post', () 
 test('markupToText drops markup and colour but keeps the words', () => {
   assert.equal(markupToText('Mind the :red[**lava**] & <b>run</b>'), 'Mind the lava & <b>run</b>');
 });
+
+test('_text_ underlines, *text* stays italic, snake_case is left alone', () => {
+  assert.equal(renderMarkup('_under_ and *slanted*'), '<p><u>under</u> and <em>slanted</em></p>\n');
+  assert.equal(renderMarkup('call some_long_name now'), '<p>call some_long_name now</p>\n');
+  assert.equal(renderMarkup(':blue[_both_]'), '<p><span style="color: var(--mk-blue, #1565c0)"><u>both</u></span></p>\n');
+});
