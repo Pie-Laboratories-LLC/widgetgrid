@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import grpc from '@grpc/grpc-js';
 import { createAuthService } from './authService.js';
+import { parseAssignedUsernames } from '../siteAccounts.js';
 
 function fakeDeps({ claims = { sub: 's1', email: 'Owner@Example.com' }, existingRole, reservations = {} } = {}) {
   const sessions = [];
@@ -13,7 +14,8 @@ function fakeDeps({ claims = { sub: 's1', email: 'Owner@Example.com' }, existing
     claimed,
     deps: {
       pool: {},
-      ownerEmail: 'owner@example.com',
+      ownerEmails: ['owner@example.com', 'second@example.com'],
+      assigned: parseAssignedUsernames('pielabs=site@example.com'),
       verifyIdToken: async (t) => {
         if (t !== 'good') throw new Error('bad token');
         return claims;
@@ -95,4 +97,21 @@ test('first sign-in after registering claims the reserved username', async () =>
   assert.equal(response.username, 'NewPerson');
   assert.equal(claimed[0].userId, 'u1');
   assert.equal(claimed[0].email, 'new@example.com');
+});
+
+test('every address in the owner list becomes owner', async () => {
+  const { deps, upserts } = fakeDeps({ claims: { sub: 's4', email: 'Second@example.com' } });
+  const { response } = await invoke(createAuthService(deps), 'RegisterSignIn', { idToken: 'good' });
+  assert.equal(upserts[0].becomeOwner, true);
+  assert.equal(response.role, 'owner');
+});
+
+test('an address with an assigned name gets it on sign-in, over any reservation', async () => {
+  const { deps, claimed } = fakeDeps({
+    claims: { sub: 's5', email: 'Site@Example.com' },
+    reservations: { 'Site@Example.com': 'Typed' },
+  });
+  const { response } = await invoke(createAuthService(deps), 'RegisterSignIn', { idToken: 'good' });
+  assert.equal(response.username, 'pielabs');
+  assert.equal(claimed[0].username, 'pielabs');
 });

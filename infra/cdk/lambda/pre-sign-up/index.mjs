@@ -29,8 +29,11 @@ export const handler = async (event) => {
     clientNames.set(clientId, UserPoolClient.ClientName);
   }
   if (clientNames.get(clientId) !== REGISTRATION_CLIENT_NAME) {
-    // Shown on the hosted page as "PreSignUp failed with error <this>".
-    throw new Error(`Please create your account at ${REGISTER_URL}`);
+    // Shown on the hosted page as "PreSignUp failed with error <this>",
+    // as plain text -- it can't be a link. Cognito shows its "Sign up"
+    // link whenever self sign-up is on, which the site's own registration
+    // needs, so this is the best that page can do.
+    throw new Error(`accounts are created on the site itself, not here. Go to ${REGISTER_URL} to create one.`);
   }
   return event;
 };

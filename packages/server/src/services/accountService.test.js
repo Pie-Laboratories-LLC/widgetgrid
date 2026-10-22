@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import grpc from '@grpc/grpc-js';
 import { createAccountService, usernameProblem } from './accountService.js';
 import { RegistrarError } from '../registrar.js';
+import { parseAssignedUsernames } from '../siteAccounts.js';
+
+const ASSIGNED = parseAssignedUsernames('pielabs=site@example.com, Captain=cap@example.com');
 
 // In-memory stand-in for usernamesRepo.js: taken names, live reservations.
 function fakeUsernames({ taken = [], reservations = {} } = {}) {
@@ -29,12 +32,13 @@ function fakeUsernames({ taken = [], reservations = {} } = {}) {
   };
 }
 
-function setup({ usernames = fakeUsernames(), caller = null, captchaOk = true, registrar } = {}) {
+function setup({ usernames = fakeUsernames(), caller = null, captchaOk = true, registrar, assigned = ASSIGNED } = {}) {
   const signUps = [];
   const forgotten = [];
   const service = createAccountService({
     pool: {},
     usernames,
+    assigned,
     captcha: { verify: async () => captchaOk },
     authContext: { getCaller: async () => caller, forget: () => forgotten.push(true) },
     registrar: registrar ?? {
@@ -124,4 +128,31 @@ test('ChooseUsername needs a signed-in caller and never replaces an existing nam
   const fresh = setup({ caller: { userId: 'u2', email: 'b@example.com', username: null } });
   assert.equal((await fresh.call('ChooseUsername', { username: 'alice' })).res.username, 'alice');
   assert.equal(fresh.forgotten.length, 1);
+});
+
+test('an assigned name is reserved for everyone but its address, reserved list or not', () => {
+  assert.match(usernameProblem('PieLabs', { email: 'other@example.com', assigned: ASSIGNED }), /reserved/);
+  assert.equal(usernameProblem('PieLabs', { email: ' Site@Example.com', assigned: ASSIGNED }), null);
+  assert.match(usernameProblem('captain', { assigned: ASSIGNED }), /reserved/);
+  assert.equal(usernameProblem('captain', { email: 'cap@example.com', assigned: ASSIGNED }), null);
+});
+
+test('CheckUsername shows an assigned name as available only with its address', async () => {
+  const { call } = setup();
+  assert.equal((await call('CheckUsername', { username: 'pielabs', email: '' })).res.available, false);
+  assert.deepEqual((await call('CheckUsername', { username: 'pielabs', email: 'site@example.com' })).res, { available: true, problem: '' });
+});
+
+test('Register gives an address its assigned name whatever was typed', async () => {
+  const { call, usernames, signUps } = setup();
+  const { err } = await call('Register', { ...GOOD, email: 'Site@Example.com', username: 'SomethingElse' });
+  assert.equal(err, null);
+  assert.equal(usernames.res.get('pielabs'), 'site@example.com');
+  assert.equal(usernames.res.has('somethingelse'), false);
+  assert.equal(signUps[0].email, 'site@example.com');
+});
+
+test('ChooseUsername gives an address its assigned name', async () => {
+  const { call } = setup({ caller: { userId: 'u3', email: 'site@example.com', username: null } });
+  assert.equal((await call('ChooseUsername', { username: 'whatever' })).res.username, 'pielabs');
 });

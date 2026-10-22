@@ -4,7 +4,7 @@
 
     <form v-if="step === 'details'" @submit.prevent="register">
       <label class="account-label" for="register-email">Email address</label>
-      <input id="register-email" v-model="email" class="account-input" type="email" autocomplete="email" required maxlength="254" />
+      <input id="register-email" v-model="email" class="account-input" type="email" autocomplete="email" required maxlength="254" @change="onUsernameInput" />
       <p class="account-hint">Used to log in and for the verification code. Never shown to anyone, shared or sold.</p>
 
       <label class="account-label" for="register-username">Username</label>
@@ -113,7 +113,7 @@ export default {
       }
       this.usernameTimer = setTimeout(async () => {
         try {
-          const result = await accountClient.checkUsername(name);
+          const result = await accountClient.checkUsername(name, this.email.trim());
           if (name === this.username.trim()) this.usernameCheck = result;
         } catch {
           // Not worth bothering anyone over -- submit checks again.

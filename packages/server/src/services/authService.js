@@ -4,6 +4,7 @@ import * as defaultAuthRepo from '@widgetgrid/db/src/authRepo.js';
 import * as defaultUsersRepo from '@widgetgrid/db/src/usersRepo.js';
 import * as defaultUsernamesRepo from '@widgetgrid/db/src/usernamesRepo.js';
 import { RESERVATION_TTL_MS } from './accountService.js';
+import { NO_ASSIGNED_USERNAMES } from '../siteAccounts.js';
 import { isOwnerOnline, subscribePresence } from '../presenceBus.js';
 
 // Matches the SPA client's refresh-token lifetime (90 days, see
@@ -11,12 +12,14 @@ import { isOwnerOnline, subscribePresence } from '../presenceBus.js';
 // browser's ability to stay signed in.
 const SESSION_TTL_MS = 90 * 24 * 60 * 60 * 1000;
 
-// ownerEmail: the one Identity Center email that gets role 'owner' on sign-in
-// (OWNER_EMAIL, see index.js). Everyone else who signs in is a 'member'.
+// ownerEmails: the addresses that get role 'owner' on sign-in (OWNER_EMAIL,
+// see siteAccounts.js). Everyone else who signs in is a 'member'.
+// assigned: names that belong to particular addresses (siteAccounts.js).
 export function createAuthService({
   pool,
   verifyIdToken,
-  ownerEmail,
+  ownerEmails = [],
+  assigned = NO_ASSIGNED_USERNAMES,
   authRepo = defaultAuthRepo,
   usersRepo = defaultUsersRepo,
   usernamesRepo = defaultUsernamesRepo,
@@ -33,17 +36,20 @@ export function createAuthService({
       }
       try {
         const email = String(claims.email ?? '');
-        const becomeOwner = !!ownerEmail && email.toLowerCase() === ownerEmail.toLowerCase();
+        const becomeOwner = ownerEmails.includes(email.toLowerCase());
         const user = await usersRepo.upsertOnSignIn(pool, { sub: claims.sub, email, becomeOwner });
 
         // First sign-in after registering: the username reserved then
         // (accountService.js's Register) becomes theirs now that the row
-        // exists. No reservation (Identity Center accounts, or one that
-        // lapsed) leaves it empty -- they choose one when it's needed.
+        // exists. An address with an assigned name gets that instead, even
+        // without a reservation (Identity Center, or one that lapsed). No
+        // reservation otherwise leaves it empty -- they choose one when
+        // it's needed.
         let username = user.username ?? '';
         if (!username) {
           const reservedAfter = new Date(now() - RESERVATION_TTL_MS);
-          const reserved = await usernamesRepo.findReservationByEmail(pool, { email, reservedAfter });
+          const reserved = assigned.forEmail(email)
+            ?? await usernamesRepo.findReservationByEmail(pool, { email, reservedAfter });
           if (reserved) {
             username = await usernamesRepo.claimForUser(pool, { userId: user.id, username: reserved, email, reservedAfter }) ?? '';
           }

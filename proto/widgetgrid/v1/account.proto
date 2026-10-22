@@ -12,6 +12,9 @@ package widgetgrid.v1;
 
 message CheckUsernameRequest {
   string username = 1;
+  // The address being registered, when the form has one: a name assigned
+  // to that address shows as available to it (see siteAccounts.js).
+  string email = 2;
 }
 
 message CheckUsernameResponse {

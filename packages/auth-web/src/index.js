@@ -253,19 +253,28 @@ export function setUsername(username) {
   announce();
 }
 
-// Local sign-out: forgets the tokens and ends the owner presence session.
-// The Identity Center session stays, so the next sign-in skips the
-// password prompt.
+// Forgets the tokens, ends the owner presence session, then ends the
+// hosted sign-in page's own session too and comes back to the home page.
+// Without that last step the next "Log in" sailed straight through as
+// whoever signed in last -- wrong on a shared computer, and no way to
+// switch accounts. Staying signed in between visits is the refresh token,
+// untouched by any of this. (An Identity Center session outlives it, so
+// that button still signs in without a password.)
 export async function signOut({ grpcWebOrigin = '' } = {}) {
   const stored = readStored();
   writeStored(null);
   announce();
-  if (!stored?.sessionToken) return;
-  try {
-    const request = new LogoutRequest();
-    request.setToken(stored.sessionToken);
-    await new AuthServicePromiseClient(grpcWebOrigin).logout(request, {});
-  } catch {
-    // The presence row expires on its own; not worth surfacing.
+  if (stored?.sessionToken) {
+    try {
+      const request = new LogoutRequest();
+      request.setToken(stored.sessionToken);
+      await new AuthServicePromiseClient(grpcWebOrigin).logout(request, {});
+    } catch {
+      // The presence row expires on its own; not worth surfacing.
+    }
   }
+  // logout_uri must be one of the client's registered logout URLs, which
+  // are each origin's "/".
+  const params = new URLSearchParams({ client_id: CLIENT_ID, logout_uri: `${window.location.origin}/` });
+  window.location.assign(`${AUTH_ORIGIN}/logout?${params}`);
 }

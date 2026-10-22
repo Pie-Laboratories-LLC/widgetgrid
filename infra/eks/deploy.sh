@@ -247,6 +247,7 @@ kubectl create secret generic widgetgrid-server-secret \
   --from-literal=DATABASE_URL="$DATABASE_URL" \
   --from-literal=OWNER_PHONE_NUMBER="${OWNER_PHONE_NUMBER:-}" \
   --from-literal=OWNER_EMAIL="${OWNER_EMAIL:-}" \
+  --from-literal=ASSIGNED_USERNAMES="${ASSIGNED_USERNAMES:-}" \
   --from-literal=VAPID_PUBLIC_KEY="${VAPID_PUBLIC_KEY:-}" \
   --from-literal=VAPID_PRIVATE_KEY="${VAPID_PRIVATE_KEY:-}" \
   --from-literal=TURNSTILE_SECRET_KEY="${TURNSTILE_SECRET_KEY:-}" \

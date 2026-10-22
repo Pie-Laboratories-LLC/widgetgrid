@@ -1,6 +1,7 @@
 import grpc from '@grpc/grpc-js';
 import * as defaultUsernames from '@widgetgrid/db/src/usernamesRepo.js';
 import { RegistrarError } from '../registrar.js';
+import { NO_ASSIGNED_USERNAMES } from '../siteAccounts.js';
 
 // How long a username reserved at registration is held for the email that
 // reserved it -- time enough to find the code and sign in for the first
@@ -17,9 +18,13 @@ const RESERVED_USERNAMES = new Set([
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // A sentence for the form, or null when the name is acceptable as typed
-// (availability is a separate question).
-export function usernameProblem(username) {
+// (availability is a separate question). A name assigned to an address
+// (siteAccounts.js) is acceptable only for that address, reserved list or
+// not.
+export function usernameProblem(username, { email = '', assigned = NO_ASSIGNED_USERNAMES } = {}) {
   if (!USERNAME_PATTERN.test(username)) return USERNAME_RULES;
+  const assignedTo = assigned.ownerOf(username);
+  if (assignedTo) return assignedTo === String(email).trim().toLowerCase() ? null : 'That username is reserved.';
   if (RESERVED_USERNAMES.has(username.toLowerCase())) return 'That username is reserved.';
   return null;
 }
@@ -41,7 +46,8 @@ class FormError extends Error {
 
 // See proto/widgetgrid/v1/account.proto.
 export function createAccountService({
-  pool, authContext, registrar, captcha, usernames = defaultUsernames, now = () => Date.now(),
+  pool, authContext, registrar, captcha, usernames = defaultUsernames,
+  assigned = NO_ASSIGNED_USERNAMES, now = () => Date.now(),
 }) {
   const reservedAfter = () => new Date(now() - RESERVATION_TTL_MS);
 
@@ -77,7 +83,7 @@ export function createAccountService({
   };
 
   const checkUsername = async (username, email = '') => {
-    const problem = usernameProblem(username);
+    const problem = usernameProblem(username, { email, assigned });
     if (problem) return { available: false, problem };
     if (!(await usernames.isAvailable(pool, { username, email, reservedAfter: reservedAfter() }))) {
       return { available: false, problem: 'That username is taken.' };
@@ -86,11 +92,16 @@ export function createAccountService({
   };
 
   return {
-    CheckUsername: handle(async ({ username }) => checkUsername(String(username ?? '').trim())),
+    // The form sends the email when it has one, so an address's assigned
+    // name shows as available to it.
+    CheckUsername: handle(async ({ username, email }) => checkUsername(
+      String(username ?? '').trim(), String(email ?? '').trim().toLowerCase(),
+    )),
 
     Register: handle(async (request) => {
       const email = normalizeEmail(request.email);
-      const username = String(request.username ?? '').trim();
+      // An address with an assigned name gets it whatever was typed.
+      const username = assigned.forEmail(email) ?? String(request.username ?? '').trim();
       const password = String(request.password ?? '');
       const { available, problem } = await checkUsername(username, email);
       if (!available) {
@@ -123,8 +134,8 @@ export function createAccountService({
       const caller = await authContext.getCaller(call);
       if (!caller) throw new FormError(grpc.status.UNAUTHENTICATED, 'Log in first.');
       if (caller.username) return { username: caller.username };
-      const username = String(request.username ?? '').trim();
-      const problem = usernameProblem(username);
+      const username = assigned.forEmail(caller.email) ?? String(request.username ?? '').trim();
+      const problem = usernameProblem(username, { email: caller.email, assigned });
       if (problem) throw new FormError(grpc.status.INVALID_ARGUMENT, problem);
       const claimed = await usernames.claimForUser(pool, {
         userId: caller.userId, username, email: caller.email, reservedAfter: reservedAfter(),

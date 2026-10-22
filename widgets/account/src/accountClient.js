@@ -12,9 +12,10 @@ const client = new AccountServicePromiseClient(GRPC_WEB_ORIGIN);
 
 export const accountClient = {
   // { available, problem }
-  async checkUsername(username) {
+  async checkUsername(username, email = '') {
     const request = new CheckUsernameRequest();
     request.setUsername(username);
+    request.setEmail(email);
     const response = await client.checkUsername(request, {});
     return { available: response.getAvailable(), problem: response.getProblem() };
   },

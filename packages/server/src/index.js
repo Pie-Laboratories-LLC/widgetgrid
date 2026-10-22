@@ -24,6 +24,7 @@ import { createSubscriptionService } from './services/subscriptionService.js';
 import { createPostMailer } from './postMailer.js';
 import { createCognitoRegistrar, createConsoleRegistrar } from './registrar.js';
 import { createAccountService } from './services/accountService.js';
+import { parseEmailList, parseAssignedUsernames } from './siteAccounts.js';
 import { createBoardService } from './services/boardService.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -57,9 +58,11 @@ const OWNER_PHONE_NUMBER = process.env.OWNER_PHONE_NUMBER ?? '';
 // infra/eks/manifests/widgetgrid-server.yaml) sends real texts via SNS --
 // see smsSender.js.
 const SMS_PROVIDER = process.env.SMS_PROVIDER ?? 'console';
-// The Identity Center email that becomes role 'owner' on sign-in (chat
-// server side, presence). Everyone else who signs in is a 'member'.
-const OWNER_EMAIL = process.env.OWNER_EMAIL ?? '';
+// The addresses that become role 'owner' on sign-in (chat server side,
+// presence, moderation), comma-separated, and the usernames that belong to
+// particular addresses -- see siteAccounts.js.
+const OWNER_EMAILS = parseEmailList(process.env.OWNER_EMAIL);
+const ASSIGNED_USERNAMES = parseAssignedUsernames(process.env.ASSIGNED_USERNAMES);
 // Web Push (owner chat alerts) -- see pushSender.js. Unset = push disabled.
 const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY ?? '';
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY ?? '';
@@ -115,11 +118,11 @@ export function startServer() {
   server.addService(proto.PageService.service, createPageService({ pool, pagesRepo, layoutNodesRepo }));
   server.addService(proto.WidgetService.service, createWidgetService({ pool, widgetsRepo }));
   server.addService(proto.BlogService.service, createBlogService({ blogSource, blogChangeNotifier, siteOrigin: SITE_ORIGIN }));
-  server.addService(proto.AuthService.service, createAuthService({ pool, verifyIdToken, ownerEmail: OWNER_EMAIL }));
+  server.addService(proto.AuthService.service, createAuthService({ pool, verifyIdToken, ownerEmails: OWNER_EMAILS, assigned: ASSIGNED_USERNAMES }));
   server.addService(proto.PushService.service, createPushService({ pool, authContext, pushSender, deviceActivity }));
   server.addService(proto.ChatService.service, createChatService({ pool, authContext, pushSender, deviceActivity, ownerPhoneNumber: OWNER_PHONE_NUMBER, smsSender }));
   server.addService(proto.SubscriptionService.service, createSubscriptionService({ pool, authContext, emailSender, captcha, siteOrigin: SITE_ORIGIN }));
-  server.addService(proto.AccountService.service, createAccountService({ pool, authContext, registrar, captcha }));
+  server.addService(proto.AccountService.service, createAccountService({ pool, authContext, registrar, captcha, assigned: ASSIGNED_USERNAMES }));
   server.addService(proto.BoardService.service, createBoardService({ pool, authContext, pushSender, emailSender, siteOrigin: SITE_ORIGIN }));
 
   createPostMailer({ pool, blogSource, emailSender, siteOrigin: SITE_ORIGIN, intervalMs: POST_MAILER_INTERVAL_MS }).start();
