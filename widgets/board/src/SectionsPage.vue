@@ -15,6 +15,7 @@
       </a>
     </div>
     <PostingNotice v-if="viewer" :viewer="viewer" />
+    <HeldImages v-if="viewer?.moderator" />
   </div>
 </template>
 
@@ -22,11 +23,13 @@
 import { boardPath, navigate } from '@widgetgrid/site-routes';
 import { boardClient, describe } from './boardClient.js';
 import PostingNotice from './PostingNotice.vue';
+import HeldImages from './HeldImages.vue';
 
-// /site/messages: the sections.
+// /site/messages: the sections (and, for moderators, images waiting for
+// review).
 export default {
   name: 'SectionsPage',
-  components: { PostingNotice },
+  components: { PostingNotice, HeldImages },
   data() {
     return { sections: [], viewer: null, status: 'loading', error: '' };
   },

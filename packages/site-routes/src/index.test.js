@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseSitePath, sitePath, boardPath, isSitePath, sectionOf } from './index.js';
+import { parseSitePath, sitePath, boardPath, writePath, isSitePath, sectionOf } from './index.js';
 
 test('parseSitePath maps each view path, with or without a trailing slash', () => {
   assert.deepEqual(parseSitePath('/'), { view: 'blog', post: null });
@@ -54,4 +54,13 @@ test('message board paths carry the section and thread', () => {
   assert.equal(boardPath({ section: 'site-feedback', thread: '9', post: '9' }), '/site/messages/site-feedback/9');
   assert.equal(boardPath({ section: 'site-feedback' }), '/site/messages/site-feedback');
   assert.equal(sectionOf('messages'), 'site');
+});
+
+test('the blog editor: the list and one draft', () => {
+  assert.deepEqual(parseSitePath('/site/write'), { view: 'write', post: null, draft: null });
+  assert.deepEqual(parseSitePath('/site/write/12/'), { view: 'write', post: null, draft: '12' });
+  assert.equal(parseSitePath('/site/write/abc'), null);
+  assert.equal(writePath(), '/site/write');
+  assert.equal(writePath('12'), '/site/write/12');
+  assert.equal(sectionOf('write'), 'site');
 });

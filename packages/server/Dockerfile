@@ -41,6 +41,7 @@ COPY widgets/lhoraire/package.json widgets/lhoraire/package.json
 COPY widgets/subscribe/package.json widgets/subscribe/package.json
 COPY widgets/account/package.json widgets/account/package.json
 COPY widgets/board/package.json widgets/board/package.json
+COPY widgets/author/package.json widgets/author/package.json
 COPY infra/cdk/package.json infra/cdk/package.json
 
 # --ignore-scripts: nothing packages/server or packages/db depend on needs

@@ -17,6 +17,19 @@
          will be posted. -->
     <div v-if="previewing" class="composer-preview board-body" v-html="previewHtml"></div>
 
+    <div v-if="viewer?.canUploadImages" class="composer-images">
+      <button type="button" class="board-action" :disabled="uploading || imageCount >= maxImages" @click="$refs.file.click()">
+        {{ uploading ? 'Adding image…' : 'Add image' }}
+      </button>
+      <input ref="file" type="file" accept="image/*" multiple hidden @change="addImages" />
+      <span class="board-muted">{{ imageCount }}/{{ maxImages }} images</span>
+      <span v-if="heldNote" class="board-muted">{{ heldNote }}</span>
+    </div>
+    <p v-else-if="viewer?.imagesFrom" class="board-muted composer-images">
+      New accounts can add images from {{ imagesFromText }}.
+    </p>
+    <p v-if="uploadError" class="board-error">{{ uploadError }}</p>
+
     <div v-if="showHelp" class="composer-help">
       <table>
         <tbody>
@@ -48,12 +61,20 @@
 </template>
 
 <script>
-import { renderMarkup, PALETTE } from '@widgetgrid/markup';
+import { renderMarkup, imageUrls, PALETTE } from '@widgetgrid/markup';
+import { boardClient, describe } from './boardClient.js';
+
+const MAX_IMAGES = 5;
+// Uploaded board images -- the preview shows them as the post will (the
+// server decides for real: only the author's own, and not held ones).
+const BOARD_IMAGE = /^\/media\/board\/[A-Za-z0-9_-]{22}\.webp$/;
+const previewImage = (url) => (BOARD_IMAGE.test(url) ? { src: url } : null);
 
 // Writing a thread, a reply, or an edit: the text, a live preview, a
-// formatting crib (including the colour palette), and the "email me about
-// replies" opt-in. Emits submit({ title, body, notifyReplies }) -- the
-// parent does the saving and passes busy/error back.
+// formatting crib (including the colour palette), images (for accounts
+// allowed them -- see viewer), and the "email me about replies" opt-in.
+// Emits submit({ title, body, notifyReplies }) -- the parent does the
+// saving and passes busy/error back.
 export default {
   name: 'Composer',
   props: {
@@ -67,6 +88,8 @@ export default {
     autofocus: { type: Boolean, default: false },
     busy: { type: Boolean, default: false },
     error: { type: String, default: '' },
+    // BoardViewer: whether images may be added yet.
+    viewer: { type: Object, default: null },
   },
   emits: ['submit', 'cancel'],
   data() {
@@ -77,11 +100,21 @@ export default {
       previewing: false,
       showHelp: false,
       palette: PALETTE,
+      maxImages: MAX_IMAGES,
+      uploading: false,
+      uploadError: '',
+      heldNote: '',
     };
   },
   computed: {
     previewHtml() {
-      return this.body.trim() ? renderMarkup(this.body) : '<p class="board-muted">Nothing to preview yet.</p>';
+      return this.body.trim() ? renderMarkup(this.body, { image: previewImage }) : '<p class="board-muted">Nothing to preview yet.</p>';
+    },
+    imageCount() {
+      return new Set(imageUrls(this.body).filter((url) => BOARD_IMAGE.test(url))).size;
+    },
+    imagesFromText() {
+      return new Date(this.viewer.imagesFrom).toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
     },
   },
   mounted() {
@@ -97,6 +130,33 @@ export default {
       this.title = '';
       this.body = '';
       this.previewing = false;
+      this.heldNote = '';
+    },
+    // Each image is uploaded as soon as it's chosen (re-encoded and checked
+    // on the server) and its Markdown put where the cursor was.
+    async addImages(event) {
+      const files = [...event.target.files].slice(0, MAX_IMAGES - this.imageCount);
+      event.target.value = '';
+      if (!files.length) return;
+      this.uploading = true;
+      this.uploadError = '';
+      const box = this.$refs.body;
+      let at = box.selectionStart ?? this.body.length;
+      try {
+        for (const file of files) {
+          const { markdown, status } = await boardClient.uploadImage(file);
+          const insert = `${at > 0 && this.body[at - 1] !== '\n' ? '\n' : ''}${markdown}\n`;
+          this.body = this.body.slice(0, at) + insert + this.body.slice(at);
+          at += insert.length;
+          if (status === 'held') this.heldNote = 'An image will show once a moderator has looked at it.';
+        }
+        this.previewing = false;
+        this.$nextTick(() => { box.focus(); box.setSelectionRange(at, at); });
+      } catch (err) {
+        this.uploadError = describe(err);
+      } finally {
+        this.uploading = false;
+      }
     },
   },
 };
@@ -185,6 +245,14 @@ export default {
   display: flex;
   gap: 6px;
   align-items: center;
+}
+
+.composer-images {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 0.85rem;
+  margin: 0;
 }
 
 .composer-actions {

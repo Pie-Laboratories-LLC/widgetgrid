@@ -22,6 +22,8 @@
       <component v-else-if="view === 'subscribe'" :is="subscribeComponent" :data="{}" title="" />
       <p v-if="view === 'lhoraire' && !lhoraireComponent" class="main-status">Loading…</p>
       <component v-else-if="view === 'lhoraire'" :is="lhoraireComponent" :data="{}" title="" />
+      <p v-if="view === 'write' && !authorComponent" class="main-status">Loading…</p>
+      <component v-else-if="view === 'write'" :is="authorComponent" :data="{ draft }" title="" />
     </div>
   </div>
 </template>
@@ -71,6 +73,7 @@ const GAME_ENTRIES = [
 const ACCOUNT_VIEWS = ['login', 'register', 'account'];
 
 const isLhoraireAdmin = () => !!getIdentity()?.groups.includes('anonyme admins');
+const isOwner = () => getIdentity()?.role === 'owner';
 
 export default {
   name: 'MainWidget',
@@ -83,7 +86,8 @@ export default {
     return {
       view: null, post: null, blogComponent: null, solitaireComponent: null, chatComponent: null,
       embuscadeComponent: null, lhoraireComponent: null, subscribeComponent: null, accountComponent: null, boardComponent: null, board: null, collapsed: false, railHidden: false,
-      blogReloadKey: 0, isLhoraireAdmin: isLhoraireAdmin(), signedIn: !!getIdentity(),
+      authorComponent: null, draft: null,
+      blogReloadKey: 0, isLhoraireAdmin: isLhoraireAdmin(), isOwner: isOwner(), signedIn: !!getIdentity(),
     };
   },
   created() {
@@ -130,6 +134,7 @@ export default {
     // dispatches this event on both login success and logout.
     this.onIdentityChanged = () => {
       this.isLhoraireAdmin = isLhoraireAdmin();
+      this.isOwner = isOwner();
       this.signedIn = !!getIdentity();
       this.unsubscribeChatEvents();
       this.unsubscribeChatEvents = subscribeChatEvents((event) => {
@@ -160,8 +165,8 @@ export default {
     gameEntries() {
       return GAME_ENTRIES;
     },
-    // l'horaire is listed only for the "anonyme admins" group (UI only;
-    // lhoraire-server enforces it).
+    // l'horaire is listed only for the "anonyme admins" group, writing the
+    // blog only for the owner (UI only; the servers enforce both).
     siteEntries() {
       const entries = [
         this.signedIn
@@ -170,6 +175,9 @@ export default {
         { view: 'subscribe', title: 'Email updates', description: 'An email whenever a new blog post goes up.' },
         { view: 'messages', title: 'Message boards', description: 'Feedback and discussion about the games and the site.' },
       ];
+      if (this.isOwner) {
+        entries.push({ view: 'write', title: 'Write', description: 'Draft, preview and publish blog posts.' });
+      }
       if (this.isLhoraireAdmin) {
         entries.push({ view: 'lhoraire', title: "l'horaire", description: 'Projects, issues and workflows.' });
       }
@@ -178,8 +186,9 @@ export default {
   },
   methods: {
     onRoute(event) {
-      const { view, post = null, board = null, forceReload = false } = event.detail;
+      const { view, post = null, board = null, draft = null, forceReload = false } = event.detail;
       this.post = post;
+      this.draft = draft;
       // Moving between board pages is the same view, so the scroll reset
       // below doesn't happen -- do it here (a #post- link scrolls itself).
       if (view === 'messages' && this.view === 'messages' && JSON.stringify(board) !== JSON.stringify(this.board) && this.$el) {
@@ -218,6 +227,11 @@ export default {
       if (ACCOUNT_VIEWS.includes(this.view) && !this.accountComponent) {
         import(/* @vite-ignore */ '/widgets/account.js').then((mod) => {
           this.accountComponent = mod.default ?? mod;
+        });
+      }
+      if (this.view === 'write' && !this.authorComponent) {
+        import(/* @vite-ignore */ '/widgets/author.js').then((mod) => {
+          this.authorComponent = mod.default ?? mod;
         });
       }
       if (this.view === 'subscribe' && !this.subscribeComponent) {

@@ -105,6 +105,28 @@ export default {
   overflow-wrap: anywhere;
 }
 
+/* Screenshots: never wider than the post, and a bounded height so one
+   tall image doesn't take over the thread. */
+.board-body img {
+  display: block;
+  max-width: 100%;
+  max-height: 600px;
+  height: auto;
+  margin: 8px 0;
+  border-radius: 4px;
+  border: 1px solid #e5e5e5;
+}
+
+.board-body .mk-image-held {
+  display: inline-block;
+  margin: 8px 0;
+  padding: 4px 8px;
+  border: 1px dashed #bbb;
+  border-radius: 4px;
+  color: #666;
+  font-size: 0.85rem;
+}
+
 .board-body > :first-child {
   margin-top: 0;
 }

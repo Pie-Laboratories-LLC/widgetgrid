@@ -12,7 +12,7 @@
 
       <Composer
         v-if="viewer.canPost && !root.deleted && !root.removed" ref="replyBox" submit-label="Reply"
-        placeholder="Reply to the thread" :busy="replying" :error="replyError" @submit="replyToThread"
+        placeholder="Reply to the thread" :busy="replying" :error="replyError" :viewer="viewer" @submit="replyToThread"
       />
       <PostingNotice v-else-if="!viewer.canPost" :viewer="viewer" />
 

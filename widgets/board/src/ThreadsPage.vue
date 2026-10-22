@@ -13,7 +13,7 @@
         <button v-if="!composing" type="button" class="board-button" @click="composing = true">New thread</button>
         <Composer
           v-else with-title cancellable autofocus submit-label="Post thread"
-          :busy="posting" :error="postError" @submit="createThread" @cancel="composing = false"
+          :busy="posting" :error="postError" :viewer="viewer" @submit="createThread" @cancel="composing = false"
         />
       </template>
       <PostingNotice v-else :viewer="viewer" />

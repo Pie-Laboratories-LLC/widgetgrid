@@ -25,10 +25,11 @@ function readBody(req, limit) {
     const chunks = [];
     let size = 0;
     req.on('data', (chunk) => {
+      if (size > limit) return; // already refused; the rest is ignored
       size += chunk.length;
       if (size > limit) {
+        chunks.length = 0;
         reject(new TooLarge());
-        req.destroy();
         return;
       }
       chunks.push(chunk);
@@ -98,6 +99,9 @@ export function createEdgeRoutes({ grpcAddr }) {
       data = await readBody(req, MAX_UPLOAD_BYTES);
     } catch (err) {
       if (err instanceof TooLarge) {
+        // Answer, then drop the connection rather than read the rest.
+        res.setHeader('Connection', 'close');
+        res.on('finish', () => req.destroy());
         sendJson(res, 413, { message: 'Images can be up to 10 MB.' });
         return;
       }

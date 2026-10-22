@@ -32,6 +32,11 @@ spec:
           ports:
             - containerPort: 50051
               name: grpc
+          # Uploaded images (mediaStore.js): /app isn't writable by the
+          # image's user, and nothing here needs them to outlive the pod.
+          env:
+            - name: MEDIA_DIR
+              value: /tmp/widgetgrid-media
           envFrom:
             - configMapRef:
                 name: widgetgrid-server-config

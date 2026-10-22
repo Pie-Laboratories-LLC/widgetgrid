@@ -20,7 +20,7 @@
       <Composer
         v-if="editing" :with-title="root" :initial-title="post.title" :initial-body="post.body"
         :initial-notify="post.notifyReplies" submit-label="Save" cancellable autofocus
-        :busy="busy" :error="error" @submit="saveEdit" @cancel="editing = false"
+        :busy="busy" :error="error" :viewer="board.viewer" @submit="saveEdit" @cancel="editing = false"
       />
       <template v-else>
         <div v-if="post.bodyHtml" class="board-body" v-html="post.bodyHtml"></div>
@@ -48,7 +48,7 @@
 
         <Composer
           v-if="replyingTo" ref="replyBox" submit-label="Reply" cancellable autofocus
-          :placeholder="`Reply to ${post.author || 'this post'}`" :busy="busy" :error="error"
+          :placeholder="`Reply to ${post.author || 'this post'}`" :busy="busy" :error="error" :viewer="board.viewer"
           @submit="sendReply" @cancel="replyingTo = false"
         />
       </template>

@@ -27,6 +27,7 @@ const VIEW_PATHS = {
   login: '/site/login',
   register: '/site/register',
   account: '/site/account',
+  write: '/site/write',
   chat: '/chat',
 };
 
@@ -44,6 +45,7 @@ const VIEW_SECTIONS = {
   login: 'site',
   register: 'site',
   account: 'site',
+  write: 'site',
   chat: 'chat',
 };
 
@@ -75,6 +77,8 @@ const VIEW_CHROME = {
   // reply a narrow column. The topbar still shrinks on scroll, as on the
   // blog.
   messages: { topbar: 'scroll', railHidden: true },
+  // The editor sits beside its preview -- it wants the width too.
+  write: { topbar: 'scroll', railHidden: true },
 };
 
 export function viewChrome(view) {
@@ -97,6 +101,10 @@ export function parseSitePath(pathname) {
   if (blog) return { view: 'blog', post: blog[1] ? decodeURIComponent(blog[1]) : null };
   const board = /^\/site\/messages(?:\/([a-z0-9-]+)(?:\/(\d+))?)?$/.exec(path);
   if (board) return { view: 'messages', post: null, board: { section: board[1] ?? null, thread: board[2] ?? null } };
+  // The blog editor: "/site/write" lists posts and drafts,
+  // "/site/write/<draft>" edits one.
+  const write = /^\/site\/write(?:\/(\d+))?$/.exec(path);
+  if (write) return { view: 'write', post: null, draft: write[1] ?? null };
   for (const [view, viewPath] of Object.entries(VIEW_PATHS)) {
     if (path === viewPath) return { view, post: null };
   }
@@ -106,6 +114,11 @@ export function parseSitePath(pathname) {
 export function sitePath(view, post = null) {
   if (view === 'blog' && post) return `/blog/${encodeURIComponent(post)}`;
   return VIEW_PATHS[view] ?? '/';
+}
+
+// The blog editor: the list, or one draft.
+export function writePath(draft = null) {
+  return draft ? `${VIEW_PATHS.write}/${draft}` : VIEW_PATHS.write;
 }
 
 // A message board page: the sections, one section's threads, or a thread

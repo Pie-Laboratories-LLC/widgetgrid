@@ -5,6 +5,7 @@
 import {
   ListSectionsRequest, ListThreadsRequest, GetThreadRequest, CreateThreadRequest, ReplyRequest,
   EditPostRequest, DeletePostRequest, SetReplyNotificationsRequest, HidePostRequest, BanUserRequest,
+  ListHeldImagesRequest, ReviewImageRequest,
 } from '@widgetgrid/proto-gen-web/widgetgrid/v1/board_pb.js';
 import { BoardServicePromiseClient } from '@widgetgrid/proto-gen-web/widgetgrid/v1/board_grpc_web_pb.js';
 import { authMetadata } from '@widgetgrid/auth-web';
@@ -28,6 +29,26 @@ async function send(method, Type, fields = {}) {
 }
 
 export const boardClient = {
+  async listHeldImages() {
+    return (await send('listHeldImages', ListHeldImagesRequest)).imagesList.map((img) => ({ ...img, labels: img.labelsList }));
+  },
+  async reviewImage(id, approve) {
+    await send('reviewImage', ReviewImageRequest, { id, approve });
+  },
+  // An image for a post -> { url, markdown, status } ('ok', or 'held' for
+  // a moderator to look at). The raw file goes to static-server's
+  // POST /media/upload (see proto/widgetgrid/v1/media.proto); throws with
+  // the server's message.
+  async uploadImage(file) {
+    const response = await fetch('/media/upload?purpose=board', {
+      method: 'POST',
+      headers: { ...(await authMetadata()), 'Content-Type': 'application/octet-stream' },
+      body: file,
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(result.message ?? 'The upload failed. Please try again.');
+    return result;
+  },
   async listSections() {
     const r = await send('listSections', ListSectionsRequest);
     return { sections: r.sectionsList.map(section), viewer: r.viewer };
