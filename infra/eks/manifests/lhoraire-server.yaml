@@ -30,7 +30,8 @@ spec:
           ports:
             - containerPort: 50061
               name: grpc
-          # DATABASE_URL only -- this server needs nothing else from
+          # DATABASE_URL, plus which user pool to verify tokens against
+          # (empty for the shared one) -- nothing else from
           # widgetgrid-server's secret (VAPID, phone, ...). Created by
           # infra/eks/deploy.sh.
           envFrom:

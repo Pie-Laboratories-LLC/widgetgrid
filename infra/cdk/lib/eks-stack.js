@@ -5,6 +5,7 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { addonVersion, addCoreAddons } from './eks-versions.js';
+import { EMAIL_DOMAIN } from './dns-stack.js';
 
 // The IAM identity that runs `cdk deploy`/`kubectl`/`helm` for this stack --
 // see infra/eks/deploy.sh. With authenticationMode: API there is no
@@ -230,6 +231,11 @@ export class EksStack extends Stack {
       resources: ['*'],
     }));
     this.blogBucket.grantRead(serverRole);
+    // Subscription, reply and new-post emails -- see prod-eks-stack.js.
+    serverRole.addToPolicy(new iam.PolicyStatement({
+      actions: ['ses:SendEmail'],
+      resources: [this.formatArn({ service: 'ses', resource: 'identity', resourceName: EMAIL_DOMAIN })],
+    }));
 
     const serverPodIdentity = new eks.CfnPodIdentityAssociation(this, 'WidgetgridServerPodIdentity', {
       clusterName: cluster.clusterName,

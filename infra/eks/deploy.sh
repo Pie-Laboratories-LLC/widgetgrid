@@ -14,12 +14,14 @@ cd "$(dirname "${BASH_SOURCE[0]}")/../.."  # repo root
 # always has -- `./deploy.sh prod` is the only new invocation this adds.
 ENV="${1:-dev}"
 case "$ENV" in
-  dev) EKS_STACK=WidgetgridEksStack; RDS_STACK=WidgetgridRdsStack; GATEWAY_STACK=WidgetgridDevGatewayStack; TARGET_GROUP_CONTEXT_KEY=envoyTargetGroupArn; SITE_HOST=dev.pie-laboratories.com ;;
-  prod) EKS_STACK=WidgetgridProdEksStack; RDS_STACK=WidgetgridProdRdsStack; GATEWAY_STACK=WidgetgridProdGatewayStack; TARGET_GROUP_CONTEXT_KEY=prodEnvoyTargetGroupArn; SITE_HOST=www.pie-laboratories.com ;;
+  dev) EKS_STACK=WidgetgridEksStack; RDS_STACK=WidgetgridRdsStack; GATEWAY_STACK=WidgetgridDevGatewayStack; TARGET_GROUP_CONTEXT_KEY=envoyTargetGroupArn; SITE_HOST=dev.pie-laboratories.com; IDENTITY_STACK=WidgetgridDevIdentityStack ;;
+  prod) EKS_STACK=WidgetgridProdEksStack; RDS_STACK=WidgetgridProdRdsStack; GATEWAY_STACK=WidgetgridProdGatewayStack; TARGET_GROUP_CONTEXT_KEY=prodEnvoyTargetGroupArn; SITE_HOST=www.pie-laboratories.com; IDENTITY_STACK=WidgetgridIdentityStack ;;
   *) echo "Unknown environment '$ENV' -- expected 'dev' or 'prod'" >&2; exit 1 ;;
 esac
 
 REGION=us-east-1
+# Every emailed and RSS link is built on this (widgetgrid-server's SITE_ORIGIN).
+SITE_ORIGIN="https://${SITE_HOST}"
 CONSUL_CHART_VERSION=2.0.3
 
 require() {
@@ -58,12 +60,25 @@ DB_SECRET_ARN=$(echo "$rds_outputs" | jq -r '.[] | select(.OutputKey=="DbSecretA
 # widgetgrid-server signs people up through the user pool's registration
 # client (packages/server/src/registrar.js), which has a secret --
 # CloudFormation doesn't output secrets, so it's read from Cognito itself.
-identity_outputs=$(aws cloudformation describe-stacks --region "$REGION" --stack-name WidgetgridIdentityStack --query 'Stacks[0].Outputs' --output json)
+# Prod uses the shared pool (WidgetgridIdentityStack); dev, when stood up,
+# its own (WidgetgridDevIdentityStack).
+identity_outputs=$(aws cloudformation describe-stacks --region "$REGION" --stack-name "$IDENTITY_STACK" --query 'Stacks[0].Outputs' --output json)
 USER_POOL_ID=$(echo "$identity_outputs" | jq -r '.[] | select(.OutputKey=="UserPoolId") | .OutputValue')
 REGISTRATION_CLIENT_ID=$(echo "$identity_outputs" | jq -r '.[] | select(.OutputKey=="RegistrationClientId") | .OutputValue')
 if [ -z "$REGISTRATION_CLIENT_ID" ] || [ "$REGISTRATION_CLIENT_ID" = "null" ]; then
-  echo "WidgetgridIdentityStack has no RegistrationClientId output -- deploy it first (cdk deploy WidgetgridIdentityStack)." >&2
+  echo "${IDENTITY_STACK} has no RegistrationClientId output -- deploy it first (cdk deploy ${IDENTITY_STACK})." >&2
   exit 1
+fi
+# Which pool the site signs in against. Left empty for the shared pool --
+# its ids are packages/auth-web's and packages/auth-node's defaults -- and
+# set for dev's own: baked into the static image's bundles, and the
+# servers verify tokens against it.
+if [ "$ENV" = dev ]; then
+  COGNITO_USER_POOL_ID="$USER_POOL_ID"
+  COGNITO_SPA_CLIENT_ID=$(echo "$identity_outputs" | jq -r '.[] | select(.OutputKey=="SpaClientId") | .OutputValue')
+  COGNITO_AUTH_ORIGIN=$(echo "$identity_outputs" | jq -r '.[] | select(.OutputKey=="AuthOrigin") | .OutputValue')
+else
+  COGNITO_USER_POOL_ID=; COGNITO_SPA_CLIENT_ID=; COGNITO_AUTH_ORIGIN=
 fi
 REGISTRATION_CLIENT_SECRET=$(aws cognito-idp describe-user-pool-client --region "$REGION" \
   --user-pool-id "$USER_POOL_ID" --client-id "$REGISTRATION_CLIENT_ID" \
@@ -164,7 +179,11 @@ TURNSTILE_SITE_KEY_BUILD=$( [ -f .env ] && sed -n 's/^TURNSTILE_SITE_KEY=//p' .e
 if [ -z "$TURNSTILE_SITE_KEY_BUILD" ]; then
   echo "WARNING: no TURNSTILE_SITE_KEY in .env -- the subscribe form's captcha will not work in production." >&2
 fi
-docker build --platform "$IMAGE_PLATFORM" -f packages/static-server/Dockerfile --build-arg VITE_TURNSTILE_SITE_KEY="$TURNSTILE_SITE_KEY_BUILD" -t "$STATIC_IMAGE" .
+docker build --platform "$IMAGE_PLATFORM" -f packages/static-server/Dockerfile \
+  --build-arg VITE_TURNSTILE_SITE_KEY="$TURNSTILE_SITE_KEY_BUILD" \
+  --build-arg VITE_COGNITO_AUTH_ORIGIN="$COGNITO_AUTH_ORIGIN" \
+  --build-arg VITE_COGNITO_SPA_CLIENT_ID="$COGNITO_SPA_CLIENT_ID" \
+  -t "$STATIC_IMAGE" .
 docker push "$STATIC_IMAGE"
 rm -rf widgets/solitaire/.vendor-src widgets/embuscade/.vendor-src
 docker build --platform "$IMAGE_PLATFORM" -f infra/eks/migrate.Dockerfile -t "$MIGRATE_IMAGE" .
@@ -233,11 +252,16 @@ kubectl create secret generic widgetgrid-server-secret \
   --from-literal=TURNSTILE_SECRET_KEY="${TURNSTILE_SECRET_KEY:-}" \
   --from-literal=COGNITO_REGISTRATION_CLIENT_ID="$REGISTRATION_CLIENT_ID" \
   --from-literal=COGNITO_REGISTRATION_CLIENT_SECRET="$REGISTRATION_CLIENT_SECRET" \
+  --from-literal=COGNITO_USER_POOL_ID="$COGNITO_USER_POOL_ID" \
+  --from-literal=COGNITO_SPA_CLIENT_ID="$COGNITO_SPA_CLIENT_ID" \
   --namespace widgetgrid \
   --dry-run=client -o yaml | kubectl apply -f -
-# lhoraire-server needs only the database (see its manifest).
+# lhoraire-server needs only the database and which pool to verify
+# tokens against (see its manifest).
 kubectl create secret generic lhoraire-server-secret \
   --from-literal=DATABASE_URL="$DATABASE_URL" \
+  --from-literal=COGNITO_USER_POOL_ID="$COGNITO_USER_POOL_ID" \
+  --from-literal=COGNITO_SPA_CLIENT_ID="$COGNITO_SPA_CLIENT_ID" \
   --namespace widgetgrid \
   --dry-run=client -o yaml | kubectl apply -f -
 
@@ -297,7 +321,7 @@ kubectl get jobs -n widgetgrid -o name | grep '^job.batch/seed-' | grep -v "$SEE
 
 echo
 echo "== applying app manifests =="
-export SERVER_IMAGE STATIC_IMAGE EMBUSCADE_IMAGE LHORAIRE_IMAGE BLOG_S3_BUCKET BLOG_ASSETS_BASE_URL
+export SERVER_IMAGE STATIC_IMAGE EMBUSCADE_IMAGE LHORAIRE_IMAGE BLOG_S3_BUCKET BLOG_ASSETS_BASE_URL SITE_ORIGIN
 envsubst < infra/eks/manifests/widgetgrid-server.yaml | kubectl apply -f -
 envsubst < infra/eks/manifests/static-server.yaml | kubectl apply -f -
 envsubst < infra/eks/manifests/embuscade-server.yaml | kubectl apply -f -

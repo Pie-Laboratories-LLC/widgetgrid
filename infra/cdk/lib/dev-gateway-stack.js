@@ -2,6 +2,7 @@ import { Stack, CfnOutput } from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import * as elbv2Actions from 'aws-cdk-lib/aws-elasticloadbalancingv2-actions';
+import * as cognito from 'aws-cdk-lib/aws-cognito';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as route53Targets from 'aws-cdk-lib/aws-route53-targets';
 import { ENVOY_GATEWAY_NODE_PORT } from './eks-stack.js';
@@ -11,9 +12,16 @@ const DEV_HOST = 'dev.pie-laboratories.com';
 export class DevGatewayStack extends Stack {
   constructor(scope, id, props) {
     super(scope, id, props);
-    // Sign-in comes from WidgetgridIdentityStack (shared with prod); this
-    // stack only uses its dev-ALB client for the authenticate-cognito gate.
-    const { hostedZone, certificate, userPool, userPoolDomain, devAlbClient } = props;
+    // The gate signs in through WidgetgridIdentityStack's pool (shared with
+    // prod) and its dev-ALB client, imported by id rather than passed as
+    // constructs: a construct reference would make this stack depend on
+    // WidgetgridIdentityStack, and `cdk deploy` of dev would then deploy
+    // the shared pool -- prod's login -- along with it. The app's own
+    // sign-in on dev is a separate pool (dev-identity-stack.js).
+    const { hostedZone, certificate, userPoolId, devAlbClientId, authHost } = props;
+    const userPool = cognito.UserPool.fromUserPoolId(this, 'GateUserPool', userPoolId);
+    const devAlbClient = cognito.UserPoolClient.fromUserPoolClientId(this, 'GateClient', devAlbClientId);
+    const userPoolDomain = cognito.UserPoolDomain.fromDomainName(this, 'GateDomain', authHost);
 
     // Private subnets + 1 NAT gateway (up from 0): the EKS node group and
     // RDS instance (WidgetgridEksStack/WidgetgridRdsStack) now need

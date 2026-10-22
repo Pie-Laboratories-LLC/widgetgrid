@@ -59,6 +59,12 @@ RUN npm run proto:fetch-plugin && npm run proto:gen-web
 # bundles.
 ARG VITE_TURNSTILE_SITE_KEY=
 ENV VITE_TURNSTILE_SITE_KEY=$VITE_TURNSTILE_SITE_KEY
+# Sign-in against a pool other than the shared one (packages/auth-web) --
+# set only for dev, which has its own; empty means the shared pool.
+ARG VITE_COGNITO_AUTH_ORIGIN=
+ENV VITE_COGNITO_AUTH_ORIGIN=$VITE_COGNITO_AUTH_ORIGIN
+ARG VITE_COGNITO_SPA_CLIENT_ID=
+ENV VITE_COGNITO_SPA_CLIENT_ID=$VITE_COGNITO_SPA_CLIENT_ID
 
 RUN npm run build:widgets
 RUN npm run build:web

@@ -70,11 +70,13 @@ spec:
               value: ses
             # On-site registration signs up in the real user pool (see
             # registrar.js); the registration client's id and secret come
-            # from widgetgrid-server-secret.
+            # from widgetgrid-server-secret, along with which pool tokens
+            # are verified against (COGNITO_USER_POOL_ID/SPA_CLIENT_ID --
+            # empty for the shared pool, set on dev, which has its own).
             - name: REGISTRAR
               value: cognito
             - name: SITE_ORIGIN
-              value: https://www.pie-laboratories.com
+              value: ${SITE_ORIGIN}
           envFrom:
             - secretRef:
                 name: widgetgrid-server-secret

@@ -8,10 +8,13 @@
 import { RegisterSignInRequest, LogoutRequest } from '@widgetgrid/proto-gen-web/widgetgrid/v1/auth_pb.js';
 import { AuthServicePromiseClient } from '@widgetgrid/proto-gen-web/widgetgrid/v1/auth_grpc_web_pb.js';
 
-// Same pool and SPA client for every environment; the redirect URI is
-// derived from the page's own origin (each one is registered on the client).
-const AUTH_ORIGIN = 'https://auth.pie-laboratories.com';
-const CLIENT_ID = 'bvec1bfa2e7srgjf237e2m3ja';
+// The shared pool and SPA client, unless the build says otherwise -- a
+// temporarily stood-up dev environment has its own pool
+// (infra/cdk/lib/dev-identity-stack.js; infra/eks/deploy.sh passes these
+// into the static image's build). The redirect URI is derived from the
+// page's own origin (each one is registered on the client).
+const AUTH_ORIGIN = import.meta.env.VITE_COGNITO_AUTH_ORIGIN || 'https://auth.pie-laboratories.com';
+const CLIENT_ID = import.meta.env.VITE_COGNITO_SPA_CLIENT_ID || 'bvec1bfa2e7srgjf237e2m3ja';
 export const CALLBACK_PATH = '/auth/callback';
 
 const STORAGE_KEY = 'widgetgrid:auth';
