@@ -18,7 +18,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-deploy-role-913318903667-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-cfn-exec-role-913318903667-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-913318903667-us-east-1/f822f67e9106e678341fa613ea9091953ac62ba4b7ce535895f488aa9ea24020.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-913318903667-us-east-1/656cbc4dd48724d72d0b4f8cbff16ace74bdaba713bd2c85d684b3a423bec4d5.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -88,7 +88,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-deploy-role-913318903667-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-cfn-exec-role-913318903667-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-913318903667-us-east-1/8abba6bb7effaf3e5d27f332a01b881217139615c53ff277bf6fa60b62379b08.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-913318903667-us-east-1/0f534d7cdcc823852bb0fce6882550699f298cb50063ce6b5b4a78bb934b96bf.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -105,150 +105,6 @@
       ],
       "additionalMetadataFile": "WidgetgridIdentityStack.metadata.json",
       "displayName": "WidgetgridIdentityStack"
-    },
-    "WidgetgridDevIdentityStack.assets": {
-      "type": "cdk:asset-manifest",
-      "properties": {
-        "file": "WidgetgridDevIdentityStack.assets.json",
-        "requiresBootstrapStackVersion": 6,
-        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
-      }
-    },
-    "WidgetgridDevIdentityStack": {
-      "type": "aws:cloudformation:stack",
-      "environment": "aws://913318903667/us-east-1",
-      "properties": {
-        "templateFile": "WidgetgridDevIdentityStack.template.json",
-        "terminationProtection": false,
-        "validateOnSynth": false,
-        "assumeRoleArn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-deploy-role-913318903667-us-east-1",
-        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-cfn-exec-role-913318903667-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-913318903667-us-east-1/5bc568cc669e17b4edbe7b572f5a88d5d58344897d64c8d68c939909ef9aefe5.json",
-        "requiresBootstrapStackVersion": 6,
-        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
-        "additionalDependencies": [
-          "WidgetgridDevIdentityStack.assets"
-        ],
-        "lookupRole": {
-          "arn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-lookup-role-913318903667-us-east-1",
-          "requiresBootstrapStackVersion": 8,
-          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
-        }
-      },
-      "dependencies": [
-        "WidgetgridDevIdentityStack.assets"
-      ],
-      "additionalMetadataFile": "WidgetgridDevIdentityStack.metadata.json",
-      "displayName": "WidgetgridDevIdentityStack"
-    },
-    "WidgetgridDevGatewayStack.assets": {
-      "type": "cdk:asset-manifest",
-      "properties": {
-        "file": "WidgetgridDevGatewayStack.assets.json",
-        "requiresBootstrapStackVersion": 6,
-        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
-      }
-    },
-    "WidgetgridDevGatewayStack": {
-      "type": "aws:cloudformation:stack",
-      "environment": "aws://913318903667/us-east-1",
-      "properties": {
-        "templateFile": "WidgetgridDevGatewayStack.template.json",
-        "terminationProtection": false,
-        "validateOnSynth": false,
-        "assumeRoleArn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-deploy-role-913318903667-us-east-1",
-        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-cfn-exec-role-913318903667-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-913318903667-us-east-1/7e67f00ff960a1c12f9a350c37cd4fa369ddaa82ab9fcf42e23df89cda2450d4.json",
-        "requiresBootstrapStackVersion": 6,
-        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
-        "additionalDependencies": [
-          "WidgetgridDevGatewayStack.assets"
-        ],
-        "lookupRole": {
-          "arn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-lookup-role-913318903667-us-east-1",
-          "requiresBootstrapStackVersion": 8,
-          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
-        }
-      },
-      "dependencies": [
-        "WidgetgridDnsStack",
-        "WidgetgridDevGatewayStack.assets"
-      ],
-      "additionalMetadataFile": "WidgetgridDevGatewayStack.metadata.json",
-      "displayName": "WidgetgridDevGatewayStack"
-    },
-    "WidgetgridEksStack.assets": {
-      "type": "cdk:asset-manifest",
-      "properties": {
-        "file": "WidgetgridEksStack.assets.json",
-        "requiresBootstrapStackVersion": 6,
-        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
-      }
-    },
-    "WidgetgridEksStack": {
-      "type": "aws:cloudformation:stack",
-      "environment": "aws://913318903667/us-east-1",
-      "properties": {
-        "templateFile": "WidgetgridEksStack.template.json",
-        "terminationProtection": false,
-        "validateOnSynth": false,
-        "assumeRoleArn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-deploy-role-913318903667-us-east-1",
-        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-cfn-exec-role-913318903667-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-913318903667-us-east-1/4cf967791ce3e8657fc79fecc2d9d85f4857b2d72b46d993b4f2e1f093eab7e0.json",
-        "requiresBootstrapStackVersion": 6,
-        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
-        "additionalDependencies": [
-          "WidgetgridEksStack.assets"
-        ],
-        "lookupRole": {
-          "arn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-lookup-role-913318903667-us-east-1",
-          "requiresBootstrapStackVersion": 8,
-          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
-        }
-      },
-      "dependencies": [
-        "WidgetgridDevGatewayStack",
-        "WidgetgridEksStack.assets"
-      ],
-      "additionalMetadataFile": "WidgetgridEksStack.metadata.json",
-      "displayName": "WidgetgridEksStack"
-    },
-    "WidgetgridRdsStack.assets": {
-      "type": "cdk:asset-manifest",
-      "properties": {
-        "file": "WidgetgridRdsStack.assets.json",
-        "requiresBootstrapStackVersion": 6,
-        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
-      }
-    },
-    "WidgetgridRdsStack": {
-      "type": "aws:cloudformation:stack",
-      "environment": "aws://913318903667/us-east-1",
-      "properties": {
-        "templateFile": "WidgetgridRdsStack.template.json",
-        "terminationProtection": false,
-        "validateOnSynth": false,
-        "assumeRoleArn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-deploy-role-913318903667-us-east-1",
-        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-cfn-exec-role-913318903667-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-913318903667-us-east-1/bdd0da742b9e553006984922725b069b04b280fcc82e9b41f25d2e4eb9a2d182.json",
-        "requiresBootstrapStackVersion": 6,
-        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
-        "additionalDependencies": [
-          "WidgetgridRdsStack.assets"
-        ],
-        "lookupRole": {
-          "arn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-lookup-role-913318903667-us-east-1",
-          "requiresBootstrapStackVersion": 8,
-          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
-        }
-      },
-      "dependencies": [
-        "WidgetgridDevGatewayStack",
-        "WidgetgridEksStack",
-        "WidgetgridRdsStack.assets"
-      ],
-      "additionalMetadataFile": "WidgetgridRdsStack.metadata.json",
-      "displayName": "WidgetgridRdsStack"
     },
     "WidgetgridProdGatewayStack.assets": {
       "type": "cdk:asset-manifest",
@@ -302,7 +158,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-deploy-role-913318903667-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-cfn-exec-role-913318903667-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-913318903667-us-east-1/22c938f137c5e12ae45262369237f9b553c1d5dddf1501c4d44a1a6decd95459.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-913318903667-us-east-1/2070a9eacc06a8299d33ee1e664418ee30b9817b54788a18d69f29cc230fa87e.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [

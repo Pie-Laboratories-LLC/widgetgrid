@@ -3,7 +3,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -28,7 +28,7 @@
       "data": [
         "...new ARecord2 in aws-cdk-lib...",
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:88:5)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -42,7 +42,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:195:5)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -56,7 +56,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:196:5)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -70,7 +70,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:197:5)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -84,7 +84,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:198:5)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -98,7 +98,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:199:5)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -112,7 +112,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:200:5)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -153,7 +153,7 @@
       "data": [
         "...new UserPool2 in aws-cdk-lib...",
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:54:22)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -168,7 +168,7 @@
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:119:14)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -183,7 +183,7 @@
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:138:14)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -198,7 +198,7 @@
       "data": [
         "...new Certificate2 in aws-cdk-lib...",
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:81:29)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -213,7 +213,7 @@
       "data": [
         "...new ARecord2 in aws-cdk-lib...",
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:88:5)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -241,7 +241,7 @@
       "data": [
         "...new UserPoolIdentityProviderSaml2 in aws-cdk-lib...",
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:98:36)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -256,7 +256,7 @@
       "data": [
         "...new Function2 in aws-cdk-lib...",
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:108:28)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -271,7 +271,7 @@
       "data": [
         "...new Function2 in aws-cdk-lib...",
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:121:23)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -299,7 +299,7 @@
       "data": [
         "...WrappedClass.addDomain in aws-cdk-lib...",
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:85:37)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -314,7 +314,7 @@
       "data": [
         "...WrappedClass.addClient in aws-cdk-lib...",
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:144:35)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -329,7 +329,7 @@
       "data": [
         "...WrappedClass.addClient in aws-cdk-lib...",
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:159:32)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -344,7 +344,7 @@
       "data": [
         "...WrappedClass.addClient in aws-cdk-lib...",
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:182:41)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -372,7 +372,7 @@
       "data": [
         "...new Function2 in aws-cdk-lib...",
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:108:28)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -387,7 +387,7 @@
       "data": [
         "...new Function2 in aws-cdk-lib...",
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:121:23)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -402,7 +402,7 @@
       "data": [
         "...WrappedClass.addToRolePolicy in aws-cdk-lib...",
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:115:20)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }
@@ -417,7 +417,7 @@
       "data": [
         "...WrappedClass.addToRolePolicy in aws-cdk-lib...",
         "new IdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/identity-stack.js:134:15)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:26 (:)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22 (:)",
         "...node internals..."
       ]
     }

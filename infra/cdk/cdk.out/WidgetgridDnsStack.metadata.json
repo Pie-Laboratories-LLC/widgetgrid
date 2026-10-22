@@ -3,7 +3,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22:1)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18:1)",
         "...node internals..."
       ]
     }
@@ -44,7 +44,7 @@
       "data": [
         "...new Certificate2 in aws-cdk-lib...",
         "new DnsStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dns-stack.js:34:24)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22:1)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18:1)",
         "...node internals..."
       ]
     }
@@ -59,7 +59,7 @@
       "data": [
         "...new MxRecord2 in aws-cdk-lib...",
         "new DnsStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dns-stack.js:48:5)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22:1)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18:1)",
         "...node internals..."
       ]
     }
@@ -74,7 +74,7 @@
       "data": [
         "...new TxtRecord2 in aws-cdk-lib...",
         "new DnsStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dns-stack.js:55:5)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22:1)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18:1)",
         "...node internals..."
       ]
     }
@@ -89,7 +89,7 @@
       "data": [
         "...new EmailIdentity2 in aws-cdk-lib...",
         "new DnsStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dns-stack.js:70:5)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22:1)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18:1)",
         "...node internals..."
       ]
     }
@@ -104,7 +104,7 @@
       "data": [
         "...new EmailIdentity2 in aws-cdk-lib...",
         "new DnsStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dns-stack.js:70:5)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22:1)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18:1)",
         "...node internals..."
       ]
     }
@@ -119,7 +119,7 @@
       "data": [
         "...new EmailIdentity2 in aws-cdk-lib...",
         "new DnsStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dns-stack.js:70:5)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22:1)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18:1)",
         "...node internals..."
       ]
     }
@@ -134,7 +134,7 @@
       "data": [
         "...new EmailIdentity2 in aws-cdk-lib...",
         "new DnsStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dns-stack.js:70:5)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22:1)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18:1)",
         "...node internals..."
       ]
     }
@@ -149,7 +149,7 @@
       "data": [
         "...new TxtRecord2 in aws-cdk-lib...",
         "new DnsStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dns-stack.js:76:5)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22:1)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18:1)",
         "...node internals..."
       ]
     }
@@ -158,19 +158,6 @@
     {
       "type": "aws:cdk:logicalId",
       "data": "CDKMetadata"
-    },
-    {
-      "type": "aws:cdk:creationStack",
-      "data": [
-        "...aws-cdk-lib, node internals...",
-        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
-      ]
-    }
-  ],
-  "/WidgetgridDnsStack/Exports/Output{\"Ref\":\"DevCertificate34D4CB71\"}": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "ExportsOutputRefDevCertificate34D4CB71D624DA54"
     },
     {
       "type": "aws:cdk:creationStack",
@@ -190,7 +177,7 @@
       "data": [
         "...new EmailIdentity2 in aws-cdk-lib...",
         "new DnsStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dns-stack.js:70:5)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22:1)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18:1)",
         "...node internals..."
       ]
     }
@@ -205,7 +192,7 @@
       "data": [
         "...new EmailIdentity2 in aws-cdk-lib...",
         "new DnsStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dns-stack.js:70:5)",
-        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:22:1)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:18:1)",
         "...node internals..."
       ]
     }

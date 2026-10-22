@@ -21,16 +21,7 @@
               "constructFqn": "aws-cdk-lib.Stack",
               "libraryVersion": "2.265.0",
               "stackTraces": [
-                "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:66: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:66:1)",
-                "...node internals..."
-              ]
-            },
-            {
-              "constructPath": "WidgetgridEksStack",
-              "constructFqn": "aws-cdk-lib.Stack",
-              "libraryVersion": "2.265.0",
-              "stackTraces": [
-                "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48:1)",
+                "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:39: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:39:1)",
                 "...node internals..."
               ]
             }

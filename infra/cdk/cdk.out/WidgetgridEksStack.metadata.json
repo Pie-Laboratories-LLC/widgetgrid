@@ -96,7 +96,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new EksStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:240:31)",
+        "new EksStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:261:31)",
         "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48:1)",
         "...node internals..."
       ]
@@ -110,7 +110,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new EksStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:265:5)",
+        "new EksStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:286:5)",
         "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48:1)",
         "...node internals..."
       ]
@@ -124,7 +124,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new EksStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:266:5)",
+        "new EksStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:287:5)",
         "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48:1)",
         "...node internals..."
       ]
@@ -138,7 +138,21 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new EksStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:267:5)",
+        "new EksStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:288:5)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48:1)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridEksStack/MediaBucketName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MediaBucketName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new EksStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:289:5)",
         "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48:1)",
         "...node internals..."
       ]
@@ -152,7 +166,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new EksStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:272:5)",
+        "new EksStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:294:5)",
         "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48:1)",
         "...node internals..."
       ]
@@ -620,6 +634,27 @@
       ]
     }
   ],
+  "/WidgetgridEksStack/MediaBucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MediaBucketBCBB02BA"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new EksStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:241:24)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48:1)",
+        "...node internals..."
+      ]
+    },
+    {
+      "type": "aws:cdk:analytics:mixin",
+      "data": {
+        "mixin": "aws-cdk-lib.aws_s3.mixins.BucketAutoDeleteObjects"
+      }
+    }
+  ],
   "/WidgetgridEksStack/EnvoyTargetGroup/Resource": [
     {
       "type": "aws:cdk:logicalId",
@@ -629,7 +664,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new ApplicationTargetGroup2 in aws-cdk-lib...",
-        "new EksStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:253:24)",
+        "new EksStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:274:24)",
         "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48:1)",
         "...node internals..."
       ]
@@ -1022,6 +1057,39 @@
         "new EksStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:229:16)",
         "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48:1)",
         "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridEksStack/MediaBucket/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MediaBucketPolicy68C27F6B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new EksStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/eks-stack.js:241:24)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:48:1)"
+      ]
+    },
+    {
+      "type": "aws:cdk:analytics:mixin",
+      "data": {
+        "mixin": "aws-cdk-lib.aws_s3.mixins.BucketPolicyStatements"
+      }
+    }
+  ],
+  "/WidgetgridEksStack/MediaBucket/AutoDeleteObjectsCustomResource/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MediaBucketAutoDeleteObjectsCustomResourceBC0A7C44"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
       ]
     }
   ],

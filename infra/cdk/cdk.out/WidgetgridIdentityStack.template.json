@@ -600,7 +600,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-913318903667-us-east-1",
-     "S3Key": "b800d02a2353cc3440b3742950cd82a096af0e08b7e435b411b2a14c9cb983c7.zip"
+     "S3Key": "732f40381874bb43794affc6cbde98daac55def26e43db3f859c16d69f61f631.zip"
     },
     "Environment": {
      "Variables": {
@@ -624,7 +624,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "WidgetgridIdentityStack/PreSignUp/Resource",
-    "aws:asset:path": "asset.b800d02a2353cc3440b3742950cd82a096af0e08b7e435b411b2a14c9cb983c7",
+    "aws:asset:path": "asset.732f40381874bb43794affc6cbde98daac55def26e43db3f859c16d69f61f631",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }

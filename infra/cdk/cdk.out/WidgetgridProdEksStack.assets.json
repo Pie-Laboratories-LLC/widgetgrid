@@ -121,16 +121,16 @@
         }
       }
     },
-    "22c938f137c5e12ae45262369237f9b553c1d5dddf1501c4d44a1a6decd95459": {
+    "2070a9eacc06a8299d33ee1e664418ee30b9817b54788a18d69f29cc230fa87e": {
       "displayName": "WidgetgridProdEksStack Template",
       "source": {
         "path": "WidgetgridProdEksStack.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "913318903667-us-east-1-809bde34": {
+        "913318903667-us-east-1-56b5c133": {
           "bucketName": "cdk-hnb659fds-assets-913318903667-us-east-1",
-          "objectKey": "22c938f137c5e12ae45262369237f9b553c1d5dddf1501c4d44a1a6decd95459.json",
+          "objectKey": "2070a9eacc06a8299d33ee1e664418ee30b9817b54788a18d69f29cc230fa87e.json",
           "region": "us-east-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::913318903667:role/cdk-hnb659fds-file-publishing-role-913318903667-us-east-1"
         }

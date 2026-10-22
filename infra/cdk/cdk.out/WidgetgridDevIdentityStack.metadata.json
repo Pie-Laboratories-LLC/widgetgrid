@@ -1,0 +1,271 @@
+{
+  "/WidgetgridDevIdentityStack": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:37 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevIdentityStack/UserPoolId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolId"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new DevIdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-identity-stack.js:126:5)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:37 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevIdentityStack/SpaClientId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SpaClientId"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new DevIdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-identity-stack.js:127:5)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:37 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevIdentityStack/RegistrationClientId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RegistrationClientId"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new DevIdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-identity-stack.js:128:5)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:37 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevIdentityStack/AuthOrigin": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AuthOrigin"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new DevIdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-identity-stack.js:129:5)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:37 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevIdentityStack/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridDevIdentityStack/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridDevIdentityStack/UserPool/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPool6BA7E5F2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new UserPool2 in aws-cdk-lib...",
+        "new DevIdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-identity-stack.js:35:22)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:37 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevIdentityStack/UserPool/PreSignUpCognito": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolPreSignUpCognito3AFF8F1F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new DevIdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-identity-stack.js:77:14)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:37 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevIdentityStack/UserPool/PreTokenGenerationCognito": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolPreTokenGenerationCognito84D0CADA"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new DevIdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-identity-stack.js:100:14)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:37 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevIdentityStack/PreSignUp/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PreSignUp1C2BA29E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new DevIdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-identity-stack.js:62:23)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:37 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevIdentityStack/PreTokenAdmins/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PreTokenAdminsEB0B982D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new DevIdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-identity-stack.js:84:28)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:37 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevIdentityStack/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/WidgetgridDevIdentityStack/UserPool/UserPoolDomain/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolUserPoolDomain9F01E991"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addDomain in aws-cdk-lib...",
+        "new DevIdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-identity-stack.js:58:37)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:37 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevIdentityStack/UserPool/SpaClient/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolSpaClient6B560FFA"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addClient in aws-cdk-lib...",
+        "new DevIdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-identity-stack.js:104:32)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:37 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevIdentityStack/UserPool/RegistrationClient/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolRegistrationClient0BB74499"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addClient in aws-cdk-lib...",
+        "new DevIdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-identity-stack.js:116:41)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:37 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevIdentityStack/PreSignUp/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PreSignUpServiceRole5058B34C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new DevIdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-identity-stack.js:62:23)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:37 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevIdentityStack/PreTokenAdmins/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PreTokenAdminsServiceRole20AA2C99"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new DevIdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-identity-stack.js:84:28)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:37 (:)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/WidgetgridDevIdentityStack/PreSignUp/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PreSignUpServiceRoleDefaultPolicy63039DAA"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addToRolePolicy in aws-cdk-lib...",
+        "new DevIdentityStack (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/lib/dev-identity-stack.js:73:15)",
+        "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:37 (:)",
+        "...node internals..."
+      ]
+    }
+  ]
+}

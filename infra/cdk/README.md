@@ -147,6 +147,33 @@ cost-saving teardown when this environment isn't needed for a while --
 `WidgetgridDnsStack`/`WidgetgridDevGatewayStack` can stay up independently
 since neither depends on the other two.
 
+## Standing dev up temporarily
+
+Dev isn't kept running. To test something in AWS before prod (as was done
+2026-10-21..22 for the website's phase I and II):
+
+1. Restore the dev block in `bin/app.js` (from commit 6243714). Dev has its
+   own throwaway user pool (`WidgetgridDevIdentityStack`), so registering
+   there never touches the live login; its gate still signs in through
+   the shared pool's Identity Center client, by id.
+2. `cdk deploy WidgetgridDevGatewayStack WidgetgridEksStack WidgetgridRdsStack --exclusively`,
+   then `cdk deploy WidgetgridDevIdentityStack --exclusively`.
+3. Copy prod's blog posts into dev's bucket (`aws s3 sync`), then
+   `infra/eks/deploy.sh dev` and redeploy the gateway with
+   `-c envoyTargetGroupArn=<value it prints>`.
+4. Tear down in this order -- **k8s first**, or Consul's EBS volume outlives
+   the cluster and keeps billing; **free the target group before
+   destroying `WidgetgridEksStack`**, or its delete fails (the listener
+   still forwards to it, and CDK can't see that link):
+   - delete the `widgetgrid` and `consul` namespaces and uninstall the
+     consul Helm release, naming the dev context explicitly
+     (`teardown.sh` uses whatever context is current);
+   - point the dev HTTPS listener at a fixed response (or redeploy the
+     gateway without the context value);
+   - `cdk destroy WidgetgridRdsStack WidgetgridEksStack WidgetgridDevGatewayStack WidgetgridDevIdentityStack --force`;
+   - delete dev's `predeploy-dev-*` RDS snapshots and its kubectl context,
+     and take the dev block back out of `bin/app.js`.
+
 The `widgetgrid-server`/`widgetgrid-static`/`embuscade-server` ECR repos live
 in `WidgetgridSharedStack` (RETAIN), used by both environments, so tearing
 down either environment's stacks leaves every image in place.

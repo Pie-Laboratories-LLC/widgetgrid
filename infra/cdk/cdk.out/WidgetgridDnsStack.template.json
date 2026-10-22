@@ -195,16 +195,6 @@
    }
   }
  },
- "Outputs": {
-  "ExportsOutputRefDevCertificate34D4CB71D624DA54": {
-   "Value": {
-    "Ref": "DevCertificate34D4CB71"
-   },
-   "Export": {
-    "Name": "WidgetgridDnsStack:ExportsOutputRefDevCertificate34D4CB71D624DA54"
-   }
-  }
- },
  "Parameters": {
   "BootstrapVersion": {
    "Type": "AWS::SSM::Parameter::Value<String>",

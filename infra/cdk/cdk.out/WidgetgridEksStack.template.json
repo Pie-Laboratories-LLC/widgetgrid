@@ -1566,7 +1566,14 @@
        "Action": [
         "s3:GetObject*",
         "s3:GetBucket*",
-        "s3:List*"
+        "s3:List*",
+        "s3:DeleteObject*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging",
+        "s3:Abort*"
        ],
        "Effect": "Allow",
        "Resource": [
@@ -1591,6 +1598,48 @@
          ]
         }
        ]
+      },
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:DeleteObject*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging",
+        "s3:Abort*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "MediaBucketBCBB02BA",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "MediaBucketBCBB02BA",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": "rekognition:DetectModerationLabels",
+       "Effect": "Allow",
+       "Resource": "*"
       },
       {
        "Action": "ses:SendEmail",
@@ -1620,6 +1669,148 @@
    },
    "Metadata": {
     "aws:cdk:path": "WidgetgridEksStack/WidgetgridServerRole/DefaultPolicy/Resource"
+   }
+  },
+  "MediaBucketBCBB02BA": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "BucketEncryption": {
+     "ServerSideEncryptionConfiguration": [
+      {
+       "ServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "AES256"
+       }
+      }
+     ]
+    },
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    },
+    "Tags": [
+     {
+      "Key": "aws-cdk:auto-delete-objects",
+      "Value": "true"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/MediaBucket/Resource"
+   }
+  },
+  "MediaBucketPolicy68C27F6B": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "MediaBucketBCBB02BA"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "s3:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "MediaBucketBCBB02BA",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "MediaBucketBCBB02BA",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "s3:PutBucketPolicy",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:DeleteObject*"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+          "Arn"
+         ]
+        }
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "MediaBucketBCBB02BA",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "MediaBucketBCBB02BA",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/MediaBucket/Policy/Resource"
+   }
+  },
+  "MediaBucketAutoDeleteObjectsCustomResourceBC0A7C44": {
+   "Type": "Custom::S3AutoDeleteObjects",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+      "Arn"
+     ]
+    },
+    "BucketName": {
+     "Ref": "MediaBucketBCBB02BA"
+    }
+   },
+   "DependsOn": [
+    "MediaBucketPolicy68C27F6B"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "WidgetgridEksStack/MediaBucket/AutoDeleteObjectsCustomResource/Default"
    }
   },
   "WidgetgridServerPodIdentity": {
@@ -1668,7 +1859,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/5VSTU/DMAz9LeycBVQ+DtzKQGgSEtPghhDKEjOypUkVO4Op6n/HaTQoHJA4xX52XpznV8nq4lyeHKl3nGqznTq7kt0DKb0VDL10sEXZzVxCgihqrQHxxlPci9mrH6e1McEP4CFYBDM34MnSvkYM2iqywffCqkZ2y+AgNw3nIjir9+XOIZp7JOU1LGJ4tQ56AbriwUCnyIS3MaQ2t/0NzP068oTiTiWv3x6haZ2i4d2fSC9UooBaOevXsqs5eSjJF+9vrBd4KrurpLdAuV6ip27S2A/rJ5eTsaBZSW4fSihLaya8BgcE96sNaMJJ/yxK6VuFcf4P7nKBt0jQ8AYyNQvoFJLVLiizUo615a/sWNO6bbl7WM6jimugrz+P0r4XM/ZAaJaAIUVdlneIx+AseGMzWU7uE7Vp0KdYKq9YRdVAdtNPQl70zhqIVwpBsGGA+MqaZ+yFDwbkBo931ZmsKjbrBq2dxsTeakAuy/kJzp1lFMkCAAA="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/6VTwW7bMAz9luWsaIPX7tCbkxVDgAIN0tyKYFAkNlUiS4ZIpQsM//soC8ncFihQ7CS+R/KZIJ8rWf24lt++qBecanOYOruV3QMpfRBM/e7ggLKbu4QEUdRaA+Ktp3gS8yc/hrUxwQ/kOVgGszDgydKpRgzaKrLB98KqRnar4CAXDe8yOKtPpeccLTyS8hqWMTxZB70AXfFgoFNkwV8xpDaXfUws/C7yhOJOJa+f19C0TtHw3ddML1SigFo563eyqxk8FHDRfcv1Ar/Lbpb0ASjnS/TYTRr7x/rJzWS80LxJLh9SKEtpFvwJDgjut3vQhJNe/Ff3RpTUvx2O8ScmKw3sAYKG7/e5wd43b/h2TiFZ7YIyW+X4rLzFI5+zbluuHnyxVnEHdFn3CPa9mLP9QrMCDCnq4ptzPCbnwRubxTK4T9Sm4TTFzdldKqoGspFfC7LHjtZAnCkEwV4F4pYdz9gLHwzIPX49Vleyqvg/2aO105jY1g3IVXn/AmVaXj9EAwAA"
    },
    "Metadata": {
     "aws:cdk:path": "WidgetgridEksStack/CDKMetadata/Default"
@@ -1707,6 +1898,11 @@
   "BlogBucketName": {
    "Value": {
     "Ref": "BlogBucket3E358F18"
+   }
+  },
+  "MediaBucketName": {
+   "Value": {
+    "Ref": "MediaBucketBCBB02BA"
    }
   },
   "BlogBucketPublicUrl": {
