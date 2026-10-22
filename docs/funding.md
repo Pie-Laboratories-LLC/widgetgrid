@@ -182,6 +182,28 @@ quitting once Early Access sales show it's sustainable.
    subscribed. A standalone tools product could sell on itch.io, which
    handles creative tools well.
 
+## A village mode, and videos
+
+When the tools ship (bâtiments, atelier des créatures, Charronnerie...),
+they need a mode that ties them together: **lay out a small village and
+populate it.** Place buildings, set crowds of villagers walking with
+seeded faces and clothes, put raks in the fields and wagons on the road.
+The separate tools are for tinkerers; a village is something people show
+off.
+
+Make videos easy and explicitly welcome:
+
+- **A written video policy**, linked from the tools and the site: "You may
+  stream, record and monetize videos of the game and the tools." Many
+  creators won't touch a game until they've seen that.
+- **Make capture easy:** hide the interface, a free camera, slow flyovers
+  or turntables of a village, maybe a built-in still or video export.
+- **Villages people can share** as a single file, so a viewer can load the
+  village they just watched being built.
+- **Somewhere to show them:** a "Villages" section on the message board,
+  and featuring the best ones in the monthly devlog, which credits creators
+  and gives them a reason to keep making things.
+
 ## The landing page
 
 A live scene of the Oktul valley with a couple of raks wandering and
