@@ -306,13 +306,13 @@ export default {
   height: 64px;
 }
 
-/* No explicit vertical-centering rule needed -- .widget-topbar is already
-   `display: flex; align-items: center`, so this sits centered against the
-   logo (and shrinks with it) for free as a flex sibling. Only shown from
-   960px up (see the media query below): under that, the full-size logo,
-   this, the nav icons and the log in/out link don't all fit on one row,
-   and the icons matter more. Not overlaid on the logo instead -- the logo
-   shrinks to 64px tall on scroll, leaving nothing to overlay. */
+/* The name. Full size, it's lettered over the bottom of the logo -- from
+   760px up, where the logo is always its whole 339px (narrower, the logo
+   gives way to the icons). Once the topbar shrinks (64px leaves nothing
+   to letter over) it moves beside the logo, a flex sibling that
+   .widget-topbar's align-items centres -- from 960px up only, since under
+   that the logo, the name, the icons and log in/out don't all fit on the
+   row and the icons matter more. */
 .topbar-home-link {
   display: contents;
 }
@@ -425,6 +425,22 @@ export default {
 @media (min-width: 960px) {
   .topbar-brand {
     display: flex;
+  }
+}
+
+@media (min-width: 760px) {
+  /* Over the logo's dark lower edge, centred on it: 40px of padding plus
+     half the logo's 339px. */
+  .widget-topbar:not(.topbar-collapsed) .topbar-brand {
+    display: flex;
+    position: absolute;
+    left: calc(40px + 339px / 2);
+    bottom: 14px;
+    transform: translateX(-50%);
+    margin-left: 0;
+    font-size: 1.15rem;
+    letter-spacing: 0.02em;
+    text-shadow: 0 1px 3px rgb(0 0 0 / 90%), 0 0 12px rgb(0 0 0 / 70%);
   }
 }
 </style>
