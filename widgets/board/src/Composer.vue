@@ -11,7 +11,7 @@
     </div>
     <textarea
       v-show="!previewing" ref="body" v-model="body" class="composer-body" rows="6" maxlength="20000"
-      :placeholder="placeholder" aria-label="Post"
+      :placeholder="placeholder" aria-label="Post" @paste="pasteImages"
     ></textarea>
     <!-- Same renderer the server uses (packages/markup), so this is what
          will be posted. -->
@@ -22,7 +22,7 @@
         {{ uploading ? 'Adding image…' : 'Add image' }}
       </button>
       <input ref="file" type="file" accept="image/*" multiple hidden @change="addImages" />
-      <span class="board-muted">{{ imageCount }}/{{ maxImages }} images</span>
+      <span class="board-muted">{{ imageCount }}/{{ maxImages }} images · or paste one</span>
       <span v-if="heldNote" class="board-muted">{{ heldNote }}</span>
     </div>
     <p v-else-if="viewer?.imagesFrom" class="board-muted composer-images">
@@ -69,6 +69,14 @@ const MAX_IMAGES = 5;
 // server decides for real: only the author's own, and not held ones).
 const BOARD_IMAGE = /^\/media\/board\/[A-Za-z0-9_-]{22}\.webp$/;
 const previewImage = (url) => (BOARD_IMAGE.test(url) ? { src: url } : null);
+
+// The image files on a paste, if it's an image paste. Copying from a
+// spreadsheet or a word processor puts the text AND a picture of it on the
+// clipboard -- that's a text paste, so anything with plain text is left
+// alone.
+const imagesOn = (clipboard) => (clipboard?.types?.includes('text/plain')
+  ? []
+  : [...(clipboard?.files ?? [])].filter((f) => f.type.startsWith('image/')));
 
 // Writing a thread, a reply, or an edit: the text, a live preview, a
 // formatting crib (including the colour palette), images (for accounts
@@ -132,11 +140,24 @@ export default {
       this.previewing = false;
       this.heldNote = '';
     },
+    addImages(event) {
+      const files = [...event.target.files];
+      event.target.value = '';
+      this.uploadImages(files);
+    },
+    // Pasting a screenshot (or a copied image) attaches it, like Add image.
+    // Text pastes are left alone.
+    pasteImages(event) {
+      const files = imagesOn(event.clipboardData);
+      if (!files.length || !this.viewer?.canUploadImages) return;
+      event.preventDefault();
+      this.uploadImages(files);
+    },
     // Each image is uploaded as soon as it's chosen (re-encoded and checked
     // on the server) and its Markdown put where the cursor was.
-    async addImages(event) {
-      const files = [...event.target.files].slice(0, MAX_IMAGES - this.imageCount);
-      event.target.value = '';
+    async uploadImages(chosen) {
+      if (this.uploading) return;
+      const files = chosen.slice(0, MAX_IMAGES - this.imageCount);
       if (!files.length) return;
       this.uploading = true;
       this.uploadError = '';

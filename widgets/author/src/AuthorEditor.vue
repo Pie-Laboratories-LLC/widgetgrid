@@ -22,13 +22,14 @@
         <textarea id="author-synopsis" v-model="synopsis" class="author-input" rows="3"></textarea>
 
         <label class="author-label" for="author-body">Post</label>
-        <textarea id="author-body" ref="body" v-model="body" class="author-input author-body" rows="22"></textarea>
+        <textarea id="author-body" ref="body" v-model="body" class="author-input author-body" rows="22" @paste="pasteImages"></textarea>
 
         <div class="author-toolbar">
           <button type="button" class="author-button author-button-quiet" :disabled="uploading" @click="$refs.file.click()">
             {{ uploading ? 'Adding image…' : 'Add image' }}
           </button>
           <input ref="file" type="file" accept="image/*" multiple hidden @change="addImages" />
+          <span class="author-muted author-save-state">or paste one into the post</span>
           <span class="author-muted author-save-state">{{ saveState }}</span>
         </div>
         <p v-if="error" class="author-error">{{ error }}</p>
@@ -156,10 +157,24 @@ export default {
         // The next keystroke tries again; saving reports real trouble.
       }
     },
-    async addImages(event) {
+    addImages(event) {
       const files = [...event.target.files];
       event.target.value = '';
+      this.uploadImages(files);
+    },
+    // Pasting a screenshot (or a copied image) adds it, like Add image.
+    // Copying from a spreadsheet or word processor brings text AND a
+    // picture of it -- that's a text paste, left alone.
+    pasteImages(event) {
+      const clipboard = event.clipboardData;
+      if (clipboard?.types?.includes('text/plain')) return;
+      const files = [...(clipboard?.files ?? [])].filter((f) => f.type.startsWith('image/'));
       if (!files.length) return;
+      event.preventDefault();
+      this.uploadImages(files);
+    },
+    async uploadImages(files) {
+      if (!files.length || this.uploading) return;
       this.uploading = true;
       this.error = '';
       const box = this.$refs.body;
