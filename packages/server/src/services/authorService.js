@@ -14,6 +14,11 @@ import { AlreadySent } from '../postMailer.js';
 
 const MAX_TITLE = 200;
 const MAX_TEXT = 200_000;
+// Posts dated before this were written before subscribers could be
+// emailed, and never are -- no old post goes out by accident.
+export const EMAIL_POSTS_FROM = '2026-10-22';
+
+const emailable = (post) => post.publishedAt >= EMAIL_POSTS_FROM;
 
 class AuthorError extends Error {
   constructor(code, message) {
@@ -104,6 +109,7 @@ export function createAuthorService({
           publishedAt: post.publishedAt,
           emailedAt: iso(sent.get(post.slug)),
           draftId: draftByFile.get(post.fileName) ?? '',
+          canEmail: !sent.has(post.slug) && emailable(post),
         })),
         drafts: drafts.filter((d) => !d.file_name).map((d) => ({
           id: d.id, title: d.title, updatedAt: iso(d.updated_at), fileName: '',
@@ -160,6 +166,7 @@ export function createAuthorService({
       await requireOwner(call);
       const draft = await loadDraft(request.draftId);
       if (!draft.title.trim()) throw new AuthorError(grpc.status.INVALID_ARGUMENT, 'Give the post a title before publishing.');
+      if (!draft.synopsis.trim()) throw new AuthorError(grpc.status.INVALID_ARGUMENT, 'Write the synopsis before publishing.');
 
       let fileName = draft.file_name;
       if (!fileName) {
@@ -187,6 +194,7 @@ export function createAuthorService({
       await requireOwner(call);
       const post = (await blogSource.listPosts()).find((p) => p.slug === String(request.slug ?? ''));
       if (!post) throw new AuthorError(grpc.status.NOT_FOUND, 'That post no longer exists.');
+      if (!emailable(post)) throw new AuthorError(grpc.status.FAILED_PRECONDITION, 'Posts from before emailing existed are never sent.');
       try {
         return { sentTo: await postMailer.send(post) };
       } catch (err) {

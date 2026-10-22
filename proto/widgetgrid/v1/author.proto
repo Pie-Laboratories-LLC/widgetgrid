@@ -19,6 +19,9 @@ message PublishedPost {
   string emailed_at = 5;
   // A draft editing this post, if one is open.
   string draft_id = 6;
+  // Not yet emailed, and new enough to be (posts from before emailing
+  // existed never are).
+  bool can_email = 7;
 }
 
 message DraftSummary {
@@ -116,8 +119,10 @@ service AuthorService {
   rpc DeleteDraft(DeleteDraftRequest) returns (DeleteDraftResponse);
   rpc Preview(PreviewRequest) returns (PreviewResponse);
   // Writes the post (new, or over the one the draft edits) and deletes
-  // the draft. INVALID_ARGUMENT if there's no title or the slug is taken.
+  // the draft. INVALID_ARGUMENT if the title or synopsis is missing, or the
+  // slug is taken.
   rpc Publish(PublishRequest) returns (PublishResponse);
-  // Once per post: FAILED_PRECONDITION if it was already sent.
+  // Once per post: FAILED_PRECONDITION if it was already sent, or the post
+  // predates emailing.
   rpc EmailSubscribers(EmailSubscribersRequest) returns (EmailSubscribersResponse);
 }

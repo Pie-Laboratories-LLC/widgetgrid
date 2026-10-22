@@ -28,8 +28,9 @@
           <div class="author-post-actions">
             <button type="button" class="author-link-button" @click="edit(post)">{{ post.draftId ? 'Continue editing' : 'Edit' }}</button>
             <span v-if="post.emailedAt" class="author-muted">Emailed to subscribers {{ when(post.emailedAt) }}</span>
+            <!-- Only posts new enough to be emailed (the server decides). -->
             <button
-              v-else type="button" class="author-link-button" :disabled="sending === post.slug"
+              v-else-if="post.canEmail" type="button" class="author-link-button" :disabled="sending === post.slug"
               @click="email(post)"
             >{{ sending === post.slug ? 'Sending…' : 'Email subscribers' }}</button>
           </div>

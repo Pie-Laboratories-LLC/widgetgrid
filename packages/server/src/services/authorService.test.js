@@ -21,7 +21,8 @@ function setup({ caller = OWNER, posts = [] } = {}) {
     authContext: { getCaller: async () => caller },
     blogSource: {
       listPosts: async () => [...files.keys()].map((fileName) => ({
-        fileName, slug: fileName.slice(17, -3).toLowerCase(), title: 't', publishedAt: '',
+        fileName, slug: fileName.slice(17, -3).toLowerCase(), title: 't',
+        publishedAt: `${fileName.slice(0, 10)}T${fileName.slice(11, 13)}:${fileName.slice(14, 16)}`,
       })),
       readPost: async (f) => files.get(f) ?? null,
       writePost: async (f, raw) => { files.set(f, raw); },
@@ -87,8 +88,10 @@ test('a new draft publishes as a dated file with its images beside it', async ()
 test('publishing needs a title and a free address', async () => {
   const { call } = setup({ posts: [{ fileName: '2026-01-01-00-00-taken.md', raw: 'x' }] });
   const { res: { draft } } = await call('CreateDraft');
-  assert.equal((await call('Publish', { draftId: draft.id })).err.code, grpc.status.INVALID_ARGUMENT);
+  assert.match((await call('Publish', { draftId: draft.id })).err.message, /title/);
   await call('SaveDraft', { id: draft.id, title: 'Taken', slug: 'taken' });
+  assert.match((await call('Publish', { draftId: draft.id })).err.message, /synopsis/);
+  await call('SaveDraft', { id: draft.id, title: 'Taken', synopsis: 'S', slug: 'taken' });
   assert.match((await call('Publish', { draftId: draft.id })).err.message, /already a post at \/blog\/taken/);
 });
 
@@ -117,10 +120,20 @@ test('the preview finds the draft\'s own images and the post\'s existing ones', 
 });
 
 test('subscribers are emailed on request, once', async () => {
-  const { call } = setup({ posts: [{ fileName: '2026-09-01-10-00-hello.md', raw: 'x' }] });
+  const { call } = setup({ posts: [{ fileName: '2026-10-23-10-00-hello.md', raw: 'x' }] });
+  assert.equal((await call('ListAuthoring')).res.posts[0].canEmail, true);
   assert.equal((await call('EmailSubscribers', { slug: 'hello' })).res.sentTo, 3);
   assert.equal((await call('EmailSubscribers', { slug: 'hello' })).err.code, grpc.status.FAILED_PRECONDITION);
-  assert.notEqual((await call('ListAuthoring')).res.posts[0].emailedAt, '');
+  const [listed] = (await call('ListAuthoring')).res.posts;
+  assert.notEqual(listed.emailedAt, '');
+  assert.equal(listed.canEmail, false);
+});
+
+test('posts from before emailing existed are never offered or sent', async () => {
+  const { call, mailed } = setup({ posts: [{ fileName: '2026-09-01-10-00-old.md', raw: 'x' }] });
+  assert.equal((await call('ListAuthoring')).res.posts[0].canEmail, false);
+  assert.equal((await call('EmailSubscribers', { slug: 'old' })).err.code, grpc.status.FAILED_PRECONDITION);
+  assert.equal(mailed.length, 0);
 });
 
 test('slugFromTitle makes an address from a title', () => {

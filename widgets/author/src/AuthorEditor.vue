@@ -35,9 +35,10 @@
         <p v-if="error" class="author-error">{{ error }}</p>
 
         <div class="author-actions">
-          <button type="button" class="author-button" :disabled="publishing" @click="publish">
+          <button type="button" class="author-button" :disabled="publishing || !!missing" @click="publish">
             {{ draft.fileName ? 'Update post' : 'Publish' }}
           </button>
+          <span v-if="missing" class="author-muted">{{ missing }}</span>
           <button type="button" class="author-link-button" @click="discard">
             {{ draft.fileName ? 'Discard changes' : 'Delete draft' }}
           </button>
@@ -92,6 +93,12 @@ export default {
     listPath: () => writePath(),
     suggestedSlug() {
       return toSlug(this.title);
+    },
+    // What still stops publishing (the server checks too).
+    missing() {
+      if (!this.title.trim()) return 'Add a title to publish.';
+      if (!this.synopsis.trim()) return 'Write the synopsis to publish.';
+      return '';
     },
   },
   watch: {
