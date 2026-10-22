@@ -692,7 +692,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/21QTWvCQBD9Ld7XrU1r76mICKUNSfFaJpPRjq67YXdWkZD/XhKtSaGneV8MbybRyctczyZwDlOsDlPDpW4KATwoOIevhjDRzaZGtdjaTbZQWSwNYxFLS9JpA8pdFPqE0tCgD1oagkMGYWfv4Q4s11k33kFWIHSGi8o8n0BoWLy2Qt7SPXBtcmOpCOD3kayogjB6lsvKu1j3HcZCq8hAEEbjoCrBgEW2u1Oim7SuDWNf7c1B9dp75LsNf/g4x0HI3jK/+B8/j9dvjHmrfHf8/Ek3aU7ofNU/pEcFSauQvPC220RHsLAjr5vFoHXpEW1blVNw0WPvfESpo7TKuor0PjyckmedPOrZZB+Ypz5a4SPp/Dp/ACtDyqX9AQAA"
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/21R0U7DMAz8Ft6zgArjvUxomoSgatFekZt6w1ubVInTaar67yTdRovEU853J/vsJDJ5XsqHOzi5haqOi5pK2RcM6igC9dWjSmS/bZVY7fQ2W4nMlzWpwpcaOXITyo1n/ISyxomfuNQ5owiYjP41R/C6yeLzDrwGxhOcRWapC3BqvNGMNuCb4ZLkWqUcsn43qFkUqLwlPq+t8e2YYU4MAmtwTKo2UJVQg1ak913YLm3bsNIY7S1oL6OGNnb4U8995Bj11XPD/+i5v1xjXg/CxuWXj2FyjsrYajzIiArkQYRZTLvYCRvQsEcr+9XERfesHAaRozPeqlH58Nz60ESbCuXB3XfJk0yS8MEHR7SwXjM1KPPL+wMD6tT9/QEAAA=="
    },
    "Metadata": {
     "aws:cdk:path": "WidgetgridProdGatewayStack/CDKMetadata/Default"

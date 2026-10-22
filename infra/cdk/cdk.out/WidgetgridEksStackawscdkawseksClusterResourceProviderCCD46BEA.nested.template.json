@@ -826,7 +826,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WPQW/CMAyFfwv31GNl2x0q7bShikrbMTKJW0LbBMUurKr636cUdtjpvc/ys55zyN9eYb3CG2fGtlnnjjDtiYVsJWha1WF/tKg7HClqHyzpSww/o8aGvMA+WCoTbxN+pCWFN9YTbzQykzBskyjewG4wLckOmR5HYSpqv2S+KLILXr0P3kgyRe3//Kwc9jAdQkdpvGgZOmfGhHc3Kxa61I8EQ1H7SlDoE83JeZrVUqISbJxvlBlYQq8jcRiiIYapjOHqLEX1jU4o/svOKn0NZ3665i+QP8N6dWbnsjh4cT3B4a6/FngPMEkBAAA="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1VQTU/DMAz9LdxTgzLGfUPiBNM0pHGMvNTrvLbJFKeDKup/J+nGgdP7cJ71HA36ZQlPD/gtla3bquMDpA1JpPozom1Vh/2hRtPhSME4X5O5BP8zGmzIRdhkY1v0qsj38kjlVSbJwqAIRYFVASULWA+2pbhGoftSSK9HN2f2FIS9U2+Ds7GQPPjjk2LsIe18R8Weces7tmORNzapXPhyvCcE8iC3j/SB9sSOJjWXyFbDrlF2kOh7E0j8ECwJpHzClevc/Qs5UviXnVS5Gs7yeNXPoHX+rLMwV2FwkXuC3Q1/AT7REWhJAQAA"
    },
    "Metadata": {
     "aws:cdk:path": "WidgetgridEksStack/@aws-cdk--aws-eks.ClusterResourceProvider/CDKMetadata/Default"

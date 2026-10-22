@@ -10,6 +10,9 @@ const DEV_ORIGIN = 'https://dev.pie-laboratories.com';
 // Same name as the shared pool's client -- the pre-sign-up trigger
 // matches on it (see lambda/pre-sign-up).
 const REGISTRATION_CLIENT_NAME = 'widgetgrid-registration';
+// Who gets 'anonyme admins' (l'horaire, moderation) on dev. While SES is
+// in the sandbox only verified addresses can register at all.
+const DEV_ADMIN_EMAILS = ['webmaster@pie-laboratories.com'];
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // The app's sign-in for a temporarily stood-up dev environment: its own
@@ -73,16 +76,28 @@ export class DevIdentityStack extends Stack {
     }));
     userPool.addTrigger(cognito.UserPoolOperation.PRE_SIGN_UP, preSignUp);
 
-    // On the shared pool, admins come from Identity Center (the
-    // pre-token-groups trigger); here it's a plain Cognito group, which
-    // lands in the same cognito:groups claim. Add a registered account by
-    // hand to test l'horaire and moderation:
-    //   aws cognito-idp admin-add-user-to-group --user-pool-id <UserPoolId> \
-    //     --group-name 'anonyme admins' --username <email>
-    new cognito.CfnUserPoolGroup(this, 'AdminsGroup', {
-      userPoolId: userPool.userPoolId,
-      groupName: 'anonyme admins',
+    // On the shared pool, admins come from Identity Center via the
+    // pre-token-groups trigger. Here a trigger does the same for the
+    // emails listed below -- not a Cognito group, because group names
+    // can't contain spaces and the claim the servers look for is
+    // 'anonyme admins' (GROUP_ADMINS in packages/auth-node).
+    const preTokenAdmins = new lambda.Function(this, 'PreTokenAdmins', {
+      runtime: lambda.Runtime.NODEJS_22_X,
+      handler: 'index.handler',
+      code: lambda.Code.fromInline(`
+        const admins = (process.env.ADMIN_EMAILS || '').toLowerCase().split(',').filter(Boolean);
+        exports.handler = async (event) => {
+          const email = (event.request.userAttributes.email || '').toLowerCase();
+          if (admins.includes(email)) {
+            event.response.claimsOverrideDetails = { groupOverrideDetails: { groupsToOverride: ['anonyme admins'] } };
+          }
+          return event;
+        };
+      `),
+      timeout: Duration.seconds(5),
+      environment: { ADMIN_EMAILS: DEV_ADMIN_EMAILS.join(',') },
     });
+    userPool.addTrigger(cognito.UserPoolOperation.PRE_TOKEN_GENERATION, preTokenAdmins);
 
     // localhost too, so a local Vite build can be pointed at this pool.
     const origins = [DEV_ORIGIN, 'http://localhost:5173'];

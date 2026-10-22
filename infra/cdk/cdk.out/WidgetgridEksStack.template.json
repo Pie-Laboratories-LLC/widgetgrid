@@ -930,7 +930,7 @@
        {
         "Ref": "AWS::URLSuffix"
        },
-       "/cdk-hnb659fds-assets-913318903667-us-east-1/677910ba681504690e211f2110c39b318a2c4675ba9d10f747c29f7bc1c07940.json"
+       "/cdk-hnb659fds-assets-913318903667-us-east-1/22af2260ed7db4cb893319824264beabb5cb0f6bd4c8252bdee80fe7d9580f36.json"
       ]
      ]
     }
@@ -968,7 +968,7 @@
        {
         "Ref": "AWS::URLSuffix"
        },
-       "/cdk-hnb659fds-assets-913318903667-us-east-1/84a7db4bb83b7cef70cbd29ca50ba09593a72d1fe59602d84d899720f45faefe.json"
+       "/cdk-hnb659fds-assets-913318903667-us-east-1/609537ea2655648e27e2cac4304b90073df5f8980145f23ecc8a5709a3d3f9aa.json"
       ]
      ]
     }
@@ -1591,6 +1591,22 @@
          ]
         }
        ]
+      },
+      {
+       "Action": "ses:SendEmail",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":ses:us-east-1:913318903667:identity/pie-laboratories.com"
+         ]
+        ]
+       }
       }
      ],
      "Version": "2012-10-17"
@@ -1652,7 +1668,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/5VSwY4TMQz9lu05DcsscOA2WxCqhLRVZ28IITfxDm4zySh2ulRR/h3NRF1mOSBx8nvP9otiu9HNh/f69gaeeW3sae3ooHMnYE4KnvlHxhPrvHGJBaNqjUHmz17iRW2e/JK21gY/i1ewC3Zr0QvJpWUOhkAo+KIIBp33weFUNMddcGQuteeKtp4FvMFdDE/ksCg0jc4dmhRJLl9iSONU9m9h6/uIzOorJG9+PuIwOpD53ddKUZAksAFHvte5TRK6Sl58/9aK4jud75M5oUz5ir7l1UC/yK8+rpYDnSbJd3pOsa6lk+EndCj4cDiiEV6V76qm/kxhyf/DuzZ0AoID+tm6KHTAQsYFsAdw4A35/tzo3I6jIzMv5xFij/Ly5wUtRW0SSxj2yCFFU5d3xUtxE7ylyWwiD0nGNM+nntS0Yogw4HRNrw13MZzJYrwHRtUyo3QCPfm+KB8s6iO/OTfvdPNW394cmWgdkxcaUO9r/A3mNHtMyQIAAA=="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/5VSTU/DMAz9LeycBVQ+DtzKQGgSEtPghhDKEjOypUkVO4Op6n/HaTQoHJA4xX52XpznV8nq4lyeHKl3nGqznTq7kt0DKb0VDL10sEXZzVxCgihqrQHxxlPci9mrH6e1McEP4CFYBDM34MnSvkYM2iqywffCqkZ2y+AgNw3nIjir9+XOIZp7JOU1LGJ4tQ56AbriwUCnyIS3MaQ2t/0NzP068oTiTiWv3x6haZ2i4d2fSC9UooBaOevXsqs5eSjJF+9vrBd4KrurpLdAuV6ip27S2A/rJ5eTsaBZSW4fSihLaya8BgcE96sNaMJJ/yxK6VuFcf4P7nKBt0jQ8AYyNQvoFJLVLiizUo615a/sWNO6bbl7WM6jimugrz+P0r4XM/ZAaJaAIUVdlneIx+AseGMzWU7uE7Vp0KdYKq9YRdVAdtNPQl70zhqIVwpBsGGA+MqaZ+yFDwbkBo931ZmsKjbrBq2dxsTeakAuy/kJzp1lFMkCAAA="
    },
    "Metadata": {
     "aws:cdk:path": "WidgetgridEksStack/CDKMetadata/Default"

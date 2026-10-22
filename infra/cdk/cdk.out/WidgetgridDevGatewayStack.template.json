@@ -554,14 +554,19 @@
      {
       "AuthenticateCognitoConfig": {
        "UserPoolArn": {
-        "Fn::ImportValue": "WidgetgridIdentityStack:ExportsOutputFnGetAttUserPool6BA7E5F2Arn686ACC00"
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":cognito-idp:us-east-1:913318903667:userpool/us-east-1_DC0Ukf8jA"
+         ]
+        ]
        },
-       "UserPoolClientId": {
-        "Fn::ImportValue": "WidgetgridIdentityStack:ExportsOutputRefUserPoolDevAlbClient6B61DCF015FC0BF2"
-       },
-       "UserPoolDomain": {
-        "Fn::ImportValue": "WidgetgridIdentityStack:ExportsOutputRefUserPoolUserPoolDomain9F01E991C1F75B8B"
-       }
+       "UserPoolClientId": "7cipfmua47oqo3n8frno51ifa5",
+       "UserPoolDomain": "auth.pie-laboratories.com"
       },
       "Order": 1,
       "Type": "authenticate-cognito"
@@ -622,7 +627,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1VP0WrCQBD8Ft/Pq01r31MpIpQ2JMXXstms7ep5F+72EiTk30tiMPZpZmeHYSbRyctarxbQhiVWp6XhUneFAJ4UtOG7I0x0t69RbQ52n21UFkvDWMTSkgzazHIXhb6gNDTrs5aG4JBB2NmbeSBvu2yAD5AtCLVwUZnnBoTm4J0V8pZuhmuT6UpFAH/PZEUVhNGzXLbexXrscC/0igwEYTQOqhIMWGT70yS6S+vaMI7V3h1Ur+OP/JDw7773cRCyk2fivfLDqPWT7tKc0PlqHDqygqTvVU7BRY/j7s8odZReWVeRPoaHJnnWyaNeLY6BeemjFT6Tzq/4B2PL8iGlAQAA"
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1VR0U7DMAz8Ft7TgALjvUxomoSgatFeUZoa8JYlVeJ0mqr8O0lX6Hjy+e5k3cmCi8cVv7uRJ1+o7lBobPnYkFQHVoO3wSlgSfsYQQk+7nrF1p9mV61ZFVqNqgmtAcrcgmobCN5lq2HhF6703iqUhNb8mTN43lZ5vEraSIKTPLPK4ZDgcnhrCFzCv4ZLknkrKYX+PoIh1oAKDum8cTb0U4ZrIjLQ0hMqbWXXSi2NQvM1pHZl36dKU7SXpD1NGrh84d9+7UNPYGbPjCNzudTqPl2sQVnXTUUn1ADFmNe3QH2gyIztgO/97SAeuBDpEXuPWLhgCI/A68v8AUK1cxalAQAA"
    },
    "Metadata": {
     "aws:cdk:path": "WidgetgridDevGatewayStack/CDKMetadata/Default"

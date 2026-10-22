@@ -59,7 +59,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/zPSMzIz1TNQTCwv1k1OydbNyUzSqw4uSUzO1kksL45PTS7Sqw5KLcgvzizJL6rUcU7LQ/BqQVz/0pKC0pJanbz8lFS9rGL9MiMTPSNDPQPFrOLMTN2i0rySzNxUvSAIDQAKN9XDbgAAAA=="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/zPSMzIz1TNQTCwv1k1OydbNyUzSqw4uSUzO1gEKxacmF+lVB6UW5BdnluQXVeo4p+UheLUgrn9pSUFpSa1OXn5Kql5WsX6ZkYmekRHQxKzizEzdotK8kszcVL0gCA0AIp7Lm24AAAA="
    },
    "Metadata": {
     "aws:cdk:path": "WidgetgridSharedStack/CDKMetadata/Default"
