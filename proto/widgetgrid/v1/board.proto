@@ -25,6 +25,10 @@ message BoardViewer {
   bool banned = 4;
   // The owner or an anonyme admin: hide/unhide posts, ban/unban users.
   bool moderator = 5;
+  // May attach images (see media.proto): can post, and the account is old
+  // enough. When it isn't yet, images_from says when it will be.
+  bool can_upload_images = 6;
+  string images_from = 7;
 }
 
 message ThreadSummary {
@@ -155,6 +159,30 @@ message BanUserRequest {
 
 message BanUserResponse {}
 
+// An image the scan wasn't sure about, for a moderator to decide.
+message HeldImage {
+  string id = 1;
+  string uploader = 2;
+  string uploaded_at = 3;
+  // What the scan saw, e.g. "Suggestive 72%".
+  repeated string labels = 4;
+  // The image itself (a data: URL) -- held images aren't served.
+  string data_url = 5;
+}
+
+message ListHeldImagesRequest {}
+
+message ListHeldImagesResponse {
+  repeated HeldImage images = 1;
+}
+
+message ReviewImageRequest {
+  string id = 1;
+  bool approve = 2;
+}
+
+message ReviewImageResponse {}
+
 service BoardService {
   rpc ListSections(ListSectionsRequest) returns (ListSectionsResponse);
   rpc ListThreads(ListThreadsRequest) returns (ListThreadsResponse);
@@ -171,4 +199,6 @@ service BoardService {
   // Moderators only.
   rpc HidePost(HidePostRequest) returns (HidePostResponse);
   rpc BanUser(BanUserRequest) returns (BanUserResponse);
+  rpc ListHeldImages(ListHeldImagesRequest) returns (ListHeldImagesResponse);
+  rpc ReviewImage(ReviewImageRequest) returns (ReviewImageResponse);
 }

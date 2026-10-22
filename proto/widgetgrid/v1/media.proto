@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package widgetgrid.v1;
+
+// Uploaded images -- message board screenshots and images in blog drafts.
+// Internal: static-server calls this for its plain-HTTP routes
+// (POST /media/upload, GET /media/<path>; see
+// packages/static-server/src/edgeRoutes.js), passing the browser's
+// authorization header along. Not routed to browsers by Envoy -- the
+// bytes are too big for gRPC-Web's text encoding to be sensible.
+
+message UploadImageRequest {
+  bytes data = 1;
+  // "board" (a message board post) or "draft" (a blog draft, owner only).
+  string purpose = 2;
+  // purpose "draft": which draft.
+  string draft_id = 3;
+}
+
+message UploadImageResponse {
+  // Where the image is served, e.g. "/media/board/<id>.webp".
+  string url = 1;
+  // What to put in the post: "![](<url>)", or "![](./<name>.webp)" in a
+  // draft (relative to the post, like hand-written posts).
+  string markdown = 2;
+  // "ok", or "held" -- the scan wasn't sure; a moderator decides, and
+  // until then the post shows "[image awaiting review]".
+  string status = 3;
+}
+
+message GetImageRequest {
+  // The part after /media/, e.g. "board/<id>.webp".
+  string path = 1;
+}
+
+message GetImageResponse {
+  bytes data = 1;
+  string content_type = 2;
+}
+
+service MediaService {
+  // UNAUTHENTICATED (signed out), PERMISSION_DENIED (account too new,
+  // banned, not the owner for a draft, or the image was refused),
+  // RESOURCE_EXHAUSTED (uploading too fast), INVALID_ARGUMENT (not an
+  // image, too big). Messages are written for the person uploading.
+  rpc UploadImage(UploadImageRequest) returns (UploadImageResponse);
+  // NOT_FOUND for anything that may not be shown (held, refused, in a
+  // hidden or deleted post).
+  rpc GetImage(GetImageRequest) returns (GetImageResponse);
+}

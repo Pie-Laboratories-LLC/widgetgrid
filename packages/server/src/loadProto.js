@@ -18,6 +18,8 @@ export function loadProto() {
       path.join(PROTO_ROOT, 'widgetgrid/v1/subscription.proto'),
       path.join(PROTO_ROOT, 'widgetgrid/v1/account.proto'),
       path.join(PROTO_ROOT, 'widgetgrid/v1/board.proto'),
+      path.join(PROTO_ROOT, 'widgetgrid/v1/media.proto'),
+      path.join(PROTO_ROOT, 'widgetgrid/v1/author.proto'),
     ],
     {
       keepCase: false,

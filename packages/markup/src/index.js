@@ -32,7 +32,9 @@ export const PALETTE = {
 // What a profile allows beyond the common core (paragraphs, emphasis,
 // strikethrough, code, quotes, lists, links, line breaks, colour):
 //   post -- message boards: no headings, images or tables. A heading
-//           renders as a bold paragraph, an image as a link to it.
+//           renders as a bold paragraph, an image as a link to it --
+//           unless the caller's image() option vouches for it (images
+//           people uploaded to the site, see renderMarkup).
 //   help -- the game's help text: headings, images and tables too.
 const PROFILES = {
   post: { headings: false, images: false, tables: false },
@@ -40,6 +42,10 @@ const PROFILES = {
 };
 
 const SAFE_URL = /^(https?:\/\/|mailto:|\/(?!\/)|#)/i;
+
+// The image() option for the render in progress (rendering is synchronous,
+// so one slot is enough).
+let imagePolicy = null;
 
 function escapeHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -121,6 +127,12 @@ function createMarked(profileName) {
       image({ href, title, text }) {
         const url = safeUrl(href);
         if (!url) return escapeHtml(text);
+        const decision = imagePolicy?.(url);
+        if (decision?.omit) return '';
+        if (decision?.held) return '<span class="mk-image-held">[image awaiting review]</span>';
+        if (decision?.src) {
+          return `<img src="${escapeHtml(decision.src)}" alt="${escapeHtml(text)}" loading="lazy">`;
+        }
         if (!profile.images) {
           return `<a href="${escapeHtml(url)}" target="_blank" rel="nofollow ugc noopener noreferrer">${escapeHtml(text || url)}</a>`;
         }
@@ -139,9 +151,28 @@ function createMarked(profileName) {
 const instances = {};
 
 // Markdown source -> HTML, under a profile ('post' or 'help').
-export function renderMarkup(source, { profile = 'post' } = {}) {
+// image(url), optional, decides each image: { src } shows it (at src),
+// { held: true } shows "[image awaiting review]", { omit: true } leaves it
+// out, anything else leaves it to the profile (a post makes it a link).
+export function renderMarkup(source, { profile = 'post', image = null } = {}) {
   instances[profile] ??= createMarked(profile);
-  return instances[profile].parse(String(source ?? ''));
+  imagePolicy = image;
+  try {
+    return instances[profile].parse(String(source ?? ''));
+  } finally {
+    imagePolicy = null;
+  }
+}
+
+// Every image URL in the source, in order -- e.g. to check which uploads
+// a post uses.
+export function imageUrls(source, { profile = 'post' } = {}) {
+  instances[profile] ??= createMarked(profile);
+  const urls = [];
+  instances[profile].walkTokens(instances[profile].lexer(String(source ?? '')), (token) => {
+    if (token.type === 'image') urls.push(String(token.href ?? '').trim());
+  });
+  return urls;
 }
 
 // Plain text of the same source (no markup, colours dropped) -- for email

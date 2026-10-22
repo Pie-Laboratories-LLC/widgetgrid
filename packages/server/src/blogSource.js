@@ -1,12 +1,15 @@
 // createLocalBlogSource is the local-filesystem stand-in; createS3BlogSource
 // (below) is what production/EKS uses (see index.js's BLOG_S3_BUCKET
-// switch). Same interface either way -- listPosts() -- so blogService.js
-// never knows or cares which one it's holding, only parsePost's shared
-// parsing logic runs either way.
-import { readdir, readFile } from 'node:fs/promises';
+// switch). Same interface either way -- listPosts() to read, plus
+// readPost/writePost/writeAsset for writing on the site (authorService.js)
+// -- so nothing else knows or cares which one it's holding, only
+// parsePost's shared parsing logic runs either way.
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { Marked } from 'marked';
-import { S3Client, ListObjectsV2Command, GetObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client, ListObjectsV2Command, GetObjectCommand, PutObjectCommand,
+} from '@aws-sdk/client-s3';
 
 const marked = new Marked();
 
@@ -47,10 +50,27 @@ export function createLocalBlogSource({ dir, assetsBaseUrl = '/blog-assets' }) {
         // directory, and a post can just say ![x](./diagram.png) without
         // knowing or caring where it's actually hosted.
         const postDir = name.slice(0, -'.md'.length);
-        posts.push(parsePost({ raw, slug, publishedAt, assetsBaseUrl, postDir }));
+        posts.push({ ...parsePost({ raw, slug, publishedAt, assetsBaseUrl, postDir }), fileName: name });
       }
       return posts;
     },
+    async readPost(fileName) {
+      try {
+        return await readFile(path.join(dir, checkFileName(fileName)), 'utf8');
+      } catch (err) {
+        if (err.code === 'ENOENT') return null;
+        throw err;
+      }
+    },
+    async writePost(fileName, raw) {
+      await mkdir(dir, { recursive: true });
+      await writeFile(path.join(dir, checkFileName(fileName)), raw, 'utf8');
+    },
+    async writeAsset(postDir, name, bytes) {
+      await mkdir(path.join(dir, checkPostDir(postDir)), { recursive: true });
+      await writeFile(path.join(dir, postDir, checkAssetName(name)), bytes);
+    },
+    assetUrl: (postDir, name) => `${assetsBaseUrl}/${postDir}/${name}`,
   };
 }
 
@@ -95,11 +115,85 @@ export function createS3BlogSource({ bucket, assetsBaseUrl = '/blog-assets' }) {
         const object = await client.send(new GetObjectCommand({ Bucket: bucket, Key: key }));
         const raw = await object.Body.transformToString('utf8');
         const postDir = key.slice(0, -'.md'.length);
-        posts.push(parsePost({ raw, slug, publishedAt, assetsBaseUrl, postDir }));
+        posts.push({ ...parsePost({ raw, slug, publishedAt, assetsBaseUrl, postDir }), fileName: key });
       }
       return posts;
     },
+    async readPost(fileName) {
+      try {
+        const object = await client.send(new GetObjectCommand({ Bucket: bucket, Key: checkFileName(fileName) }));
+        return await object.Body.transformToString('utf8');
+      } catch (err) {
+        if (err.name === 'NoSuchKey') return null;
+        throw err;
+      }
+    },
+    async writePost(fileName, raw) {
+      await client.send(new PutObjectCommand({
+        Bucket: bucket, Key: checkFileName(fileName), Body: raw, ContentType: 'text/markdown; charset=utf-8',
+      }));
+    },
+    // Under the post's own prefix -- public, per the bucket policy.
+    async writeAsset(postDir, name, bytes, contentType) {
+      await client.send(new PutObjectCommand({
+        Bucket: bucket, Key: `${checkPostDir(postDir)}/${checkAssetName(name)}`, Body: bytes, ContentType: contentType,
+      }));
+    },
+    assetUrl: (postDir, name) => `${assetsBaseUrl}/${postDir}/${name}`,
   };
+}
+
+// Names only this server builds; checked anyway, since they become paths
+// and keys.
+function checkFileName(fileName) {
+  if (!FILENAME_PATTERN.test(fileName) || fileName.includes('/')) throw new Error(`bad post file name "${fileName}"`);
+  return fileName;
+}
+
+function checkPostDir(postDir) {
+  return checkFileName(`${postDir}.md`).slice(0, -'.md'.length);
+}
+
+function checkAssetName(name) {
+  if (!/^[A-Za-z0-9_-]+\.(webp|png|jpe?g|gif)$/.test(name)) throw new Error(`bad asset name "${name}"`);
+  return name;
+}
+
+// The filename a post published at `date` gets: "YYYY-MM-DD-HH-mm-<slug>.md",
+// the time written in the blog's own time zone, as the hand-written ones
+// are.
+export function postFileName(slug, date, timeZone) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-CA', {
+    timeZone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+  }).formatToParts(date).map((p) => [p.type, p.value]));
+  return `${parts.year}-${parts.month}-${parts.day}-${parts.hour}-${parts.minute}-${slug}.md`;
+}
+
+// A post's file from its parts, in the shape parsePost reads: a SYNOPSIS
+// section, then the title as a heading, then the body.
+export function buildPostFile({ title, synopsis, body }) {
+  return `# SYNOPSIS\n\n${synopsis.trim()}\n\n# ${title.trim()}\n\n${body.trim()}\n`;
+}
+
+// The reverse, for editing a published post. A file not in that shape
+// (no SYNOPSIS heading) comes back whole as the body.
+export function splitPostFile(raw) {
+  const lines = raw.replace(/\r\n/g, '\n').split('\n');
+  const synopsisAt = lines.findIndex((l) => /^#\s+SYNOPSIS\s*$/i.test(l));
+  const titleAt = synopsisAt === -1 ? -1 : lines.findIndex((l, i) => i > synopsisAt && /^#\s+\S/.test(l));
+  if (titleAt === -1) return { title: '', synopsis: '', body: raw.trim() };
+  return {
+    title: lines[titleAt].replace(/^#\s+/, '').trim(),
+    synopsis: lines.slice(synopsisAt + 1, titleAt).join('\n').trim(),
+    body: lines.slice(titleAt + 1).join('\n').trim(),
+  };
+}
+
+// What the post will look like once published, for the editor's preview.
+// resolveImage(name) gives each relative image ("./x.webp") its URL --
+// a draft's own uploads aren't in the blog bucket yet.
+export function renderPreview({ raw, slug, resolveImage }) {
+  return parsePost({ raw, slug, publishedAt: '', resolveImage });
 }
 
 // A post is "# SYNOPSIS" (a short summary section), then a "# <title>"
@@ -108,10 +202,11 @@ export function createS3BlogSource({ bucket, assetsBaseUrl = '/blog-assets' }) {
 // the synopsis view and the full view, so they never show two different
 // titles), and the full-content render starts after it: neither the
 // SYNOPSIS section nor the title heading itself appear in the body twice.
-function parsePost({ raw, slug, publishedAt, assetsBaseUrl, postDir }) {
+function parsePost({ raw, slug, publishedAt, assetsBaseUrl, postDir, resolveImage }) {
   const tokens = marked.lexer(raw);
+  const resolve = resolveImage ?? ((name) => `${assetsBaseUrl}/${postDir}/${name}`);
   marked.walkTokens(tokens, (token) => {
-    rewriteImageHref(token, assetsBaseUrl, postDir);
+    rewriteImageHref(token, resolve);
     rewriteCrossPostLink(token);
   });
   const synopsisIndex = findHeadingIndex(tokens, 0, (text) => text.toUpperCase() === 'SYNOPSIS');
@@ -130,9 +225,9 @@ function parsePost({ raw, slug, publishedAt, assetsBaseUrl, postDir }) {
   };
 }
 
-function rewriteImageHref(token, assetsBaseUrl, postDir) {
+function rewriteImageHref(token, resolve) {
   if (token.type !== 'image' || ABSOLUTE_HREF_PATTERN.test(token.href)) return;
-  token.href = `${assetsBaseUrl}/${postDir}/${token.href.replace(/^\.\//, '')}`;
+  token.href = resolve(token.href.replace(/^\.\//, ''));
 }
 
 // [see also](./2026-08-01-00-00-welcome-to-the-lab.md) -> /blog/welcome-to-the-lab

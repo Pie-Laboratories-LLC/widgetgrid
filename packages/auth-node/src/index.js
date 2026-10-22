@@ -55,6 +55,9 @@ export function createAuthContext({ pool, verifyAccessToken, users = usersRepo }
       role: user.role,
       // Null until chosen -- see accountService.js.
       username: user.username ?? null,
+      // When the account first signed in -- e.g. new accounts wait before
+      // uploading images (mediaService.js).
+      joinedAt: user.created_at ?? null,
       groups: claims['cognito:groups'] ?? [],
     };
     // Never cache past the token's own expiry.

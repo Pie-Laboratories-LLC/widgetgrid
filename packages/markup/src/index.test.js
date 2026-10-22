@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { renderMarkup, markupToText, PALETTE } from './index.js';
+import { renderMarkup, markupToText, imageUrls, PALETTE } from './index.js';
 
 test('colour directives render as the palette variable, with markup inside', () => {
   const html = renderMarkup('Mind the :red[**lava**] and take the :green[left] path.');
@@ -63,4 +63,19 @@ test('_text_ underlines, *text* stays italic, snake_case is left alone', () => {
   assert.equal(renderMarkup('_under_ and *slanted*'), '<p><u>under</u> and <em>slanted</em></p>\n');
   assert.equal(renderMarkup('call some_long_name now'), '<p>call some_long_name now</p>\n');
   assert.equal(renderMarkup(':blue[_both_]'), '<p><span style="color: var(--mk-blue, #1565c0)"><u>both</u></span></p>\n');
+});
+
+test('image() can show an image in a post, hold it, or leave it a link', () => {
+  const image = (url) => ({ '/media/a.webp': { src: url }, '/media/b.webp': { held: true }, '/media/d.webp': { omit: true } })[url];
+  const html = renderMarkup('![one](/media/a.webp) ![two](/media/b.webp) ![three](/media/c.webp) ![four](/media/d.webp)', { image });
+  assert.doesNotMatch(html, /four|d\.webp/);
+  assert.match(html, /<img src="\/media\/a\.webp" alt="one" loading="lazy">/);
+  assert.match(html, /\[image awaiting review\]/);
+  assert.match(html, /<a href="\/media\/c\.webp"[^>]*>three<\/a>/);
+  // The policy is per render, never left behind for the next one.
+  assert.doesNotMatch(renderMarkup('![one](/media/a.webp)'), /<img/);
+});
+
+test('imageUrls lists every image in the source', () => {
+  assert.deepEqual(imageUrls('![a](/media/x.webp)\n\ntext :red[![b](https://e.com/y.png)]'), ['/media/x.webp', 'https://e.com/y.png']);
 });

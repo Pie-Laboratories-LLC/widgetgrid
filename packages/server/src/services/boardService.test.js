@@ -51,21 +51,62 @@ function fakeRepo() {
   };
 }
 
-function setup() {
+// In-memory stand-in for boardImagesRepo.js, plus the media store.
+function fakeImages() {
+  const images = new Map();
+  const files = new Set();
+  return {
+    images,
+    files,
+    repo: {
+      async findMany(_p, ids) { return ids.filter((id) => images.has(id)).map((id) => images.get(id)); },
+      async attachToPost(_p, { ids, userId, postId }) {
+        for (const id of ids) {
+          const img = images.get(id);
+          if (img && img.user_id === userId && !img.post_id) img.post_id = postId;
+        }
+      },
+      async deleteForPost(_p, postId) {
+        const gone = [...images.values()].filter((i) => i.post_id === postId).map((i) => i.id);
+        for (const id of gone) images.delete(id);
+        return gone;
+      },
+      async listHeld() { return [...images.values()].filter((i) => i.status === 'held').map((i) => ({ ...i, username: USERS[i.user_id].username })); },
+      async review(_p, { id, approve }) {
+        const img = images.get(id);
+        if (img?.status !== 'held') return false;
+        img.status = approve ? 'ok' : 'rejected';
+        return true;
+      },
+    },
+    store: {
+      get: async (key) => (files.has(key) ? Buffer.from('webp') : null),
+      remove: async (key) => { files.delete(key); },
+    },
+  };
+}
+
+// A 22-character upload id, as mediaService.js makes them.
+const imageId = (n) => `img${String(n).padStart(19, '0')}`;
+
+function setup({ joinedAt = new Date(Date.now() - 30 * 86_400_000) } = {}) {
   const repo = fakeRepo();
+  const media = fakeImages();
   const pushes = [];
   const emails = [];
   let callerId = null;
   const service = createBoardService({
     pool: {},
     repo,
+    imagesRepo: media.repo,
+    mediaStore: media.store,
     siteOrigin: 'https://example.com',
     pushSender: { sendToOwner: async (m) => { pushes.push(m); } },
     emailSender: { send: async (m) => { emails.push(m); } },
     authContext: {
       getCaller: async () => {
         const u = USERS[callerId];
-        return u ? { userId: u.id, email: u.email, username: u.username, role: u.role, groups: [] } : null;
+        return u ? { userId: u.id, email: u.email, username: u.username, role: u.role, groups: [], joinedAt } : null;
       },
     },
   });
@@ -73,7 +114,7 @@ function setup() {
   const call = (method, request) => new Promise((resolve) => {
     service[method]({ request, metadata: { get: () => [] } }, (err, res) => resolve({ err, res }));
   });
-  return { repo, pushes, emails, as, call };
+  return { repo, media, pushes, emails, as, call };
 }
 
 async function flush() {
@@ -194,4 +235,67 @@ test('empty and oversized posts are refused', async () => {
   assert.equal((await call('CreateThread', { section: 'game-feedback', title: ' ', body: 'b' })).err.code, grpc.status.INVALID_ARGUMENT);
   assert.equal((await call('CreateThread', { section: 'game-feedback', title: 't', body: '   ' })).err.code, grpc.status.INVALID_ARGUMENT);
   assert.equal((await call('CreateThread', { section: 'game-feedback', title: 't', body: 'x'.repeat(20_001) })).err.code, grpc.status.INVALID_ARGUMENT);
+});
+
+test('a post shows its author\'s own images; held say so; anyone else\'s are links', async () => {
+  const { as, call, media } = setup();
+  media.images.set(imageId(1), { id: imageId(1), user_id: 'u1', status: 'ok' });
+  media.images.set(imageId(2), { id: imageId(2), user_id: 'u1', status: 'held' });
+  media.images.set(imageId(3), { id: imageId(3), user_id: 'u2', status: 'ok' });
+  as('u1');
+  const body = [1, 2, 3].map((n) => `![s${n}](/media/board/${imageId(n)}.webp)`).join(' ');
+  const { res: { threadId } } = await call('CreateThread', { section: 'game-feedback', title: 'Pics', body });
+  const { res } = await call('GetThread', { threadId });
+  const html = res.posts[0].bodyHtml;
+  assert.match(html, new RegExp(`<img src="/media/board/${imageId(1)}\\.webp"`));
+  assert.match(html, /\[image awaiting review\]/);
+  assert.match(html, new RegExp(`<a href="/media/board/${imageId(3)}\\.webp"`));
+  // Only the author's unused uploads are tied to the post.
+  assert.equal(media.images.get(imageId(1)).post_id, threadId);
+  assert.equal(media.images.get(imageId(3)).post_id, undefined);
+});
+
+test('at most five images per post', async () => {
+  const { as, call } = setup();
+  as('u1');
+  const body = [1, 2, 3, 4, 5, 6].map((n) => `![](/media/board/${imageId(n)}.webp)`).join('\n');
+  const { err } = await call('CreateThread', { section: 'game-feedback', title: 'Too many', body });
+  assert.equal(err.code, grpc.status.INVALID_ARGUMENT);
+  assert.match(err.message, /up to 5 images/);
+});
+
+test('deleting a post deletes its images', async () => {
+  const { as, call, media } = setup();
+  media.images.set(imageId(1), { id: imageId(1), user_id: 'u1', status: 'ok' });
+  media.files.add(`board/${imageId(1)}.webp`);
+  as('u1');
+  const { res: { threadId } } = await call('CreateThread', { section: 'game-feedback', title: 'T', body: `![](/media/board/${imageId(1)}.webp)` });
+  await call('DeletePost', { postId: threadId });
+  assert.equal(media.images.size, 0);
+  assert.equal(media.files.size, 0);
+});
+
+test('the viewer says whether images are allowed yet', async () => {
+  const fresh = setup({ joinedAt: new Date(Date.now() - 86_400_000) });
+  fresh.as('u1');
+  const { viewer } = (await fresh.call('ListSections', {})).res;
+  assert.equal(viewer.canUploadImages, false);
+  assert.ok(Date.parse(viewer.imagesFrom) > Date.now());
+  fresh.as('owner');
+  assert.equal((await fresh.call('ListSections', {})).res.viewer.canUploadImages, true);
+});
+
+test('moderators review held images', async () => {
+  const { as, call, media } = setup();
+  media.images.set(imageId(1), { id: imageId(1), user_id: 'u1', status: 'held', labels: [{ name: 'Suggestive', confidence: 71.6 }], created_at: new Date() });
+  media.files.add(`board/${imageId(1)}.webp`);
+  as('u1');
+  assert.equal((await call('ListHeldImages', {})).err.code, grpc.status.PERMISSION_DENIED);
+  as('owner');
+  const { res } = await call('ListHeldImages', {});
+  assert.deepEqual(res.images[0].labels, ['Suggestive 72%']);
+  assert.match(res.images[0].dataUrl, /^data:image\/webp;base64,/);
+  await call('ReviewImage', { id: imageId(1), approve: true });
+  assert.equal(media.images.get(imageId(1)).status, 'ok');
+  assert.equal((await call('ReviewImage', { id: imageId(1), approve: false })).err.code, grpc.status.NOT_FOUND);
 });

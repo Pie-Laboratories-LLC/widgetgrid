@@ -73,18 +73,19 @@ export async function deleteExpiredPending(pool, { sentBefore }) {
   );
 }
 
-export async function listMailingSlugs(pool) {
-  const { rows } = await pool.query('SELECT slug FROM blog_post_mailings');
-  return rows.map((r) => r.slug);
+// When each post was emailed, by slug (posts never emailed are absent).
+export async function listSent(pool) {
+  const { rows } = await pool.query('SELECT slug, sent_at FROM blog_post_mailings WHERE sent');
+  return new Map(rows.map((r) => [r.slug, r.sent_at]));
 }
 
-// Claims a post for mailing. true only for the one caller that inserted
-// the row -- that caller sends; everyone else (a second replica, a rerun
-// after restart) sees false and doesn't.
-export async function claimMailing(pool, { slug, sent }) {
+// Marks a post as emailed. true only for the one caller that did -- that
+// caller sends; a second click, or a second replica, gets false.
+export async function claimSend(pool, slug) {
   const { rowCount } = await pool.query(
-    'INSERT INTO blog_post_mailings (slug, sent) VALUES ($1, $2) ON CONFLICT (slug) DO NOTHING',
-    [slug, sent],
+    `INSERT INTO blog_post_mailings (slug, sent, sent_at) VALUES ($1, true, now())
+     ON CONFLICT (slug) DO UPDATE SET sent = true, sent_at = now() WHERE NOT blog_post_mailings.sent`,
+    [slug],
   );
   return rowCount === 1;
 }

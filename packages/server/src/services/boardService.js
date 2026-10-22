@@ -1,7 +1,9 @@
 import grpc from '@grpc/grpc-js';
 import * as defaultRepo from '@widgetgrid/db/src/boardRepo.js';
+import * as defaultImagesRepo from '@widgetgrid/db/src/boardImagesRepo.js';
 import { GROUP_ADMINS } from '@widgetgrid/auth-node';
-import { renderMarkup, markupToText } from '@widgetgrid/markup';
+import { renderMarkup, markupToText, imageUrls } from '@widgetgrid/markup';
+import { boardImageId, imagesFrom, MAX_IMAGES_PER_POST } from '../boardImages.js';
 
 // The message boards -- see proto/widgetgrid/v1/board.proto.
 const MAX_TITLE = 200;
@@ -30,7 +32,8 @@ export function threadPath(sectionSlug, threadId, postId) {
 }
 
 export function createBoardService({
-  pool, authContext, pushSender, emailSender, siteOrigin, repo = defaultRepo, now = () => Date.now(),
+  pool, authContext, pushSender, emailSender, siteOrigin, mediaStore,
+  repo = defaultRepo, imagesRepo = defaultImagesRepo, now = () => Date.now(),
 }) {
   // The caller and what they may do. A signed-in user's ban is looked up
   // per call (not cached with the caller) so a ban bites immediately.
@@ -39,13 +42,48 @@ export function createBoardService({
     if (!caller) return { caller: null, viewer: { signedIn: false, username: '', canPost: false, banned: false, moderator: false } };
     const banned = await repo.isBanned(pool, caller.userId);
     const moderator = caller.role === 'owner' || caller.groups.includes(GROUP_ADMINS);
+    const canPost = !!caller.username && !banned;
+    const from = imagesFrom(caller, { moderator });
+    const waiting = !!from && from.getTime() > now();
     return {
       caller,
       viewer: {
-        signedIn: true, username: caller.username ?? '', canPost: !!caller.username && !banned, banned, moderator,
+        signedIn: true,
+        username: caller.username ?? '',
+        canPost,
+        banned,
+        moderator,
+        canUploadImages: canPost && !waiting,
+        imagesFrom: canPost && waiting ? from.toISOString() : '',
       },
     };
   }
+
+  // The uploaded images a body uses, as ids (anything else is just a URL).
+  const imageIdsIn = (body) => [...new Set(imageUrls(body).map(boardImageId).filter(Boolean))];
+
+  function checkImages(body) {
+    if (imageIdsIn(body).length > MAX_IMAGES_PER_POST) {
+      throw new BoardError(grpc.status.INVALID_ARGUMENT, `Posts can have up to ${MAX_IMAGES_PER_POST} images.`);
+    }
+  }
+
+  // The rows for every uploaded image these posts use -- one query.
+  async function imagesFor(rows) {
+    const ids = [...new Set(rows.flatMap((row) => imageIdsIn(row.body ?? '')))];
+    return new Map((await imagesRepo.findMany(pool, ids)).map((img) => [img.id, img]));
+  }
+
+  // How each image in a post shows: only the author's own uploads appear
+  // as images (anyone else's is just a link); held ones say so; refused
+  // ones vanish.
+  const imagePolicy = (row, images) => (url) => {
+    const image = images.get(boardImageId(url));
+    if (!image || image.user_id !== row.author_id) return null;
+    if (image.status === 'ok') return { src: url };
+    if (image.status === 'held') return { held: true };
+    return { omit: true };
+  };
 
   async function requirePoster(call) {
     const { caller, viewer } = await viewerFor(call);
@@ -76,7 +114,7 @@ export function createBoardService({
 
   // A post as the viewer may see it: text withheld when deleted, or
   // removed (except from moderators); the source only on their own.
-  function present(row, { caller, viewer }) {
+  function present(row, { caller, viewer }, images = new Map()) {
     const mine = !!caller && row.author_id === caller.userId;
     const removed = !!row.hidden_at;
     const deleted = !!row.deleted_at;
@@ -86,7 +124,7 @@ export function createBoardService({
       parentId: row.parent_id ?? '',
       author: deleted ? '' : row.author_username ?? '',
       title: row.parent_id ? '' : (removed && !viewer.moderator ? '[removed]' : row.title ?? ''),
-      bodyHtml: showBody ? renderMarkup(row.body) : '',
+      bodyHtml: showBody ? renderMarkup(row.body, { image: imagePolicy(row, images) }) : '',
       body: mine && !deleted ? row.body : '',
       createdAt: iso(row.created_at),
       editedAt: iso(row.edited_at),
@@ -201,7 +239,8 @@ export function createBoardService({
         throw new BoardError(grpc.status.NOT_FOUND, 'That thread no longer exists.');
       }
       const section = await repo.findSectionById(pool, rows[0].section_id);
-      return { section: presentSection(section), posts: rows.map((row) => present(row, who)), viewer: who.viewer };
+      const images = await imagesFor(rows);
+      return { section: presentSection(section), posts: rows.map((row) => present(row, who, images)), viewer: who.viewer };
     }),
 
     CreateThread: handle(async (request, call) => {
@@ -210,10 +249,12 @@ export function createBoardService({
       if (!section) throw new BoardError(grpc.status.NOT_FOUND, 'There is no such section.');
       const title = checkTitle(request.title);
       const body = checkBody(request.body);
+      checkImages(body);
       await checkFlood(caller);
       const threadId = await repo.createThread(pool, {
         sectionId: section.id, authorId: caller.userId, title, body, notifyReplies: !!request.notifyReplies,
       });
+      await imagesRepo.attachToPost(pool, { ids: imageIdsIn(body), userId: caller.userId, postId: threadId });
       await announce({ section, threadId, postId: threadId, caller, body });
       return { threadId };
     }),
@@ -223,22 +264,28 @@ export function createBoardService({
       const parent = await repo.getPost(pool, String(request.parentId ?? ''));
       if (!parent || (parent.hidden_at && !who.viewer.moderator)) throw new BoardError(grpc.status.NOT_FOUND, 'That post no longer exists.');
       const body = checkBody(request.body);
+      checkImages(body);
       await checkFlood(who.caller);
       const postId = await repo.createReply(pool, {
         parent, authorId: who.caller.userId, body, notifyReplies: !!request.notifyReplies,
       });
+      await imagesRepo.attachToPost(pool, { ids: imageIdsIn(body), userId: who.caller.userId, postId });
       const section = await repo.findSectionById(pool, parent.section_id);
       await announce({ section, threadId: parent.thread_id ?? parent.id, postId, caller: who.caller, body, parent });
-      return { post: present(await repo.getPost(pool, postId), who) };
+      const row = await repo.getPost(pool, postId);
+      return { post: present(row, who, await imagesFor([row])) };
     }),
 
     EditPost: handle(async (request, call) => {
       const who = await requirePoster(call);
       const post = await loadOwnPost(who.caller, request.postId);
       const body = checkBody(request.body);
+      checkImages(body);
       const title = post.parent_id ? null : checkTitle(request.title);
       await repo.editPost(pool, { id: post.id, title, body });
-      return { post: present(await repo.getPost(pool, post.id), who) };
+      await imagesRepo.attachToPost(pool, { ids: imageIdsIn(body), userId: who.caller.userId, postId: post.id });
+      const row = await repo.getPost(pool, post.id);
+      return { post: present(row, who, await imagesFor([row])) };
     }),
 
     // Not gated on a ban: anyone may take their own words down.
@@ -246,7 +293,12 @@ export function createBoardService({
       const { caller } = await viewerFor(call);
       if (!caller) throw new BoardError(grpc.status.UNAUTHENTICATED, 'Log in first.');
       const post = await loadOwnPost(caller, request.postId);
+      // Its images go with it -- rows first, then the files.
+      const imageIds = await imagesRepo.deleteForPost(pool, post.id);
       await repo.deletePost(pool, post.id);
+      for (const id of imageIds) {
+        await mediaStore.remove(`board/${id}.webp`).catch((err) => console.error('[boardService] image delete failed:', err));
+      }
       return {};
     }),
 
@@ -274,6 +326,33 @@ export function createBoardService({
       if (!target) throw new BoardError(grpc.status.NOT_FOUND, 'No user by that name.');
       if (target.role === 'owner') throw new BoardError(grpc.status.PERMISSION_DENIED, "The site owner can't be banned.");
       await repo.setBanned(pool, { userId: target.id, banned: !!request.banned, by: caller.userId, reason: String(request.reason ?? '') });
+      return {};
+    }),
+
+    ListHeldImages: handle(async (_request, call) => {
+      const { viewer } = await viewerFor(call);
+      if (!viewer.moderator) throw new BoardError(grpc.status.PERMISSION_DENIED, 'Moderators only.');
+      const held = await imagesRepo.listHeld(pool);
+      const images = [];
+      for (const image of held) {
+        const data = await mediaStore.get(`board/${image.id}.webp`);
+        if (!data) continue;
+        images.push({
+          id: image.id,
+          uploader: image.username ?? '',
+          uploadedAt: iso(image.created_at),
+          labels: image.labels.map((l) => `${l.name} ${Math.round(l.confidence)}%`),
+          dataUrl: `data:image/webp;base64,${data.toString('base64')}`,
+        });
+      }
+      return { images };
+    }),
+
+    ReviewImage: handle(async (request, call) => {
+      const { caller, viewer } = await viewerFor(call);
+      if (!viewer.moderator) throw new BoardError(grpc.status.PERMISSION_DENIED, 'Moderators only.');
+      const reviewed = await imagesRepo.review(pool, { id: String(request.id ?? ''), approve: !!request.approve, by: caller.userId });
+      if (!reviewed) throw new BoardError(grpc.status.NOT_FOUND, 'That image was already reviewed.');
       return {};
     }),
   };

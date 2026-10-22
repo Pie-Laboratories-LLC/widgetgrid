@@ -31,3 +31,6 @@ widgets/embuscade/.vendor-src/
 .*.sw?
 *.sw?
 *~
+
+# Images uploaded while running locally (packages/server mediaStore.js).
+.media/

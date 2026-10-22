@@ -63,6 +63,7 @@ async function main() {
     path.join(PROTO_ROOT, 'widgetgrid/v1/subscription.proto'),
     path.join(PROTO_ROOT, 'widgetgrid/v1/account.proto'),
     path.join(PROTO_ROOT, 'widgetgrid/v1/board.proto'),
+    path.join(PROTO_ROOT, 'widgetgrid/v1/author.proto'),
     path.join(PROTO_ROOT, 'lhoraire/v1/lhoraire.proto'),
   ];
 

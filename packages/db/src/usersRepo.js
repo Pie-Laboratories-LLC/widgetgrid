@@ -22,7 +22,7 @@ export async function upsertOnSignIn(pool, { sub, email, becomeOwner }) {
 
 export async function findBySub(pool, sub) {
   const { rows } = await pool.query(
-    'SELECT id, cognito_sub, email, role, username FROM users WHERE cognito_sub = $1',
+    'SELECT id, cognito_sub, email, role, username, created_at FROM users WHERE cognito_sub = $1',
     [sub],
   );
   return rows[0] ?? null;

@@ -26,6 +26,10 @@ import { createCognitoRegistrar, createConsoleRegistrar } from './registrar.js';
 import { createAccountService } from './services/accountService.js';
 import { parseEmailList, parseAssignedUsernames } from './siteAccounts.js';
 import { createBoardService } from './services/boardService.js';
+import { createMediaService } from './services/mediaService.js';
+import { createAuthorService } from './services/authorService.js';
+import { createLocalMediaStore, createS3MediaStore } from './mediaStore.js';
+import { createRekognitionModerator, createNoopModerator } from './moderation.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const HOST = process.env.GRPC_SERVER_HOST ?? '127.0.0.1';
@@ -86,8 +90,18 @@ const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY ?? '';
 const REGISTRAR = process.env.REGISTRAR ?? 'console';
 const COGNITO_REGISTRATION_CLIENT_ID = process.env.COGNITO_REGISTRATION_CLIENT_ID ?? '';
 const COGNITO_REGISTRATION_CLIENT_SECRET = process.env.COGNITO_REGISTRATION_CLIENT_SECRET ?? '';
-// How often postMailer.js looks for a post to email subscribers about.
-const POST_MAILER_INTERVAL_MS = Number(process.env.POST_MAILER_INTERVAL_MS ?? 60_000);
+// Uploaded images (mediaStore.js): an S3 bucket in AWS, a directory
+// locally. Like BLOG_S3_BUCKET, setting the bucket is the switch.
+const MEDIA_S3_BUCKET = process.env.MEDIA_S3_BUCKET;
+const MEDIA_DIR = process.env.MEDIA_DIR ?? path.resolve(__dirname, '../../../.media');
+// 'rekognition' in AWS (infra/eks/manifests/widgetgrid-server.yaml);
+// 'none' (default, local dev) passes every image -- see moderation.js.
+const IMAGE_MODERATION = process.env.IMAGE_MODERATION ?? 'none';
+// The time zone a post published on the site is dated in (its filename),
+// matching the hand-written ones.
+const BLOG_TIME_ZONE = process.env.BLOG_TIME_ZONE || 'America/Denver';
+// Uploads are up to 10 MB (imagePipeline.js); gRPC's default cap is 4 MB.
+const MAX_MESSAGE_BYTES = 12 * 1024 * 1024;
 
 export function startServer() {
   const pool = getPool();
@@ -114,7 +128,11 @@ export function startServer() {
     ? createCognitoRegistrar({ clientId: COGNITO_REGISTRATION_CLIENT_ID, clientSecret: COGNITO_REGISTRATION_CLIENT_SECRET })
     : createConsoleRegistrar();
 
-  const server = new grpc.Server();
+  const mediaStore = MEDIA_S3_BUCKET ? createS3MediaStore({ bucket: MEDIA_S3_BUCKET }) : createLocalMediaStore({ dir: MEDIA_DIR });
+  const moderator = IMAGE_MODERATION === 'rekognition' ? createRekognitionModerator() : createNoopModerator();
+  const postMailer = createPostMailer({ pool, emailSender, siteOrigin: SITE_ORIGIN });
+
+  const server = new grpc.Server({ 'grpc.max_receive_message_length': MAX_MESSAGE_BYTES });
   server.addService(proto.PageService.service, createPageService({ pool, pagesRepo, layoutNodesRepo }));
   server.addService(proto.WidgetService.service, createWidgetService({ pool, widgetsRepo }));
   server.addService(proto.BlogService.service, createBlogService({ blogSource, blogChangeNotifier, siteOrigin: SITE_ORIGIN }));
@@ -123,9 +141,13 @@ export function startServer() {
   server.addService(proto.ChatService.service, createChatService({ pool, authContext, pushSender, deviceActivity, ownerPhoneNumber: OWNER_PHONE_NUMBER, smsSender }));
   server.addService(proto.SubscriptionService.service, createSubscriptionService({ pool, authContext, emailSender, captcha, siteOrigin: SITE_ORIGIN }));
   server.addService(proto.AccountService.service, createAccountService({ pool, authContext, registrar, captcha, assigned: ASSIGNED_USERNAMES }));
-  server.addService(proto.BoardService.service, createBoardService({ pool, authContext, pushSender, emailSender, siteOrigin: SITE_ORIGIN }));
+  server.addService(proto.BoardService.service, createBoardService({ pool, authContext, pushSender, emailSender, siteOrigin: SITE_ORIGIN, mediaStore }));
+  server.addService(proto.MediaService.service, createMediaService({ pool, authContext, mediaStore, moderator }));
+  server.addService(proto.AuthorService.service, createAuthorService({
+    pool, authContext, blogSource, mediaStore, postMailer, timeZone: BLOG_TIME_ZONE,
+  }));
 
-  createPostMailer({ pool, blogSource, emailSender, siteOrigin: SITE_ORIGIN, intervalMs: POST_MAILER_INTERVAL_MS }).start();
+  postMailer.start();
 
   return new Promise((resolve, reject) => {
     server.bindAsync(`${HOST}:${PORT}`, grpc.ServerCredentials.createInsecure(), (err, boundPort) => {

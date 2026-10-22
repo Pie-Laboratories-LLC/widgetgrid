@@ -1,0 +1,123 @@
+syntax = "proto3";
+
+package widgetgrid.v1;
+
+// Writing the blog on the site (/site/write) -- owner only; everyone else
+// gets PERMISSION_DENIED. A published post is still a .md file in the
+// blog bucket (content/blog locally), exactly as if uploaded by hand;
+// drafts live in the database until published. Images are added through
+// MediaService (purpose "draft").
+
+message PublishedPost {
+  // "2026-10-22-12-00-slug.md" -- fixed once published.
+  string file_name = 1;
+  // The URL part: /blog/<slug>.
+  string slug = 2;
+  string title = 3;
+  string published_at = 4;
+  // When subscribers were emailed about it; empty if never.
+  string emailed_at = 5;
+  // A draft editing this post, if one is open.
+  string draft_id = 6;
+}
+
+message DraftSummary {
+  string id = 1;
+  string title = 2;
+  string updated_at = 3;
+  // Set when the draft edits a published post.
+  string file_name = 4;
+}
+
+message ListAuthoringRequest {}
+
+message ListAuthoringResponse {
+  repeated PublishedPost posts = 1;
+  // New posts only (edits show on their post).
+  repeated DraftSummary drafts = 2;
+}
+
+message Draft {
+  string id = 1;
+  string title = 2;
+  string synopsis = 3;
+  string body = 4;
+  // New posts: the address part to publish under, editable until then.
+  string slug = 5;
+  // Set when editing a published post (its slug can't change).
+  string file_name = 6;
+  string published_slug = 7;
+  string updated_at = 8;
+}
+
+message GetDraftRequest {
+  string id = 1;
+}
+
+message CreateDraftRequest {
+  // Empty: a new post. Otherwise opens (or reuses) a draft of that
+  // published post.
+  string file_name = 1;
+}
+
+message SaveDraftRequest {
+  string id = 1;
+  string title = 2;
+  string synopsis = 3;
+  string body = 4;
+  string slug = 5;
+}
+
+message DraftResponse {
+  Draft draft = 1;
+}
+
+message DeleteDraftRequest {
+  string id = 1;
+}
+
+message DeleteDraftResponse {}
+
+message PreviewRequest {
+  string draft_id = 1;
+  string title = 2;
+  string synopsis = 3;
+  string body = 4;
+}
+
+message PreviewResponse {
+  // Rendered exactly as the blog will render the published post.
+  string title = 1;
+  string synopsis_html = 2;
+  string content_html = 3;
+}
+
+message PublishRequest {
+  string draft_id = 1;
+}
+
+message PublishResponse {
+  string slug = 1;
+}
+
+message EmailSubscribersRequest {
+  string slug = 1;
+}
+
+message EmailSubscribersResponse {
+  int32 sent_to = 1;
+}
+
+service AuthorService {
+  rpc ListAuthoring(ListAuthoringRequest) returns (ListAuthoringResponse);
+  rpc CreateDraft(CreateDraftRequest) returns (DraftResponse);
+  rpc GetDraft(GetDraftRequest) returns (DraftResponse);
+  rpc SaveDraft(SaveDraftRequest) returns (DraftResponse);
+  rpc DeleteDraft(DeleteDraftRequest) returns (DeleteDraftResponse);
+  rpc Preview(PreviewRequest) returns (PreviewResponse);
+  // Writes the post (new, or over the one the draft edits) and deletes
+  // the draft. INVALID_ARGUMENT if there's no title or the slug is taken.
+  rpc Publish(PublishRequest) returns (PublishResponse);
+  // Once per post: FAILED_PRECONDITION if it was already sent.
+  rpc EmailSubscribers(EmailSubscribersRequest) returns (EmailSubscribersResponse);
+}
