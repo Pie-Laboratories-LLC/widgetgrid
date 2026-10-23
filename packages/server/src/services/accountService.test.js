@@ -156,3 +156,10 @@ test('ChooseUsername gives an address its assigned name', async () => {
   const { call } = setup({ caller: { userId: 'u3', email: 'site@example.com', username: null } });
   assert.equal((await call('ChooseUsername', { username: 'whatever' })).res.username, 'pielabs');
 });
+
+test('ChooseUsername gives an unverified address nothing assigned to it', async () => {
+  const caller = { userId: 'u4', email: 'site@example.com', emailVerified: false, username: null };
+  const { call } = setup({ caller });
+  assert.equal((await call('ChooseUsername', { username: 'whatever' })).res.username, 'whatever');
+  assert.equal((await setup({ caller }).call('ChooseUsername', { username: 'pielabs' })).err.code, grpc.status.INVALID_ARGUMENT);
+});

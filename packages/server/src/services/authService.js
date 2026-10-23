@@ -4,7 +4,7 @@ import * as defaultAuthRepo from '@widgetgrid/db/src/authRepo.js';
 import * as defaultUsersRepo from '@widgetgrid/db/src/usersRepo.js';
 import * as defaultUsernamesRepo from '@widgetgrid/db/src/usernamesRepo.js';
 import { RESERVATION_TTL_MS } from './accountService.js';
-import { NO_ASSIGNED_USERNAMES } from '../siteAccounts.js';
+import { NO_ASSIGNED_USERNAMES, emailIsVerified } from '../siteAccounts.js';
 import { isOwnerOnline, subscribePresence } from '../presenceBus.js';
 
 // Matches the SPA client's refresh-token lifetime (90 days, see
@@ -36,8 +36,10 @@ export function createAuthService({
       }
       try {
         const email = String(claims.email ?? '');
-        const becomeOwner = ownerEmails.includes(email.toLowerCase());
-        const user = await usersRepo.upsertOnSignIn(pool, { sub: claims.sub, email, becomeOwner });
+        // An unproved address earns nothing by matching (siteAccounts.js).
+        const emailVerified = emailIsVerified(claims);
+        const becomeOwner = emailVerified && ownerEmails.includes(email.toLowerCase());
+        const user = await usersRepo.upsertOnSignIn(pool, { sub: claims.sub, email, emailVerified, becomeOwner });
 
         // First sign-in after registering: the username reserved then
         // (accountService.js's Register) becomes theirs now that the row
@@ -46,7 +48,7 @@ export function createAuthService({
         // reservation otherwise leaves it empty -- they choose one when
         // it's needed.
         let username = user.username ?? '';
-        if (!username) {
+        if (!username && emailVerified) {
           const reservedAfter = new Date(now() - RESERVATION_TTL_MS);
           const reserved = assigned.forEmail(email)
             ?? await usernamesRepo.findReservationByEmail(pool, { email, reservedAfter });

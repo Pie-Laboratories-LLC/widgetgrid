@@ -134,11 +134,15 @@ export function createAccountService({
       const caller = await authContext.getCaller(call);
       if (!caller) throw new FormError(grpc.status.UNAUTHENTICATED, 'Log in first.');
       if (caller.username) return { username: caller.username };
-      const username = assigned.forEmail(caller.email) ?? String(request.username ?? '').trim();
-      const problem = usernameProblem(username, { email: caller.email, assigned });
+      // Names assigned or reserved for an address need that address proved
+      // (siteAccounts.js's emailIsVerified); otherwise they're as taken as
+      // they are for anyone.
+      const email = caller.emailVerified === false ? '' : caller.email;
+      const username = assigned.forEmail(email) ?? String(request.username ?? '').trim();
+      const problem = usernameProblem(username, { email, assigned });
       if (problem) throw new FormError(grpc.status.INVALID_ARGUMENT, problem);
       const claimed = await usernames.claimForUser(pool, {
-        userId: caller.userId, username, email: caller.email, reservedAfter: reservedAfter(),
+        userId: caller.userId, username, email, reservedAfter: reservedAfter(),
       });
       if (!claimed) throw new FormError(grpc.status.ALREADY_EXISTS, 'That username is taken.');
       authContext.forget?.(call);

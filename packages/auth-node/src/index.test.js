@@ -39,7 +39,7 @@ test('a verified token with no users row is anonymous (RegisterSignIn never ran)
 test('owner role comes from the users table, groups from the token', async () => {
   const { ctx } = context();
   const caller = await ctx.getCaller(call({ authorization: 'Bearer tok-sub-owner' }));
-  assert.deepEqual(caller, { userId: 'u1', sub: 'sub-owner', email: 'owner@example.com', role: 'owner', username: null, joinedAt: null, groups: ['anonyme users'] });
+  assert.deepEqual(caller, { userId: 'u1', sub: 'sub-owner', email: 'owner@example.com', emailVerified: true, role: 'owner', username: null, joinedAt: null, groups: ['anonyme users'] });
   assert.equal(await ctx.isOwner(call({ authorization: 'Bearer tok-sub-owner' })), true);
 });
 

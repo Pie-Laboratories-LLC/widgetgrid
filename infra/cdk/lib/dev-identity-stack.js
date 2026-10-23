@@ -5,6 +5,8 @@ import * as cognito from 'aws-cdk-lib/aws-cognito';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { EMAIL_DOMAIN } from './dns-stack.js';
+import { addSocialProviders, LINKABLE_PROVIDERS } from './social-login.js';
+import { addManagedLoginStyle } from './managed-login.js';
 
 const DEV_ORIGIN = 'https://dev.pie-laboratories.com';
 // Same name as the shared pool's client -- the pre-sign-up trigger
@@ -57,6 +59,7 @@ export class DevIdentityStack extends Stack {
     // Prefix domains are global across AWS; the account id keeps it ours.
     const userPoolDomain = userPool.addDomain('UserPoolDomain', {
       cognitoDomain: { domainPrefix: `widgetgrid-dev-${this.account}` },
+      managedLoginVersion: cognito.ManagedLoginVersion.NEWER_MANAGED_LOGIN,
     });
 
     const preSignUp = new lambda.Function(this, 'PreSignUp', {
@@ -67,11 +70,12 @@ export class DevIdentityStack extends Stack {
       environment: {
         REGISTRATION_CLIENT_NAME,
         REGISTER_URL: `${DEV_ORIGIN}/site/register`,
+        LINKABLE_PROVIDERS: LINKABLE_PROVIDERS.join(','),
       },
     });
     // By ARN pattern, same circular-dependency reason as identity-stack.js.
     preSignUp.addToRolePolicy(new iam.PolicyStatement({
-      actions: ['cognito-idp:DescribeUserPoolClient'],
+      actions: ['cognito-idp:DescribeUserPoolClient', 'cognito-idp:ListUsers', 'cognito-idp:AdminLinkProviderForUser'],
       resources: [this.formatArn({ service: 'cognito-idp', resource: 'userpool', resourceName: '*' })],
     }));
     userPool.addTrigger(cognito.UserPoolOperation.PRE_SIGN_UP, preSignUp);
@@ -99,6 +103,11 @@ export class DevIdentityStack extends Stack {
     });
     userPool.addTrigger(cognito.UserPoolOperation.PRE_TOKEN_GENERATION, preTokenAdmins);
 
+    // The same social providers as the shared pool (same developer apps;
+    // each needs this pool's domain + /oauth2/idpresponse added as a
+    // redirect URI while dev is up).
+    const social = addSocialProviders(this, userPool);
+
     // localhost too, so a local Vite build can be pointed at this pool.
     const origins = [DEV_ORIGIN, 'http://localhost:5173'];
     const spaClient = userPool.addClient('SpaClient', {
@@ -109,9 +118,11 @@ export class DevIdentityStack extends Stack {
         callbackUrls: origins.map((o) => `${o}/auth/callback`),
         logoutUrls: origins.map((o) => `${o}/`),
       },
-      supportedIdentityProviders: [cognito.UserPoolClientIdentityProvider.COGNITO],
+      supportedIdentityProviders: [...social.clientIdps, cognito.UserPoolClientIdentityProvider.COGNITO],
       preventUserExistenceErrors: true,
     });
+    spaClient.node.addDependency(...social.providers);
+    addManagedLoginStyle(this, 'SpaLoginStyle', { userPool, client: spaClient });
 
     const registrationClient = userPool.addClient('RegistrationClient', {
       userPoolClientName: REGISTRATION_CLIENT_NAME,

@@ -1,8 +1,9 @@
 // Browser-side sign-in against the shared Cognito user pool
 // (infra/cdk/lib/identity-stack.js): authorization code + PKCE through the
-// hosted UI at auth.pie-laboratories.com, which offers both kinds of
-// account -- the email + password form for people who registered on the
-// site (/site/register), and a button through to IAM Identity Center. Shared by packages/web-app (completes the redirect) and every
+// hosted UI at auth.pie-laboratories.com. /site/login says which way in
+// (identity_provider=): Cognito's own email + password form for people who
+// registered on the site (/site/register), a social provider, or IAM
+// Identity Center for staff. Shared by packages/web-app (completes the redirect) and every
 // widget that makes authenticated calls (bundled into each; they all read
 // and write the same localStorage entry, so any one of them can refresh).
 import { RegisterSignInRequest, LogoutRequest } from '@widgetgrid/proto-gen-web/widgetgrid/v1/auth_pb.js';
@@ -29,6 +30,14 @@ const PKCE_TTL_MS = 10 * 60 * 1000;
 const EXPIRY_SKEW_MS = 60 * 1000;
 
 export const IDENTITY_CHANGED_EVENT = 'widgetgrid:identity-changed';
+
+// Ways in, as Cognito names them (identity_provider=).
+export const EMAIL_PROVIDER = 'COGNITO';
+export const STAFF_PROVIDER = 'IdentityCenter';
+// The social buttons /site/login shows, in order. Add one only once it's
+// deployed on the pool (SOCIAL_CLIENT_IDS in infra/cdk/lib/social-login.js)
+// -- before that Cognito refuses it.
+export const SOCIAL_PROVIDERS = ['Google', 'Microsoft', 'LinkedIn'];
 
 function redirectUri() {
   return `${window.location.origin}${CALLBACK_PATH}`;
@@ -85,9 +94,18 @@ function decodeClaims(jwt) {
 // CALLBACK_PATH, where the web app calls completeSignIn(), which then
 // puts the address back to returnTo -- by default wherever this was
 // called from (the login page passes the page the visitor came from).
+// provider goes straight to that way in (see EMAIL_PROVIDER etc.);
+// without one, Cognito's page offers every way the client allows.
 let signInStarting = false;
 
-export async function startSignIn({ returnTo } = {}) {
+// Coming back from the hosted page with the browser's Back button restores
+// this page from the back/forward cache, flag and all -- which left "Log in"
+// doing nothing until a reload.
+window.addEventListener('pageshow', (e) => {
+  if (e.persisted) signInStarting = false;
+});
+
+export async function startSignIn({ returnTo, provider, retried = false } = {}) {
   if (signInStarting) return;
   signInStarting = true;
   const verifier = randomString(48);
@@ -103,6 +121,8 @@ export async function startSignIn({ returnTo } = {}) {
     verifier,
     startedAt: Date.now(),
     returnTo: returnTo ?? window.location.pathname + window.location.search,
+    provider,
+    retried,
   }));
   const params = new URLSearchParams({
     response_type: 'code',
@@ -113,6 +133,7 @@ export async function startSignIn({ returnTo } = {}) {
     code_challenge_method: 'S256',
     state,
   });
+  if (provider) params.set('identity_provider', provider);
   window.location.assign(`${AUTH_ORIGIN}/oauth2/authorize?${params}`);
 }
 
@@ -147,6 +168,15 @@ export async function completeSignIn({ grpcWebOrigin = '' } = {}) {
   }
 
   const returnTo = pending.returnTo ?? '/';
+  // A social sign-in that the pre-sign-up trigger has just joined to an
+  // existing site account can fail once with "Already found an entry for
+  // username Google_..." (infra/cdk/lambda/pre-sign-up); the second try
+  // signs in. Done once, automatically, rather than leave them to guess.
+  const error = url.searchParams.get('error_description') ?? '';
+  if (pending.provider && !pending.retried && /already found an entry/i.test(error)) {
+    await startSignIn({ returnTo, provider: pending.provider, retried: true });
+    return;
+  }
   try {
     const code = url.searchParams.get('code');
     if (!code || pending.startedAt < Date.now() - PKCE_TTL_MS) {

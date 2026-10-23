@@ -4,7 +4,7 @@
 // in SAML assertions for custom apps, so it's looked up here by the email
 // the assertion does carry. Any lookup failure throws, which fails the
 // sign-in -- deliberately closed rather than issuing a token with no groups.
-// Site-registered accounts skip the lookup entirely (see the handler).
+// Only Identity Center sign-ins are looked up (see the handler).
 import {
   IdentitystoreClient,
   GetUserIdCommand,
@@ -15,11 +15,25 @@ import {
 const client = new IdentitystoreClient({});
 const IdentityStoreId = process.env.IDENTITY_STORE_ID;
 
+const IDENTITY_CENTER_PROVIDER = 'IdentityCenter';
+
+function isIdentityCenterUser(identities) {
+  if (!identities) return false;
+  try {
+    return JSON.parse(identities).some((i) => i.providerName === IDENTITY_CENTER_PROVIDER);
+  } catch {
+    return false;
+  }
+}
+
 export const handler = async (event) => {
-  // Accounts registered on the site itself (Cognito's own user directory,
-  // see ../pre-sign-up) aren't in Identity Center and have no groups --
-  // only federated users carry an `identities` attribute.
-  if (!event.request.userAttributes.identities) return event;
+  // Only Identity Center users have groups. Site-registered accounts have
+  // no `identities` attribute; social sign-ins (Google etc., 2026-10) do,
+  // but naming another provider -- and their email proves nothing about
+  // Identity Center, so looking it up there could hand a stranger a staff
+  // member's groups (Microsoft's email is unchecked). A site account
+  // joined to a Google sign-in lists Google too, never Identity Center.
+  if (!isIdentityCenterUser(event.request.userAttributes.identities)) return event;
 
   const email = event.request.userAttributes.email;
   if (!email) throw new Error('no email attribute on user');

@@ -52,6 +52,9 @@ export function createAuthContext({ pool, verifyAccessToken, users = usersRepo }
       userId: user.id,
       sub: user.cognito_sub,
       email: user.email,
+      // False for an address nobody has proved (a Microsoft sign-in) --
+      // usable for notifications, never as proof of who they are.
+      emailVerified: user.email_verified !== false,
       role: user.role,
       // Null until chosen -- see accountService.js.
       username: user.username ?? null,
