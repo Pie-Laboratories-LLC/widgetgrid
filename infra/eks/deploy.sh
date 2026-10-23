@@ -170,6 +170,18 @@ rm -rf widgets/embuscade/.vendor-src
 mkdir -p widgets/embuscade/.vendor-src/packages/client
 cp -r "${EMBUSCADE_SRC_DIR}/packages/client/dist" widgets/embuscade/.vendor-src/packages/client/dist
 
+# And widgets/lastnaming's (~/GIT/the-last-naming, private) -- same
+# staging. Its dist/ carries the packed glTF too (dist/assets/). See
+# widgets/lastnaming/scripts/vendor-lastnaming.mjs.
+LASTNAMING_SRC_DIR="${LASTNAMING_REPO_DIR:-../the-last-naming}"
+if [ ! -f "${LASTNAMING_SRC_DIR}/packages/client/dist/the-last-naming.js" ]; then
+  echo "Missing ${LASTNAMING_SRC_DIR}/packages/client/dist -- run 'npm run build' in ${LASTNAMING_SRC_DIR} first (or set LASTNAMING_REPO_DIR)." >&2
+  exit 1
+fi
+rm -rf widgets/lastnaming/.vendor-src
+mkdir -p widgets/lastnaming/.vendor-src/packages/client
+cp -r "${LASTNAMING_SRC_DIR}/packages/client/dist" widgets/lastnaming/.vendor-src/packages/client/dist
+
 # The Turnstile site key (public -- the subscribe form's captcha) is baked
 # into the widget bundles at build time. Read straight out of .env rather
 # than sourcing it here: .env is only sourced further down, deliberately
@@ -186,7 +198,7 @@ docker build --platform "$IMAGE_PLATFORM" -f packages/static-server/Dockerfile \
   --build-arg VITE_COGNITO_SPA_CLIENT_ID="$COGNITO_SPA_CLIENT_ID" \
   -t "$STATIC_IMAGE" .
 docker push "$STATIC_IMAGE"
-rm -rf widgets/solitaire/.vendor-src widgets/embuscade/.vendor-src
+rm -rf widgets/solitaire/.vendor-src widgets/embuscade/.vendor-src widgets/lastnaming/.vendor-src
 docker build --platform "$IMAGE_PLATFORM" -f infra/eks/migrate.Dockerfile -t "$MIGRATE_IMAGE" .
 docker push "$MIGRATE_IMAGE"
 

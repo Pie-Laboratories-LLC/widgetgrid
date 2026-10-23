@@ -12,6 +12,8 @@
       <component v-else-if="view === 'chat'" :is="chatComponent" :data="{}" title="" />
       <p v-if="view === 'embuscade' && !embuscadeComponent" class="main-status">Loading…</p>
       <component v-else-if="view === 'embuscade'" :is="embuscadeComponent" :data="{}" title="" />
+      <p v-if="view === 'lastnaming' && !lastNamingComponent" class="main-status">Loading…</p>
+      <component v-else-if="view === 'lastnaming'" :is="lastNamingComponent" :data="{}" title="" />
       <SectionPage v-if="view === 'games'" heading="Games" :entries="gameEntries" />
       <SectionPage v-if="view === 'site'" heading="Site" :entries="siteEntries" />
       <p v-if="view === 'messages' && !boardComponent" class="main-status">Loading…</p>
@@ -63,6 +65,10 @@ const SCROLL_THRESHOLD = 10;
 // from this widget.
 
 const GAME_ENTRIES = [
+  {
+    view: 'lastnaming', title: 'The Last Naming',
+    description: 'High summer at Oktul, where the Gordun graze their raks below the Kagdun spring.',
+  },
   { view: 'solitaire', title: 'Solitaire', description: 'Klondike solitaire: seven columns, four suits, ace to king.' },
   {
     view: 'embuscade', title: 'Embuscade',
@@ -85,7 +91,7 @@ export default {
   data() {
     return {
       view: null, post: null, blogComponent: null, solitaireComponent: null, chatComponent: null,
-      embuscadeComponent: null, lhoraireComponent: null, subscribeComponent: null, accountComponent: null, boardComponent: null, board: null, collapsed: false, railHidden: false,
+      embuscadeComponent: null, lastNamingComponent: null, lhoraireComponent: null, subscribeComponent: null, accountComponent: null, boardComponent: null, board: null, collapsed: false, railHidden: false,
       authorComponent: null, draft: null,
       blogReloadKey: 0, isLhoraireAdmin: isLhoraireAdmin(), isOwner: isOwner(), signedIn: !!getIdentity(),
     };
@@ -242,6 +248,12 @@ export default {
       if (this.view === 'embuscade' && !this.embuscadeComponent) {
         import(/* @vite-ignore */ '/widgets/embuscade.js').then((mod) => {
           this.embuscadeComponent = mod.default ?? mod;
+        });
+      }
+      // Not preloaded either: three.js and the glTF are ~0.7 MB.
+      if (this.view === 'lastnaming' && !this.lastNamingComponent) {
+        import(/* @vite-ignore */ '/widgets/lastnaming.js').then((mod) => {
+          this.lastNamingComponent = mod.default ?? mod;
         });
       }
       // Fresh view starts scrolled to top -- this element persists across

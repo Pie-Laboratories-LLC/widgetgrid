@@ -48,6 +48,11 @@
           <path d="M7 13v-2a2 2 0 0 1 2 -2h5a2 2 0 0 1 2 2v2" />
           <path d="M16 10.5h5" />
         </svg>
+        <!-- The Last Naming: the valley under its mountains. -->
+        <svg v-else-if="activeView === 'lastnaming'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 20h18l-6.921 -14.612a2.3 2.3 0 0 0 -4.158 0l-6.921 14.612z" />
+          <path d="M7.5 11l2 2.5l2.5 -2.5l2 3l2.5 -2" />
+        </svg>
         <svg v-else-if="activeSection === 'games'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M6 7h12a4 4 0 0 1 4 4v2a4 4 0 0 1 -4 4h-1.5l-2 -2h-5l-2 2h-1.5a4 4 0 0 1 -4 -4v-2a4 4 0 0 1 4 -4z" />
           <path d="M5.5 12h4" />

@@ -20,6 +20,7 @@ const VIEW_PATHS = {
   games: '/games',
   solitaire: '/games/solitaire',
   embuscade: '/games/embuscade',
+  lastnaming: '/games/the-last-naming',
   site: '/site',
   lhoraire: '/site/lhoraire',
   messages: '/site/messages',
@@ -38,6 +39,7 @@ const VIEW_SECTIONS = {
   games: 'games',
   solitaire: 'games',
   embuscade: 'games',
+  lastnaming: 'games',
   site: 'site',
   lhoraire: 'site',
   messages: 'site',
@@ -67,6 +69,9 @@ const VIEW_CHROME = {
   solitaire: { topbar: 'collapsed', railHidden: true },
   // Same jank reasoning as solitaire, and the game needs the height.
   embuscade: { topbar: 'collapsed', railHidden: true },
+  // A full-bleed 3D scene: it wants every pixel, and scrolling has no
+  // meaning in it.
+  lastnaming: { topbar: 'collapsed', railHidden: true },
   // Chat owns its own internal scroll region (widgets/chat's
   // .chat-messages), so MainWidget.vue's container never scrolls while it
   // shows -- a scroll-driven toggle would never trigger anyway.

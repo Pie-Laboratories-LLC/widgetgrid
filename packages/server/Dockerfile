@@ -37,6 +37,7 @@ COPY widgets/login/package.json widgets/login/package.json
 COPY widgets/main/package.json widgets/main/package.json
 COPY widgets/solitaire/package.json widgets/solitaire/package.json
 COPY widgets/embuscade/package.json widgets/embuscade/package.json
+COPY widgets/lastnaming/package.json widgets/lastnaming/package.json
 COPY widgets/lhoraire/package.json widgets/lhoraire/package.json
 COPY widgets/subscribe/package.json widgets/subscribe/package.json
 COPY widgets/account/package.json widgets/account/package.json

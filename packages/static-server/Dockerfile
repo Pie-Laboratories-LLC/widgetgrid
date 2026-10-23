@@ -39,6 +39,10 @@ ENV SOLITAIRE_REPO_DIR=/app/widgets/solitaire/.vendor-src
 # (~/GIT/embuscade -- see widgets/embuscade/scripts/vendor-embuscade.mjs).
 ENV EMBUSCADE_REPO_DIR=/app/widgets/embuscade/.vendor-src
 
+# And widgets/lastnaming's (~/GIT/the-last-naming -- see
+# widgets/lastnaming/scripts/vendor-lastnaming.mjs).
+ENV LASTNAMING_REPO_DIR=/app/widgets/lastnaming/.vendor-src
+
 COPY . .
 # No --ignore-scripts here (unlike packages/server/Dockerfile): grpc-tools'
 # postinstall is what makes grpc_tools_node_protoc available, and root
