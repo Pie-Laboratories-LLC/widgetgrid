@@ -11,8 +11,10 @@
 // the scene and returns unmount(), which stops its frame loop and frees
 // its GPU resources. MainWidget.vue unmounts this component whenever the
 // view switches away (v-else-if), so nothing keeps rendering behind
-// another view. It needs no options: it loads its glTF from beside its own
-// bundle (/widgets/the-last-naming-vendor/assets/).
+// another view. It loads its glTF from beside its own bundle
+// (/widgets/the-last-naming-vendor/assets/). ?explore in the address
+// (/games/the-last-naming?explore) turns on its walk-about mode -- the
+// owner's tool for looking at things, not linked from anywhere.
 const VENDOR_BASE = '/widgets/the-last-naming-vendor/';
 const CSS_LINK_ID = 'the-last-naming-vendor-css';
 
@@ -28,7 +30,8 @@ export default {
       // The view can switch away while the import is still in flight --
       // mounting then would start a render loop nothing ever stops.
       if (this.isUnmounted) return;
-      this.unmountGame = mod.mount(this.$refs.container);
+      const explore = new URLSearchParams(window.location.search).has('explore');
+      this.unmountGame = mod.mount(this.$refs.container, { explore });
     });
   },
   beforeUnmount() {
