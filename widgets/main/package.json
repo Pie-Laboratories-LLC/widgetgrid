@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@widgetgrid/auth-web": "*",
+    "@widgetgrid/feature-flags": "*",
     "@widgetgrid/proto-gen-web": "*",
     "@widgetgrid/site-routes": "*",
     "@widgetgrid/vite-widget-lib": "*",

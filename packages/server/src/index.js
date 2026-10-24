@@ -23,6 +23,8 @@ import { createTurnstileVerifier } from './turnstile.js';
 import { createSubscriptionService } from './services/subscriptionService.js';
 import { createPostMailer } from './postMailer.js';
 import { createBlueskyPoster, createConsoleBlueskyPoster } from './blueskyPoster.js';
+import { createSiteConfig } from './siteConfig.js';
+import { createConfigService } from './services/configService.js';
 import { createCognitoRegistrar, createConsoleRegistrar } from './registrar.js';
 import { createAccountService } from './services/accountService.js';
 import { parseEmailList, parseAssignedUsernames } from './siteAccounts.js';
@@ -107,6 +109,10 @@ const IMAGE_MODERATION = process.env.IMAGE_MODERATION ?? 'none';
 // The time zone a post published on the site is dated in (its filename),
 // matching the hand-written ones.
 const BLOG_TIME_ZONE = process.env.BLOG_TIME_ZONE || 'America/Denver';
+// Where the runtime configuration (feature flags) is read from -- the
+// cluster's Consul (see siteConfig.js). Unset outside a cluster: every
+// flag is off.
+const CONSUL_HTTP_ADDR = process.env.CONSUL_HTTP_ADDR ?? '';
 // Uploads are up to 10 MB (imagePipeline.js); gRPC's default cap is 4 MB.
 const MAX_MESSAGE_BYTES = 12 * 1024 * 1024;
 
@@ -141,6 +147,7 @@ export function startServer() {
   const blueskyPoster = BLUESKY_APP_PASSWORD
     ? createBlueskyPoster({ pool, handle: BLUESKY_HANDLE, appPassword: BLUESKY_APP_PASSWORD, siteOrigin: SITE_ORIGIN })
     : createConsoleBlueskyPoster({ handle: BLUESKY_HANDLE, siteOrigin: SITE_ORIGIN });
+  const siteConfig = createSiteConfig({ consulAddr: CONSUL_HTTP_ADDR });
 
   const server = new grpc.Server({ 'grpc.max_receive_message_length': MAX_MESSAGE_BYTES });
   server.addService(proto.PageService.service, createPageService({ pool, pagesRepo, layoutNodesRepo }));
@@ -153,11 +160,13 @@ export function startServer() {
   server.addService(proto.AccountService.service, createAccountService({ pool, authContext, registrar, captcha, assigned: ASSIGNED_USERNAMES }));
   server.addService(proto.BoardService.service, createBoardService({ pool, authContext, pushSender, emailSender, siteOrigin: SITE_ORIGIN, mediaStore }));
   server.addService(proto.MediaService.service, createMediaService({ pool, authContext, mediaStore, moderator }));
+  server.addService(proto.ConfigService.service, createConfigService({ siteConfig }));
   server.addService(proto.AuthorService.service, createAuthorService({
     pool, authContext, blogSource, mediaStore, postMailer, blueskyPoster, timeZone: BLOG_TIME_ZONE,
   }));
 
   postMailer.start();
+  siteConfig.start();
 
   return new Promise((resolve, reject) => {
     server.bindAsync(`${HOST}:${PORT}`, grpc.ServerCredentials.createInsecure(), (err, boundPort) => {

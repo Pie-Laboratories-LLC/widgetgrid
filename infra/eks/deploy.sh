@@ -122,6 +122,25 @@ helm upgrade --install consul hashicorp/consul \
   --wait --timeout 5m
 
 echo
+echo "== site configuration (Consul key config/widgetgrid) =="
+# The runtime configuration widgetgrid-server watches (feature flags --
+# packages/server/src/siteConfig.js). Its source is the pielabs-
+# configuration repo (render.sh merges widgetgrid/<env>.json over its
+# defaults; apply.sh writes it). Here it's written only when the key isn't
+# there yet (a new cluster), never put back over a value someone has set.
+# Without the repo, every flag starts off.
+CONFIG_REPO_DIR="${CONFIG_REPO_DIR:-$(cd .. && pwd)/pielabs-configuration}"
+if kubectl exec -n consul consul-server-0 -c consul -- consul kv get config/widgetgrid >/dev/null 2>&1; then
+  echo "config/widgetgrid already set -- left as it is"
+elif [ -x "$CONFIG_REPO_DIR/render.sh" ]; then
+  "$CONFIG_REPO_DIR/render.sh" widgetgrid $ENV \
+    | kubectl exec -i -n consul consul-server-0 -c consul -- consul kv put config/widgetgrid -
+else
+  echo "No $CONFIG_REPO_DIR/render.sh -- every flag starts off" >&2
+  kubectl exec -n consul consul-server-0 -c consul -- consul kv put config/widgetgrid '{"featureFlags":{}}'
+fi
+
+echo
 echo "== building + pushing images =="
 IMAGE_TAG="${ENV}-$(git rev-parse --short HEAD)-$(date +%s)"
 SERVER_IMAGE="${SERVER_REPO}:${IMAGE_TAG}"
