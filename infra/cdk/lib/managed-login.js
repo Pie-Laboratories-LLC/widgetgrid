@@ -12,7 +12,8 @@ const REPO_ROOT = path.join(__dirname, '../../..');
 // its text be changed -- only colours and images.
 //
 // The settings file is a partial document: Cognito fills in everything
-// it leaves out with its defaults, and ignores any key not in its schema.
+// it leaves out with its defaults, but refuses any key not in its schema
+// (the deploy fails). There's no setting for link colours.
 // To see the full schema with the current values:
 //   aws cognito-idp describe-managed-login-branding-by-client \
 //     --user-pool-id <pool> --client-id <client> --return-merged-resources
