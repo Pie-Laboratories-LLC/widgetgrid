@@ -81,6 +81,10 @@ if [ "$ENV" = dev ]; then
 else
   COGNITO_USER_POOL_ID=; COGNITO_SPA_CLIENT_ID=; COGNITO_AUTH_ORIGIN=
 fi
+# The email + password client, from whichever pool is the environment's --
+# read for prod too (no default in the code to fall back on yet). Empty if
+# the identity stack predates it: sign-in then uses the SPA client alone.
+COGNITO_EMAIL_CLIENT_ID=$(echo "$identity_outputs" | jq -r '.[] | select(.OutputKey=="EmailClientId") | .OutputValue')
 REGISTRATION_CLIENT_SECRET=$(aws cognito-idp describe-user-pool-client --region "$REGION" \
   --user-pool-id "$USER_POOL_ID" --client-id "$REGISTRATION_CLIENT_ID" \
   --query 'UserPoolClient.ClientSecret' --output text)
@@ -184,6 +188,7 @@ docker build --platform "$IMAGE_PLATFORM" -f packages/static-server/Dockerfile \
   --build-arg VITE_TURNSTILE_SITE_KEY="$TURNSTILE_SITE_KEY_BUILD" \
   --build-arg VITE_COGNITO_AUTH_ORIGIN="$COGNITO_AUTH_ORIGIN" \
   --build-arg VITE_COGNITO_SPA_CLIENT_ID="$COGNITO_SPA_CLIENT_ID" \
+  --build-arg VITE_COGNITO_EMAIL_CLIENT_ID="$COGNITO_EMAIL_CLIENT_ID" \
   -t "$STATIC_IMAGE" .
 docker push "$STATIC_IMAGE"
 rm -rf widgets/solitaire/.vendor-src widgets/embuscade/.vendor-src
@@ -261,6 +266,7 @@ kubectl create secret generic widgetgrid-server-secret \
   --from-literal=COGNITO_REGISTRATION_CLIENT_SECRET="$REGISTRATION_CLIENT_SECRET" \
   --from-literal=COGNITO_USER_POOL_ID="$COGNITO_USER_POOL_ID" \
   --from-literal=COGNITO_SPA_CLIENT_ID="$COGNITO_SPA_CLIENT_ID" \
+  --from-literal=COGNITO_EMAIL_CLIENT_ID="$COGNITO_EMAIL_CLIENT_ID" \
   --namespace widgetgrid \
   --dry-run=client -o yaml | kubectl apply -f -
 # lhoraire-server needs only the database and which pool to verify
@@ -269,6 +275,7 @@ kubectl create secret generic lhoraire-server-secret \
   --from-literal=DATABASE_URL="$DATABASE_URL" \
   --from-literal=COGNITO_USER_POOL_ID="$COGNITO_USER_POOL_ID" \
   --from-literal=COGNITO_SPA_CLIENT_ID="$COGNITO_SPA_CLIENT_ID" \
+  --from-literal=COGNITO_EMAIL_CLIENT_ID="$COGNITO_EMAIL_CLIENT_ID" \
   --namespace widgetgrid \
   --dry-run=client -o yaml | kubectl apply -f -
 

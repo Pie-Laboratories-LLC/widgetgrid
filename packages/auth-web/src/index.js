@@ -16,6 +16,12 @@ import { AuthServicePromiseClient } from '@widgetgrid/proto-gen-web/widgetgrid/v
 // page's own origin (each one is registered on the client).
 const AUTH_ORIGIN = import.meta.env.VITE_COGNITO_AUTH_ORIGIN || 'https://auth.pie-laboratories.com';
 const CLIENT_ID = import.meta.env.VITE_COGNITO_SPA_CLIENT_ID || 'bvec1bfa2e7srgjf237e2m3ja';
+// "Log in with email and password" signs in through a client that allows
+// nothing else, so Cognito's page doesn't offer the social buttons all over
+// again (EmailClient in infra/cdk/lib/identity-stack.js). Unset, it's
+// CLIENT_ID. A sign-in remembers its client: refreshing and signing out
+// must use the same one.
+const EMAIL_CLIENT_ID = import.meta.env.VITE_COGNITO_EMAIL_CLIENT_ID || '';
 export const CALLBACK_PATH = '/auth/callback';
 
 const STORAGE_KEY = 'widgetgrid:auth';
@@ -38,6 +44,10 @@ export const STAFF_PROVIDER = 'IdentityCenter';
 // deployed on the pool (SOCIAL_CLIENT_IDS in infra/cdk/lib/social-login.js)
 // -- before that Cognito refuses it.
 export const SOCIAL_PROVIDERS = ['Google', 'Microsoft', 'LinkedIn'];
+
+function clientFor(provider) {
+  return provider === EMAIL_PROVIDER && EMAIL_CLIENT_ID ? EMAIL_CLIENT_ID : CLIENT_ID;
+}
 
 function redirectUri() {
   return `${window.location.origin}${CALLBACK_PATH}`;
@@ -74,11 +84,11 @@ window.addEventListener('storage', (e) => {
   if (e.key === STORAGE_KEY) announce();
 });
 
-async function tokenRequest(params) {
+async function tokenRequest(clientId, params) {
   const response = await fetch(`${AUTH_ORIGIN}/oauth2/token`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({ client_id: CLIENT_ID, ...params }),
+    body: new URLSearchParams({ client_id: clientId, ...params }),
   });
   const body = await response.json();
   if (!response.ok) throw new Error(body.error ?? `token endpoint ${response.status}`);
@@ -111,6 +121,7 @@ export async function startSignIn({ returnTo, provider, retried = false } = {}) 
   const verifier = randomString(48);
   const challenge = base64url(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier)));
   const state = randomString(16);
+  const clientId = clientFor(provider);
   for (let i = localStorage.length - 1; i >= 0; i -= 1) {
     const key = localStorage.key(i);
     if (key?.startsWith(PKCE_PREFIX) && (JSON.parse(localStorage.getItem(key))?.startedAt ?? 0) < Date.now() - PKCE_TTL_MS) {
@@ -122,11 +133,12 @@ export async function startSignIn({ returnTo, provider, retried = false } = {}) 
     startedAt: Date.now(),
     returnTo: returnTo ?? window.location.pathname + window.location.search,
     provider,
+    clientId,
     retried,
   }));
   const params = new URLSearchParams({
     response_type: 'code',
-    client_id: CLIENT_ID,
+    client_id: clientId,
     redirect_uri: redirectUri(),
     scope: 'openid email profile',
     code_challenge: challenge,
@@ -182,7 +194,8 @@ export async function completeSignIn({ grpcWebOrigin = '' } = {}) {
     if (!code || pending.startedAt < Date.now() - PKCE_TTL_MS) {
       throw new Error(url.searchParams.get('error_description') ?? 'sign-in expired or was cancelled');
     }
-    const tokens = await tokenRequest({
+    const clientId = pending.clientId ?? CLIENT_ID;
+    const tokens = await tokenRequest(clientId, {
       grant_type: 'authorization_code',
       code,
       redirect_uri: redirectUri(),
@@ -193,6 +206,7 @@ export async function completeSignIn({ grpcWebOrigin = '' } = {}) {
       idToken: tokens.id_token,
       refreshToken: tokens.refresh_token,
       expiresAt: Date.now() + tokens.expires_in * 1000,
+      clientId,
       sessionToken: '',
       role: 'member',
       username: '',
@@ -229,7 +243,10 @@ export async function getAccessToken() {
 
   refreshing ??= (async () => {
     try {
-      const tokens = await tokenRequest({ grant_type: 'refresh_token', refresh_token: stored.refreshToken });
+      // Sign-ins from before there were two clients have none recorded.
+      const tokens = await tokenRequest(stored.clientId ?? CLIENT_ID, {
+        grant_type: 'refresh_token', refresh_token: stored.refreshToken,
+      });
       const next = {
         ...stored,
         accessToken: tokens.access_token,
@@ -305,6 +322,6 @@ export async function signOut({ grpcWebOrigin = '' } = {}) {
   }
   // logout_uri must be one of the client's registered logout URLs, which
   // are each origin's "/".
-  const params = new URLSearchParams({ client_id: CLIENT_ID, logout_uri: `${window.location.origin}/` });
+  const params = new URLSearchParams({ client_id: stored?.clientId ?? CLIENT_ID, logout_uri: `${window.location.origin}/` });
   window.location.assign(`${AUTH_ORIGIN}/logout?${params}`);
 }

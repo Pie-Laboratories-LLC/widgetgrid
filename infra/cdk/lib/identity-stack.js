@@ -175,9 +175,9 @@ export class IdentityStack extends Stack {
     // The widgetgrid SPA's own sign-in (the topbar's "Log in"): public
     // client, authorization code + PKCE, tokens sent as Bearer on gRPC-web.
     // /site/login has a button per provider and names the one picked
-    // (identity_provider=), so Cognito's page only ever shows its email +
-    // password form, for site-registered accounts; Google etc. and
-    // Identity Center ("Staff sign-in") go straight through.
+    // (identity_provider=): Google etc. and Identity Center ("Staff
+    // sign-in") go straight through. Email + password uses EmailClient
+    // below instead.
     const spaClient = userPool.addClient('SpaClient', {
       generateSecret: false,
       oAuth: {
@@ -197,6 +197,27 @@ export class IdentityStack extends Stack {
     });
     spaClient.node.addDependency(identityCenterProvider, ...social.providers);
     addManagedLoginStyle(this, 'SpaLoginStyle', { userPool, client: spaClient });
+
+    // /site/login's "Log in with email and password": the same as SpaClient
+    // but Cognito's own sign-in only. Cognito's page shows a button for
+    // every provider its client allows, and naming one (identity_provider=
+    // COGNITO) doesn't hide the rest -- so with SpaClient that page offered
+    // Google, Microsoft, LinkedIn and "Corporate ID" all over again. Same
+    // users, same pool; packages/auth-web remembers which client a sign-in
+    // used, and the servers accept tokens from either.
+    const emailClient = userPool.addClient('EmailClient', {
+      generateSecret: false,
+      oAuth: {
+        flows: { authorizationCodeGrant: true },
+        scopes: [cognito.OAuthScope.OPENID, cognito.OAuthScope.EMAIL, cognito.OAuthScope.PROFILE],
+        callbackUrls: SPA_ORIGINS.map((o) => `${o}/auth/callback`),
+        logoutUrls: SPA_ORIGINS.map((o) => `${o}/`),
+      },
+      supportedIdentityProviders: [cognito.UserPoolClientIdentityProvider.COGNITO],
+      preventUserExistenceErrors: true,
+      refreshTokenValidity: Duration.days(90),
+    });
+    addManagedLoginStyle(this, 'EmailLoginStyle', { userPool, client: emailClient });
 
     // widgetgrid-server's registration client (packages/server/src/registrar.js):
     // SignUp / ConfirmSignUp / ResendConfirmationCode only, no OAuth. The
@@ -218,6 +239,7 @@ export class IdentityStack extends Stack {
     new CfnOutput(this, 'UserPoolId', { value: userPool.userPoolId });
     new CfnOutput(this, 'SamlAcsUrl', { value: `https://${AUTH_HOST}/saml2/idpresponse` });
     new CfnOutput(this, 'SpaClientId', { value: spaClient.userPoolClientId });
+    new CfnOutput(this, 'EmailClientId', { value: emailClient.userPoolClientId });
     new CfnOutput(this, 'RegistrationClientId', { value: registrationClient.userPoolClientId });
     new CfnOutput(this, 'DevAlbClientId', { value: devAlbClient.userPoolClientId });
     new CfnOutput(this, 'SamlAudience', { value: `urn:amazon:cognito:sp:${userPool.userPoolId}` });

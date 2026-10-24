@@ -134,6 +134,20 @@ export class DevIdentityStack extends Stack {
     spaClient.node.addDependency(...social.providers);
     addManagedLoginStyle(this, 'SpaLoginStyle', { userPool, client: spaClient });
 
+    // Email + password only -- see EmailClient in identity-stack.js.
+    const emailClient = userPool.addClient('EmailClient', {
+      generateSecret: false,
+      oAuth: {
+        flows: { authorizationCodeGrant: true },
+        scopes: [cognito.OAuthScope.OPENID, cognito.OAuthScope.EMAIL, cognito.OAuthScope.PROFILE],
+        callbackUrls: origins.map((o) => `${o}/auth/callback`),
+        logoutUrls: origins.map((o) => `${o}/`),
+      },
+      supportedIdentityProviders: [cognito.UserPoolClientIdentityProvider.COGNITO],
+      preventUserExistenceErrors: true,
+    });
+    addManagedLoginStyle(this, 'EmailLoginStyle', { userPool, client: emailClient });
+
     const registrationClient = userPool.addClient('RegistrationClient', {
       userPoolClientName: REGISTRATION_CLIENT_NAME,
       generateSecret: true,
@@ -146,6 +160,7 @@ export class DevIdentityStack extends Stack {
     // environment's.
     new CfnOutput(this, 'UserPoolId', { value: userPool.userPoolId });
     new CfnOutput(this, 'SpaClientId', { value: spaClient.userPoolClientId });
+    new CfnOutput(this, 'EmailClientId', { value: emailClient.userPoolClientId });
     new CfnOutput(this, 'RegistrationClientId', { value: registrationClient.userPoolClientId });
     new CfnOutput(this, 'AuthOrigin', { value: userPoolDomain.baseUrl() });
   }
