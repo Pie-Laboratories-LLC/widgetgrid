@@ -1,11 +1,12 @@
 // The site's runtime configuration: a JSON document in Consul's key/value
 // store (CONFIG_KEY, "config/widgetgrid"), so it can change without a
-// deploy. Its source is widgetgrid.json in the pielabs-configuration repo
-// (~/GIT/pielabs-configuration, written to Consul by its apply.sh); locally
-// it can also be flipped in the Consul UI. Each environment's cluster has
-// its own Consul, so kind, dev and prod each have their own copy.
+// deploy. Its source is the widgetgrid/ folder of the pielabs-configuration
+// repo (~/GIT/pielabs-configuration: defaults plus a file per environment,
+// written to Consul by its apply.sh); locally it can also be flipped in
+// the Consul UI. Each environment's cluster has its own Consul, so kind,
+// dev and prod each have their own copy.
 //
-//   { "featureFlags": { "anon-16": false } }
+//   { "featureFlags": { "wgtgrd-4": false } }
 //
 // Read at startup, then watched with Consul's blocking queries: each
 // request waits until the key changes (or WAIT passes), so an edit lands

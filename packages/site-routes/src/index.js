@@ -91,7 +91,7 @@ const VIEW_CHROME = {
 // left out of its section page and its path goes to the home page. The
 // flag is the l'horaire issue tracking the work.
 const VIEW_FLAGS = {
-  lastnaming: 'anon-16',
+  lastnaming: 'wgtgrd-4',
 };
 
 export function viewFlag(view) {

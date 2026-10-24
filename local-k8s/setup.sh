@@ -53,18 +53,21 @@ helm upgrade --install consul hashicorp/consul \
 echo
 echo "== site configuration (Consul key config/widgetgrid) =="
 # The runtime configuration widgetgrid-server watches (feature flags --
-# packages/server/src/siteConfig.js). Its source is widgetgrid.json in the
-# pielabs-configuration repo, written by that repo's apply.sh; here it's
-# written only when the key isn't there yet (a new cluster), and never
-# put back over a value someone has set. Without the repo, every flag
-# starts off.
+# packages/server/src/siteConfig.js). Its source is the pielabs-
+# configuration repo (render.sh merges widgetgrid/dev.json over its
+# defaults; apply.sh writes it). Here it's written only when the key isn't
+# there yet (a new cluster), never put back over a value someone has set.
+# Without the repo, every flag starts off.
+# Local kind starts from dev's configuration; after that it's a sandbox,
+# flipped in the Consul UI.
 CONFIG_REPO_DIR="${CONFIG_REPO_DIR:-$(cd .. && pwd)/pielabs-configuration}"
 if kubectl exec -n consul consul-server-0 -c consul -- consul kv get config/widgetgrid >/dev/null 2>&1; then
   echo "config/widgetgrid already set -- left as it is"
-elif [ -f "$CONFIG_REPO_DIR/widgetgrid.json" ]; then
-  kubectl exec -i -n consul consul-server-0 -c consul -- consul kv put config/widgetgrid - < "$CONFIG_REPO_DIR/widgetgrid.json"
+elif [ -x "$CONFIG_REPO_DIR/render.sh" ]; then
+  "$CONFIG_REPO_DIR/render.sh" widgetgrid dev \
+    | kubectl exec -i -n consul consul-server-0 -c consul -- consul kv put config/widgetgrid -
 else
-  echo "No $CONFIG_REPO_DIR/widgetgrid.json -- every flag starts off" >&2
+  echo "No $CONFIG_REPO_DIR/render.sh -- every flag starts off" >&2
   kubectl exec -n consul consul-server-0 -c consul -- consul kv put config/widgetgrid '{"featureFlags":{}}'
 fi
 
