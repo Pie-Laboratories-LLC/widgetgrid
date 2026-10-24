@@ -21,7 +21,7 @@
               "constructFqn": "aws-cdk-lib.Stack",
               "libraryVersion": "2.265.0",
               "stackTraces": [
-                "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:39: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:39:1)",
+                "file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:40: (file:///Users/kazaak/GIT/widgetgrid/infra/cdk/bin/app.js:40:1)",
                 "...node internals..."
               ]
             }
