@@ -1,0 +1,11 @@
+{
+  "name": "@widgetgrid/feature-flags",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "The site's feature flags (ConfigService.GetSiteConfig, from Consul), fetched once per page load and shared by the widgets.",
+  "main": "src/index.js",
+  "dependencies": {
+    "@widgetgrid/proto-gen-web": "*"
+  }
+}

@@ -37,6 +37,10 @@ spec:
           env:
             - name: MEDIA_DIR
               value: /tmp/widgetgrid-media
+            # The runtime configuration (feature flags) is read from the
+            # cluster's Consul -- packages/server/src/siteConfig.js.
+            - name: CONSUL_HTTP_ADDR
+              value: http://consul-server.consul.svc:8500
           envFrom:
             - configMapRef:
                 name: widgetgrid-server-config

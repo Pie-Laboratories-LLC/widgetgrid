@@ -86,6 +86,18 @@ const VIEW_CHROME = {
   write: { topbar: 'scroll', railHidden: true },
 };
 
+// Views not ready to be shown: each names the feature flag (in Consul,
+// see @widgetgrid/feature-flags) that has to be on before it is. Off, it's
+// left out of its section page and its path goes to the home page. The
+// flag is the l'horaire issue tracking the work.
+const VIEW_FLAGS = {
+  lastnaming: 'anon-16',
+};
+
+export function viewFlag(view) {
+  return VIEW_FLAGS[view] ?? null;
+}
+
 export function viewChrome(view) {
   return VIEW_CHROME[view] ?? { topbar: 'scroll', railHidden: false };
 }

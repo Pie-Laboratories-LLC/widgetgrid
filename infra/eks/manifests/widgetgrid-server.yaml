@@ -58,6 +58,10 @@ spec:
           env:
             - name: SMS_PROVIDER
               value: sns
+            # The runtime configuration (feature flags) is read from the
+            # cluster's Consul -- packages/server/src/siteConfig.js.
+            - name: CONSUL_HTTP_ADDR
+              value: http://consul-server.consul.svc:8500
             - name: BLOG_S3_BUCKET
               value: ${BLOG_S3_BUCKET}
             - name: BLOG_ASSETS_BASE_URL

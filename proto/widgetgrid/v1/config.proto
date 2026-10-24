@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package widgetgrid.v1;
+
+// The site's runtime configuration, as much of it as the browser may
+// see: today, which feature flags are on. The configuration itself lives
+// in Consul's key/value store (key config/widgetgrid, from widgetgrid.json
+// in the pielabs-configuration repo) and changes without a deploy -- see
+// packages/server/src/siteConfig.js.
+//
+// requested_at_ms is never read: it only keeps the request from
+// serializing to zero bytes, which gets dropped on the way to the server
+// (see push.proto).
+
+message GetSiteConfigRequest {
+  int64 requested_at_ms = 1;
+}
+
+message GetSiteConfigResponse {
+  // Flag name -> on. A flag that isn't listed is off.
+  map<string, bool> feature_flags = 1;
+}
+
+service ConfigService {
+  // Anyone may ask; there's nothing private in the answer.
+  rpc GetSiteConfig(GetSiteConfigRequest) returns (GetSiteConfigResponse);
+}

@@ -32,7 +32,10 @@
 
 <script>
 import { getIdentity } from '@widgetgrid/auth-web';
-import { currentSiteRoute, viewChrome, ROUTE_EVENT } from '@widgetgrid/site-routes';
+import { featureFlags } from '@widgetgrid/feature-flags';
+import {
+  currentSiteRoute, viewChrome, viewFlag, navigate, ROUTE_EVENT,
+} from '@widgetgrid/site-routes';
 import SectionPage from './SectionPage.vue';
 import { subscribeNewPosts } from './blogSubscriptionClient.js';
 import { subscribeChatEvents } from './chatSubscriptionClient.js';
@@ -93,6 +96,8 @@ export default {
       view: null, post: null, blogComponent: null, solitaireComponent: null, chatComponent: null,
       embuscadeComponent: null, lastNamingComponent: null, lhoraireComponent: null, subscribeComponent: null, accountComponent: null, boardComponent: null, board: null, collapsed: false, railHidden: false,
       authorComponent: null, draft: null,
+      // null until ConfigService has answered; see viewShown().
+      flags: null,
       blogReloadKey: 0, isLhoraireAdmin: isLhoraireAdmin(), isOwner: isOwner(), signedIn: !!getIdentity(),
     };
   },
@@ -101,6 +106,13 @@ export default {
     // This mounts after the host's first ROUTE_EVENT has gone by -- a
     // bookmarked /games/solitaire starts from the address bar instead.
     this.onRoute({ detail: currentSiteRoute() });
+    // A flagged view opened directly (a bookmark) waits for these; then
+    // it either loads or, its flag off, goes to the home page.
+    featureFlags().then((flags) => {
+      this.flags = flags;
+      if (!this.viewShown(this.view)) navigate('/', { replace: true });
+      else this.loadLastNaming();
+    });
     import(/* @vite-ignore */ '/widgets/blog.js').then((mod) => {
       this.blogComponent = mod.default ?? mod;
     });
@@ -168,8 +180,9 @@ export default {
     isAccountView() {
       return ACCOUNT_VIEWS.includes(this.view);
     },
+    // A game behind a feature flag that's off isn't listed.
     gameEntries() {
-      return GAME_ENTRIES;
+      return GAME_ENTRIES.filter((entry) => this.viewShown(entry.view));
     },
     // l'horaire is listed only for the "anonyme admins" group, writing the
     // blog only for the owner (UI only; the servers enforce both).
@@ -191,8 +204,29 @@ export default {
     },
   },
   methods: {
+    // Whether a view may show: it has no feature flag, or its flag is on.
+    // While the flags are still on their way, a flagged view just waits.
+    viewShown(view) {
+      const flag = viewFlag(view);
+      return !flag || this.flags?.[flag] === true;
+    },
+    // Not preloaded either: three.js and the glTF are ~0.7 MB. Only once
+    // its feature flag is known to be on.
+    loadLastNaming() {
+      if (this.view === 'lastnaming' && !this.lastNamingComponent && this.viewShown('lastnaming')) {
+        import(/* @vite-ignore */ '/widgets/lastnaming.js').then((mod) => {
+          this.lastNamingComponent = mod.default ?? mod;
+        });
+      }
+    },
     onRoute(event) {
       const { view, post = null, board = null, draft = null, forceReload = false } = event.detail;
+      // A flagged view whose flag is off: as if the path didn't exist (an
+      // unknown section path shows the blog -- packages/web-app's router).
+      if (this.flags && !this.viewShown(view)) {
+        navigate('/', { replace: true });
+        return;
+      }
       this.post = post;
       this.draft = draft;
       // Moving between board pages is the same view, so the scroll reset
@@ -250,12 +284,7 @@ export default {
           this.embuscadeComponent = mod.default ?? mod;
         });
       }
-      // Not preloaded either: three.js and the glTF are ~0.7 MB.
-      if (this.view === 'lastnaming' && !this.lastNamingComponent) {
-        import(/* @vite-ignore */ '/widgets/lastnaming.js').then((mod) => {
-          this.lastNamingComponent = mod.default ?? mod;
-        });
-      }
+      this.loadLastNaming();
       // Fresh view starts scrolled to top -- this element persists across
       // view switches (only its content changes), so scrollTop would
       // otherwise carry over from whatever the previous view left it at.
