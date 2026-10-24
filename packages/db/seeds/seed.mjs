@@ -46,6 +46,7 @@ async function seedHomePage(pool) {
     content: {
       links: {
         youtube: 'https://www.youtube.com/@PieLaboratoriesLLC',
+        bluesky: 'https://bsky.app/profile/pielabs.bsky.social',
         github: 'https://github.com/Pie-Laboratories-LLC',
         nuget: 'https://www.nuget.org/profiles/PieLaboratoriesLLC',
       },
