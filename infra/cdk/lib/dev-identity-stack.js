@@ -80,6 +80,16 @@ export class DevIdentityStack extends Stack {
     }));
     userPool.addTrigger(cognito.UserPoolOperation.PRE_SIGN_UP, preSignUp);
 
+    // The wording of each emailed code -- a password reset's own, not the
+    // registration template's (see lambda/custom-message).
+    const customMessage = new lambda.Function(this, 'CustomMessage', {
+      runtime: lambda.Runtime.NODEJS_22_X,
+      handler: 'index.handler',
+      code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/custom-message')),
+      timeout: Duration.seconds(5),
+    });
+    userPool.addTrigger(cognito.UserPoolOperation.CUSTOM_MESSAGE, customMessage);
+
     // On the shared pool, admins come from Identity Center via the
     // pre-token-groups trigger. Here a trigger does the same for the
     // emails listed below -- not a Cognito group, because group names
