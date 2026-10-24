@@ -244,6 +244,10 @@ db_secret_json=$(aws secretsmanager get-secret-value --region "$REGION" --secret
 # packages/db/src/pool.js change -- local dev's plain DATABASE_URL (neither
 # param set) is completely unaffected.
 DATABASE_URL=$(echo "$db_secret_json" | jq -r '"postgres://\(.username):\(.password)@\(.host):\(.port)/\(.dbname)?sslmode=require&uselibpqcompat=true"')
+# Bluesky posting is prod's alone: the account is the real, public one,
+# so a test on dev only logs what it would have posted.
+BLUESKY_FOR_ENV=""
+[ "$ENV" = prod ] && BLUESKY_FOR_ENV="${BLUESKY_APP_PASSWORD:-}"
 kubectl create secret generic widgetgrid-server-secret \
   --from-literal=DATABASE_URL="$DATABASE_URL" \
   --from-literal=OWNER_PHONE_NUMBER="${OWNER_PHONE_NUMBER:-}" \
@@ -252,7 +256,7 @@ kubectl create secret generic widgetgrid-server-secret \
   --from-literal=VAPID_PUBLIC_KEY="${VAPID_PUBLIC_KEY:-}" \
   --from-literal=VAPID_PRIVATE_KEY="${VAPID_PRIVATE_KEY:-}" \
   --from-literal=TURNSTILE_SECRET_KEY="${TURNSTILE_SECRET_KEY:-}" \
-  --from-literal=BLUESKY_APP_PASSWORD="${BLUESKY_APP_PASSWORD:-}" \
+  --from-literal=BLUESKY_APP_PASSWORD="$BLUESKY_FOR_ENV" \
   --from-literal=COGNITO_REGISTRATION_CLIENT_ID="$REGISTRATION_CLIENT_ID" \
   --from-literal=COGNITO_REGISTRATION_CLIENT_SECRET="$REGISTRATION_CLIENT_SECRET" \
   --from-literal=COGNITO_USER_POOL_ID="$COGNITO_USER_POOL_ID" \
