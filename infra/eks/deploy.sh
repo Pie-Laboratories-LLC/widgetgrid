@@ -211,7 +211,7 @@ kubectl create configmap envoy-gateway-config \
   --dry-run=client -o yaml | kubectl apply -f -
 
 echo
-echo "== widgetgrid-server secret (DATABASE_URL from Secrets Manager, OWNER_PHONE_NUMBER/OWNER_EMAIL/VAPID_* from .env) =="
+echo "== widgetgrid-server secret (DATABASE_URL from Secrets Manager, OWNER_PHONE_NUMBER/OWNER_EMAIL/VAPID_*/BLUESKY_APP_PASSWORD from .env) =="
 # .env, not a literal in this script -- same gitignored local file
 # packages/db/packages/server already read for local dev (see .env.example).
 # Sourced BEFORE computing DATABASE_URL below, deliberately: .env's own
@@ -252,6 +252,7 @@ kubectl create secret generic widgetgrid-server-secret \
   --from-literal=VAPID_PUBLIC_KEY="${VAPID_PUBLIC_KEY:-}" \
   --from-literal=VAPID_PRIVATE_KEY="${VAPID_PRIVATE_KEY:-}" \
   --from-literal=TURNSTILE_SECRET_KEY="${TURNSTILE_SECRET_KEY:-}" \
+  --from-literal=BLUESKY_APP_PASSWORD="${BLUESKY_APP_PASSWORD:-}" \
   --from-literal=COGNITO_REGISTRATION_CLIENT_ID="$REGISTRATION_CLIENT_ID" \
   --from-literal=COGNITO_REGISTRATION_CLIENT_SECRET="$REGISTRATION_CLIENT_SECRET" \
   --from-literal=COGNITO_USER_POOL_ID="$COGNITO_USER_POOL_ID" \

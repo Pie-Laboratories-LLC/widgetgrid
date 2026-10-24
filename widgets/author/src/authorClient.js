@@ -3,7 +3,7 @@
 // the raw file (see media.proto for why not gRPC-Web).
 import {
   ListAuthoringRequest, CreateDraftRequest, GetDraftRequest, SaveDraftRequest, DeleteDraftRequest,
-  PreviewRequest, PublishRequest, EmailSubscribersRequest,
+  PreviewRequest, PublishRequest, EmailSubscribersRequest, PostToBlueskyRequest,
 } from '@widgetgrid/proto-gen-web/widgetgrid/v1/author_pb.js';
 import { AuthorServicePromiseClient } from '@widgetgrid/proto-gen-web/widgetgrid/v1/author_grpc_web_pb.js';
 import { authMetadata } from '@widgetgrid/auth-web';
@@ -46,6 +46,10 @@ export const authorClient = {
   },
   async emailSubscribers(slug) {
     return (await send('emailSubscribers', EmailSubscribersRequest, { slug })).sentTo;
+  },
+  // -> the post's bsky.app URL ('' where Bluesky isn't set up).
+  async postToBluesky(slug, text) {
+    return (await send('postToBluesky', PostToBlueskyRequest, { slug, text })).url;
   },
   // -> { url, markdown }; throws with the server's message.
   async uploadImage(draftId, file) {

@@ -33,7 +33,25 @@
               v-else-if="post.canEmail" type="button" class="author-link-button" :disabled="sending === post.slug"
               @click="email(post)"
             >{{ sending === post.slug ? 'Sending…' : 'Email subscribers' }}</button>
+            <span v-if="post.blueskyPostedAt" class="author-muted">
+              <a :href="post.blueskyUrl" target="_blank" rel="noopener noreferrer">On Bluesky</a> {{ when(post.blueskyPostedAt) }}
+            </span>
+            <button
+              v-else-if="composing !== post.slug" type="button" class="author-link-button" @click="compose(post)"
+            >Post to Bluesky</button>
           </div>
+          <!-- The text is the owner's; the link card for the post goes under it. -->
+          <form v-if="composing === post.slug" class="author-bluesky" @submit.prevent="skeet(post)">
+            <textarea v-model="skeetText" rows="4" :aria-label="`Bluesky post about ${post.title}`" />
+            <div class="author-bluesky-actions">
+              <span class="author-muted" :class="{ 'author-error': skeetLength > MAX_SKEET }">{{ skeetLength }} / {{ MAX_SKEET }}</span>
+              <span class="author-muted">A link card for the post is added below.</span>
+              <button type="button" class="author-link-button" :disabled="posting" @click="composing = ''">Cancel</button>
+              <button
+                type="submit" class="author-button" :disabled="posting || !skeetText.trim() || skeetLength > MAX_SKEET"
+              >{{ posting ? 'Posting…' : 'Post' }}</button>
+            </div>
+          </form>
         </li>
       </ul>
     </template>
@@ -45,14 +63,26 @@ import { navigate, writePath } from '@widgetgrid/site-routes';
 import { authorClient, describe } from './authorClient.js';
 
 // /site/write: drafts of new posts, and every published post with its
-// edit and email-subscribers actions. Emailing is never automatic -- it
-// happens here, once per post, when asked.
+// edit, email-subscribers and post-to-Bluesky actions. Neither is ever
+// automatic -- each happens here, once per post, when asked.
+
+// Bluesky's limit, counted as it counts: characters as seen, so an emoji
+// is one.
+const MAX_SKEET = 300;
+const segmenter = new Intl.Segmenter('en', { granularity: 'grapheme' });
+
 export default {
   name: 'PostList',
   data() {
     return {
       posts: [], drafts: [], status: 'loading', error: '', message: '', creating: false, sending: '',
+      composing: '', skeetText: '', posting: false, MAX_SKEET,
     };
+  },
+  computed: {
+    skeetLength() {
+      return [...segmenter.segment(this.skeetText.trim())].length;
+    },
   },
   async created() {
     await this.load();
@@ -104,6 +134,29 @@ export default {
         this.sending = '';
       }
     },
+    compose(post) {
+      this.composing = post.slug;
+      this.skeetText = post.blueskyText;
+      this.error = '';
+      this.message = '';
+    },
+    async skeet(post) {
+      this.posting = true;
+      this.error = '';
+      this.message = '';
+      try {
+        const url = await authorClient.postToBluesky(post.slug, this.skeetText.trim());
+        this.message = url
+          ? `Posted "${post.title}" to Bluesky.`
+          : "Bluesky isn't set up here, so the post was only logged by the server.";
+        this.composing = '';
+        await this.load();
+      } catch (err) {
+        this.error = describe(err);
+      } finally {
+        this.posting = false;
+      }
+    },
     go(path, event) {
       if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       event.preventDefault();
@@ -133,6 +186,29 @@ h3 {
 .author-list a {
   color: inherit;
   font-weight: 600;
+}
+
+.author-bluesky {
+  margin-top: 8px;
+}
+
+.author-bluesky textarea {
+  width: 100%;
+  font: inherit;
+  padding: 6px 8px;
+}
+
+.author-bluesky-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+  font-size: 0.85rem;
+}
+
+.author-bluesky-actions .author-button {
+  margin-left: auto;
 }
 
 .author-post-actions {

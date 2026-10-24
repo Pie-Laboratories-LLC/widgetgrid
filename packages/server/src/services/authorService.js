@@ -5,6 +5,7 @@ import {
   buildPostFile, splitPostFile, postFileName, renderPreview, routeSlug,
 } from '../blogSource.js';
 import { AlreadySent } from '../postMailer.js';
+import { AlreadyPosted, postWebUrl, suggestedText } from '../blueskyPoster.js';
 
 // Writing the blog on the site -- see proto/widgetgrid/v1/author.proto.
 // Owner only. Publishing writes an ordinary post file through blogSource
@@ -35,7 +36,7 @@ export function slugFromTitle(title) {
 }
 
 export function createAuthorService({
-  pool, authContext, blogSource, mediaStore, postMailer, timeZone,
+  pool, authContext, blogSource, mediaStore, postMailer, blueskyPoster, timeZone,
   draftsRepo = defaultDraftsRepo, mailingsRepo = defaultMailingsRepo, now = () => new Date(),
 }) {
   async function requireOwner(call) {
@@ -97,8 +98,8 @@ export function createAuthorService({
   return {
     ListAuthoring: handle(async (_request, call) => {
       await requireOwner(call);
-      const [posts, drafts, sent] = await Promise.all([
-        blogSource.listPosts(), draftsRepo.list(pool), mailingsRepo.listSent(pool),
+      const [posts, drafts, sent, skeeted] = await Promise.all([
+        blogSource.listPosts(), draftsRepo.list(pool), mailingsRepo.listSent(pool), blueskyPoster.listPosted(),
       ]);
       const draftByFile = new Map(drafts.filter((d) => d.file_name).map((d) => [d.file_name, d.id]));
       return {
@@ -110,6 +111,9 @@ export function createAuthorService({
           emailedAt: iso(sent.get(post.slug)),
           draftId: draftByFile.get(post.fileName) ?? '',
           canEmail: !sent.has(post.slug) && emailable(post),
+          blueskyPostedAt: iso(skeeted.get(post.slug)?.postedAt),
+          blueskyUrl: skeeted.has(post.slug) ? postWebUrl(skeeted.get(post.slug).uri, blueskyPoster.handle) : '',
+          blueskyText: skeeted.has(post.slug) ? '' : suggestedText(post),
         })),
         drafts: drafts.filter((d) => !d.file_name).map((d) => ({
           id: d.id, title: d.title, updatedAt: iso(d.updated_at), fileName: '',
@@ -199,6 +203,26 @@ export function createAuthorService({
         return { sentTo: await postMailer.send(post) };
       } catch (err) {
         if (err instanceof AlreadySent) throw new AuthorError(grpc.status.FAILED_PRECONDITION, 'Subscribers were already emailed about this post.');
+        throw err;
+      }
+    }),
+
+    // Any post, old ones included: unlike an email, nobody is sent
+    // anything they didn't follow the account for.
+    PostToBluesky: handle(async (request, call) => {
+      await requireOwner(call);
+      const post = (await blogSource.listPosts()).find((p) => p.slug === String(request.slug ?? ''));
+      if (!post) throw new AuthorError(grpc.status.NOT_FOUND, 'That post no longer exists.');
+      try {
+        const uri = await blueskyPoster.send(post, request.text);
+        return { url: uri ? postWebUrl(uri, blueskyPoster.handle) : '' };
+      } catch (err) {
+        if (err instanceof AlreadyPosted) throw new AuthorError(grpc.status.FAILED_PRECONDITION, 'This post is already on Bluesky.');
+        if (err instanceof RangeError) throw new AuthorError(grpc.status.INVALID_ARGUMENT, err.message);
+        if (/^Bluesky /.test(err.message)) {
+          console.error('[authorService] Bluesky refused:', err.message);
+          throw new AuthorError(grpc.status.UNAVAILABLE, "Bluesky didn't take the post. Try again in a little while.");
+        }
         throw err;
       }
     }),
