@@ -1,0 +1,64 @@
+{
+  "categories": {
+    "global": {
+      "colorSchemeMode": "DARK",
+      "pageHeader": {
+        "enabled": false
+      },
+      "pageFooter": {
+        "enabled": false
+      }
+    },
+    "form": {
+      "location": {
+        "horizontal": "CENTER",
+        "vertical": "CENTER"
+      }
+    }
+  },
+  "components": {
+    "pageBackground": {
+      "image": {
+        "enabled": false
+      },
+      "darkMode": {
+        "color": "050505ff"
+      }
+    },
+    "form": {
+      "darkMode": {
+        "backgroundColor": "150a2eff",
+        "borderColor": "3a2c5cff"
+      },
+      "logo": {
+        "enabled": true,
+        "location": "CENTER",
+        "position": "TOP",
+        "formInclusion": "IN"
+      }
+    },
+    "primaryButton": {
+      "darkMode": {
+        "defaults": {
+          "backgroundColor": "e5322dff",
+          "textColor": "ffffffff"
+        },
+        "hover": {
+          "backgroundColor": "c4241fff",
+          "textColor": "ffffffff"
+        },
+        "active": {
+          "backgroundColor": "a81d19ff",
+          "textColor": "ffffffff"
+        }
+      }
+    },
+    "pageText": {
+      "darkMode": {
+        "headingColor": "f4ead9ff",
+        "bodyColor": "f4ead9ff",
+        "descriptionColor": "c9bfaeff"
+      }
+    }
+  }
+}

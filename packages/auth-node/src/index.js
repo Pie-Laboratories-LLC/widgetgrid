@@ -6,10 +6,15 @@ import * as usersRepo from '@widgetgrid/db/src/usersRepo.js';
 // for pointing a test environment somewhere else.
 export const COGNITO_USER_POOL_ID = process.env.COGNITO_USER_POOL_ID || 'us-east-1_DC0Ukf8jA';
 export const COGNITO_SPA_CLIENT_ID = process.env.COGNITO_SPA_CLIENT_ID || 'bvec1bfa2e7srgjf237e2m3ja';
+// The site's second client, for email + password sign-in only (EmailClient
+// in infra/cdk/lib/identity-stack.js). Tokens from either are accepted.
+export const COGNITO_EMAIL_CLIENT_ID = process.env.COGNITO_EMAIL_CLIENT_ID || '';
 
 // Verifiers fetch the pool's JWKS once and cache it; verification after
 // that is local crypto, no network round trip per call.
-export function createCognitoVerifiers({ userPoolId = COGNITO_USER_POOL_ID, clientId = COGNITO_SPA_CLIENT_ID } = {}) {
+export function createCognitoVerifiers({
+  userPoolId = COGNITO_USER_POOL_ID, clientId = [COGNITO_SPA_CLIENT_ID, COGNITO_EMAIL_CLIENT_ID].filter(Boolean),
+} = {}) {
   const access = CognitoJwtVerifier.create({ userPoolId, clientId, tokenUse: 'access' });
   const id = CognitoJwtVerifier.create({ userPoolId, clientId, tokenUse: 'id' });
   return {
@@ -52,6 +57,9 @@ export function createAuthContext({ pool, verifyAccessToken, users = usersRepo }
       userId: user.id,
       sub: user.cognito_sub,
       email: user.email,
+      // False for an address nobody has proved (a Microsoft sign-in) --
+      // usable for notifications, never as proof of who they are.
+      emailVerified: user.email_verified !== false,
       role: user.role,
       // Null until chosen -- see accountService.js.
       username: user.username ?? null,

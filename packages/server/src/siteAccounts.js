@@ -10,6 +10,18 @@
 // at registration, or Identity Center), and nobody else may take it --
 // even a name the reserved list in accountService.js doesn't cover.
 
+// Whether a sign-in's email is proved to be theirs, from its ID token
+// claims. The owner role and assigned or reserved usernames go by email,
+// and with social sign-in (2026-10) the email is whatever the provider
+// says: Microsoft's is unchecked, so anyone could claim an address there.
+// Site-registered accounts proved theirs with the emailed code, and
+// Google/LinkedIn say email_verified; Identity Center doesn't send the
+// claim, but only ever holds staff the owner added.
+export function emailIsVerified(claims) {
+  if (String(claims['cognito:username'] ?? '').startsWith('IdentityCenter_')) return true;
+  return claims.email_verified === true || claims.email_verified === 'true';
+}
+
 export function parseEmailList(value = '') {
   return String(value).split(',').map((e) => e.trim().toLowerCase()).filter(Boolean);
 }

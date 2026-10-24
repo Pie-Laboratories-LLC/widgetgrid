@@ -22,6 +22,7 @@ import { createConsoleEmailSender, createSesEmailSender } from './emailSender.js
 import { createTurnstileVerifier } from './turnstile.js';
 import { createSubscriptionService } from './services/subscriptionService.js';
 import { createPostMailer } from './postMailer.js';
+import { createBlueskyPoster, createConsoleBlueskyPoster } from './blueskyPoster.js';
 import { createCognitoRegistrar, createConsoleRegistrar } from './registrar.js';
 import { createAccountService } from './services/accountService.js';
 import { parseEmailList, parseAssignedUsernames } from './siteAccounts.js';
@@ -81,6 +82,12 @@ const SITE_ORIGIN = process.env.SITE_ORIGIN || 'http://localhost:5173';
 const EMAIL_PROVIDER = process.env.EMAIL_PROVIDER ?? 'console';
 const EMAIL_FROM = process.env.EMAIL_FROM || 'Pie Laboratories <news@pie-laboratories.com>';
 const EMAIL_REPLY_TO = process.env.EMAIL_REPLY_TO || 'webmaster@pie-laboratories.com';
+// The site's Bluesky account, for announcing blog posts (AuthorService.
+// PostToBluesky). No app password = console: what would be posted is
+// logged instead -- see blueskyPoster.js. The password comes from
+// widgetgrid-server-secret (infra/eks/deploy.sh).
+const BLUESKY_HANDLE = process.env.BLUESKY_HANDLE || 'pielabs.bsky.social';
+const BLUESKY_APP_PASSWORD = process.env.BLUESKY_APP_PASSWORD ?? '';
 // Unset = captcha checks skipped (local dev) -- see turnstile.js.
 const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY ?? '';
 // 'console' (default, local dev) keeps registrations in memory and logs
@@ -131,6 +138,9 @@ export function startServer() {
   const mediaStore = MEDIA_S3_BUCKET ? createS3MediaStore({ bucket: MEDIA_S3_BUCKET }) : createLocalMediaStore({ dir: MEDIA_DIR });
   const moderator = IMAGE_MODERATION === 'rekognition' ? createRekognitionModerator() : createNoopModerator();
   const postMailer = createPostMailer({ pool, emailSender, siteOrigin: SITE_ORIGIN });
+  const blueskyPoster = BLUESKY_APP_PASSWORD
+    ? createBlueskyPoster({ pool, handle: BLUESKY_HANDLE, appPassword: BLUESKY_APP_PASSWORD, siteOrigin: SITE_ORIGIN })
+    : createConsoleBlueskyPoster({ handle: BLUESKY_HANDLE, siteOrigin: SITE_ORIGIN });
 
   const server = new grpc.Server({ 'grpc.max_receive_message_length': MAX_MESSAGE_BYTES });
   server.addService(proto.PageService.service, createPageService({ pool, pagesRepo, layoutNodesRepo }));
@@ -144,7 +154,7 @@ export function startServer() {
   server.addService(proto.BoardService.service, createBoardService({ pool, authContext, pushSender, emailSender, siteOrigin: SITE_ORIGIN, mediaStore }));
   server.addService(proto.MediaService.service, createMediaService({ pool, authContext, mediaStore, moderator }));
   server.addService(proto.AuthorService.service, createAuthorService({
-    pool, authContext, blogSource, mediaStore, postMailer, timeZone: BLOG_TIME_ZONE,
+    pool, authContext, blogSource, mediaStore, postMailer, blueskyPoster, timeZone: BLOG_TIME_ZONE,
   }));
 
   postMailer.start();

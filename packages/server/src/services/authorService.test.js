@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import grpc from '@grpc/grpc-js';
 import { createAuthorService, slugFromTitle } from './authorService.js';
 import { AlreadySent } from '../postMailer.js';
+import { AlreadyPosted } from '../blueskyPoster.js';
 import { buildPostFile } from '../blogSource.js';
 
 const OWNER = { userId: 'o', role: 'owner', groups: [] };
@@ -13,6 +14,7 @@ function setup({ caller = OWNER, posts = [] } = {}) {
   const media = new Map();
   const drafts = new Map();
   const mailed = [];
+  const skeeted = new Map();
   let nextId = 1;
   const service = createAuthorService({
     pool: {},
@@ -21,7 +23,7 @@ function setup({ caller = OWNER, posts = [] } = {}) {
     authContext: { getCaller: async () => caller },
     blogSource: {
       listPosts: async () => [...files.keys()].map((fileName) => ({
-        fileName, slug: fileName.slice(17, -3).toLowerCase(), title: 't',
+        fileName, slug: fileName.slice(17, -3).toLowerCase(), title: 't', synopsisHtml: '<p>About <em>raks</em>.</p>',
         publishedAt: `${fileName.slice(0, 10)}T${fileName.slice(11, 13)}:${fileName.slice(14, 16)}`,
       })),
       readPost: async (f) => files.get(f) ?? null,
@@ -38,6 +40,17 @@ function setup({ caller = OWNER, posts = [] } = {}) {
         if (mailed.includes(post.slug)) throw new AlreadySent();
         mailed.push(post.slug);
         return 3;
+      },
+    },
+    blueskyPoster: {
+      handle: 'pielabs.bsky.social',
+      listPosted: async () => new Map([...skeeted].map(([slug, uri]) => [slug, { uri, postedAt: new Date() }])),
+      send: async (post, text) => {
+        if (skeeted.has(post.slug)) throw new AlreadyPosted();
+        if (!text) throw new RangeError('Write something to post.');
+        const uri = `at://did:plc:x/app.bsky.feed.post/${post.slug}1`;
+        skeeted.set(post.slug, uri);
+        return uri;
       },
     },
     draftsRepo: {
@@ -60,7 +73,7 @@ function setup({ caller = OWNER, posts = [] } = {}) {
   const call = (method, request = {}) => new Promise((resolve) => {
     service[method]({ request, metadata: { get: () => [] } }, (err, res) => resolve({ err, res }));
   });
-  return { call, files, assets, media, drafts, mailed };
+  return { call, files, assets, media, drafts, mailed, skeeted };
 }
 
 test('only the owner writes', async () => {
@@ -134,6 +147,22 @@ test('posts from before emailing existed are never offered or sent', async () =>
   assert.equal((await call('ListAuthoring')).res.posts[0].canEmail, false);
   assert.equal((await call('EmailSubscribers', { slug: 'old' })).err.code, grpc.status.FAILED_PRECONDITION);
   assert.equal(mailed.length, 0);
+});
+
+test('a post goes to Bluesky once, with the synopsis offered as its text', async () => {
+  const { call, skeeted } = setup({ posts: [{ fileName: '2026-09-01-10-00-old.md', raw: 'x' }] });
+  const [before] = (await call('ListAuthoring')).res.posts;
+  assert.equal(before.blueskyText, 'About raks.');
+  assert.equal(before.blueskyUrl, '');
+  assert.equal((await call('PostToBluesky', { slug: 'old', text: '' })).err.code, grpc.status.INVALID_ARGUMENT);
+  const { res } = await call('PostToBluesky', { slug: 'old', text: 'New post!' });
+  assert.equal(res.url, 'https://bsky.app/profile/pielabs.bsky.social/post/old1');
+  assert.equal(skeeted.size, 1);
+  assert.equal((await call('PostToBluesky', { slug: 'old', text: 'Again' })).err.code, grpc.status.FAILED_PRECONDITION);
+  const [after] = (await call('ListAuthoring')).res.posts;
+  assert.equal(after.blueskyUrl, res.url);
+  assert.notEqual(after.blueskyPostedAt, '');
+  assert.equal((await call('PostToBluesky', { slug: 'gone', text: 'x' })).err.code, grpc.status.NOT_FOUND);
 });
 
 test('slugFromTitle makes an address from a title', () => {

@@ -2,7 +2,11 @@
 import { App } from 'aws-cdk-lib';
 import { DnsStack } from '../lib/dns-stack.js';
 import { SharedStack } from '../lib/shared-stack.js';
-import { IdentityStack } from '../lib/identity-stack.js';
+import { IdentityStack, AUTH_HOST } from '../lib/identity-stack.js';
+import { DevIdentityStack } from '../lib/dev-identity-stack.js';
+import { DevGatewayStack } from '../lib/dev-gateway-stack.js';
+import { EksStack } from '../lib/eks-stack.js';
+import { RdsStack } from '../lib/rds-stack.js';
 import { ProdGatewayStack } from '../lib/prod-gateway-stack.js';
 import { ProdEksStack } from '../lib/prod-eks-stack.js';
 import { ProdRdsStack } from '../lib/prod-rds-stack.js';
@@ -21,13 +25,35 @@ new SharedStack(app, 'WidgetgridSharedStack', { env });
 // Cognito + Identity Center sign-in for both environments -- see identity-stack.js.
 new IdentityStack(app, 'WidgetgridIdentityStack', { env, hostedZone: dns.hostedZone });
 
-// Dev (WidgetgridDevGatewayStack/EksStack/RdsStack/DevIdentityStack) is
-// stood up only temporarily -- development happens on local kind and
-// releases go to prod, checked by infra/eks/smoke-check.sh. Last up
-// 2026-10-21..22 to test the website's phase I and II, then destroyed.
-// The stack classes stay in lib/: to bring it back, restore the block
-// from commit 6243714's bin/app.js, deploy, test, destroy again (see
-// infra/cdk/README.md's "Standing dev up temporarily").
+// Dev: stood up temporarily (2026-10-24) to test social sign-in, the
+// password-reset wording and Post to Bluesky before prod. Comes down
+// again once that's done (infra/cdk/README.md's "Standing dev up
+// temporarily"); the stack classes stay in lib/ either way.
+//
+// The ALB's sign-in gate uses the shared pool's DevAlbClient by id (see
+// dev-gateway-stack.js for why not a construct reference); the app's own
+// sign-in is dev's own short-lived pool.
+new DevIdentityStack(app, 'WidgetgridDevIdentityStack', { env });
+const devGateway = new DevGatewayStack(app, 'WidgetgridDevGatewayStack', {
+  env,
+  hostedZone: dns.hostedZone,
+  certificate: dns.certificate,
+  userPoolId: 'us-east-1_DC0Ukf8jA',
+  devAlbClientId: '7cipfmua47oqo3n8frno51ifa5',
+  authHost: AUTH_HOST,
+});
+// One-directional: both take vpc from DevGatewayStack (see
+// dev-gateway-stack.js's comment on why it isn't the other way around).
+const eks = new EksStack(app, 'WidgetgridEksStack', {
+  env,
+  vpc: devGateway.vpc,
+  albSecurityGroup: devGateway.albSecurityGroup,
+});
+new RdsStack(app, 'WidgetgridRdsStack', {
+  env,
+  vpc: devGateway.vpc,
+  nodeSecurityGroup: eks.nodeSecurityGroup,
+});
 
 // Prod: fully separate VPC/cluster/RDS from dev's, no shared props between
 // the two environments anywhere here -- see infra/cdk/lib/prod-gateway-stack.js's

@@ -5,6 +5,8 @@ import * as cognito from 'aws-cdk-lib/aws-cognito';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { EMAIL_DOMAIN } from './dns-stack.js';
+import { addSocialProviders, LINKABLE_PROVIDERS } from './social-login.js';
+import { addManagedLoginStyle } from './managed-login.js';
 
 const DEV_ORIGIN = 'https://dev.pie-laboratories.com';
 // Same name as the shared pool's client -- the pre-sign-up trigger
@@ -57,6 +59,7 @@ export class DevIdentityStack extends Stack {
     // Prefix domains are global across AWS; the account id keeps it ours.
     const userPoolDomain = userPool.addDomain('UserPoolDomain', {
       cognitoDomain: { domainPrefix: `widgetgrid-dev-${this.account}` },
+      managedLoginVersion: cognito.ManagedLoginVersion.NEWER_MANAGED_LOGIN,
     });
 
     const preSignUp = new lambda.Function(this, 'PreSignUp', {
@@ -67,14 +70,25 @@ export class DevIdentityStack extends Stack {
       environment: {
         REGISTRATION_CLIENT_NAME,
         REGISTER_URL: `${DEV_ORIGIN}/site/register`,
+        LINKABLE_PROVIDERS: LINKABLE_PROVIDERS.join(','),
       },
     });
     // By ARN pattern, same circular-dependency reason as identity-stack.js.
     preSignUp.addToRolePolicy(new iam.PolicyStatement({
-      actions: ['cognito-idp:DescribeUserPoolClient'],
+      actions: ['cognito-idp:DescribeUserPoolClient', 'cognito-idp:ListUsers', 'cognito-idp:AdminLinkProviderForUser'],
       resources: [this.formatArn({ service: 'cognito-idp', resource: 'userpool', resourceName: '*' })],
     }));
     userPool.addTrigger(cognito.UserPoolOperation.PRE_SIGN_UP, preSignUp);
+
+    // The wording of each emailed code -- a password reset's own, not the
+    // registration template's (see lambda/custom-message).
+    const customMessage = new lambda.Function(this, 'CustomMessage', {
+      runtime: lambda.Runtime.NODEJS_22_X,
+      handler: 'index.handler',
+      code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/custom-message')),
+      timeout: Duration.seconds(5),
+    });
+    userPool.addTrigger(cognito.UserPoolOperation.CUSTOM_MESSAGE, customMessage);
 
     // On the shared pool, admins come from Identity Center via the
     // pre-token-groups trigger. Here a trigger does the same for the
@@ -99,6 +113,11 @@ export class DevIdentityStack extends Stack {
     });
     userPool.addTrigger(cognito.UserPoolOperation.PRE_TOKEN_GENERATION, preTokenAdmins);
 
+    // The same social providers as the shared pool (same developer apps;
+    // each needs this pool's domain + /oauth2/idpresponse added as a
+    // redirect URI while dev is up).
+    const social = addSocialProviders(this, userPool);
+
     // localhost too, so a local Vite build can be pointed at this pool.
     const origins = [DEV_ORIGIN, 'http://localhost:5173'];
     const spaClient = userPool.addClient('SpaClient', {
@@ -109,9 +128,25 @@ export class DevIdentityStack extends Stack {
         callbackUrls: origins.map((o) => `${o}/auth/callback`),
         logoutUrls: origins.map((o) => `${o}/`),
       },
+      supportedIdentityProviders: [...social.clientIdps, cognito.UserPoolClientIdentityProvider.COGNITO],
+      preventUserExistenceErrors: true,
+    });
+    spaClient.node.addDependency(...social.providers);
+    addManagedLoginStyle(this, 'SpaLoginStyle', { userPool, client: spaClient });
+
+    // Email + password only -- see EmailClient in identity-stack.js.
+    const emailClient = userPool.addClient('EmailClient', {
+      generateSecret: false,
+      oAuth: {
+        flows: { authorizationCodeGrant: true },
+        scopes: [cognito.OAuthScope.OPENID, cognito.OAuthScope.EMAIL, cognito.OAuthScope.PROFILE],
+        callbackUrls: origins.map((o) => `${o}/auth/callback`),
+        logoutUrls: origins.map((o) => `${o}/`),
+      },
       supportedIdentityProviders: [cognito.UserPoolClientIdentityProvider.COGNITO],
       preventUserExistenceErrors: true,
     });
+    addManagedLoginStyle(this, 'EmailLoginStyle', { userPool, client: emailClient });
 
     const registrationClient = userPool.addClient('RegistrationClient', {
       userPoolClientName: REGISTRATION_CLIENT_NAME,
@@ -125,6 +160,7 @@ export class DevIdentityStack extends Stack {
     // environment's.
     new CfnOutput(this, 'UserPoolId', { value: userPool.userPoolId });
     new CfnOutput(this, 'SpaClientId', { value: spaClient.userPoolClientId });
+    new CfnOutput(this, 'EmailClientId', { value: emailClient.userPoolClientId });
     new CfnOutput(this, 'RegistrationClientId', { value: registrationClient.userPoolClientId });
     new CfnOutput(this, 'AuthOrigin', { value: userPoolDomain.baseUrl() });
   }

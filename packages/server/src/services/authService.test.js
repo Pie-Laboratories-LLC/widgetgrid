@@ -18,7 +18,8 @@ function fakeDeps({ claims = { sub: 's1', email: 'Owner@Example.com' }, existing
       assigned: parseAssignedUsernames('pielabs=site@example.com'),
       verifyIdToken: async (t) => {
         if (t !== 'good') throw new Error('bad token');
-        return claims;
+        // A site-registered account's token unless the test says otherwise.
+        return { email_verified: true, ...claims };
       },
       usersRepo: {
         async upsertOnSignIn(_pool, args) {
@@ -114,4 +115,35 @@ test('an address with an assigned name gets it on sign-in, over any reservation'
   const { response } = await invoke(createAuthService(deps), 'RegisterSignIn', { idToken: 'good' });
   assert.equal(response.username, 'pielabs');
   assert.equal(claimed[0].username, 'pielabs');
+});
+
+// Social sign-in: Microsoft's email is unchecked, so it proves nothing.
+test('an unverified email matching the owner list does not become owner', async () => {
+  const { deps, sessions, upserts } = fakeDeps({
+    claims: { sub: 's6', 'cognito:username': 'Microsoft_abc', email: 'owner@example.com', email_verified: undefined },
+  });
+  const { response } = await invoke(createAuthService(deps), 'RegisterSignIn', { idToken: 'good' });
+  assert.equal(upserts[0].becomeOwner, false);
+  assert.equal(upserts[0].emailVerified, false);
+  assert.equal(response.role, 'member');
+  assert.equal(sessions.length, 0);
+});
+
+test('an unverified email gets neither its assigned name nor a reservation', async () => {
+  const { deps, claimed } = fakeDeps({
+    claims: { sub: 's7', 'cognito:username': 'Microsoft_def', email: 'site@example.com', email_verified: false },
+    reservations: { 'site@example.com': 'Typed' },
+  });
+  const { response } = await invoke(createAuthService(deps), 'RegisterSignIn', { idToken: 'good' });
+  assert.equal(response.username, '');
+  assert.equal(claimed.length, 0);
+});
+
+test('Identity Center counts as verified without the claim', async () => {
+  const { deps, upserts } = fakeDeps({
+    claims: { sub: 's8', 'cognito:username': 'IdentityCenter_owner@example.com', email: 'owner@example.com', email_verified: undefined },
+  });
+  const { response } = await invoke(createAuthService(deps), 'RegisterSignIn', { idToken: 'good' });
+  assert.equal(upserts[0].emailVerified, true);
+  assert.equal(response.role, 'owner');
 });

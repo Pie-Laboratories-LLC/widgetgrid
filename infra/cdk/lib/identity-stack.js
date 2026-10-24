@@ -9,6 +9,8 @@ import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as route53Targets from 'aws-cdk-lib/aws-route53-targets';
 import { Certificate, CertificateValidation } from 'aws-cdk-lib/aws-certificatemanager';
 import { EMAIL_DOMAIN } from './dns-stack.js';
+import { addSocialProviders, LINKABLE_PROVIDERS } from './social-login.js';
+import { addManagedLoginStyle } from './managed-login.js';
 
 export const AUTH_HOST = 'auth.pie-laboratories.com';
 const IDENTITY_STORE_ID = 'd-90667a98cd';
@@ -82,8 +84,12 @@ export class IdentityStack extends Stack {
       domainName: AUTH_HOST,
       validation: CertificateValidation.fromDns(hostedZone),
     });
+    // Managed login (the newer pages, with branding -- see
+    // managed-login.js) rather than the classic hosted UI. Updates the
+    // domain in place.
     const userPoolDomain = userPool.addDomain('UserPoolDomain', {
       customDomain: { domainName: AUTH_HOST, certificate: authCertificate },
+      managedLoginVersion: cognito.ManagedLoginVersion.NEWER_MANAGED_LOGIN,
     });
     new route53.ARecord(this, 'AuthAliasRecord', {
       zone: hostedZone,
@@ -126,18 +132,31 @@ export class IdentityStack extends Stack {
       environment: {
         REGISTRATION_CLIENT_NAME,
         REGISTER_URL: `https://www.${EMAIL_DOMAIN}/site/register`,
+        LINKABLE_PROVIDERS: LINKABLE_PROVIDERS.join(','),
       },
     });
     // Any pool in the account, by ARN pattern rather than this pool's ARN:
     // the trigger is attached to this pool, so referencing it here would be
-    // a circular dependency.
+    // a circular dependency. ListUsers + AdminLinkProviderForUser join a
+    // social sign-in to an existing site account.
     preSignUp.addToRolePolicy(new iam.PolicyStatement({
-      actions: ['cognito-idp:DescribeUserPoolClient'],
+      actions: ['cognito-idp:DescribeUserPoolClient', 'cognito-idp:ListUsers', 'cognito-idp:AdminLinkProviderForUser'],
       resources: [this.formatArn({ service: 'cognito-idp', resource: 'userpool', resourceName: '*' })],
     }));
     userPool.addTrigger(cognito.UserPoolOperation.PRE_SIGN_UP, preSignUp);
 
+    // The wording of each emailed code -- a password reset's own, not the
+    // registration template's (see lambda/custom-message).
+    const customMessage = new lambda.Function(this, 'CustomMessage', {
+      runtime: lambda.Runtime.NODEJS_22_X,
+      handler: 'index.handler',
+      code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/custom-message')),
+      timeout: Duration.seconds(5),
+    });
+    userPool.addTrigger(cognito.UserPoolOperation.CUSTOM_MESSAGE, customMessage);
+
     const idp = [cognito.UserPoolClientIdentityProvider.custom(identityCenterProvider.providerName)];
+    const social = addSocialProviders(this, userPool);
 
     // The dev ALB's authenticate-cognito action: confidential client, and
     // ALB's callback path is fixed by AWS.
@@ -151,11 +170,14 @@ export class IdentityStack extends Stack {
       supportedIdentityProviders: idp,
     });
     devAlbClient.node.addDependency(identityCenterProvider);
+    addManagedLoginStyle(this, 'DevAlbLoginStyle', { userPool, client: devAlbClient, branded: false });
 
     // The widgetgrid SPA's own sign-in (the topbar's "Log in"): public
     // client, authorization code + PKCE, tokens sent as Bearer on gRPC-web.
-    // The hosted page offers both kinds of account: Cognito's own email +
-    // password form (site-registered users) and the Identity Center button.
+    // /site/login has a button per provider and names the one picked
+    // (identity_provider=): Google etc. and Identity Center ("Staff
+    // sign-in") go straight through. Email + password uses EmailClient
+    // below instead.
     const spaClient = userPool.addClient('SpaClient', {
       generateSecret: false,
       oAuth: {
@@ -164,7 +186,7 @@ export class IdentityStack extends Stack {
         callbackUrls: SPA_ORIGINS.map((o) => `${o}/auth/callback`),
         logoutUrls: SPA_ORIGINS.map((o) => `${o}/`),
       },
-      supportedIdentityProviders: [...idp, cognito.UserPoolClientIdentityProvider.COGNITO],
+      supportedIdentityProviders: [...idp, ...social.clientIdps, cognito.UserPoolClientIdentityProvider.COGNITO],
       preventUserExistenceErrors: true,
       // How long the browser stays signed in without seeing Identity
       // Center again (Cognito's default is 30 days). 90 keeps phone
@@ -173,7 +195,29 @@ export class IdentityStack extends Stack {
       // so group changes still apply within the hour.
       refreshTokenValidity: Duration.days(90),
     });
-    spaClient.node.addDependency(identityCenterProvider);
+    spaClient.node.addDependency(identityCenterProvider, ...social.providers);
+    addManagedLoginStyle(this, 'SpaLoginStyle', { userPool, client: spaClient });
+
+    // /site/login's "Log in with email and password": the same as SpaClient
+    // but Cognito's own sign-in only. Cognito's page shows a button for
+    // every provider its client allows, and naming one (identity_provider=
+    // COGNITO) doesn't hide the rest -- so with SpaClient that page offered
+    // Google, Microsoft, LinkedIn and "Corporate ID" all over again. Same
+    // users, same pool; packages/auth-web remembers which client a sign-in
+    // used, and the servers accept tokens from either.
+    const emailClient = userPool.addClient('EmailClient', {
+      generateSecret: false,
+      oAuth: {
+        flows: { authorizationCodeGrant: true },
+        scopes: [cognito.OAuthScope.OPENID, cognito.OAuthScope.EMAIL, cognito.OAuthScope.PROFILE],
+        callbackUrls: SPA_ORIGINS.map((o) => `${o}/auth/callback`),
+        logoutUrls: SPA_ORIGINS.map((o) => `${o}/`),
+      },
+      supportedIdentityProviders: [cognito.UserPoolClientIdentityProvider.COGNITO],
+      preventUserExistenceErrors: true,
+      refreshTokenValidity: Duration.days(90),
+    });
+    addManagedLoginStyle(this, 'EmailLoginStyle', { userPool, client: emailClient });
 
     // widgetgrid-server's registration client (packages/server/src/registrar.js):
     // SignUp / ConfirmSignUp / ResendConfirmationCode only, no OAuth. The
@@ -195,6 +239,7 @@ export class IdentityStack extends Stack {
     new CfnOutput(this, 'UserPoolId', { value: userPool.userPoolId });
     new CfnOutput(this, 'SamlAcsUrl', { value: `https://${AUTH_HOST}/saml2/idpresponse` });
     new CfnOutput(this, 'SpaClientId', { value: spaClient.userPoolClientId });
+    new CfnOutput(this, 'EmailClientId', { value: emailClient.userPoolClientId });
     new CfnOutput(this, 'RegistrationClientId', { value: registrationClient.userPoolClientId });
     new CfnOutput(this, 'DevAlbClientId', { value: devAlbClient.userPoolClientId });
     new CfnOutput(this, 'SamlAudience', { value: `urn:amazon:cognito:sp:${userPool.userPoolId}` });

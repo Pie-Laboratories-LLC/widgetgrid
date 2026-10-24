@@ -33,10 +33,10 @@ export function createSubscriptionService({
           return;
         }
 
-        // Signed in and subscribing their own account address: already
-        // verified at sign-up, so no confirmation round trip.
+        // Signed in and subscribing their own account address, which
+        // they've already proved, so no confirmation round trip.
         const caller = await authContext.getCaller(call);
-        if (caller && caller.email.toLowerCase() === email) {
+        if (caller && caller.emailVerified !== false && caller.email.toLowerCase() === email) {
           await repo.upsertActive(pool, { email, userId: caller.userId, unsubscribeToken: newToken() });
           callback(null, { outcome: 'subscribed' });
           return;

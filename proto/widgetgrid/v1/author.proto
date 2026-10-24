@@ -22,6 +22,11 @@ message PublishedPost {
   // Not yet emailed, and new enough to be (posts from before emailing
   // existed never are).
   bool can_email = 7;
+  // When it was announced on Bluesky, and that post's page; empty if never.
+  string bluesky_posted_at = 8;
+  string bluesky_url = 9;
+  // Not yet on Bluesky: the text offered for it (the synopsis, cut to fit).
+  string bluesky_text = 10;
 }
 
 message DraftSummary {
@@ -111,6 +116,18 @@ message EmailSubscribersResponse {
   int32 sent_to = 1;
 }
 
+message PostToBlueskyRequest {
+  string slug = 1;
+  // Up to 300 characters; a link card for the post is added below it.
+  string text = 2;
+}
+
+message PostToBlueskyResponse {
+  // The post on bsky.app -- empty where Bluesky isn't set up (local dev),
+  // which only logs what it would have posted.
+  string url = 1;
+}
+
 service AuthorService {
   rpc ListAuthoring(ListAuthoringRequest) returns (ListAuthoringResponse);
   rpc CreateDraft(CreateDraftRequest) returns (DraftResponse);
@@ -125,4 +142,8 @@ service AuthorService {
   // Once per post: FAILED_PRECONDITION if it was already sent, or the post
   // predates emailing.
   rpc EmailSubscribers(EmailSubscribersRequest) returns (EmailSubscribersResponse);
+  // Once per post, any post: FAILED_PRECONDITION if it's already there,
+  // INVALID_ARGUMENT for empty or too-long text, UNAVAILABLE if Bluesky
+  // refuses it.
+  rpc PostToBluesky(PostToBlueskyRequest) returns (PostToBlueskyResponse);
 }
