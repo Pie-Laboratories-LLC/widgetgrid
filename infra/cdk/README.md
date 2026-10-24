@@ -152,7 +152,7 @@ since neither depends on the other two.
 Dev isn't kept running. To test something in AWS before prod (as was done
 2026-10-21..22 for the website's phase I and II):
 
-1. Restore the dev block in `bin/app.js` (from commit 6243714). Dev has its
+1. Restore the dev block in `bin/app.js` (from commit af77dce). Dev has its
    own throwaway user pool (`WidgetgridDevIdentityStack`), so registering
    there never touches the live login; its gate still signs in through
    the shared pool's Identity Center client, by id.
