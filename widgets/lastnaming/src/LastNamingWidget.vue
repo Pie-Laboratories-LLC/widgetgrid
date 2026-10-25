@@ -13,8 +13,10 @@
 // view switches away (v-else-if), so nothing keeps rendering behind
 // another view. It loads its glTF from beside its own bundle
 // (/widgets/the-last-naming-vendor/assets/). ?explore in the address
-// (/games/the-last-naming?explore) turns on its walk-about mode -- the
-// owner's tool for looking at things, not linked from anywhere.
+// (/games/the-last-naming?explore) turns on its walk-about mode, and
+// ?stress its stress test (a migration-sized crowd, and what each frame
+// costs) -- the owner's tools, not linked from anywhere. The game reads
+// them from the address itself (optionsFromAddress).
 const VENDOR_BASE = '/widgets/the-last-naming-vendor/';
 const CSS_LINK_ID = 'the-last-naming-vendor-css';
 
@@ -30,8 +32,7 @@ export default {
       // The view can switch away while the import is still in flight --
       // mounting then would start a render loop nothing ever stops.
       if (this.isUnmounted) return;
-      const explore = new URLSearchParams(window.location.search).has('explore');
-      this.unmountGame = mod.mount(this.$refs.container, { explore });
+      this.unmountGame = mod.mount(this.$refs.container, mod.optionsFromAddress(window.location.search));
     });
   },
   beforeUnmount() {
