@@ -12,6 +12,9 @@
 // request waits until the key changes (or WAIT passes), so an edit lands
 // within a second or two, with no polling in between.
 //
+// onChange(listener) hears each new value (ConfigService.WatchSiteConfig
+// passes them on to open pages).
+//
 // Anything wrong -- Consul unreachable, the key missing, JSON that won't
 // parse -- keeps the last good value; before there is one, every flag is
 // off. A hiccup can hide a feature, never reveal one.
@@ -35,6 +38,7 @@ export function normalizeConfig(raw) {
 // (a server run outside a cluster), the configuration stays empty.
 export function createSiteConfig({ consulAddr, key = CONFIG_KEY, fetch = globalThis.fetch, retryMs = RETRY_MS }) {
   let current = EMPTY_CONFIG;
+  const listeners = new Set();
   let stopped = false;
   let controller = null;
 
@@ -55,10 +59,12 @@ export function createSiteConfig({ consulAddr, key = CONFIG_KEY, fetch = globalT
           const value = Buffer.from(entry?.Value ?? '', 'base64').toString('utf8');
           try {
             const next = normalizeConfig(JSON.parse(value));
-            if (JSON.stringify(next) !== JSON.stringify(current)) {
-              console.log(`[siteConfig] ${key}: ${JSON.stringify(next)}`);
-            }
+            const changed = JSON.stringify(next) !== JSON.stringify(current);
             current = next;
+            if (changed) {
+              console.log(`[siteConfig] ${key}: ${JSON.stringify(next)}`);
+              for (const listener of listeners) listener(next);
+            }
           } catch {
             console.error(`[siteConfig] ${key} isn't valid JSON; keeping what was there`);
           }
@@ -78,6 +84,11 @@ export function createSiteConfig({ consulAddr, key = CONFIG_KEY, fetch = globalT
 
   return {
     get: () => current,
+    // Returns a function that stops listening.
+    onChange(listener) {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
     start() {
       if (!consulAddr) {
         console.log('[siteConfig] no CONSUL_HTTP_ADDR: every flag is off');

@@ -74,3 +74,20 @@ test('only booleans are flags', () => {
   assert.deepEqual(normalizeConfig({ featureFlags: { a: true, b: 'yes', c: 1, d: false } }), { featureFlags: { a: true, d: false } });
   assert.deepEqual(normalizeConfig(null), { featureFlags: {} });
 });
+
+test('listeners hear each change, and only changes', async () => {
+  const consul = fakeConsul([
+    { index: 5, value: '{"featureFlags":{"wgtgrd-4":false}}' },
+    { index: 7, value: '{"featureFlags":{"wgtgrd-4":false}}' },
+    { index: 9, value: '{"featureFlags":{"wgtgrd-4":true}}' },
+  ]);
+  const config = createSiteConfig({ consulAddr: 'http://consul:8500', fetch: consul.fetch, retryMs: 1 });
+  const heard = [];
+  const stop = config.onChange((next) => heard.push(next.featureFlags['wgtgrd-4']));
+  config.start();
+  await settle();
+  // The first value (from nothing), then the flip; the repeat isn't news.
+  assert.deepEqual(heard, [false, true]);
+  stop();
+  config.stop();
+});
