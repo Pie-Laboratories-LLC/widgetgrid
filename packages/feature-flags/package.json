@@ -11,5 +11,8 @@
   },
   "peerDependencies": {
     "vue": "3.5.41"
+  },
+  "scripts": {
+    "test": "node --test"
   }
 }
