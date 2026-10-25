@@ -3,6 +3,7 @@ import { createPinia } from 'pinia';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { isSignInCallback, completeSignIn } from '@widgetgrid/auth-web';
 import { navigate } from '@widgetgrid/site-routes';
+import { featureFlagsPlugin } from '@widgetgrid/feature-flags';
 
 // Returning from the Cognito hosted UI lands on /auth/callback (see
 // packages/auth-web). Finish that first: completeSignIn puts the address
@@ -30,4 +31,6 @@ if ('serviceWorker' in navigator) {
 }
 
 const [{ default: App }, { router }] = await Promise.all([import('./App.vue'), import('./router')]);
-createApp(App).use(createPinia()).use(router).mount('#app');
+// featureFlagsPlugin: ffEnabled() and resolveFeature() in every template,
+// the widgets' included (they render inside this app).
+createApp(App).use(createPinia()).use(router).use(featureFlagsPlugin).mount('#app');

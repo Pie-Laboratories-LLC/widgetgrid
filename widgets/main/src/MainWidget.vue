@@ -32,7 +32,7 @@
 
 <script>
 import { getIdentity } from '@widgetgrid/auth-web';
-import { featureFlags } from '@widgetgrid/feature-flags';
+import { featureFlags, flagsLoaded, isEnabled } from '@widgetgrid/feature-flags';
 import {
   currentSiteRoute, viewChrome, viewFlag, navigate, ROUTE_EVENT,
 } from '@widgetgrid/site-routes';
@@ -96,8 +96,6 @@ export default {
       view: null, post: null, blogComponent: null, solitaireComponent: null, chatComponent: null,
       embuscadeComponent: null, lastNamingComponent: null, lhoraireComponent: null, subscribeComponent: null, accountComponent: null, boardComponent: null, board: null, collapsed: false, railHidden: false,
       authorComponent: null, draft: null,
-      // null until ConfigService has answered; see viewShown().
-      flags: null,
       blogReloadKey: 0, isLhoraireAdmin: isLhoraireAdmin(), isOwner: isOwner(), signedIn: !!getIdentity(),
     };
   },
@@ -108,8 +106,7 @@ export default {
     this.onRoute({ detail: currentSiteRoute() });
     // A flagged view opened directly (a bookmark) waits for these; then
     // it either loads or, its flag off, goes to the home page.
-    featureFlags().then((flags) => {
-      this.flags = flags;
+    featureFlags().then(() => {
       if (!this.viewShown(this.view)) navigate('/', { replace: true });
       else this.loadLastNaming();
     });
@@ -206,9 +203,11 @@ export default {
   methods: {
     // Whether a view may show: it has no feature flag, or its flag is on.
     // While the flags are still on their way, a flagged view just waits.
+    // Reactive (isEnabled reads the page's shared flag store), so the games
+    // list updates when they arrive.
     viewShown(view) {
       const flag = viewFlag(view);
-      return !flag || this.flags?.[flag] === true;
+      return !flag || isEnabled(flag);
     },
     // Not preloaded either: three.js and the glTF are ~0.7 MB. Only once
     // its feature flag is known to be on.
@@ -223,7 +222,7 @@ export default {
       const { view, post = null, board = null, draft = null, forceReload = false } = event.detail;
       // A flagged view whose flag is off: as if the path didn't exist (an
       // unknown section path shows the blog -- packages/web-app's router).
-      if (this.flags && !this.viewShown(view)) {
+      if (flagsLoaded() && !this.viewShown(view)) {
         navigate('/', { replace: true });
         return;
       }

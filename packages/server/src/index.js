@@ -24,6 +24,7 @@ import { createSubscriptionService } from './services/subscriptionService.js';
 import { createPostMailer } from './postMailer.js';
 import { createBlueskyPoster, createConsoleBlueskyPoster } from './blueskyPoster.js';
 import { createSiteConfig } from './siteConfig.js';
+import { createServerFeatures } from './features.js';
 import { createConfigService } from './services/configService.js';
 import { createCognitoRegistrar, createConsoleRegistrar } from './registrar.js';
 import { createAccountService } from './services/accountService.js';
@@ -148,6 +149,9 @@ export function startServer() {
     ? createBlueskyPoster({ pool, handle: BLUESKY_HANDLE, appPassword: BLUESKY_APP_PASSWORD, siteOrigin: SITE_ORIGIN })
     : createConsoleBlueskyPoster({ handle: BLUESKY_HANDLE, siteOrigin: SITE_ORIGIN });
   const siteConfig = createSiteConfig({ consulAddr: CONSUL_HTTP_ADDR });
+  // Implementations picked by feature flag (features.js). No service has
+  // a flagged seam yet; one that does takes `features`.
+  const features = createServerFeatures({ siteConfig });
 
   const server = new grpc.Server({ 'grpc.max_receive_message_length': MAX_MESSAGE_BYTES });
   server.addService(proto.PageService.service, createPageService({ pool, pagesRepo, layoutNodesRepo }));

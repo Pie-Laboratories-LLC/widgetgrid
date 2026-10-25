@@ -1,0 +1,15 @@
+{
+  "name": "@widgetgrid/feature-registry",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Picks an implementation by feature flag: declare a seam once (old and new behind a flag), ask for it by name, never see the flag. Shared by the browser (@widgetgrid/feature-flags) and widgetgrid-server.",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./contract": "./src/contract.js"
+  },
+  "scripts": {
+    "test": "node --test"
+  }
+}

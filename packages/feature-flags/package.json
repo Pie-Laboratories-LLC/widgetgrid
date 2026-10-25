@@ -3,9 +3,13 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "The site's feature flags (ConfigService.GetSiteConfig, from Consul), fetched once per page load and shared by the widgets.",
+  "description": "The site's feature flags in the browser (ConfigService.GetSiteConfig, from Consul): ffEnabled() in templates, useFeatureFlag(), and implementations picked by flag (provideFeature/resolveFeature). Fetched once per page, shared by every widget.",
   "main": "src/index.js",
   "dependencies": {
+    "@widgetgrid/feature-registry": "*",
     "@widgetgrid/proto-gen-web": "*"
+  },
+  "peerDependencies": {
+    "vue": "3.5.41"
   }
 }

@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@widgetgrid/auth-web": "*",
+    "@widgetgrid/feature-flags": "*",
     "@widgetgrid/proto-gen-web": "*",
     "@widgetgrid/site-routes": "*",
     "bootstrap": "5.3.8",
