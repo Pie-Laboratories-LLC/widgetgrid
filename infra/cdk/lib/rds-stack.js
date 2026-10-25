@@ -1,4 +1,4 @@
-import { Stack, CfnOutput } from 'aws-cdk-lib';
+import { Stack, CfnOutput, RemovalPolicy } from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as rds from 'aws-cdk-lib/aws-rds';
 
@@ -38,6 +38,10 @@ export class RdsStack extends Stack {
       allocatedStorage: 20,
       storageEncrypted: true,
       deleteAutomatedBackups: true,
+      // Dev is stood up and torn down for each test, from scratch -- its
+      // data is never restored, so destroying it leaves no final snapshot
+      // (CDK's default for a database is to take one).
+      removalPolicy: RemovalPolicy.DESTROY,
     });
 
     this.secret = this.instance.secret;
