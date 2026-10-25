@@ -16,6 +16,10 @@ message GetSiteConfigRequest {
   int64 requested_at_ms = 1;
 }
 
+message WatchSiteConfigRequest {
+  int64 requested_at_ms = 1;
+}
+
 message GetSiteConfigResponse {
   // Flag name -> on. A flag that isn't listed is off.
   map<string, bool> feature_flags = 1;
@@ -24,4 +28,10 @@ message GetSiteConfigResponse {
 service ConfigService {
   // Anyone may ask; there's nothing private in the answer.
   rpc GetSiteConfig(GetSiteConfigRequest) returns (GetSiteConfigResponse);
+  // The same, kept current: the configuration as it is now, then again
+  // each time it changes in Consul -- so an open page picks up a flag
+  // flip within seconds. Never ends on its own; the browser reconnects
+  // when the connection drops (an idle ALB connection closes after 60s)
+  // and gets the current configuration first thing.
+  rpc WatchSiteConfig(WatchSiteConfigRequest) returns (stream GetSiteConfigResponse);
 }
