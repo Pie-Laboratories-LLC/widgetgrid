@@ -28,12 +28,25 @@
 // component swapped by resolveFeature() remounts, so anything typed into
 // it is lost: flip behaviour flags when that won't matter.
 //
+// Trying a flag in one browser: a cookie named WidgetGrid-config holding
+// the same shape as the configuration --
+//
+//   WidgetGrid-config={"featureFlags":{"wgtgrd-4":true}}
+//
+// (raw JSON, or URI-encoded) -- is laid over the server's flags each time
+// they arrive. It's read once, when the page starts: change it, reload.
+// Only this browser sees it, and only here: the server's own seams
+// (packages/server/src/features.js) never read it. Anyone who knows a
+// flag's name can do the same, so a flag in the browser hides a thing --
+// it doesn't keep it secret.
+//
 // Bundled into each widget that asks, like @widgetgrid/auth-web, so the
 // state lives on window, where every bundle's copy finds the same one --
 // one fetch, one registry, one reactive store per page (every bundle
 // shares the page's one Vue).
 import { reactive, computed } from 'vue';
 import { createFeatureRegistry } from '@widgetgrid/feature-registry';
+import { readOverrides, OVERRIDE_COOKIE } from './overrides.js';
 import { WatchSiteConfigRequest } from '@widgetgrid/proto-gen-web/widgetgrid/v1/config_pb.js';
 import { ConfigServicePromiseClient } from '@widgetgrid/proto-gen-web/widgetgrid/v1/config_grpc_web_pb.js';
 
@@ -42,11 +55,17 @@ const GRPC_WEB_ORIGIN = import.meta.env.VITE_GRPC_WEB_ORIGIN ?? '';
 // current configuration first thing, so nothing changed in a gap is missed.
 const RECONNECT_DELAY_MS = 2000;
 
+
 function shared() {
   if (!window.__widgetgridFeatureFlags) {
     const state = reactive({ flags: {}, loaded: false });
+    const overrides = readOverrides();
+    if (Object.keys(overrides).length) {
+      console.info(`Feature flags overridden in this browser by the ${OVERRIDE_COOKIE} cookie:`, overrides);
+    }
     window.__widgetgridFeatureFlags = {
       state,
+      overrides,
       request: null,
       registry: createFeatureRegistry({ isEnabled: (flag) => state.flags[flag] === true }),
     };
@@ -83,9 +102,9 @@ export function featureFlags() {
       stream.on('data', (response) => {
         const flags = {};
         response.getFeatureFlagsMap().forEach((on, name) => { flags[name] = on; });
-        page.state.flags = flags;
+        page.state.flags = { ...flags, ...page.overrides };
         page.state.loaded = true;
-        resolve(flags);
+        resolve({ ...page.state.flags });
       });
       stream.on('error', scheduleReconnect);
       stream.on('end', () => scheduleReconnect());
