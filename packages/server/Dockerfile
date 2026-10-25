@@ -20,6 +20,7 @@ COPY packages/server/package.json packages/server/package.json
 COPY packages/auth-node/package.json packages/auth-node/package.json
 COPY packages/auth-web/package.json packages/auth-web/package.json
 COPY packages/feature-flags/package.json packages/feature-flags/package.json
+COPY packages/feature-registry/package.json packages/feature-registry/package.json
 COPY packages/site-routes/package.json packages/site-routes/package.json
 COPY packages/markup/package.json packages/markup/package.json
 COPY packages/turnstile-web/package.json packages/turnstile-web/package.json
@@ -50,7 +51,7 @@ COPY infra/cdk/package.json infra/cdk/package.json
 # install-time scripts (that requirement -- grpc-tools' protoc binary,
 # protoc-gen-grpc-web -- is a proto-codegen-time concern for the *client*
 # side, see docs/LOCAL_DEV_PREREQUISITES.md; this image never runs codegen).
-RUN npm ci --omit=dev --ignore-scripts --workspace packages/server --workspace packages/db --workspace packages/auth-node --workspace packages/markup --include-workspace-root
+RUN npm ci --omit=dev --ignore-scripts --workspace packages/server --workspace packages/db --workspace packages/auth-node --workspace packages/markup --workspace packages/feature-registry --include-workspace-root
 
 
 FROM node:24-alpine
@@ -65,6 +66,8 @@ COPY --chown=node:node packages/auth-node/package.json packages/auth-node/packag
 COPY --chown=node:node packages/auth-node/src packages/auth-node/src
 COPY --chown=node:node packages/markup/package.json packages/markup/package.json
 COPY --chown=node:node packages/markup/src packages/markup/src
+COPY --chown=node:node packages/feature-registry/package.json packages/feature-registry/package.json
+COPY --chown=node:node packages/feature-registry/src packages/feature-registry/src
 COPY --chown=node:node packages/server/package.json packages/server/package.json
 COPY --chown=node:node packages/server/src packages/server/src
 COPY --chown=node:node proto proto

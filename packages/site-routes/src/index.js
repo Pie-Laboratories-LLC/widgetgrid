@@ -88,8 +88,11 @@ const VIEW_CHROME = {
 
 // Views not ready to be shown: each names the feature flag (in Consul,
 // see @widgetgrid/feature-flags) that has to be on before it is. Off, it's
-// left out of its section page and its path goes to the home page. The
-// flag is the l'horaire issue tracking the work.
+// left out of its section page and its path goes to the home page
+// (widgets/main checks these with isEnabled). The flag is the l'horaire
+// issue tracking the work. Hiding a whole view is a show/hide, so a flag
+// here rather than a seam -- behaviour behind a flag belongs in
+// provideFeature/resolveFeature instead.
 const VIEW_FLAGS = {
   lastnaming: 'wgtgrd-4',
 };

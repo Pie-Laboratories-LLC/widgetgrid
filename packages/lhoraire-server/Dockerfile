@@ -16,6 +16,7 @@ COPY packages/server/package.json packages/server/package.json
 COPY packages/auth-node/package.json packages/auth-node/package.json
 COPY packages/auth-web/package.json packages/auth-web/package.json
 COPY packages/feature-flags/package.json packages/feature-flags/package.json
+COPY packages/feature-registry/package.json packages/feature-registry/package.json
 COPY packages/proto-gen-web/package.json packages/proto-gen-web/package.json
 COPY packages/static-server/package.json packages/static-server/package.json
 COPY packages/vite-widget-lib/package.json packages/vite-widget-lib/package.json

@@ -59,6 +59,9 @@ export default defineConfig({
       // main.js -> @widgetgrid/auth-web (completeSignIn).
       '@widgetgrid/proto-gen-web/widgetgrid/v1/auth_pb.js',
       '@widgetgrid/proto-gen-web/widgetgrid/v1/auth_grpc_web_pb.js',
+      // main.js -> @widgetgrid/feature-flags (featureFlagsPlugin).
+      '@widgetgrid/proto-gen-web/widgetgrid/v1/config_pb.js',
+      '@widgetgrid/proto-gen-web/widgetgrid/v1/config_grpc_web_pb.js',
     ],
   },
   resolve: {
