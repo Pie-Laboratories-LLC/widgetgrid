@@ -43,9 +43,19 @@ export class SharedStack extends Stack {
       removalPolicy: RemovalPolicy.RETAIN,
     });
 
+    // The Last Naming's creature service (~/GIT/c-libraries,
+    // docs/service.md): built from that repo's own
+    // Dockerfile.service-creatures (see infra/eks/deploy.sh).
+    this.creaturesRepository = new ecr.Repository(this, 'CreaturesRepository', {
+      repositoryName: 'service-creatures',
+      imageScanOnPush: true,
+      removalPolicy: RemovalPolicy.RETAIN,
+    });
+
     new CfnOutput(this, 'ServerRepositoryUri', { value: this.serverRepository.repositoryUri });
     new CfnOutput(this, 'StaticRepositoryUri', { value: this.staticRepository.repositoryUri });
     new CfnOutput(this, 'EmbuscadeRepositoryUri', { value: this.embuscadeRepository.repositoryUri });
     new CfnOutput(this, 'LhoraireRepositoryUri', { value: this.lhoraireRepository.repositoryUri });
+    new CfnOutput(this, 'CreaturesRepositoryUri', { value: this.creaturesRepository.repositoryUri });
   }
 }

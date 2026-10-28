@@ -33,6 +33,11 @@
 # upgrade_configs below lets the upgrade through, and the route's own
 # timeout: 0s keeps the default 15s route timeout from killing every game
 # after 15s. No CORS needed on it either, same reasoning as that file.
+# /creatures/ (the creature service, infra/eks/manifests/service-creatures.yaml):
+# plain HTTP, the prefix cut off (/creatures/build -> /build). Same origin
+# as the site, so no CORS, here or in the service (it runs with CORS=non).
+# 60s: a cold /bake takes about a second; a stuck one shouldn't hang the
+# page forever.
 static_resources:
   listeners:
     - name: public_listener
@@ -79,6 +84,8 @@ static_resources:
                           route: { cluster: lhoraire_backend, timeout: 0s }
                         - match: { prefix: "/embuscade-ws" }
                           route: { cluster: embuscade_backend, timeout: 0s }
+                        - match: { prefix: "/creatures/" }
+                          route: { cluster: creatures_backend, prefix_rewrite: "/", timeout: 60s }
                         # Everything else: the static SPA/widget bundles,
                         # served by static-server.
                         - match: { prefix: "/" }
@@ -159,6 +166,20 @@ static_resources:
               - endpoint:
                   address:
                     socket_address: { address: 127.0.0.1, port_value: 8082 }
+
+    # HTTP/1.1, plain requests and replies: the creature service (see
+    # infra/eks/manifests/service-creatures.yaml).
+    - name: creatures_backend
+      connect_timeout: 5s
+      type: STATIC
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: creatures_backend
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address: { address: 127.0.0.1, port_value: 5180 }
 
 admin:
   address:
