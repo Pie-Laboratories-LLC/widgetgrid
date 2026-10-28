@@ -86,6 +86,14 @@ Emails (subscription confirmations, new-post emails) aren't sent locally
 -- they're printed to widgetgrid-server's log, confirmation links
 included: `kubectl logs -n widgetgrid deploy/widgetgrid-server -c widgetgrid-server`.
 
+(The Last Naming's creature service is built the same way from
+~/GIT/c-libraries's `Dockerfile.service-creatures` -- its submodules
+checked out -- or skipped if that repo isn't there; `C_LIBRARIES_REPO_DIR`
+points elsewhere. It's reached at `http://localhost:8080/creatures/`
+(`curl localhost:8080/creatures/health` answers `ok`), the gateway answering
+CORS for it; build the game with
+`VITE_CREATURE_SERVICE=http://localhost:8080/creatures` to use it. On EKS
+the same route is same-origin: `VITE_CREATURE_SERVICE=/creatures`.)
 (Embuscade needs ~/GIT/embuscade's `packages/client` built first --
 see widgets/embuscade/scripts/vendor-embuscade.mjs. setup.sh builds and
 deploys its server from the same repo, or skips it if it isn't there.)

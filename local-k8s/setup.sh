@@ -92,6 +92,25 @@ else
 fi
 
 echo
+echo "== service-creatures image =="
+# The Last Naming's creature service lives in c-libraries (~/GIT/c-libraries
+# by default, a sibling of this one), built from its own
+# Dockerfile.service-creatures with that repo as the context -- its
+# submodules checked out (git submodule update --init). Optional, like the
+# game server: without it, everything else still comes up. The first build
+# compiles all of its third-party libraries (several minutes); after that
+# Docker's layer cache keeps them unless third-party/ changes.
+C_LIBRARIES_REPO_DIR=${C_LIBRARIES_REPO_DIR:-../c-libraries}
+if [ -f "$C_LIBRARIES_REPO_DIR/Dockerfile.service-creatures" ]; then
+  docker build -f "$C_LIBRARIES_REPO_DIR/Dockerfile.service-creatures" -t service-creatures:local "$C_LIBRARIES_REPO_DIR"
+  kind load docker-image service-creatures:local --name "$CLUSTER_NAME"
+  HAVE_CREATURES=1
+else
+  echo "no $C_LIBRARIES_REPO_DIR/Dockerfile.service-creatures -- skipping the creature service (set C_LIBRARIES_REPO_DIR if it lives elsewhere)"
+  HAVE_CREATURES=
+fi
+
+echo
 echo "== applying manifests =="
 kubectl apply -f local-k8s/manifests/namespace.yaml
 # Tells Consul's connect-inject webhook widgetgrid-server speaks gRPC, and
@@ -132,15 +151,28 @@ if [ -n "$HAVE_EMBUSCADE" ]; then
   # without a restart the running pod keeps the old one.
   kubectl rollout restart deployment/embuscade-server -n widgetgrid
 fi
+if [ -n "$HAVE_CREATURES" ]; then
+  kubectl apply -f local-k8s/manifests/service-creatures.yaml
+  # Same reason as embuscade-server above: a fixed :local tag.
+  kubectl rollout restart deployment/service-creatures -n widgetgrid
+fi
 kubectl apply -f local-k8s/manifests/envoy-gateway.yaml
+# The gateway's config lives in a ConfigMap (envoy-local.yaml), read at
+# start: a new route -- /creatures/ -- needs a restart to take effect.
+kubectl rollout restart deployment/envoy-gateway -n widgetgrid
 
 echo
 echo "== waiting for pods to be ready (includes their injected Consul sidecars) =="
 kubectl wait --for=condition=ready pod -l app=widgetgrid-server -n widgetgrid --timeout=180s
-kubectl wait --for=condition=ready pod -l app=envoy-gateway -n widgetgrid --timeout=180s
 if [ -n "$HAVE_EMBUSCADE" ]; then
   kubectl rollout status deployment/embuscade-server -n widgetgrid --timeout=180s
 fi
+if [ -n "$HAVE_CREATURES" ]; then
+  kubectl rollout status deployment/service-creatures -n widgetgrid --timeout=180s
+fi
+# Not a pod wait: the restart above leaves the old pod terminating, and a
+# pod wait races with it (infra/eks/deploy.sh does the same)
+kubectl rollout status deployment/envoy-gateway -n widgetgrid --timeout=180s
 
 cat <<'EOF'
 
@@ -153,6 +185,10 @@ Try it (needs grpcurl: https://github.com/fullstorydev/grpcurl):
 (That'll come back NOT_FOUND unless you've also run `npm run db:migrate` +
 `npm run db:seed` against the Postgres this pod is configured to reach --
 see local-k8s/README.md.)
+
+The creature service (if built) is at http://localhost:8080/creatures/ --
+  curl localhost:8080/creatures/health
+  and the game's VITE_CREATURE_SERVICE=http://localhost:8080/creatures.
 
 Useful commands:
   kubectl get pods -n widgetgrid

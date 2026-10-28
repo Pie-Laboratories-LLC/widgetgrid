@@ -26,6 +26,14 @@
 # localhost bind; see the comment there. embuscade_backend (127.0.0.1:8082)
 # is the same arrangement for the Embuscade game server.
 #
+# /creatures/... is the creature service (service-creatures.yaml), plain
+# HTTP: the prefix is cut off (/creatures/build -> /build) and its own CORS
+# policy answers here -- the service runs with CORS=non, since two
+# Access-Control-Allow-Origin headers make the browser reject a response.
+# It exposes Server-Timing (and sends Timing-Allow-Origin) so the game can
+# read each build's stage timings. 60s: a cold /bake takes about a second;
+# a stuck one shouldn't hang the page forever.
+#
 # /embuscade-ws is a WebSocket, not gRPC-Web: upgrade_configs below lets
 # the upgrade through, and the route's own timeout: 0s keeps the default
 # 15s route timeout from killing every game after 15s. No CORS needed on
@@ -52,6 +60,20 @@ static_resources:
                       routes:
                         - match: { prefix: "/embuscade-ws" }
                           route: { cluster: embuscade_backend, timeout: 0s }
+                        - match: { prefix: "/creatures/" }
+                          route:
+                            cluster: creatures_backend
+                            prefix_rewrite: "/"
+                            timeout: 60s
+                            cors:
+                              allow_origin_string_match:
+                                - safe_regex: { regex: ".*" }
+                              allow_methods: "GET, POST, OPTIONS"
+                              allow_headers: "content-type"
+                              expose_headers: "server-timing"
+                              max_age: "1728000"
+                          response_headers_to_add:
+                            - header: { key: timing-allow-origin, value: "*" }
                         - match: { prefix: "/" }
                           route:
                             cluster: widgetgrid_backend
@@ -127,6 +149,19 @@ static_resources:
               - endpoint:
                   address:
                     socket_address: { address: 127.0.0.1, port_value: 8082 }
+
+    # HTTP/1.1, plain requests and replies: the creature service.
+    - name: creatures_backend
+      connect_timeout: 5s
+      type: STATIC
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: creatures_backend
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address: { address: 127.0.0.1, port_value: 5180 }
 
 admin:
   address:

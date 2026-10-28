@@ -1,0 +1,85 @@
+# The Last Naming's creature service (~/GIT/c-libraries, docs/service.md):
+# builds a character from its parameters and returns it as a .glb -- the
+# Appearance tab's sliders (POST /build) and his clips at Begin (POST /bake).
+# Image built and pushed to ECR by infra/eks/deploy.sh from that repo's own
+# Dockerfile.service-creatures. Same Consul Connect pattern as
+# infra/eks/manifests/embuscade-server.yaml: envoy-gateway reaches it through its own
+# connect-service-upstreams entry (127.0.0.1:5180), and routes
+# /creatures/... to it (infra/eks/envoy/envoy-eks.yaml).
+#
+# HOTE stays 127.0.0.1 (the image's default): only this pod's sidecar,
+# which forwards inbound mesh traffic to localhost, can reach it.
+# Kubernetes' HTTP probes still work -- with transparent proxy on
+# (Consul's cluster default) the injector rewrites them to go through the
+# sidecar's exposed path.
+#
+# CORS=non: the site and the service share one origin through Envoy;
+# no browser request here is cross-origin, so nothing answers CORS.
+#
+# Stateless apart from a per-script skinning cache, so a restart costs
+# only the next request's warm-up -- but it serialises /build (a newer
+# request replaces a waiting one), so one replica per player pool.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-creatures
+  namespace: widgetgrid
+  labels:
+    app: service-creatures
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-creatures
+  template:
+    metadata:
+      labels:
+        app: service-creatures
+      annotations:
+        consul.hashicorp.com/connect-inject: "true"
+    spec:
+      containers:
+        - name: service-creatures
+          image: ${CREATURES_IMAGE}
+          imagePullPolicy: Always
+          env:
+            - { name: PORT, value: "5180" }
+            - { name: HOTE, value: "127.0.0.1" }
+            - { name: CORS, value: "non" }
+          ports:
+            - containerPort: 5180
+              name: http
+          resources:
+            requests: { cpu: 500m, memory: 512Mi }
+            limits: { memory: 2Gi }
+          readinessProbe:
+            httpGet: { path: /health, port: 5180 }
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /health, port: 5180 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-creatures
+  namespace: widgetgrid
+spec:
+  selector:
+    app: service-creatures
+  ports:
+    - port: 5180
+      targetPort: 5180
+      name: http
+---
+# protocol: http -- plain HTTP/1.1 requests and replies. The mesh hop's
+# default 15s route timeout is ample: a cold /bake takes about a second.
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: service-creatures
+  namespace: widgetgrid
+spec:
+  protocol: http

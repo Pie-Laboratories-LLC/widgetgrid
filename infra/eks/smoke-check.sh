@@ -54,6 +54,10 @@ code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 --http1.1 \
   -H 'Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==' "$BASE/embuscade-ws" || true)
 if [ "$code" = 101 ]; then pass "embuscade websocket upgrade"; else fail "embuscade websocket upgrade" "HTTP $code"; fi
 
+# The creature service, through Envoy's /creatures/ route and its mesh hop.
+body=$(curl -s --max-time 15 "$BASE/creatures/health" || true)
+if [ "$body" = ok ]; then pass "creature service health"; else fail "creature service health" "got '${body:0:60}'"; fi
+
 echo "== gRPC-web =="
 # GetPageLayout { slug: "home" }
 s=$(grpc_web widgetgrid.v1.PageService/GetPageLayout '\x00\x00\x00\x00\x06\x0a\x04home')
