@@ -1,7 +1,67 @@
-(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-blog[data-v-fe8e60c2]{box-sizing:border-box;padding:clamp(16px,4vw,32px)}.blog-status[data-v-fe8e60c2]{color:#666}.post[data-v-fe8e60c2]{border-bottom:1px solid #ddd;max-width:1100px;margin:0 0 40px;padding-bottom:40px}.post[data-v-fe8e60c2]:last-child{border-bottom:none}.post[data-v-fe8e60c2]:not(.post-open){cursor:pointer}.post:not(.post-open):hover .post-title[data-v-fe8e60c2]{text-decoration:underline}.post-title[data-v-fe8e60c2]{margin:0 0 4px}.post-date[data-v-fe8e60c2]{color:#888;margin-bottom:16px;font-size:.85rem;display:block}.post-body[data-v-fe8e60c2] h1{font-size:1.2rem}.post-body[data-v-fe8e60c2] img{max-width:100%;height:auto}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
+(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-blog[data-v-3c1d2db0]{box-sizing:border-box;padding:clamp(16px,4vw,32px)}.blog-status[data-v-3c1d2db0]{color:#666}.post[data-v-3c1d2db0]{border-bottom:1px solid #ddd;max-width:1100px;margin:0 0 40px;padding-bottom:40px}.post[data-v-3c1d2db0]:last-child{border-bottom:none}.post[data-v-3c1d2db0]:not(.post-open){cursor:pointer}.post:not(.post-open):hover .post-title[data-v-3c1d2db0]{text-decoration:underline}.post-title[data-v-3c1d2db0]{margin:0 0 4px}.post-date[data-v-3c1d2db0]{color:#888;margin-bottom:16px;font-size:.85rem;display:block}.post-body[data-v-3c1d2db0] h1{font-size:1.2rem}.post-body[data-v-3c1d2db0] img{max-width:100%;height:auto}.contact-anchor[data-v-3c1d2db0]{z-index:5;height:0;position:sticky;bottom:0}.contact[data-v-3c1d2db0]{flex-direction:column;align-items:flex-end;gap:8px;display:flex;position:absolute;bottom:16px;right:0}.contact-panel[data-v-3c1d2db0]{color:#f4ead9;background:#050505;border-radius:8px;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:8px 12px;padding:10px 14px;font-size:.85rem;transition:opacity .2s;display:flex;box-shadow:0 4px 16px #00000040}.contact-address[data-v-3c1d2db0]{white-space:nowrap;color:inherit;text-decoration:none}.contact-address[data-v-3c1d2db0]:hover,.contact-address[data-v-3c1d2db0]:focus-visible{text-decoration:underline}.contact-buttons[data-v-3c1d2db0]{gap:8px;display:flex}.contact-button[data-v-3c1d2db0]{color:inherit;border:1px solid #f4ead966;border-radius:6px;padding:4px 12px;text-decoration:none}.contact-button[data-v-3c1d2db0]:hover,.contact-button[data-v-3c1d2db0]:focus-visible{background:#f4ead91f}.contact-toggle[data-v-3c1d2db0]{color:#f4ead9;cursor:pointer;background:#050505;border:none;border-radius:999px;padding:10px;line-height:0;display:none;box-shadow:0 4px 16px #00000040}.contact-toggle svg[data-v-3c1d2db0]{width:22px;height:22px}@media (hover:hover){.contact-panel[data-v-3c1d2db0]{opacity:0;pointer-events:none}.widget-blog:hover .contact-panel[data-v-3c1d2db0],.contact-panel[data-v-3c1d2db0]:focus-within{opacity:1;pointer-events:auto}}@media (hover:none){.contact-toggle[data-v-3c1d2db0]{display:block}.contact:not(.contact-open) .contact-panel[data-v-3c1d2db0]{display:none}}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
 import { Fragment, createElementBlock, createElementVNode, normalizeClass, openBlock, renderList, toDisplayString } from "vue";
 //#region \0rolldown/runtime.js
-var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t.exports), require_google_protobuf = /* @__PURE__ */ __commonJSMin(((exports) => {
+var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t.exports), NAVIGATE_EVENT = "widgetgrid:navigate", VIEW_PATHS = {
+	blog: "/blog",
+	games: "/games",
+	solitaire: "/games/solitaire",
+	embuscade: "/games/embuscade",
+	lastnaming: "/games/the-last-naming",
+	site: "/site",
+	lhoraire: "/site/lhoraire",
+	messages: "/site/messages",
+	subscribe: "/site/subscribe",
+	login: "/site/login",
+	register: "/site/register",
+	account: "/site/account",
+	write: "/site/write",
+	chat: "/chat"
+};
+function parseSitePath(e) {
+	let t = e.replace(/\/+$/, "") || "/";
+	if (t === "/") return {
+		view: "blog",
+		post: null
+	};
+	let n = /^\/blog(?:\/([^/]+))?$/.exec(t);
+	if (n) return {
+		view: "blog",
+		post: n[1] ? decodeURIComponent(n[1]) : null
+	};
+	let r = /^\/site\/messages(?:\/([a-z0-9-]+)(?:\/(\d+))?)?$/.exec(t);
+	if (r) return {
+		view: "messages",
+		post: null,
+		board: {
+			section: r[1] ?? null,
+			thread: r[2] ?? null
+		}
+	};
+	let i = /^\/site\/write(?:\/(\d+))?$/.exec(t);
+	if (i) return {
+		view: "write",
+		post: null,
+		draft: i[1] ?? null
+	};
+	for (let [e, n] of Object.entries(VIEW_PATHS)) if (t === n) return {
+		view: e,
+		post: null
+	};
+	return null;
+}
+function sitePath(e, t = null) {
+	return e === "blog" && t ? `/blog/${encodeURIComponent(t)}` : VIEW_PATHS[e] ?? "/";
+}
+function navigate(e, { forceReload: t = !1, replace: n = !1 } = {}) {
+	window.dispatchEvent(new CustomEvent(NAVIGATE_EVENT, { detail: {
+		path: e,
+		forceReload: t,
+		replace: n
+	} }));
+}
+//#endregion
+//#region ../../node_modules/google-protobuf/google-protobuf.js
+var require_google_protobuf = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var COMPILED = !0, goog = goog || {};
 	if (goog.global = exports || self, goog.exportPath_ = function(e, t, n, r) {
 		e = e.split("."), r ||= goog.global, e[0] in r || r.execScript === void 0 || r.execScript("var " + e[0]);
@@ -4157,7 +4217,7 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 	var t = require_google_protobuf(), n = t, r = function() {
 		return this ? this : typeof window < "u" ? window : r === void 0 ? typeof self < "u" ? self : Function("return this")() : r;
 	}.call(null);
-	n.exportSymbol("proto.widgetgrid.v1.BlogPost", null, r), n.exportSymbol("proto.widgetgrid.v1.ListBlogPostsRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.ListBlogPostsResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.NewPostEvent", null, r), n.exportSymbol("proto.widgetgrid.v1.SubscribeNewPostsRequest", null, r), proto.widgetgrid.v1.BlogPost = function(e) {
+	n.exportSymbol("proto.widgetgrid.v1.BlogPost", null, r), n.exportSymbol("proto.widgetgrid.v1.GetFeedRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.GetFeedResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.ListBlogPostsRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.ListBlogPostsResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.NewPostEvent", null, r), n.exportSymbol("proto.widgetgrid.v1.SubscribeNewPostsRequest", null, r), proto.widgetgrid.v1.BlogPost = function(e) {
 		t.Message.initialize(this, e, 0, -1, null, null);
 	}, n.inherits(proto.widgetgrid.v1.BlogPost, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.BlogPost.displayName = "proto.widgetgrid.v1.BlogPost"), proto.widgetgrid.v1.ListBlogPostsRequest = function(e) {
 		t.Message.initialize(this, e, 0, -1, null, null);
@@ -4167,7 +4227,11 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 		t.Message.initialize(this, e, 0, -1, null, null);
 	}, n.inherits(proto.widgetgrid.v1.SubscribeNewPostsRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.SubscribeNewPostsRequest.displayName = "proto.widgetgrid.v1.SubscribeNewPostsRequest"), proto.widgetgrid.v1.NewPostEvent = function(e) {
 		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.NewPostEvent, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.NewPostEvent.displayName = "proto.widgetgrid.v1.NewPostEvent"), t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.BlogPost.prototype.toObject = function(e) {
+	}, n.inherits(proto.widgetgrid.v1.NewPostEvent, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.NewPostEvent.displayName = "proto.widgetgrid.v1.NewPostEvent"), proto.widgetgrid.v1.GetFeedRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.GetFeedRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.GetFeedRequest.displayName = "proto.widgetgrid.v1.GetFeedRequest"), proto.widgetgrid.v1.GetFeedResponse = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.GetFeedResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.GetFeedResponse.displayName = "proto.widgetgrid.v1.GetFeedResponse"), t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.BlogPost.prototype.toObject = function(e) {
 		return proto.widgetgrid.v1.BlogPost.toObject(e, this);
 	}, proto.widgetgrid.v1.BlogPost.toObject = function(e, n) {
 		var r = {
@@ -4362,6 +4426,47 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 		return t.Message.getFieldWithDefault(this, 3, "");
 	}, proto.widgetgrid.v1.NewPostEvent.prototype.setPublishedAt = function(e) {
 		return t.Message.setProto3StringField(this, 3, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.GetFeedRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.GetFeedRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.GetFeedRequest.toObject = function(e, t) {
+		var n = {};
+		return e && (n.$jspbMessageInstance = t), n;
+	}), proto.widgetgrid.v1.GetFeedRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.GetFeedRequest();
+		return proto.widgetgrid.v1.GetFeedRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.GetFeedRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		return e;
+	}, proto.widgetgrid.v1.GetFeedRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.GetFeedRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.GetFeedRequest.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.GetFeedResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.GetFeedResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.GetFeedResponse.toObject = function(e, n) {
+		var r = { rssXml: t.Message.getFieldWithDefault(n, 1, "") };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.GetFeedResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.GetFeedResponse();
+		return proto.widgetgrid.v1.GetFeedResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.GetFeedResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setRssXml(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.GetFeedResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.GetFeedResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.GetFeedResponse.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getRssXml(), n.length > 0 && t.writeString(1, n);
+	}, proto.widgetgrid.v1.GetFeedResponse.prototype.getRssXml = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.GetFeedResponse.prototype.setRssXml = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
 	}, n.object.extend(e, proto.widgetgrid.v1);
 })), require_grpc_web = /* @__PURE__ */ __commonJSMin(((e, t) => {
 	var n, r = r || {}, i = e || self;
@@ -5440,13 +5545,21 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 	}, r.widgetgrid.v1.BlogServicePromiseClient.prototype.listBlogPosts = function(e, t) {
 		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.BlogService/ListBlogPosts", e, t || {}, i);
 	};
-	var o = new n.web.MethodDescriptor("/widgetgrid.v1.BlogService/SubscribeNewPosts", n.web.MethodType.SERVER_STREAMING, r.widgetgrid.v1.SubscribeNewPostsRequest, r.widgetgrid.v1.NewPostEvent, function(e) {
+	var o = new n.web.MethodDescriptor("/widgetgrid.v1.BlogService/GetFeed", n.web.MethodType.UNARY, r.widgetgrid.v1.GetFeedRequest, r.widgetgrid.v1.GetFeedResponse, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.GetFeedResponse.deserializeBinary);
+	r.widgetgrid.v1.BlogServiceClient.prototype.getFeed = function(e, t, n) {
+		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.BlogService/GetFeed", e, t || {}, o, n);
+	}, r.widgetgrid.v1.BlogServicePromiseClient.prototype.getFeed = function(e, t) {
+		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.BlogService/GetFeed", e, t || {}, o);
+	};
+	var s = new n.web.MethodDescriptor("/widgetgrid.v1.BlogService/SubscribeNewPosts", n.web.MethodType.SERVER_STREAMING, r.widgetgrid.v1.SubscribeNewPostsRequest, r.widgetgrid.v1.NewPostEvent, function(e) {
 		return e.serializeBinary();
 	}, r.widgetgrid.v1.NewPostEvent.deserializeBinary);
 	r.widgetgrid.v1.BlogServiceClient.prototype.subscribeNewPosts = function(e, t) {
-		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.BlogService/SubscribeNewPosts", e, t || {}, o);
+		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.BlogService/SubscribeNewPosts", e, t || {}, s);
 	}, r.widgetgrid.v1.BlogServicePromiseClient.prototype.subscribeNewPosts = function(e, t) {
-		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.BlogService/SubscribeNewPosts", e, t || {}, o);
+		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.BlogService/SubscribeNewPosts", e, t || {}, s);
 	}, t.exports = r.widgetgrid.v1;
 })), import_blog_pb = require_blog_pb(), import_blog_grpc_web_pb = require_blog_grpc_web_pb(), client = new import_blog_grpc_web_pb.BlogServicePromiseClient("http://localhost:8080"), blogClient = { async listBlogPosts() {
 	return { posts: (await client.listBlogPosts(new import_blog_pb.ListBlogPostsRequest(), {})).toObject().postsList };
@@ -5454,7 +5567,7 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 	let n = e.__vccOpts || e;
 	for (let [e, r] of t) n[e] = r;
 	return n;
-}, _sfc_main = {
+}, WEBMASTER = "webmaster@pie-laboratories.com", _sfc_main = {
 	name: "BlogWidget",
 	props: {
 		data: {
@@ -5470,17 +5583,37 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 		return {
 			posts: [],
 			status: "loading",
-			expandedSlug: null
+			contactOpen: !1,
+			WEBMASTER
 		};
 	},
+	computed: {
+		subscribePath() {
+			return sitePath("subscribe");
+		},
+		expandedSlug() {
+			return this.posts.find((e) => e.slug === this.data.post)?.slug ?? this.posts[0]?.slug ?? null;
+		}
+	},
+	watch: { "data.post"() {
+		this.scrollToPost();
+	} },
 	created() {
 		blogClient.listBlogPosts().then((e) => {
-			this.posts = e.posts, this.expandedSlug = e.posts[0]?.slug ?? null, this.status = "ready";
+			this.posts = e.posts, this.status = "ready", this.scrollToPost();
 		}).catch(() => {
 			this.status = "error";
 		});
 	},
 	methods: {
+		onSubscribeClick(e) {
+			e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || (e.preventDefault(), navigate(this.subscribePath));
+		},
+		scrollToPost() {
+			this.data.post && this.$nextTick(() => {
+				document.getElementById(`post-${this.expandedSlug}`)?.scrollIntoView({ block: "start" });
+			});
+		},
 		formatDate(e) {
 			return new Date(e).toLocaleDateString("en-US", {
 				year: "numeric",
@@ -5489,7 +5622,13 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 			});
 		},
 		onPostClick(e, t) {
-			t.target.closest("a") || (this.expandedSlug = e.slug);
+			let n = t.target.closest("a");
+			if (n) {
+				let e = new URL(n.href, window.location.href);
+				!t.metaKey && !t.ctrlKey && !t.shiftKey && !t.altKey && e.origin === window.location.origin && !n.target && parseSitePath(e.pathname) && (t.preventDefault(), navigate(e.pathname + e.search + e.hash));
+				return;
+			}
+			e.slug !== this.expandedSlug && navigate(sitePath("blog", e.slug));
 		}
 	}
 }, _hoisted_1 = { class: "widget widget-blog" }, _hoisted_2 = {
@@ -5501,12 +5640,15 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 }, _hoisted_4 = {
 	key: 2,
 	class: "blog-status"
-}, _hoisted_5 = ["id", "onClick"], _hoisted_6 = { class: "post-title" }, _hoisted_7 = ["datetime"], _hoisted_8 = ["innerHTML"];
+}, _hoisted_5 = ["id", "onClick"], _hoisted_6 = { class: "post-title" }, _hoisted_7 = ["datetime"], _hoisted_8 = ["innerHTML"], _hoisted_9 = { class: "contact-anchor" }, _hoisted_10 = {
+	id: "blog-contact-panel",
+	class: "contact-panel"
+}, _hoisted_11 = ["href"], _hoisted_12 = { class: "contact-buttons" }, _hoisted_13 = ["href"], _hoisted_14 = ["aria-expanded"];
 function _sfc_render(e, t, n, r, i, o) {
 	return openBlock(), createElementBlock("div", _hoisted_1, [i.status === "loading" ? (openBlock(), createElementBlock("p", _hoisted_2, "Loading posts…")) : i.status === "error" ? (openBlock(), createElementBlock("p", _hoisted_3, "Couldn't load posts.")) : i.posts.length === 0 ? (openBlock(), createElementBlock("p", _hoisted_4, "No posts yet.")) : (openBlock(!0), createElementBlock(Fragment, { key: 3 }, renderList(i.posts, (e) => (openBlock(), createElementBlock("article", {
 		key: e.slug,
 		id: `post-${e.slug}`,
-		class: normalizeClass(["post", { "post-open": e.slug === i.expandedSlug }]),
+		class: normalizeClass(["post", { "post-open": e.slug === o.expandedSlug }]),
 		onClick: (t) => o.onPostClick(e, t)
 	}, [
 		createElementVNode("h2", _hoisted_6, toDisplayString(e.title), 1),
@@ -5516,10 +5658,35 @@ function _sfc_render(e, t, n, r, i, o) {
 		}, toDisplayString(o.formatDate(e.publishedAt)), 9, _hoisted_7),
 		createElementVNode("div", {
 			class: "post-body",
-			innerHTML: e.slug === i.expandedSlug ? e.contentHtml : e.synopsisHtml
+			innerHTML: e.slug === o.expandedSlug ? e.contentHtml : e.synopsisHtml
 		}, null, 8, _hoisted_8)
-	], 10, _hoisted_5))), 128))]);
+	], 10, _hoisted_5))), 128)), createElementVNode("div", _hoisted_9, [createElementVNode("div", { class: normalizeClass(["contact", { "contact-open": i.contactOpen }]) }, [createElementVNode("div", _hoisted_10, [createElementVNode("a", {
+		class: "contact-address",
+		href: `mailto:${i.WEBMASTER}`
+	}, toDisplayString(i.WEBMASTER), 9, _hoisted_11), createElementVNode("span", _hoisted_12, [createElementVNode("a", {
+		class: "contact-button",
+		href: o.subscribePath,
+		onClick: t[0] ||= (...e) => o.onSubscribeClick && o.onSubscribeClick(...e)
+	}, "Subscribe", 8, _hoisted_13), t[2] ||= createElementVNode("a", {
+		class: "contact-button",
+		href: "/rss.xml"
+	}, "RSS", -1)])]), createElementVNode("button", {
+		type: "button",
+		class: "contact-toggle",
+		"aria-label": "Contact",
+		"aria-controls": "blog-contact-panel",
+		"aria-expanded": i.contactOpen ? "true" : "false",
+		onClick: t[1] ||= (e) => i.contactOpen = !i.contactOpen
+	}, [...t[3] ||= [createElementVNode("svg", {
+		viewBox: "0 0 24 24",
+		fill: "none",
+		stroke: "currentColor",
+		"stroke-width": "2",
+		"stroke-linecap": "round",
+		"stroke-linejoin": "round",
+		"aria-hidden": "true"
+	}, [createElementVNode("path", { d: "M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" }), createElementVNode("path", { d: "M3 7l9 6l9 -6" })], -1)]], 8, _hoisted_14)], 2)])]);
 }
-var BlogWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-fe8e60c2"]]);
+var BlogWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-3c1d2db0"]]);
 //#endregion
 export { BlogWidget_default as default };

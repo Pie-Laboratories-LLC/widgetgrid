@@ -1,5 +1,5 @@
-(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.login-logout-link[data-v-ab26e2ad]{color:#f4ead9;opacity:.7;cursor:pointer;background:0 0;border:none;padding:6px 4px;font-size:.85rem}.login-logout-link[data-v-ab26e2ad]:hover{opacity:1;text-decoration:underline}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
-import { createCommentVNode, createElementBlock, openBlock } from "vue";
+(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.login-link[data-v-b021e68e]{color:#f4ead9;opacity:.7;cursor:pointer;white-space:nowrap;background:0 0;border:none;padding:6px 4px;font-size:.85rem;text-decoration:none}.login-link[data-v-b021e68e]:hover,.login-link[data-v-b021e68e]:focus-visible{opacity:1;text-decoration:underline}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
+import { createElementBlock, openBlock } from "vue";
 //#region \0rolldown/runtime.js
 var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t.exports), require_google_protobuf = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var COMPILED = !0, goog = goog || {};
@@ -4201,7 +4201,8 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 	}, proto.widgetgrid.v1.RegisterSignInResponse.toObject = function(e, n) {
 		var r = {
 			sessionToken: t.Message.getFieldWithDefault(n, 1, ""),
-			role: t.Message.getFieldWithDefault(n, 2, "")
+			role: t.Message.getFieldWithDefault(n, 2, ""),
+			username: t.Message.getFieldWithDefault(n, 3, "")
 		};
 		return e && (r.$jspbMessageInstance = n), r;
 	}), proto.widgetgrid.v1.RegisterSignInResponse.deserializeBinary = function(e) {
@@ -4217,6 +4218,10 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 				var n = t.readString();
 				e.setRole(n);
 				break;
+			case 3:
+				var n = t.readString();
+				e.setUsername(n);
+				break;
 			default: t.skipField();
 		}
 		return e;
@@ -4225,7 +4230,7 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 		return proto.widgetgrid.v1.RegisterSignInResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
 	}, proto.widgetgrid.v1.RegisterSignInResponse.serializeBinaryToWriter = function(e, t) {
 		var n = void 0;
-		n = e.getSessionToken(), n.length > 0 && t.writeString(1, n), n = e.getRole(), n.length > 0 && t.writeString(2, n);
+		n = e.getSessionToken(), n.length > 0 && t.writeString(1, n), n = e.getRole(), n.length > 0 && t.writeString(2, n), n = e.getUsername(), n.length > 0 && t.writeString(3, n);
 	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.getSessionToken = function() {
 		return t.Message.getFieldWithDefault(this, 1, "");
 	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.setSessionToken = function(e) {
@@ -4234,6 +4239,10 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 		return t.Message.getFieldWithDefault(this, 2, "");
 	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.setRole = function(e) {
 		return t.Message.setProto3StringField(this, 2, e);
+	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.getUsername = function() {
+		return t.Message.getFieldWithDefault(this, 3, "");
+	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.setUsername = function(e) {
+		return t.Message.setProto3StringField(this, 3, e);
 	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.LogoutRequest.prototype.toObject = function(e) {
 		return proto.widgetgrid.v1.LogoutRequest.toObject(e, this);
 	}, proto.widgetgrid.v1.LogoutRequest.toObject = function(e, n) {
@@ -5410,16 +5419,7 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.subscribeOwnerPresence = function(e, t) {
 		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.AuthService/SubscribeOwnerPresence", e, t || {}, s);
 	}, t.exports = r.widgetgrid.v1;
-})), import_auth_pb = require_auth_pb(), import_auth_grpc_web_pb = require_auth_grpc_web_pb(), AUTH_ORIGIN = "https://auth.pie-laboratories.com", CLIENT_ID = "bvec1bfa2e7srgjf237e2m3ja", IDENTITY_PROVIDER = "IdentityCenter", CALLBACK_PATH = "/auth/callback", STORAGE_KEY = "widgetgrid:auth", PKCE_PREFIX = "widgetgrid:pkce:", PKCE_TTL_MS = 6e5, IDENTITY_CHANGED_EVENT = "widgetgrid:identity-changed";
-function redirectUri() {
-	return `${window.location.origin}${CALLBACK_PATH}`;
-}
-function base64url(e) {
-	return btoa(String.fromCharCode(...new Uint8Array(e))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-}
-function randomString(e) {
-	return base64url(crypto.getRandomValues(new Uint8Array(e)));
-}
+})), import_auth_pb = require_auth_pb(), import_auth_grpc_web_pb = require_auth_grpc_web_pb(), AUTH_ORIGIN = "https://auth.pie-laboratories.com", CLIENT_ID = "bvec1bfa2e7srgjf237e2m3ja", STORAGE_KEY = "widgetgrid:auth", IDENTITY_CHANGED_EVENT = "widgetgrid:identity-changed";
 function readStored() {
 	try {
 		return JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? null;
@@ -5441,31 +5441,9 @@ function decodeClaims(e) {
 	return JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(t), (e) => e.charCodeAt(0))));
 }
 var signInStarting = !1;
-async function startSignIn() {
-	if (signInStarting) return;
-	signInStarting = !0;
-	let e = randomString(48), t = base64url(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(e))), n = randomString(16);
-	for (let e = localStorage.length - 1; e >= 0; --e) {
-		let t = localStorage.key(e);
-		t?.startsWith(PKCE_PREFIX) && (JSON.parse(localStorage.getItem(t))?.startedAt ?? 0) < Date.now() - PKCE_TTL_MS && localStorage.removeItem(t);
-	}
-	localStorage.setItem(PKCE_PREFIX + n, JSON.stringify({
-		verifier: e,
-		startedAt: Date.now(),
-		returnTo: window.location.pathname + window.location.search
-	}));
-	let r = new URLSearchParams({
-		response_type: "code",
-		client_id: CLIENT_ID,
-		redirect_uri: redirectUri(),
-		scope: "openid email profile",
-		code_challenge: t,
-		code_challenge_method: "S256",
-		identity_provider: IDENTITY_PROVIDER,
-		state: n
-	});
-	window.location.assign(`${AUTH_ORIGIN}/oauth2/authorize?${r}`);
-}
+window.addEventListener("pageshow", (e) => {
+	e.persisted;
+});
 function getIdentity() {
 	let e = readStored();
 	if (!e) return null;
@@ -5474,7 +5452,8 @@ function getIdentity() {
 		return {
 			email: t.email,
 			groups: t["cognito:groups"] ?? [],
-			role: e.role
+			role: e.role,
+			username: e.username ?? ""
 		};
 	} catch {
 		return null;
@@ -5486,6 +5465,39 @@ async function signOut({ grpcWebOrigin: e = "" } = {}) {
 		let n = new import_auth_pb.LogoutRequest();
 		n.setToken(t.sessionToken), await new import_auth_grpc_web_pb.AuthServicePromiseClient(e).logout(n, {});
 	} catch {}
+	let n = new URLSearchParams({
+		client_id: t?.clientId ?? CLIENT_ID,
+		logout_uri: `${window.location.origin}/`
+	});
+	window.location.assign(`${AUTH_ORIGIN}/logout?${n}`);
+}
+//#endregion
+//#region ../../packages/site-routes/src/index.js
+var NAVIGATE_EVENT = "widgetgrid:navigate", ROUTE_EVENT = "widgetgrid:route", VIEW_PATHS = {
+	blog: "/blog",
+	games: "/games",
+	solitaire: "/games/solitaire",
+	embuscade: "/games/embuscade",
+	lastnaming: "/games/the-last-naming",
+	site: "/site",
+	lhoraire: "/site/lhoraire",
+	messages: "/site/messages",
+	subscribe: "/site/subscribe",
+	login: "/site/login",
+	register: "/site/register",
+	account: "/site/account",
+	write: "/site/write",
+	chat: "/chat"
+};
+function sitePath(e, t = null) {
+	return e === "blog" && t ? `/blog/${encodeURIComponent(t)}` : VIEW_PATHS[e] ?? "/";
+}
+function navigate(e, { forceReload: t = !1, replace: n = !1 } = {}) {
+	window.dispatchEvent(new CustomEvent(NAVIGATE_EVENT, { detail: {
+		path: e,
+		forceReload: t,
+		replace: n
+	} }));
 }
 //#endregion
 //#region \0plugin-vue:export-helper
@@ -5493,7 +5505,11 @@ var _plugin_vue_export_helper_default = (e, t) => {
 	let n = e.__vccOpts || e;
 	for (let [e, r] of t) n[e] = r;
 	return n;
-}, GRPC_WEB_ORIGIN = "http://localhost:8080", _sfc_main = {
+}, GRPC_WEB_ORIGIN = "http://localhost:8080", ACCOUNT_VIEWS = [
+	"/site/login",
+	"/site/register",
+	"/site/account"
+], _sfc_main = {
 	name: "LoginWidget",
 	props: {
 		data: {
@@ -5508,38 +5524,47 @@ var _plugin_vue_export_helper_default = (e, t) => {
 	data() {
 		return {
 			identity: getIdentity(),
-			clickCount: 0
+			here: window.location.pathname
 		};
 	},
+	computed: { loginHref() {
+		return ACCOUNT_VIEWS.includes(this.here) ? sitePath("login") : `${sitePath("login")}?return=${encodeURIComponent(this.here)}`;
+	} },
 	created() {
-		window.addEventListener("widgetgrid:logo-click", this.onLogoClick), window.addEventListener(IDENTITY_CHANGED_EVENT, this.onIdentityChanged);
+		window.addEventListener(IDENTITY_CHANGED_EVENT, this.onIdentityChanged), window.addEventListener(ROUTE_EVENT, this.onRoute);
 	},
 	beforeUnmount() {
-		window.removeEventListener("widgetgrid:logo-click", this.onLogoClick), window.removeEventListener(IDENTITY_CHANGED_EVENT, this.onIdentityChanged), clearTimeout(this.clickResetTimer);
+		window.removeEventListener(IDENTITY_CHANGED_EVENT, this.onIdentityChanged), window.removeEventListener(ROUTE_EVENT, this.onRoute);
 	},
 	methods: {
-		onLogoClick() {
-			this.identity || (this.clickCount += 1, clearTimeout(this.clickResetTimer), this.clickResetTimer = setTimeout(() => {
-				this.clickCount = 0;
-			}, 2e3), this.clickCount >= 5 && (this.clickCount = 0, startSignIn()));
-		},
 		onIdentityChanged() {
 			this.identity = getIdentity();
+		},
+		onRoute(e) {
+			this.here = e.detail.path;
+		},
+		onLoginClick(e) {
+			e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || (e.preventDefault(), navigate(this.loginHref));
 		},
 		logout() {
 			signOut({ grpcWebOrigin: GRPC_WEB_ORIGIN });
 		}
 	}
-}, _hoisted_1 = { class: "widget widget-login" }, _hoisted_2 = ["title"];
+}, _hoisted_1 = { class: "widget widget-login" }, _hoisted_2 = ["title"], _hoisted_3 = ["href"];
 function _sfc_render(e, t, n, r, i, o) {
 	return openBlock(), createElementBlock("div", _hoisted_1, [i.identity ? (openBlock(), createElementBlock("button", {
 		key: 0,
 		type: "button",
-		class: "login-logout-link",
-		title: i.identity.email,
+		class: "login-link",
+		title: i.identity.username || i.identity.email,
 		onClick: t[0] ||= (...e) => o.logout && o.logout(...e)
-	}, "Log out", 8, _hoisted_2)) : createCommentVNode("", !0)]);
+	}, "Log out", 8, _hoisted_2)) : (openBlock(), createElementBlock("a", {
+		key: 1,
+		class: "login-link",
+		href: o.loginHref,
+		onClick: t[1] ||= (...e) => o.onLoginClick && o.onLoginClick(...e)
+	}, "Log in", 8, _hoisted_3))]);
 }
-var LoginWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-ab26e2ad"]]);
+var LoginWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-b021e68e"]]);
 //#endregion
 export { LoginWidget_default as default };

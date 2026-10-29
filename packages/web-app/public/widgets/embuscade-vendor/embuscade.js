@@ -1520,7 +1520,7 @@ Currently, there are two power ups:
 * \`⚕️\`: health.  Restores 50 health towards the current max health.
 * \`💗\`: health boost.  Increases max health to a total of 200 and instantly
   restores 100 health
-* ![Ram Horns](./docs/Ram-Horns.png): ram's horns.  Absorbs 150 points of
+* ![Ram Horns](./docs/Ram-Horns.png): ram's horns.  Absorbs 75 points of
   ramming damage - both collisions with other tanks and walls.  Imputes 1.5x
   more ramming damage
 * ![Bumper](./docs/Bumper.png): bumper.  Absorbs 200 points of wall damage.

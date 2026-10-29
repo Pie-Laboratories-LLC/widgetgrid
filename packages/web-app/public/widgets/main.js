@@ -1,5 +1,5 @@
-(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.widget-main[data-v-6cfd8118]{box-sizing:border-box;height:calc(100vh - 255px);margin-top:255px;margin-right:clamp(88px,20vw,160px);transition:margin-top .25s,height .25s;overflow-y:auto}.widget-main.main-no-rail[data-v-6cfd8118]{margin-right:0}.widget-main.main-collapsed[data-v-6cfd8118]{height:calc(100vh - 64px);margin-top:64px}@media (width<=640px){.widget-main[data-v-6cfd8118]{height:calc(100vh - 128px);margin-top:128px}}.main-status[data-v-6cfd8118]{color:#666;padding:32px}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
-import { createBlock, createCommentVNode, createElementBlock, normalizeClass, openBlock, resolveDynamicComponent } from "vue";
+(function(){try{if(typeof document<`u`){var e=document.createElement(`style`);e.appendChild(document.createTextNode(`.section-page[data-v-c6f70ecf]{box-sizing:border-box;max-width:1164px;padding:clamp(16px,4vw,32px)}.section-heading[data-v-c6f70ecf]{margin:0 0 8px}.section-intro[data-v-c6f70ecf]{color:#666;margin:0 0 24px}.section-entries[data-v-c6f70ecf]{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;display:grid}.section-entry[data-v-c6f70ecf]{color:inherit;border:1px solid #ddd;border-radius:8px;flex-direction:column;gap:6px;padding:20px;text-decoration:none;transition:border-color .15s,box-shadow .15s;display:flex}.section-entry[data-v-c6f70ecf]:not(.section-entry-soon):hover,.section-entry[data-v-c6f70ecf]:not(.section-entry-soon):focus-visible{border-color:#999;box-shadow:0 2px 8px #00000014}.section-entry-title[data-v-c6f70ecf]{font-size:1.2rem;font-weight:600}.section-entry-description[data-v-c6f70ecf]{color:#555}.section-entry-soon[data-v-c6f70ecf]{cursor:default;opacity:.6}.section-entry-badge[data-v-c6f70ecf]{background:#eee;border-radius:999px;align-self:flex-start;margin-top:4px;padding:2px 8px;font-size:.75rem}.widget-main[data-v-553e3f0d]{box-sizing:border-box;height:calc(100vh - 255px);margin-top:255px;margin-right:clamp(88px,20vw,160px);transition:margin-top .25s,height .25s;overflow-y:auto}.main-inner[data-v-553e3f0d]{height:100%}.main-inner-held[data-v-553e3f0d]{height:auto;min-height:calc(100% + 11px)}.widget-main.main-no-rail[data-v-553e3f0d]{margin-right:0}.widget-main.main-collapsed[data-v-553e3f0d]{height:calc(100vh - 64px);margin-top:64px}@media (width<=640px){.widget-main[data-v-553e3f0d]{height:calc(100vh - 128px);margin-top:128px}}.main-status[data-v-553e3f0d]{color:#666;padding:32px}/*$vite$:1*/`)),document.head.appendChild(e)}}catch(e){console.error(`vite-plugin-css-injected-by-js`,e)}})();
+import { Fragment, createBlock, createCommentVNode, createElementBlock, createElementVNode, normalizeClass, openBlock, reactive, renderList, resolveComponent, resolveDynamicComponent, toDisplayString } from "vue";
 //#region \0rolldown/runtime.js
 var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t.exports), require_google_protobuf = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var COMPILED = !0, goog = goog || {};
@@ -4153,215 +4153,178 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 		});
 	}
 	jspb.internal.public_for_gencode.deserializeMapFromBinary = module$contents$jspb$internal$public_for_gencode_deserializeMapFromBinary, jspb.internal.public_for_gencode.serializeMapToBinary = module$contents$jspb$internal$public_for_gencode_serializeMapToBinary, jspb.Export = {}, typeof exports == "object" && (exports.debug = jspb.debug, exports.Map = module$contents$jspb$Map_Map, exports.Message = module$contents$jspb$Message_Message, exports.BinaryReader = module$contents$jspb$binary$reader_BinaryReader, exports.BinaryWriter = module$contents$jspb$binary$writer_BinaryWriter, exports.ExtensionFieldInfo = module$contents$jspb$ExtensionFieldInfo_ExtensionFieldInfo, exports.ExtensionFieldBinaryInfo = module$contents$jspb$ExtensionFieldBinaryInfo_ExtensionFieldBinaryInfo, exports.internal = { public_for_gencode: jspb.internal.public_for_gencode }, exports.exportSymbol = goog.exportSymbol, exports.inherits = goog.inherits, exports.object = { extend: module$contents$goog$object_extend }, exports.typeOf = goog.typeOf);
-})), require_blog_pb = /* @__PURE__ */ __commonJSMin(((e) => {
+})), require_auth_pb = /* @__PURE__ */ __commonJSMin(((e) => {
 	var t = require_google_protobuf(), n = t, r = function() {
 		return this ? this : typeof window < "u" ? window : r === void 0 ? typeof self < "u" ? self : Function("return this")() : r;
 	}.call(null);
-	n.exportSymbol("proto.widgetgrid.v1.BlogPost", null, r), n.exportSymbol("proto.widgetgrid.v1.ListBlogPostsRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.ListBlogPostsResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.NewPostEvent", null, r), n.exportSymbol("proto.widgetgrid.v1.SubscribeNewPostsRequest", null, r), proto.widgetgrid.v1.BlogPost = function(e) {
+	n.exportSymbol("proto.widgetgrid.v1.LogoutRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.LogoutResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.OwnerPresenceEvent", null, r), n.exportSymbol("proto.widgetgrid.v1.RegisterSignInRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.RegisterSignInResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.SubscribeOwnerPresenceRequest", null, r), proto.widgetgrid.v1.RegisterSignInRequest = function(e) {
 		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.BlogPost, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.BlogPost.displayName = "proto.widgetgrid.v1.BlogPost"), proto.widgetgrid.v1.ListBlogPostsRequest = function(e) {
+	}, n.inherits(proto.widgetgrid.v1.RegisterSignInRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RegisterSignInRequest.displayName = "proto.widgetgrid.v1.RegisterSignInRequest"), proto.widgetgrid.v1.RegisterSignInResponse = function(e) {
 		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.ListBlogPostsRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ListBlogPostsRequest.displayName = "proto.widgetgrid.v1.ListBlogPostsRequest"), proto.widgetgrid.v1.ListBlogPostsResponse = function(e) {
-		t.Message.initialize(this, e, 0, -1, proto.widgetgrid.v1.ListBlogPostsResponse.repeatedFields_, null);
-	}, n.inherits(proto.widgetgrid.v1.ListBlogPostsResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ListBlogPostsResponse.displayName = "proto.widgetgrid.v1.ListBlogPostsResponse"), proto.widgetgrid.v1.SubscribeNewPostsRequest = function(e) {
+	}, n.inherits(proto.widgetgrid.v1.RegisterSignInResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RegisterSignInResponse.displayName = "proto.widgetgrid.v1.RegisterSignInResponse"), proto.widgetgrid.v1.LogoutRequest = function(e) {
 		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.SubscribeNewPostsRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.SubscribeNewPostsRequest.displayName = "proto.widgetgrid.v1.SubscribeNewPostsRequest"), proto.widgetgrid.v1.NewPostEvent = function(e) {
+	}, n.inherits(proto.widgetgrid.v1.LogoutRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.LogoutRequest.displayName = "proto.widgetgrid.v1.LogoutRequest"), proto.widgetgrid.v1.LogoutResponse = function(e) {
 		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.NewPostEvent, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.NewPostEvent.displayName = "proto.widgetgrid.v1.NewPostEvent"), t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.BlogPost.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.BlogPost.toObject(e, this);
-	}, proto.widgetgrid.v1.BlogPost.toObject = function(e, n) {
-		var r = {
-			slug: t.Message.getFieldWithDefault(n, 1, ""),
-			title: t.Message.getFieldWithDefault(n, 2, ""),
-			synopsisHtml: t.Message.getFieldWithDefault(n, 3, ""),
-			contentHtml: t.Message.getFieldWithDefault(n, 4, ""),
-			publishedAt: t.Message.getFieldWithDefault(n, 5, "")
-		};
+	}, n.inherits(proto.widgetgrid.v1.LogoutResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.LogoutResponse.displayName = "proto.widgetgrid.v1.LogoutResponse"), proto.widgetgrid.v1.SubscribeOwnerPresenceRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.SubscribeOwnerPresenceRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.displayName = "proto.widgetgrid.v1.SubscribeOwnerPresenceRequest"), proto.widgetgrid.v1.OwnerPresenceEvent = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.OwnerPresenceEvent, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.OwnerPresenceEvent.displayName = "proto.widgetgrid.v1.OwnerPresenceEvent"), t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RegisterSignInRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.RegisterSignInRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.RegisterSignInRequest.toObject = function(e, n) {
+		var r = { idToken: t.Message.getFieldWithDefault(n, 1, "") };
 		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.BlogPost.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.BlogPost();
-		return proto.widgetgrid.v1.BlogPost.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.BlogPost.deserializeBinaryFromReader = function(e, t) {
+	}), proto.widgetgrid.v1.RegisterSignInRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RegisterSignInRequest();
+		return proto.widgetgrid.v1.RegisterSignInRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.RegisterSignInRequest.deserializeBinaryFromReader = function(e, t) {
 		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
 			case 1:
 				var n = t.readString();
-				e.setSlug(n);
-				break;
-			case 2:
-				var n = t.readString();
-				e.setTitle(n);
-				break;
-			case 3:
-				var n = t.readString();
-				e.setSynopsisHtml(n);
-				break;
-			case 4:
-				var n = t.readString();
-				e.setContentHtml(n);
-				break;
-			case 5:
-				var n = t.readString();
-				e.setPublishedAt(n);
+				e.setIdToken(n);
 				break;
 			default: t.skipField();
 		}
 		return e;
-	}, proto.widgetgrid.v1.BlogPost.prototype.serializeBinary = function() {
+	}, proto.widgetgrid.v1.RegisterSignInRequest.prototype.serializeBinary = function() {
 		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.BlogPost.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.BlogPost.serializeBinaryToWriter = function(e, t) {
+		return proto.widgetgrid.v1.RegisterSignInRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.RegisterSignInRequest.serializeBinaryToWriter = function(e, t) {
 		var n = void 0;
-		n = e.getSlug(), n.length > 0 && t.writeString(1, n), n = e.getTitle(), n.length > 0 && t.writeString(2, n), n = e.getSynopsisHtml(), n.length > 0 && t.writeString(3, n), n = e.getContentHtml(), n.length > 0 && t.writeString(4, n), n = e.getPublishedAt(), n.length > 0 && t.writeString(5, n);
-	}, proto.widgetgrid.v1.BlogPost.prototype.getSlug = function() {
+		n = e.getIdToken(), n.length > 0 && t.writeString(1, n);
+	}, proto.widgetgrid.v1.RegisterSignInRequest.prototype.getIdToken = function() {
 		return t.Message.getFieldWithDefault(this, 1, "");
-	}, proto.widgetgrid.v1.BlogPost.prototype.setSlug = function(e) {
+	}, proto.widgetgrid.v1.RegisterSignInRequest.prototype.setIdToken = function(e) {
 		return t.Message.setProto3StringField(this, 1, e);
-	}, proto.widgetgrid.v1.BlogPost.prototype.getTitle = function() {
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RegisterSignInResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.RegisterSignInResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.RegisterSignInResponse.toObject = function(e, n) {
+		var r = {
+			sessionToken: t.Message.getFieldWithDefault(n, 1, ""),
+			role: t.Message.getFieldWithDefault(n, 2, ""),
+			username: t.Message.getFieldWithDefault(n, 3, "")
+		};
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.RegisterSignInResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RegisterSignInResponse();
+		return proto.widgetgrid.v1.RegisterSignInResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.RegisterSignInResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setSessionToken(n);
+				break;
+			case 2:
+				var n = t.readString();
+				e.setRole(n);
+				break;
+			case 3:
+				var n = t.readString();
+				e.setUsername(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.RegisterSignInResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.RegisterSignInResponse.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getSessionToken(), n.length > 0 && t.writeString(1, n), n = e.getRole(), n.length > 0 && t.writeString(2, n), n = e.getUsername(), n.length > 0 && t.writeString(3, n);
+	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.getSessionToken = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.setSessionToken = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.getRole = function() {
 		return t.Message.getFieldWithDefault(this, 2, "");
-	}, proto.widgetgrid.v1.BlogPost.prototype.setTitle = function(e) {
+	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.setRole = function(e) {
 		return t.Message.setProto3StringField(this, 2, e);
-	}, proto.widgetgrid.v1.BlogPost.prototype.getSynopsisHtml = function() {
+	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.getUsername = function() {
 		return t.Message.getFieldWithDefault(this, 3, "");
-	}, proto.widgetgrid.v1.BlogPost.prototype.setSynopsisHtml = function(e) {
+	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.setUsername = function(e) {
 		return t.Message.setProto3StringField(this, 3, e);
-	}, proto.widgetgrid.v1.BlogPost.prototype.getContentHtml = function() {
-		return t.Message.getFieldWithDefault(this, 4, "");
-	}, proto.widgetgrid.v1.BlogPost.prototype.setContentHtml = function(e) {
-		return t.Message.setProto3StringField(this, 4, e);
-	}, proto.widgetgrid.v1.BlogPost.prototype.getPublishedAt = function() {
-		return t.Message.getFieldWithDefault(this, 5, "");
-	}, proto.widgetgrid.v1.BlogPost.prototype.setPublishedAt = function(e) {
-		return t.Message.setProto3StringField(this, 5, e);
-	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ListBlogPostsRequest.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.ListBlogPostsRequest.toObject(e, this);
-	}, proto.widgetgrid.v1.ListBlogPostsRequest.toObject = function(e, t) {
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.LogoutRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.LogoutRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.LogoutRequest.toObject = function(e, n) {
+		var r = { token: t.Message.getFieldWithDefault(n, 1, "") };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.LogoutRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.LogoutRequest();
+		return proto.widgetgrid.v1.LogoutRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.LogoutRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setToken(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.LogoutRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.LogoutRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.LogoutRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getToken(), n.length > 0 && t.writeString(1, n);
+	}, proto.widgetgrid.v1.LogoutRequest.prototype.getToken = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.LogoutRequest.prototype.setToken = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.LogoutResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.LogoutResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.LogoutResponse.toObject = function(e, t) {
 		var n = {};
 		return e && (n.$jspbMessageInstance = t), n;
-	}), proto.widgetgrid.v1.ListBlogPostsRequest.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ListBlogPostsRequest();
-		return proto.widgetgrid.v1.ListBlogPostsRequest.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.ListBlogPostsRequest.deserializeBinaryFromReader = function(e, t) {
+	}), proto.widgetgrid.v1.LogoutResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.LogoutResponse();
+		return proto.widgetgrid.v1.LogoutResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.LogoutResponse.deserializeBinaryFromReader = function(e, t) {
 		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
 		return e;
-	}, proto.widgetgrid.v1.ListBlogPostsRequest.prototype.serializeBinary = function() {
+	}, proto.widgetgrid.v1.LogoutResponse.prototype.serializeBinary = function() {
 		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.ListBlogPostsRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.ListBlogPostsRequest.serializeBinaryToWriter = function(e, t) {}, proto.widgetgrid.v1.ListBlogPostsResponse.repeatedFields_ = [1], t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ListBlogPostsResponse.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.ListBlogPostsResponse.toObject(e, this);
-	}, proto.widgetgrid.v1.ListBlogPostsResponse.toObject = function(e, n) {
-		var r = { postsList: t.Message.toObjectList(n.getPostsList(), proto.widgetgrid.v1.BlogPost.toObject, e) };
+		return proto.widgetgrid.v1.LogoutResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.LogoutResponse.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.toObject = function(e, t) {
+		var n = {};
+		return e && (n.$jspbMessageInstance = t), n;
+	}), proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.SubscribeOwnerPresenceRequest();
+		return proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		return e;
+	}, proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.OwnerPresenceEvent.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.OwnerPresenceEvent.toObject(e, this);
+	}, proto.widgetgrid.v1.OwnerPresenceEvent.toObject = function(e, n) {
+		var r = { online: t.Message.getBooleanFieldWithDefault(n, 1, !1) };
 		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.ListBlogPostsResponse.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ListBlogPostsResponse();
-		return proto.widgetgrid.v1.ListBlogPostsResponse.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.ListBlogPostsResponse.deserializeBinaryFromReader = function(e, t) {
+	}), proto.widgetgrid.v1.OwnerPresenceEvent.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.OwnerPresenceEvent();
+		return proto.widgetgrid.v1.OwnerPresenceEvent.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.OwnerPresenceEvent.deserializeBinaryFromReader = function(e, t) {
 		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
 			case 1:
-				var n = new proto.widgetgrid.v1.BlogPost();
-				t.readMessage(n, proto.widgetgrid.v1.BlogPost.deserializeBinaryFromReader), e.addPosts(n);
+				var n = t.readBool();
+				e.setOnline(n);
 				break;
 			default: t.skipField();
 		}
 		return e;
-	}, proto.widgetgrid.v1.ListBlogPostsResponse.prototype.serializeBinary = function() {
+	}, proto.widgetgrid.v1.OwnerPresenceEvent.prototype.serializeBinary = function() {
 		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.ListBlogPostsResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.ListBlogPostsResponse.serializeBinaryToWriter = function(e, t) {
+		return proto.widgetgrid.v1.OwnerPresenceEvent.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.OwnerPresenceEvent.serializeBinaryToWriter = function(e, t) {
 		var n = void 0;
-		n = e.getPostsList(), n.length > 0 && t.writeRepeatedMessage(1, n, proto.widgetgrid.v1.BlogPost.serializeBinaryToWriter);
-	}, proto.widgetgrid.v1.ListBlogPostsResponse.prototype.getPostsList = function() {
-		return t.Message.getRepeatedWrapperField(this, proto.widgetgrid.v1.BlogPost, 1);
-	}, proto.widgetgrid.v1.ListBlogPostsResponse.prototype.setPostsList = function(e) {
-		return t.Message.setRepeatedWrapperField(this, 1, e);
-	}, proto.widgetgrid.v1.ListBlogPostsResponse.prototype.addPosts = function(e, n) {
-		return t.Message.addToRepeatedWrapperField(this, 1, e, proto.widgetgrid.v1.BlogPost, n);
-	}, proto.widgetgrid.v1.ListBlogPostsResponse.prototype.clearPostsList = function() {
-		return this.setPostsList([]);
-	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.SubscribeNewPostsRequest.toObject(e, this);
-	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.toObject = function(e, n) {
-		var r = {
-			lastKnownSlug: t.Message.getFieldWithDefault(n, 1, ""),
-			requestedAtMs: t.Message.getFieldWithDefault(n, 2, 0)
-		};
-		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.SubscribeNewPostsRequest.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.SubscribeNewPostsRequest();
-		return proto.widgetgrid.v1.SubscribeNewPostsRequest.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
-			case 1:
-				var n = t.readString();
-				e.setLastKnownSlug(n);
-				break;
-			case 2:
-				var n = t.readInt64();
-				e.setRequestedAtMs(n);
-				break;
-			default: t.skipField();
-		}
-		return e;
-	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.SubscribeNewPostsRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.serializeBinaryToWriter = function(e, t) {
-		var n = void 0;
-		n = e.getLastKnownSlug(), n.length > 0 && t.writeString(1, n), n = e.getRequestedAtMs(), n !== 0 && t.writeInt64(2, n);
-	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.getLastKnownSlug = function() {
-		return t.Message.getFieldWithDefault(this, 1, "");
-	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.setLastKnownSlug = function(e) {
-		return t.Message.setProto3StringField(this, 1, e);
-	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.getRequestedAtMs = function() {
-		return t.Message.getFieldWithDefault(this, 2, 0);
-	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.setRequestedAtMs = function(e) {
-		return t.Message.setProto3IntField(this, 2, e);
-	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.NewPostEvent.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.NewPostEvent.toObject(e, this);
-	}, proto.widgetgrid.v1.NewPostEvent.toObject = function(e, n) {
-		var r = {
-			slug: t.Message.getFieldWithDefault(n, 1, ""),
-			title: t.Message.getFieldWithDefault(n, 2, ""),
-			publishedAt: t.Message.getFieldWithDefault(n, 3, "")
-		};
-		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.NewPostEvent.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.NewPostEvent();
-		return proto.widgetgrid.v1.NewPostEvent.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.NewPostEvent.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
-			case 1:
-				var n = t.readString();
-				e.setSlug(n);
-				break;
-			case 2:
-				var n = t.readString();
-				e.setTitle(n);
-				break;
-			case 3:
-				var n = t.readString();
-				e.setPublishedAt(n);
-				break;
-			default: t.skipField();
-		}
-		return e;
-	}, proto.widgetgrid.v1.NewPostEvent.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.NewPostEvent.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.NewPostEvent.serializeBinaryToWriter = function(e, t) {
-		var n = void 0;
-		n = e.getSlug(), n.length > 0 && t.writeString(1, n), n = e.getTitle(), n.length > 0 && t.writeString(2, n), n = e.getPublishedAt(), n.length > 0 && t.writeString(3, n);
-	}, proto.widgetgrid.v1.NewPostEvent.prototype.getSlug = function() {
-		return t.Message.getFieldWithDefault(this, 1, "");
-	}, proto.widgetgrid.v1.NewPostEvent.prototype.setSlug = function(e) {
-		return t.Message.setProto3StringField(this, 1, e);
-	}, proto.widgetgrid.v1.NewPostEvent.prototype.getTitle = function() {
-		return t.Message.getFieldWithDefault(this, 2, "");
-	}, proto.widgetgrid.v1.NewPostEvent.prototype.setTitle = function(e) {
-		return t.Message.setProto3StringField(this, 2, e);
-	}, proto.widgetgrid.v1.NewPostEvent.prototype.getPublishedAt = function() {
-		return t.Message.getFieldWithDefault(this, 3, "");
-	}, proto.widgetgrid.v1.NewPostEvent.prototype.setPublishedAt = function(e) {
-		return t.Message.setProto3StringField(this, 3, e);
+		n = e.getOnline(), n && t.writeBool(1, n);
+	}, proto.widgetgrid.v1.OwnerPresenceEvent.prototype.getOnline = function() {
+		return t.Message.getBooleanFieldWithDefault(this, 1, !1);
+	}, proto.widgetgrid.v1.OwnerPresenceEvent.prototype.setOnline = function(e) {
+		return t.Message.setProto3BooleanField(this, 1, e);
 	}, n.object.extend(e, proto.widgetgrid.v1);
 })), require_grpc_web = /* @__PURE__ */ __commonJSMin(((e, t) => {
 	var n, r = r || {}, i = e || self;
@@ -5423,6 +5386,749 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 		SERVER_STREAMING: "server_streaming",
 		BIDI_STREAMING: "bidi_streaming"
 	}, R = typeof globalThis < "u" && globalThis || self;
+})), require_auth_grpc_web_pb = /* @__PURE__ */ __commonJSMin(((e, t) => {
+	var n = {};
+	n.web = require_grpc_web();
+	var r = {};
+	r.widgetgrid = {}, r.widgetgrid.v1 = require_auth_pb(), r.widgetgrid.v1.AuthServiceClient = function(e, t, r) {
+		r ||= {}, r.format = "text", this.client_ = new n.web.GrpcWebClientBase(r), this.hostname_ = e.replace(/\/+$/, "");
+	}, r.widgetgrid.v1.AuthServicePromiseClient = function(e, t, r) {
+		r ||= {}, r.format = "text", this.client_ = new n.web.GrpcWebClientBase(r), this.hostname_ = e.replace(/\/+$/, "");
+	};
+	var i = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/RegisterSignIn", n.web.MethodType.UNARY, r.widgetgrid.v1.RegisterSignInRequest, r.widgetgrid.v1.RegisterSignInResponse, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.RegisterSignInResponse.deserializeBinary);
+	r.widgetgrid.v1.AuthServiceClient.prototype.registerSignIn = function(e, t, n) {
+		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.AuthService/RegisterSignIn", e, t || {}, i, n);
+	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.registerSignIn = function(e, t) {
+		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.AuthService/RegisterSignIn", e, t || {}, i);
+	};
+	var o = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/Logout", n.web.MethodType.UNARY, r.widgetgrid.v1.LogoutRequest, r.widgetgrid.v1.LogoutResponse, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.LogoutResponse.deserializeBinary);
+	r.widgetgrid.v1.AuthServiceClient.prototype.logout = function(e, t, n) {
+		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.AuthService/Logout", e, t || {}, o, n);
+	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.logout = function(e, t) {
+		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.AuthService/Logout", e, t || {}, o);
+	};
+	var s = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/SubscribeOwnerPresence", n.web.MethodType.SERVER_STREAMING, r.widgetgrid.v1.SubscribeOwnerPresenceRequest, r.widgetgrid.v1.OwnerPresenceEvent, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.OwnerPresenceEvent.deserializeBinary);
+	r.widgetgrid.v1.AuthServiceClient.prototype.subscribeOwnerPresence = function(e, t) {
+		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.AuthService/SubscribeOwnerPresence", e, t || {}, s);
+	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.subscribeOwnerPresence = function(e, t) {
+		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.AuthService/SubscribeOwnerPresence", e, t || {}, s);
+	}, t.exports = r.widgetgrid.v1;
+})), import_auth_pb = require_auth_pb(), import_auth_grpc_web_pb = require_auth_grpc_web_pb(), AUTH_ORIGIN = "https://auth.pie-laboratories.com", CLIENT_ID = "bvec1bfa2e7srgjf237e2m3ja", STORAGE_KEY = "widgetgrid:auth", EXPIRY_SKEW_MS = 6e4, IDENTITY_CHANGED_EVENT = "widgetgrid:identity-changed";
+function readStored() {
+	try {
+		return JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? null;
+	} catch {
+		return null;
+	}
+}
+function writeStored(e) {
+	e ? localStorage.setItem(STORAGE_KEY, JSON.stringify(e)) : localStorage.removeItem(STORAGE_KEY);
+}
+function announce() {
+	window.dispatchEvent(new CustomEvent(IDENTITY_CHANGED_EVENT));
+}
+window.addEventListener("storage", (e) => {
+	e.key === STORAGE_KEY && announce();
+});
+async function tokenRequest(e, t) {
+	let n = await fetch(`${AUTH_ORIGIN}/oauth2/token`, {
+		method: "POST",
+		headers: { "Content-Type": "application/x-www-form-urlencoded" },
+		body: new URLSearchParams({
+			client_id: e,
+			...t
+		})
+	}), r = await n.json();
+	if (!n.ok) throw Error(r.error ?? `token endpoint ${n.status}`);
+	return r;
+}
+function decodeClaims(e) {
+	let t = e.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+	return JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(t), (e) => e.charCodeAt(0))));
+}
+var signInStarting = !1;
+window.addEventListener("pageshow", (e) => {
+	e.persisted;
+});
+var refreshing = null;
+async function getAccessToken() {
+	let e = readStored();
+	return e ? e.expiresAt - EXPIRY_SKEW_MS > Date.now() ? e.accessToken : (refreshing ??= (async () => {
+		try {
+			let t = await tokenRequest(e.clientId ?? CLIENT_ID, {
+				grant_type: "refresh_token",
+				refresh_token: e.refreshToken
+			}), n = {
+				...e,
+				accessToken: t.access_token,
+				idToken: t.id_token,
+				expiresAt: Date.now() + t.expires_in * 1e3
+			};
+			return writeStored(n), n.accessToken;
+		} catch {
+			return writeStored(null), announce(), null;
+		} finally {
+			refreshing = null;
+		}
+	})(), refreshing) : null;
+}
+async function authMetadata() {
+	let e = await getAccessToken();
+	return e ? { authorization: `Bearer ${e}` } : {};
+}
+function getIdentity() {
+	let e = readStored();
+	if (!e) return null;
+	try {
+		let t = decodeClaims(e.idToken);
+		return {
+			email: t.email,
+			groups: t["cognito:groups"] ?? [],
+			role: e.role,
+			username: e.username ?? ""
+		};
+	} catch {
+		return null;
+	}
+}
+//#endregion
+//#region ../../packages/feature-registry/src/index.js
+var UnknownFeature = class extends Error {};
+function createFeatureRegistry({ isEnabled: e }) {
+	let t = /* @__PURE__ */ new Map();
+	return {
+		provide(e, n) {
+			let r = typeof n == "object" && !!n && "flag" in n && "on" in n && "off" in n;
+			if (r && typeof n.flag != "string") throw TypeError(`${e}: flag must be a flag's name`);
+			t.set(e, r ? { ...n } : { only: n });
+		},
+		resolve(n) {
+			let r = t.get(n);
+			if (!r) throw new UnknownFeature(`Nothing provides "${n}"`);
+			return "only" in r ? r.only : e(r.flag) ? r.on : r.off;
+		},
+		has: (e) => t.has(e),
+		describe() {
+			return [...t].map(([e, t]) => ({
+				name: e,
+				flag: t.flag ?? null
+			}));
+		}
+	};
+}
+//#endregion
+//#region ../../packages/feature-flags/src/overrides.js
+var OVERRIDE_COOKIE = "WidgetGrid-config";
+function readOverrides(e = globalThis.document?.cookie ?? "") {
+	let t = e.split(/;\s*/).find((e) => e.startsWith(`${OVERRIDE_COOKIE}=`));
+	if (!t) return {};
+	let n = t.slice(18), r = n;
+	try {
+		r = decodeURIComponent(n);
+	} catch {}
+	for (let e of [n, r]) try {
+		let t = {};
+		for (let [n, r] of Object.entries(JSON.parse(e)?.featureFlags ?? {})) typeof r == "boolean" && (t[n] = r);
+		return t;
+	} catch {}
+	return console.warn(`The ${OVERRIDE_COOKIE} cookie isn't the configuration's JSON -- ignored`), {};
+}
+//#endregion
+//#region ../../packages/proto-gen-web/widgetgrid/v1/config_pb.js
+var require_config_pb = /* @__PURE__ */ __commonJSMin(((e) => {
+	var t = require_google_protobuf(), n = t, r = function() {
+		return this ? this : typeof window < "u" ? window : r === void 0 ? typeof self < "u" ? self : Function("return this")() : r;
+	}.call(null);
+	n.exportSymbol("proto.widgetgrid.v1.GetSiteConfigRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.GetSiteConfigResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.WatchSiteConfigRequest", null, r), proto.widgetgrid.v1.GetSiteConfigRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.GetSiteConfigRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.GetSiteConfigRequest.displayName = "proto.widgetgrid.v1.GetSiteConfigRequest"), proto.widgetgrid.v1.WatchSiteConfigRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.WatchSiteConfigRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.WatchSiteConfigRequest.displayName = "proto.widgetgrid.v1.WatchSiteConfigRequest"), proto.widgetgrid.v1.GetSiteConfigResponse = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.GetSiteConfigResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.GetSiteConfigResponse.displayName = "proto.widgetgrid.v1.GetSiteConfigResponse"), t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.GetSiteConfigRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.GetSiteConfigRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.GetSiteConfigRequest.toObject = function(e, n) {
+		var r = { requestedAtMs: t.Message.getFieldWithDefault(n, 1, 0) };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.GetSiteConfigRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.GetSiteConfigRequest();
+		return proto.widgetgrid.v1.GetSiteConfigRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.GetSiteConfigRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readInt64();
+				e.setRequestedAtMs(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.GetSiteConfigRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.GetSiteConfigRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.GetSiteConfigRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getRequestedAtMs(), n !== 0 && t.writeInt64(1, n);
+	}, proto.widgetgrid.v1.GetSiteConfigRequest.prototype.getRequestedAtMs = function() {
+		return t.Message.getFieldWithDefault(this, 1, 0);
+	}, proto.widgetgrid.v1.GetSiteConfigRequest.prototype.setRequestedAtMs = function(e) {
+		return t.Message.setProto3IntField(this, 1, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.WatchSiteConfigRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.WatchSiteConfigRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.WatchSiteConfigRequest.toObject = function(e, n) {
+		var r = { requestedAtMs: t.Message.getFieldWithDefault(n, 1, 0) };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.WatchSiteConfigRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.WatchSiteConfigRequest();
+		return proto.widgetgrid.v1.WatchSiteConfigRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.WatchSiteConfigRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readInt64();
+				e.setRequestedAtMs(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.WatchSiteConfigRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.WatchSiteConfigRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.WatchSiteConfigRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getRequestedAtMs(), n !== 0 && t.writeInt64(1, n);
+	}, proto.widgetgrid.v1.WatchSiteConfigRequest.prototype.getRequestedAtMs = function() {
+		return t.Message.getFieldWithDefault(this, 1, 0);
+	}, proto.widgetgrid.v1.WatchSiteConfigRequest.prototype.setRequestedAtMs = function(e) {
+		return t.Message.setProto3IntField(this, 1, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.GetSiteConfigResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.GetSiteConfigResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.GetSiteConfigResponse.toObject = function(e, t) {
+		var n, r = { featureFlagsMap: (n = t.getFeatureFlagsMap()) ? n.toObject(e, void 0) : [] };
+		return e && (r.$jspbMessageInstance = t), r;
+	}), proto.widgetgrid.v1.GetSiteConfigResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.GetSiteConfigResponse();
+		return proto.widgetgrid.v1.GetSiteConfigResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.GetSiteConfigResponse.deserializeBinaryFromReader = function(e, n) {
+		for (; n.nextField() && !n.isEndGroup();) switch (n.getFieldNumber()) {
+			case 1:
+				var r = e.getFeatureFlagsMap();
+				n.readMessage(r, function(e, n) {
+					t.Map.deserializeBinary(e, n, t.BinaryReader.prototype.readString, t.BinaryReader.prototype.readBool, null, "", !1);
+				});
+				break;
+			default: n.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.GetSiteConfigResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.GetSiteConfigResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.GetSiteConfigResponse.serializeBinaryToWriter = function(e, n) {
+		var r = void 0;
+		r = e.getFeatureFlagsMap(!0), r && r.getLength() > 0 && r.serializeBinary(1, n, t.BinaryWriter.prototype.writeString, t.BinaryWriter.prototype.writeBool);
+	}, proto.widgetgrid.v1.GetSiteConfigResponse.prototype.getFeatureFlagsMap = function(e) {
+		return t.Message.getMapField(this, 1, e, null);
+	}, proto.widgetgrid.v1.GetSiteConfigResponse.prototype.clearFeatureFlagsMap = function() {
+		return this.getFeatureFlagsMap().clear(), this;
+	}, n.object.extend(e, proto.widgetgrid.v1);
+})), require_config_grpc_web_pb = /* @__PURE__ */ __commonJSMin(((e, t) => {
+	var n = {};
+	n.web = require_grpc_web();
+	var r = {};
+	r.widgetgrid = {}, r.widgetgrid.v1 = require_config_pb(), r.widgetgrid.v1.ConfigServiceClient = function(e, t, r) {
+		r ||= {}, r.format = "text", this.client_ = new n.web.GrpcWebClientBase(r), this.hostname_ = e.replace(/\/+$/, "");
+	}, r.widgetgrid.v1.ConfigServicePromiseClient = function(e, t, r) {
+		r ||= {}, r.format = "text", this.client_ = new n.web.GrpcWebClientBase(r), this.hostname_ = e.replace(/\/+$/, "");
+	};
+	var i = new n.web.MethodDescriptor("/widgetgrid.v1.ConfigService/GetSiteConfig", n.web.MethodType.UNARY, r.widgetgrid.v1.GetSiteConfigRequest, r.widgetgrid.v1.GetSiteConfigResponse, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.GetSiteConfigResponse.deserializeBinary);
+	r.widgetgrid.v1.ConfigServiceClient.prototype.getSiteConfig = function(e, t, n) {
+		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.ConfigService/GetSiteConfig", e, t || {}, i, n);
+	}, r.widgetgrid.v1.ConfigServicePromiseClient.prototype.getSiteConfig = function(e, t) {
+		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.ConfigService/GetSiteConfig", e, t || {}, i);
+	};
+	var o = new n.web.MethodDescriptor("/widgetgrid.v1.ConfigService/WatchSiteConfig", n.web.MethodType.SERVER_STREAMING, r.widgetgrid.v1.WatchSiteConfigRequest, r.widgetgrid.v1.GetSiteConfigResponse, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.GetSiteConfigResponse.deserializeBinary);
+	r.widgetgrid.v1.ConfigServiceClient.prototype.watchSiteConfig = function(e, t) {
+		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.ConfigService/WatchSiteConfig", e, t || {}, o);
+	}, r.widgetgrid.v1.ConfigServicePromiseClient.prototype.watchSiteConfig = function(e, t) {
+		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.ConfigService/WatchSiteConfig", e, t || {}, o);
+	}, t.exports = r.widgetgrid.v1;
+})), import_config_pb = require_config_pb(), import_config_grpc_web_pb = require_config_grpc_web_pb(), GRPC_WEB_ORIGIN = "http://localhost:8080", RECONNECT_DELAY_MS$2 = 2e3;
+function shared() {
+	if (!window.__widgetgridFeatureFlags) {
+		let e = reactive({
+			flags: {},
+			loaded: !1
+		}), t = readOverrides();
+		Object.keys(t).length && console.info(`Feature flags overridden in this browser by the ${OVERRIDE_COOKIE} cookie:`, t), window.__widgetgridFeatureFlags = {
+			state: e,
+			overrides: t,
+			request: null,
+			registry: createFeatureRegistry({ isEnabled: (t) => e.flags[t] === !0 })
+		};
+	}
+	return window.__widgetgridFeatureFlags;
+}
+function featureFlags() {
+	let e = shared();
+	return e.request ??= new Promise((t) => {
+		let n = new import_config_grpc_web_pb.ConfigServicePromiseClient(GRPC_WEB_ORIGIN), r = null;
+		function i(n) {
+			r ||= (n && !e.state.loaded && (console.error("feature flags unavailable:", n), t({})), setTimeout(() => {
+				r = null, o();
+			}, RECONNECT_DELAY_MS$2));
+		}
+		function o() {
+			let r = new import_config_pb.WatchSiteConfigRequest();
+			r.setRequestedAtMs(Date.now());
+			let o = n.watchSiteConfig(r, {});
+			o.on("data", (n) => {
+				let r = {};
+				n.getFeatureFlagsMap().forEach((e, t) => {
+					r[t] = e;
+				}), e.state.flags = {
+					...r,
+					...e.overrides
+				}, e.state.loaded = !0, t({ ...e.state.flags });
+			}), o.on("error", i), o.on("end", () => i());
+		}
+		o();
+	}), e.request;
+}
+function isEnabled(e) {
+	return shared().state.flags[e] === !0;
+}
+function flagsLoaded() {
+	return shared().state.loaded;
+}
+//#endregion
+//#region ../../packages/site-routes/src/index.js
+var NAVIGATE_EVENT = "widgetgrid:navigate", ROUTE_EVENT = "widgetgrid:route", VIEW_PATHS = {
+	blog: "/blog",
+	games: "/games",
+	solitaire: "/games/solitaire",
+	embuscade: "/games/embuscade",
+	lastnaming: "/games/the-last-naming",
+	site: "/site",
+	lhoraire: "/site/lhoraire",
+	messages: "/site/messages",
+	subscribe: "/site/subscribe",
+	login: "/site/login",
+	register: "/site/register",
+	account: "/site/account",
+	write: "/site/write",
+	chat: "/chat"
+}, VIEW_CHROME = {
+	solitaire: {
+		topbar: "collapsed",
+		railHidden: !0
+	},
+	embuscade: {
+		topbar: "collapsed",
+		railHidden: !0
+	},
+	lastnaming: {
+		topbar: "collapsed",
+		railHidden: !0
+	},
+	chat: {
+		topbar: "collapsed",
+		railHidden: !1
+	},
+	lhoraire: {
+		topbar: "collapsed",
+		railHidden: !0
+	},
+	messages: {
+		topbar: "scroll",
+		railHidden: !0
+	},
+	write: {
+		topbar: "scroll",
+		railHidden: !0
+	}
+}, VIEW_FLAGS = { lastnaming: "wgtgrd-4" };
+function viewFlag(e) {
+	return VIEW_FLAGS[e] ?? null;
+}
+function viewChrome(e) {
+	return VIEW_CHROME[e] ?? {
+		topbar: "scroll",
+		railHidden: !1
+	};
+}
+function parseSitePath(e) {
+	let t = e.replace(/\/+$/, "") || "/";
+	if (t === "/") return {
+		view: "blog",
+		post: null
+	};
+	let n = /^\/blog(?:\/([^/]+))?$/.exec(t);
+	if (n) return {
+		view: "blog",
+		post: n[1] ? decodeURIComponent(n[1]) : null
+	};
+	let r = /^\/site\/messages(?:\/([a-z0-9-]+)(?:\/(\d+))?)?$/.exec(t);
+	if (r) return {
+		view: "messages",
+		post: null,
+		board: {
+			section: r[1] ?? null,
+			thread: r[2] ?? null
+		}
+	};
+	let i = /^\/site\/write(?:\/(\d+))?$/.exec(t);
+	if (i) return {
+		view: "write",
+		post: null,
+		draft: i[1] ?? null
+	};
+	for (let [e, n] of Object.entries(VIEW_PATHS)) if (t === n) return {
+		view: e,
+		post: null
+	};
+	return null;
+}
+function sitePath(e, t = null) {
+	return e === "blog" && t ? `/blog/${encodeURIComponent(t)}` : VIEW_PATHS[e] ?? "/";
+}
+function currentSiteRoute() {
+	return parseSitePath(window.location.pathname) ?? {
+		view: "blog",
+		post: null
+	};
+}
+function navigate(e, { forceReload: t = !1, replace: n = !1 } = {}) {
+	window.dispatchEvent(new CustomEvent(NAVIGATE_EVENT, { detail: {
+		path: e,
+		forceReload: t,
+		replace: n
+	} }));
+}
+//#endregion
+//#region \0plugin-vue:export-helper
+var _plugin_vue_export_helper_default = (e, t) => {
+	let n = e.__vccOpts || e;
+	for (let [e, r] of t) n[e] = r;
+	return n;
+}, _sfc_main$1 = {
+	name: "SectionPage",
+	props: {
+		heading: {
+			type: String,
+			required: !0
+		},
+		intro: {
+			type: String,
+			default: ""
+		},
+		entries: {
+			type: Array,
+			required: !0
+		}
+	},
+	methods: {
+		pathFor(e) {
+			return sitePath(e);
+		},
+		onClick(e, t) {
+			if (e.soon) {
+				t.preventDefault();
+				return;
+			}
+			t.metaKey || t.ctrlKey || t.shiftKey || t.altKey || t.button !== 0 || (t.preventDefault(), navigate(sitePath(e.view)));
+		}
+	}
+}, _hoisted_1$1 = { class: "section-page" }, _hoisted_2$1 = { class: "section-heading" }, _hoisted_3$1 = {
+	key: 0,
+	class: "section-intro"
+}, _hoisted_4$1 = { class: "section-entries" }, _hoisted_5$1 = [
+	"href",
+	"aria-disabled",
+	"onClick"
+], _hoisted_6$1 = { class: "section-entry-title" }, _hoisted_7$1 = { class: "section-entry-description" }, _hoisted_8$1 = {
+	key: 0,
+	class: "section-entry-badge"
+};
+function _sfc_render$1(e, t, n, r, i, o) {
+	return openBlock(), createElementBlock("div", _hoisted_1$1, [
+		createElementVNode("h2", _hoisted_2$1, toDisplayString(n.heading), 1),
+		n.intro ? (openBlock(), createElementBlock("p", _hoisted_3$1, toDisplayString(n.intro), 1)) : createCommentVNode("", !0),
+		createElementVNode("div", _hoisted_4$1, [(openBlock(!0), createElementBlock(Fragment, null, renderList(n.entries, (e) => (openBlock(), createElementBlock("a", {
+			key: e.view,
+			class: normalizeClass(["section-entry", { "section-entry-soon": e.soon }]),
+			href: e.soon ? void 0 : o.pathFor(e.view),
+			"aria-disabled": e.soon ? "true" : void 0,
+			onClick: (t) => o.onClick(e, t)
+		}, [
+			createElementVNode("span", _hoisted_6$1, toDisplayString(e.title), 1),
+			createElementVNode("span", _hoisted_7$1, toDisplayString(e.description), 1),
+			e.soon ? (openBlock(), createElementBlock("span", _hoisted_8$1, "Coming soon")) : createCommentVNode("", !0)
+		], 10, _hoisted_5$1))), 128))])
+	]);
+}
+var SectionPage_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-c6f70ecf"]]), require_blog_pb = /* @__PURE__ */ __commonJSMin(((e) => {
+	var t = require_google_protobuf(), n = t, r = function() {
+		return this ? this : typeof window < "u" ? window : r === void 0 ? typeof self < "u" ? self : Function("return this")() : r;
+	}.call(null);
+	n.exportSymbol("proto.widgetgrid.v1.BlogPost", null, r), n.exportSymbol("proto.widgetgrid.v1.GetFeedRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.GetFeedResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.ListBlogPostsRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.ListBlogPostsResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.NewPostEvent", null, r), n.exportSymbol("proto.widgetgrid.v1.SubscribeNewPostsRequest", null, r), proto.widgetgrid.v1.BlogPost = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.BlogPost, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.BlogPost.displayName = "proto.widgetgrid.v1.BlogPost"), proto.widgetgrid.v1.ListBlogPostsRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.ListBlogPostsRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ListBlogPostsRequest.displayName = "proto.widgetgrid.v1.ListBlogPostsRequest"), proto.widgetgrid.v1.ListBlogPostsResponse = function(e) {
+		t.Message.initialize(this, e, 0, -1, proto.widgetgrid.v1.ListBlogPostsResponse.repeatedFields_, null);
+	}, n.inherits(proto.widgetgrid.v1.ListBlogPostsResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ListBlogPostsResponse.displayName = "proto.widgetgrid.v1.ListBlogPostsResponse"), proto.widgetgrid.v1.SubscribeNewPostsRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.SubscribeNewPostsRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.SubscribeNewPostsRequest.displayName = "proto.widgetgrid.v1.SubscribeNewPostsRequest"), proto.widgetgrid.v1.NewPostEvent = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.NewPostEvent, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.NewPostEvent.displayName = "proto.widgetgrid.v1.NewPostEvent"), proto.widgetgrid.v1.GetFeedRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.GetFeedRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.GetFeedRequest.displayName = "proto.widgetgrid.v1.GetFeedRequest"), proto.widgetgrid.v1.GetFeedResponse = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.GetFeedResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.GetFeedResponse.displayName = "proto.widgetgrid.v1.GetFeedResponse"), t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.BlogPost.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.BlogPost.toObject(e, this);
+	}, proto.widgetgrid.v1.BlogPost.toObject = function(e, n) {
+		var r = {
+			slug: t.Message.getFieldWithDefault(n, 1, ""),
+			title: t.Message.getFieldWithDefault(n, 2, ""),
+			synopsisHtml: t.Message.getFieldWithDefault(n, 3, ""),
+			contentHtml: t.Message.getFieldWithDefault(n, 4, ""),
+			publishedAt: t.Message.getFieldWithDefault(n, 5, "")
+		};
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.BlogPost.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.BlogPost();
+		return proto.widgetgrid.v1.BlogPost.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.BlogPost.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setSlug(n);
+				break;
+			case 2:
+				var n = t.readString();
+				e.setTitle(n);
+				break;
+			case 3:
+				var n = t.readString();
+				e.setSynopsisHtml(n);
+				break;
+			case 4:
+				var n = t.readString();
+				e.setContentHtml(n);
+				break;
+			case 5:
+				var n = t.readString();
+				e.setPublishedAt(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.BlogPost.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.BlogPost.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.BlogPost.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getSlug(), n.length > 0 && t.writeString(1, n), n = e.getTitle(), n.length > 0 && t.writeString(2, n), n = e.getSynopsisHtml(), n.length > 0 && t.writeString(3, n), n = e.getContentHtml(), n.length > 0 && t.writeString(4, n), n = e.getPublishedAt(), n.length > 0 && t.writeString(5, n);
+	}, proto.widgetgrid.v1.BlogPost.prototype.getSlug = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.BlogPost.prototype.setSlug = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, proto.widgetgrid.v1.BlogPost.prototype.getTitle = function() {
+		return t.Message.getFieldWithDefault(this, 2, "");
+	}, proto.widgetgrid.v1.BlogPost.prototype.setTitle = function(e) {
+		return t.Message.setProto3StringField(this, 2, e);
+	}, proto.widgetgrid.v1.BlogPost.prototype.getSynopsisHtml = function() {
+		return t.Message.getFieldWithDefault(this, 3, "");
+	}, proto.widgetgrid.v1.BlogPost.prototype.setSynopsisHtml = function(e) {
+		return t.Message.setProto3StringField(this, 3, e);
+	}, proto.widgetgrid.v1.BlogPost.prototype.getContentHtml = function() {
+		return t.Message.getFieldWithDefault(this, 4, "");
+	}, proto.widgetgrid.v1.BlogPost.prototype.setContentHtml = function(e) {
+		return t.Message.setProto3StringField(this, 4, e);
+	}, proto.widgetgrid.v1.BlogPost.prototype.getPublishedAt = function() {
+		return t.Message.getFieldWithDefault(this, 5, "");
+	}, proto.widgetgrid.v1.BlogPost.prototype.setPublishedAt = function(e) {
+		return t.Message.setProto3StringField(this, 5, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ListBlogPostsRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.ListBlogPostsRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.ListBlogPostsRequest.toObject = function(e, t) {
+		var n = {};
+		return e && (n.$jspbMessageInstance = t), n;
+	}), proto.widgetgrid.v1.ListBlogPostsRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ListBlogPostsRequest();
+		return proto.widgetgrid.v1.ListBlogPostsRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.ListBlogPostsRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		return e;
+	}, proto.widgetgrid.v1.ListBlogPostsRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.ListBlogPostsRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.ListBlogPostsRequest.serializeBinaryToWriter = function(e, t) {}, proto.widgetgrid.v1.ListBlogPostsResponse.repeatedFields_ = [1], t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ListBlogPostsResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.ListBlogPostsResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.ListBlogPostsResponse.toObject = function(e, n) {
+		var r = { postsList: t.Message.toObjectList(n.getPostsList(), proto.widgetgrid.v1.BlogPost.toObject, e) };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.ListBlogPostsResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ListBlogPostsResponse();
+		return proto.widgetgrid.v1.ListBlogPostsResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.ListBlogPostsResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = new proto.widgetgrid.v1.BlogPost();
+				t.readMessage(n, proto.widgetgrid.v1.BlogPost.deserializeBinaryFromReader), e.addPosts(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.ListBlogPostsResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.ListBlogPostsResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.ListBlogPostsResponse.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getPostsList(), n.length > 0 && t.writeRepeatedMessage(1, n, proto.widgetgrid.v1.BlogPost.serializeBinaryToWriter);
+	}, proto.widgetgrid.v1.ListBlogPostsResponse.prototype.getPostsList = function() {
+		return t.Message.getRepeatedWrapperField(this, proto.widgetgrid.v1.BlogPost, 1);
+	}, proto.widgetgrid.v1.ListBlogPostsResponse.prototype.setPostsList = function(e) {
+		return t.Message.setRepeatedWrapperField(this, 1, e);
+	}, proto.widgetgrid.v1.ListBlogPostsResponse.prototype.addPosts = function(e, n) {
+		return t.Message.addToRepeatedWrapperField(this, 1, e, proto.widgetgrid.v1.BlogPost, n);
+	}, proto.widgetgrid.v1.ListBlogPostsResponse.prototype.clearPostsList = function() {
+		return this.setPostsList([]);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.SubscribeNewPostsRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.toObject = function(e, n) {
+		var r = {
+			lastKnownSlug: t.Message.getFieldWithDefault(n, 1, ""),
+			requestedAtMs: t.Message.getFieldWithDefault(n, 2, 0)
+		};
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.SubscribeNewPostsRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.SubscribeNewPostsRequest();
+		return proto.widgetgrid.v1.SubscribeNewPostsRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setLastKnownSlug(n);
+				break;
+			case 2:
+				var n = t.readInt64();
+				e.setRequestedAtMs(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.SubscribeNewPostsRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getLastKnownSlug(), n.length > 0 && t.writeString(1, n), n = e.getRequestedAtMs(), n !== 0 && t.writeInt64(2, n);
+	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.getLastKnownSlug = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.setLastKnownSlug = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.getRequestedAtMs = function() {
+		return t.Message.getFieldWithDefault(this, 2, 0);
+	}, proto.widgetgrid.v1.SubscribeNewPostsRequest.prototype.setRequestedAtMs = function(e) {
+		return t.Message.setProto3IntField(this, 2, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.NewPostEvent.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.NewPostEvent.toObject(e, this);
+	}, proto.widgetgrid.v1.NewPostEvent.toObject = function(e, n) {
+		var r = {
+			slug: t.Message.getFieldWithDefault(n, 1, ""),
+			title: t.Message.getFieldWithDefault(n, 2, ""),
+			publishedAt: t.Message.getFieldWithDefault(n, 3, "")
+		};
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.NewPostEvent.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.NewPostEvent();
+		return proto.widgetgrid.v1.NewPostEvent.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.NewPostEvent.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setSlug(n);
+				break;
+			case 2:
+				var n = t.readString();
+				e.setTitle(n);
+				break;
+			case 3:
+				var n = t.readString();
+				e.setPublishedAt(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.NewPostEvent.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.NewPostEvent.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.NewPostEvent.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getSlug(), n.length > 0 && t.writeString(1, n), n = e.getTitle(), n.length > 0 && t.writeString(2, n), n = e.getPublishedAt(), n.length > 0 && t.writeString(3, n);
+	}, proto.widgetgrid.v1.NewPostEvent.prototype.getSlug = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.NewPostEvent.prototype.setSlug = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, proto.widgetgrid.v1.NewPostEvent.prototype.getTitle = function() {
+		return t.Message.getFieldWithDefault(this, 2, "");
+	}, proto.widgetgrid.v1.NewPostEvent.prototype.setTitle = function(e) {
+		return t.Message.setProto3StringField(this, 2, e);
+	}, proto.widgetgrid.v1.NewPostEvent.prototype.getPublishedAt = function() {
+		return t.Message.getFieldWithDefault(this, 3, "");
+	}, proto.widgetgrid.v1.NewPostEvent.prototype.setPublishedAt = function(e) {
+		return t.Message.setProto3StringField(this, 3, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.GetFeedRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.GetFeedRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.GetFeedRequest.toObject = function(e, t) {
+		var n = {};
+		return e && (n.$jspbMessageInstance = t), n;
+	}), proto.widgetgrid.v1.GetFeedRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.GetFeedRequest();
+		return proto.widgetgrid.v1.GetFeedRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.GetFeedRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		return e;
+	}, proto.widgetgrid.v1.GetFeedRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.GetFeedRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.GetFeedRequest.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.GetFeedResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.GetFeedResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.GetFeedResponse.toObject = function(e, n) {
+		var r = { rssXml: t.Message.getFieldWithDefault(n, 1, "") };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.GetFeedResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.GetFeedResponse();
+		return proto.widgetgrid.v1.GetFeedResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.GetFeedResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setRssXml(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.GetFeedResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.GetFeedResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.GetFeedResponse.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getRssXml(), n.length > 0 && t.writeString(1, n);
+	}, proto.widgetgrid.v1.GetFeedResponse.prototype.getRssXml = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.GetFeedResponse.prototype.setRssXml = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, n.object.extend(e, proto.widgetgrid.v1);
 })), require_blog_grpc_web_pb = /* @__PURE__ */ __commonJSMin(((e, t) => {
 	var n = {};
 	n.web = require_grpc_web();
@@ -5440,15 +6146,23 @@ var __commonJSMin = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), 
 	}, r.widgetgrid.v1.BlogServicePromiseClient.prototype.listBlogPosts = function(e, t) {
 		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.BlogService/ListBlogPosts", e, t || {}, i);
 	};
-	var o = new n.web.MethodDescriptor("/widgetgrid.v1.BlogService/SubscribeNewPosts", n.web.MethodType.SERVER_STREAMING, r.widgetgrid.v1.SubscribeNewPostsRequest, r.widgetgrid.v1.NewPostEvent, function(e) {
+	var o = new n.web.MethodDescriptor("/widgetgrid.v1.BlogService/GetFeed", n.web.MethodType.UNARY, r.widgetgrid.v1.GetFeedRequest, r.widgetgrid.v1.GetFeedResponse, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.GetFeedResponse.deserializeBinary);
+	r.widgetgrid.v1.BlogServiceClient.prototype.getFeed = function(e, t, n) {
+		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.BlogService/GetFeed", e, t || {}, o, n);
+	}, r.widgetgrid.v1.BlogServicePromiseClient.prototype.getFeed = function(e, t) {
+		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.BlogService/GetFeed", e, t || {}, o);
+	};
+	var s = new n.web.MethodDescriptor("/widgetgrid.v1.BlogService/SubscribeNewPosts", n.web.MethodType.SERVER_STREAMING, r.widgetgrid.v1.SubscribeNewPostsRequest, r.widgetgrid.v1.NewPostEvent, function(e) {
 		return e.serializeBinary();
 	}, r.widgetgrid.v1.NewPostEvent.deserializeBinary);
 	r.widgetgrid.v1.BlogServiceClient.prototype.subscribeNewPosts = function(e, t) {
-		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.BlogService/SubscribeNewPosts", e, t || {}, o);
+		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.BlogService/SubscribeNewPosts", e, t || {}, s);
 	}, r.widgetgrid.v1.BlogServicePromiseClient.prototype.subscribeNewPosts = function(e, t) {
-		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.BlogService/SubscribeNewPosts", e, t || {}, o);
+		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.BlogService/SubscribeNewPosts", e, t || {}, s);
 	}, t.exports = r.widgetgrid.v1;
-})), import_blog_pb = require_blog_pb(), import_blog_grpc_web_pb = require_blog_grpc_web_pb(), client$1 = new import_blog_grpc_web_pb.BlogServicePromiseClient("http://localhost:8080"), RECONNECT_DELAY_MS$1 = 2e3;
+})), import_blog_pb = require_blog_pb(), import_blog_grpc_web_pb = require_blog_grpc_web_pb(), client$2 = new import_blog_grpc_web_pb.BlogServicePromiseClient("http://localhost:8080"), RECONNECT_DELAY_MS$1 = 2e3;
 function subscribeNewPosts(e) {
 	let t = !1, n = null, r = null, i = "";
 	function o() {
@@ -5458,7 +6172,7 @@ function subscribeNewPosts(e) {
 	}
 	function s() {
 		let t = new import_blog_pb.SubscribeNewPostsRequest();
-		t.setLastKnownSlug(i), t.setRequestedAtMs(Date.now()), n = client$1.subscribeNewPosts(t, {}), n.on("data", (t) => {
+		t.setLastKnownSlug(i), t.setRequestedAtMs(Date.now()), n = client$2.subscribeNewPosts(t, {}), n.on("data", (t) => {
 			let n = t.toObject();
 			i = n.slug, e(n);
 		}), n.on("error", o), n.on("end", o);
@@ -6076,261 +6790,7 @@ var require_chat_pb = /* @__PURE__ */ __commonJSMin(((e) => {
 	}, r.widgetgrid.v1.ChatServicePromiseClient.prototype.subscribeChatEvents = function(e, t) {
 		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.ChatService/SubscribeChatEvents", e, t || {}, d);
 	}, t.exports = r.widgetgrid.v1;
-})), require_auth_pb = /* @__PURE__ */ __commonJSMin(((e) => {
-	var t = require_google_protobuf(), n = t, r = function() {
-		return this ? this : typeof window < "u" ? window : r === void 0 ? typeof self < "u" ? self : Function("return this")() : r;
-	}.call(null);
-	n.exportSymbol("proto.widgetgrid.v1.LogoutRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.LogoutResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.OwnerPresenceEvent", null, r), n.exportSymbol("proto.widgetgrid.v1.RegisterSignInRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.RegisterSignInResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.SubscribeOwnerPresenceRequest", null, r), proto.widgetgrid.v1.RegisterSignInRequest = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.RegisterSignInRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RegisterSignInRequest.displayName = "proto.widgetgrid.v1.RegisterSignInRequest"), proto.widgetgrid.v1.RegisterSignInResponse = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.RegisterSignInResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RegisterSignInResponse.displayName = "proto.widgetgrid.v1.RegisterSignInResponse"), proto.widgetgrid.v1.LogoutRequest = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.LogoutRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.LogoutRequest.displayName = "proto.widgetgrid.v1.LogoutRequest"), proto.widgetgrid.v1.LogoutResponse = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.LogoutResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.LogoutResponse.displayName = "proto.widgetgrid.v1.LogoutResponse"), proto.widgetgrid.v1.SubscribeOwnerPresenceRequest = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.SubscribeOwnerPresenceRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.displayName = "proto.widgetgrid.v1.SubscribeOwnerPresenceRequest"), proto.widgetgrid.v1.OwnerPresenceEvent = function(e) {
-		t.Message.initialize(this, e, 0, -1, null, null);
-	}, n.inherits(proto.widgetgrid.v1.OwnerPresenceEvent, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.OwnerPresenceEvent.displayName = "proto.widgetgrid.v1.OwnerPresenceEvent"), t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RegisterSignInRequest.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.RegisterSignInRequest.toObject(e, this);
-	}, proto.widgetgrid.v1.RegisterSignInRequest.toObject = function(e, n) {
-		var r = { idToken: t.Message.getFieldWithDefault(n, 1, "") };
-		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.RegisterSignInRequest.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RegisterSignInRequest();
-		return proto.widgetgrid.v1.RegisterSignInRequest.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.RegisterSignInRequest.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
-			case 1:
-				var n = t.readString();
-				e.setIdToken(n);
-				break;
-			default: t.skipField();
-		}
-		return e;
-	}, proto.widgetgrid.v1.RegisterSignInRequest.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.RegisterSignInRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.RegisterSignInRequest.serializeBinaryToWriter = function(e, t) {
-		var n = void 0;
-		n = e.getIdToken(), n.length > 0 && t.writeString(1, n);
-	}, proto.widgetgrid.v1.RegisterSignInRequest.prototype.getIdToken = function() {
-		return t.Message.getFieldWithDefault(this, 1, "");
-	}, proto.widgetgrid.v1.RegisterSignInRequest.prototype.setIdToken = function(e) {
-		return t.Message.setProto3StringField(this, 1, e);
-	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RegisterSignInResponse.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.RegisterSignInResponse.toObject(e, this);
-	}, proto.widgetgrid.v1.RegisterSignInResponse.toObject = function(e, n) {
-		var r = {
-			sessionToken: t.Message.getFieldWithDefault(n, 1, ""),
-			role: t.Message.getFieldWithDefault(n, 2, "")
-		};
-		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.RegisterSignInResponse.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RegisterSignInResponse();
-		return proto.widgetgrid.v1.RegisterSignInResponse.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.RegisterSignInResponse.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
-			case 1:
-				var n = t.readString();
-				e.setSessionToken(n);
-				break;
-			case 2:
-				var n = t.readString();
-				e.setRole(n);
-				break;
-			default: t.skipField();
-		}
-		return e;
-	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.RegisterSignInResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.RegisterSignInResponse.serializeBinaryToWriter = function(e, t) {
-		var n = void 0;
-		n = e.getSessionToken(), n.length > 0 && t.writeString(1, n), n = e.getRole(), n.length > 0 && t.writeString(2, n);
-	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.getSessionToken = function() {
-		return t.Message.getFieldWithDefault(this, 1, "");
-	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.setSessionToken = function(e) {
-		return t.Message.setProto3StringField(this, 1, e);
-	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.getRole = function() {
-		return t.Message.getFieldWithDefault(this, 2, "");
-	}, proto.widgetgrid.v1.RegisterSignInResponse.prototype.setRole = function(e) {
-		return t.Message.setProto3StringField(this, 2, e);
-	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.LogoutRequest.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.LogoutRequest.toObject(e, this);
-	}, proto.widgetgrid.v1.LogoutRequest.toObject = function(e, n) {
-		var r = { token: t.Message.getFieldWithDefault(n, 1, "") };
-		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.LogoutRequest.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.LogoutRequest();
-		return proto.widgetgrid.v1.LogoutRequest.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.LogoutRequest.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
-			case 1:
-				var n = t.readString();
-				e.setToken(n);
-				break;
-			default: t.skipField();
-		}
-		return e;
-	}, proto.widgetgrid.v1.LogoutRequest.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.LogoutRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.LogoutRequest.serializeBinaryToWriter = function(e, t) {
-		var n = void 0;
-		n = e.getToken(), n.length > 0 && t.writeString(1, n);
-	}, proto.widgetgrid.v1.LogoutRequest.prototype.getToken = function() {
-		return t.Message.getFieldWithDefault(this, 1, "");
-	}, proto.widgetgrid.v1.LogoutRequest.prototype.setToken = function(e) {
-		return t.Message.setProto3StringField(this, 1, e);
-	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.LogoutResponse.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.LogoutResponse.toObject(e, this);
-	}, proto.widgetgrid.v1.LogoutResponse.toObject = function(e, t) {
-		var n = {};
-		return e && (n.$jspbMessageInstance = t), n;
-	}), proto.widgetgrid.v1.LogoutResponse.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.LogoutResponse();
-		return proto.widgetgrid.v1.LogoutResponse.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.LogoutResponse.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
-		return e;
-	}, proto.widgetgrid.v1.LogoutResponse.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.LogoutResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.LogoutResponse.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.toObject(e, this);
-	}, proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.toObject = function(e, t) {
-		var n = {};
-		return e && (n.$jspbMessageInstance = t), n;
-	}), proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.SubscribeOwnerPresenceRequest();
-		return proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
-		return e;
-	}, proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.SubscribeOwnerPresenceRequest.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.OwnerPresenceEvent.prototype.toObject = function(e) {
-		return proto.widgetgrid.v1.OwnerPresenceEvent.toObject(e, this);
-	}, proto.widgetgrid.v1.OwnerPresenceEvent.toObject = function(e, n) {
-		var r = { online: t.Message.getBooleanFieldWithDefault(n, 1, !1) };
-		return e && (r.$jspbMessageInstance = n), r;
-	}), proto.widgetgrid.v1.OwnerPresenceEvent.deserializeBinary = function(e) {
-		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.OwnerPresenceEvent();
-		return proto.widgetgrid.v1.OwnerPresenceEvent.deserializeBinaryFromReader(r, n);
-	}, proto.widgetgrid.v1.OwnerPresenceEvent.deserializeBinaryFromReader = function(e, t) {
-		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
-			case 1:
-				var n = t.readBool();
-				e.setOnline(n);
-				break;
-			default: t.skipField();
-		}
-		return e;
-	}, proto.widgetgrid.v1.OwnerPresenceEvent.prototype.serializeBinary = function() {
-		var e = new t.BinaryWriter();
-		return proto.widgetgrid.v1.OwnerPresenceEvent.serializeBinaryToWriter(this, e), e.getResultBuffer();
-	}, proto.widgetgrid.v1.OwnerPresenceEvent.serializeBinaryToWriter = function(e, t) {
-		var n = void 0;
-		n = e.getOnline(), n && t.writeBool(1, n);
-	}, proto.widgetgrid.v1.OwnerPresenceEvent.prototype.getOnline = function() {
-		return t.Message.getBooleanFieldWithDefault(this, 1, !1);
-	}, proto.widgetgrid.v1.OwnerPresenceEvent.prototype.setOnline = function(e) {
-		return t.Message.setProto3BooleanField(this, 1, e);
-	}, n.object.extend(e, proto.widgetgrid.v1);
-})), require_auth_grpc_web_pb = /* @__PURE__ */ __commonJSMin(((e, t) => {
-	var n = {};
-	n.web = require_grpc_web();
-	var r = {};
-	r.widgetgrid = {}, r.widgetgrid.v1 = require_auth_pb(), r.widgetgrid.v1.AuthServiceClient = function(e, t, r) {
-		r ||= {}, r.format = "text", this.client_ = new n.web.GrpcWebClientBase(r), this.hostname_ = e.replace(/\/+$/, "");
-	}, r.widgetgrid.v1.AuthServicePromiseClient = function(e, t, r) {
-		r ||= {}, r.format = "text", this.client_ = new n.web.GrpcWebClientBase(r), this.hostname_ = e.replace(/\/+$/, "");
-	};
-	var i = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/RegisterSignIn", n.web.MethodType.UNARY, r.widgetgrid.v1.RegisterSignInRequest, r.widgetgrid.v1.RegisterSignInResponse, function(e) {
-		return e.serializeBinary();
-	}, r.widgetgrid.v1.RegisterSignInResponse.deserializeBinary);
-	r.widgetgrid.v1.AuthServiceClient.prototype.registerSignIn = function(e, t, n) {
-		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.AuthService/RegisterSignIn", e, t || {}, i, n);
-	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.registerSignIn = function(e, t) {
-		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.AuthService/RegisterSignIn", e, t || {}, i);
-	};
-	var o = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/Logout", n.web.MethodType.UNARY, r.widgetgrid.v1.LogoutRequest, r.widgetgrid.v1.LogoutResponse, function(e) {
-		return e.serializeBinary();
-	}, r.widgetgrid.v1.LogoutResponse.deserializeBinary);
-	r.widgetgrid.v1.AuthServiceClient.prototype.logout = function(e, t, n) {
-		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.AuthService/Logout", e, t || {}, o, n);
-	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.logout = function(e, t) {
-		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.AuthService/Logout", e, t || {}, o);
-	};
-	var s = new n.web.MethodDescriptor("/widgetgrid.v1.AuthService/SubscribeOwnerPresence", n.web.MethodType.SERVER_STREAMING, r.widgetgrid.v1.SubscribeOwnerPresenceRequest, r.widgetgrid.v1.OwnerPresenceEvent, function(e) {
-		return e.serializeBinary();
-	}, r.widgetgrid.v1.OwnerPresenceEvent.deserializeBinary);
-	r.widgetgrid.v1.AuthServiceClient.prototype.subscribeOwnerPresence = function(e, t) {
-		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.AuthService/SubscribeOwnerPresence", e, t || {}, s);
-	}, r.widgetgrid.v1.AuthServicePromiseClient.prototype.subscribeOwnerPresence = function(e, t) {
-		return this.client_.serverStreaming(this.hostname_ + "/widgetgrid.v1.AuthService/SubscribeOwnerPresence", e, t || {}, s);
-	}, t.exports = r.widgetgrid.v1;
-})), import_chat_pb = require_chat_pb(), import_chat_grpc_web_pb = require_chat_grpc_web_pb(), import_auth_pb = require_auth_pb(), import_auth_grpc_web_pb = require_auth_grpc_web_pb(), AUTH_ORIGIN = "https://auth.pie-laboratories.com", CLIENT_ID = "bvec1bfa2e7srgjf237e2m3ja", STORAGE_KEY = "widgetgrid:auth", EXPIRY_SKEW_MS = 6e4, IDENTITY_CHANGED_EVENT = "widgetgrid:identity-changed";
-function readStored() {
-	try {
-		return JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? null;
-	} catch {
-		return null;
-	}
-}
-function writeStored(e) {
-	e ? localStorage.setItem(STORAGE_KEY, JSON.stringify(e)) : localStorage.removeItem(STORAGE_KEY);
-}
-function announce() {
-	window.dispatchEvent(new CustomEvent(IDENTITY_CHANGED_EVENT));
-}
-window.addEventListener("storage", (e) => {
-	e.key === STORAGE_KEY && announce();
-});
-async function tokenRequest(e) {
-	let t = await fetch(`${AUTH_ORIGIN}/oauth2/token`, {
-		method: "POST",
-		headers: { "Content-Type": "application/x-www-form-urlencoded" },
-		body: new URLSearchParams({
-			client_id: CLIENT_ID,
-			...e
-		})
-	}), n = await t.json();
-	if (!t.ok) throw Error(n.error ?? `token endpoint ${t.status}`);
-	return n;
-}
-var refreshing = null;
-async function getAccessToken() {
-	let e = readStored();
-	return e ? e.expiresAt - EXPIRY_SKEW_MS > Date.now() ? e.accessToken : (refreshing ??= (async () => {
-		try {
-			let t = await tokenRequest({
-				grant_type: "refresh_token",
-				refresh_token: e.refreshToken
-			}), n = {
-				...e,
-				accessToken: t.access_token,
-				idToken: t.id_token,
-				expiresAt: Date.now() + t.expires_in * 1e3
-			};
-			return writeStored(n), n.accessToken;
-		} catch {
-			return writeStored(null), announce(), null;
-		} finally {
-			refreshing = null;
-		}
-	})(), refreshing) : null;
-}
-async function authMetadata() {
-	let e = await getAccessToken();
-	return e ? { authorization: `Bearer ${e}` } : {};
-}
-//#endregion
-//#region src/chatSubscriptionClient.js
-var client = new import_chat_grpc_web_pb.ChatServicePromiseClient("http://localhost:8080"), VISITOR_ID_KEY = "widgetgrid:visitorId";
+})), import_chat_pb = require_chat_pb(), import_chat_grpc_web_pb = require_chat_grpc_web_pb(), client$1 = new import_chat_grpc_web_pb.ChatServicePromiseClient("http://localhost:8080"), VISITOR_ID_KEY = "widgetgrid:visitorId";
 async function identityMetadata() {
 	let e = localStorage.getItem(VISITOR_ID_KEY);
 	return e || (e = crypto.randomUUID(), localStorage.setItem(VISITOR_ID_KEY, e)), {
@@ -6348,24 +6808,420 @@ function subscribeChatEvents(e) {
 	}
 	async function o() {
 		let r = await identityMetadata();
-		t || (n = client.subscribeChatEvents(new import_chat_pb.SubscribeChatEventsRequest(), r), n.on("data", (t) => e(t.toObject())), n.on("error", i), n.on("end", i));
+		t || (n = client$1.subscribeChatEvents(new import_chat_pb.SubscribeChatEventsRequest(), r), n.on("data", (t) => e(t.toObject())), n.on("error", i), n.on("end", i));
 	}
 	return o(), () => {
 		t = !0, r && clearTimeout(r), n?.cancel();
 	};
 }
 //#endregion
-//#region \0plugin-vue:export-helper
-var _plugin_vue_export_helper_default = (e, t) => {
-	let n = e.__vccOpts || e;
-	for (let [e, r] of t) n[e] = r;
-	return n;
-}, SCROLL_THRESHOLD = 10, TOPBAR_MODE = {
-	solitaire: "collapsed",
-	chat: "collapsed",
-	embuscade: "collapsed"
-}, RAIL_HIDDEN_VIEWS = /* @__PURE__ */ new Set(["solitaire", "embuscade"]), _sfc_main = {
+//#region ../../packages/proto-gen-web/widgetgrid/v1/push_pb.js
+var require_push_pb = /* @__PURE__ */ __commonJSMin(((e) => {
+	var t = require_google_protobuf(), n = t, r = function() {
+		return this ? this : typeof window < "u" ? window : r === void 0 ? typeof self < "u" ? self : Function("return this")() : r;
+	}.call(null);
+	n.exportSymbol("proto.widgetgrid.v1.GetPushConfigRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.GetPushConfigResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.RegisterPushSubscriptionRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.RegisterPushSubscriptionResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.RemovePushSubscriptionRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.RemovePushSubscriptionResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.ReportActivityRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.ReportActivityResponse", null, r), n.exportSymbol("proto.widgetgrid.v1.SendTestPushRequest", null, r), n.exportSymbol("proto.widgetgrid.v1.SendTestPushResponse", null, r), proto.widgetgrid.v1.GetPushConfigRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.GetPushConfigRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.GetPushConfigRequest.displayName = "proto.widgetgrid.v1.GetPushConfigRequest"), proto.widgetgrid.v1.GetPushConfigResponse = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.GetPushConfigResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.GetPushConfigResponse.displayName = "proto.widgetgrid.v1.GetPushConfigResponse"), proto.widgetgrid.v1.RegisterPushSubscriptionRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.RegisterPushSubscriptionRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RegisterPushSubscriptionRequest.displayName = "proto.widgetgrid.v1.RegisterPushSubscriptionRequest"), proto.widgetgrid.v1.RegisterPushSubscriptionResponse = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.RegisterPushSubscriptionResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RegisterPushSubscriptionResponse.displayName = "proto.widgetgrid.v1.RegisterPushSubscriptionResponse"), proto.widgetgrid.v1.RemovePushSubscriptionRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.RemovePushSubscriptionRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RemovePushSubscriptionRequest.displayName = "proto.widgetgrid.v1.RemovePushSubscriptionRequest"), proto.widgetgrid.v1.RemovePushSubscriptionResponse = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.RemovePushSubscriptionResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.RemovePushSubscriptionResponse.displayName = "proto.widgetgrid.v1.RemovePushSubscriptionResponse"), proto.widgetgrid.v1.ReportActivityRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.ReportActivityRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ReportActivityRequest.displayName = "proto.widgetgrid.v1.ReportActivityRequest"), proto.widgetgrid.v1.ReportActivityResponse = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.ReportActivityResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.ReportActivityResponse.displayName = "proto.widgetgrid.v1.ReportActivityResponse"), proto.widgetgrid.v1.SendTestPushRequest = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.SendTestPushRequest, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.SendTestPushRequest.displayName = "proto.widgetgrid.v1.SendTestPushRequest"), proto.widgetgrid.v1.SendTestPushResponse = function(e) {
+		t.Message.initialize(this, e, 0, -1, null, null);
+	}, n.inherits(proto.widgetgrid.v1.SendTestPushResponse, t.Message), n.DEBUG && !COMPILED && (proto.widgetgrid.v1.SendTestPushResponse.displayName = "proto.widgetgrid.v1.SendTestPushResponse"), t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.GetPushConfigRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.GetPushConfigRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.GetPushConfigRequest.toObject = function(e, n) {
+		var r = { requestedAtMs: t.Message.getFieldWithDefault(n, 1, 0) };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.GetPushConfigRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.GetPushConfigRequest();
+		return proto.widgetgrid.v1.GetPushConfigRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.GetPushConfigRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readInt64();
+				e.setRequestedAtMs(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.GetPushConfigRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.GetPushConfigRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.GetPushConfigRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getRequestedAtMs(), n !== 0 && t.writeInt64(1, n);
+	}, proto.widgetgrid.v1.GetPushConfigRequest.prototype.getRequestedAtMs = function() {
+		return t.Message.getFieldWithDefault(this, 1, 0);
+	}, proto.widgetgrid.v1.GetPushConfigRequest.prototype.setRequestedAtMs = function(e) {
+		return t.Message.setProto3IntField(this, 1, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.GetPushConfigResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.GetPushConfigResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.GetPushConfigResponse.toObject = function(e, n) {
+		var r = { vapidPublicKey: t.Message.getFieldWithDefault(n, 1, "") };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.GetPushConfigResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.GetPushConfigResponse();
+		return proto.widgetgrid.v1.GetPushConfigResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.GetPushConfigResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setVapidPublicKey(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.GetPushConfigResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.GetPushConfigResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.GetPushConfigResponse.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getVapidPublicKey(), n.length > 0 && t.writeString(1, n);
+	}, proto.widgetgrid.v1.GetPushConfigResponse.prototype.getVapidPublicKey = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.GetPushConfigResponse.prototype.setVapidPublicKey = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RegisterPushSubscriptionRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.RegisterPushSubscriptionRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.RegisterPushSubscriptionRequest.toObject = function(e, n) {
+		var r = {
+			endpoint: t.Message.getFieldWithDefault(n, 1, ""),
+			p256dh: t.Message.getFieldWithDefault(n, 2, ""),
+			auth: t.Message.getFieldWithDefault(n, 3, ""),
+			userAgent: t.Message.getFieldWithDefault(n, 4, "")
+		};
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.RegisterPushSubscriptionRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RegisterPushSubscriptionRequest();
+		return proto.widgetgrid.v1.RegisterPushSubscriptionRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.RegisterPushSubscriptionRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setEndpoint(n);
+				break;
+			case 2:
+				var n = t.readString();
+				e.setP256dh(n);
+				break;
+			case 3:
+				var n = t.readString();
+				e.setAuth(n);
+				break;
+			case 4:
+				var n = t.readString();
+				e.setUserAgent(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.RegisterPushSubscriptionRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.RegisterPushSubscriptionRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.RegisterPushSubscriptionRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getEndpoint(), n.length > 0 && t.writeString(1, n), n = e.getP256dh(), n.length > 0 && t.writeString(2, n), n = e.getAuth(), n.length > 0 && t.writeString(3, n), n = e.getUserAgent(), n.length > 0 && t.writeString(4, n);
+	}, proto.widgetgrid.v1.RegisterPushSubscriptionRequest.prototype.getEndpoint = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.RegisterPushSubscriptionRequest.prototype.setEndpoint = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, proto.widgetgrid.v1.RegisterPushSubscriptionRequest.prototype.getP256dh = function() {
+		return t.Message.getFieldWithDefault(this, 2, "");
+	}, proto.widgetgrid.v1.RegisterPushSubscriptionRequest.prototype.setP256dh = function(e) {
+		return t.Message.setProto3StringField(this, 2, e);
+	}, proto.widgetgrid.v1.RegisterPushSubscriptionRequest.prototype.getAuth = function() {
+		return t.Message.getFieldWithDefault(this, 3, "");
+	}, proto.widgetgrid.v1.RegisterPushSubscriptionRequest.prototype.setAuth = function(e) {
+		return t.Message.setProto3StringField(this, 3, e);
+	}, proto.widgetgrid.v1.RegisterPushSubscriptionRequest.prototype.getUserAgent = function() {
+		return t.Message.getFieldWithDefault(this, 4, "");
+	}, proto.widgetgrid.v1.RegisterPushSubscriptionRequest.prototype.setUserAgent = function(e) {
+		return t.Message.setProto3StringField(this, 4, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RegisterPushSubscriptionResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.RegisterPushSubscriptionResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.RegisterPushSubscriptionResponse.toObject = function(e, t) {
+		var n = {};
+		return e && (n.$jspbMessageInstance = t), n;
+	}), proto.widgetgrid.v1.RegisterPushSubscriptionResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RegisterPushSubscriptionResponse();
+		return proto.widgetgrid.v1.RegisterPushSubscriptionResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.RegisterPushSubscriptionResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		return e;
+	}, proto.widgetgrid.v1.RegisterPushSubscriptionResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.RegisterPushSubscriptionResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.RegisterPushSubscriptionResponse.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RemovePushSubscriptionRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.RemovePushSubscriptionRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.RemovePushSubscriptionRequest.toObject = function(e, n) {
+		var r = { endpoint: t.Message.getFieldWithDefault(n, 1, "") };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.RemovePushSubscriptionRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RemovePushSubscriptionRequest();
+		return proto.widgetgrid.v1.RemovePushSubscriptionRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.RemovePushSubscriptionRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setEndpoint(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.RemovePushSubscriptionRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.RemovePushSubscriptionRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.RemovePushSubscriptionRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getEndpoint(), n.length > 0 && t.writeString(1, n);
+	}, proto.widgetgrid.v1.RemovePushSubscriptionRequest.prototype.getEndpoint = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.RemovePushSubscriptionRequest.prototype.setEndpoint = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.RemovePushSubscriptionResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.RemovePushSubscriptionResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.RemovePushSubscriptionResponse.toObject = function(e, t) {
+		var n = {};
+		return e && (n.$jspbMessageInstance = t), n;
+	}), proto.widgetgrid.v1.RemovePushSubscriptionResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.RemovePushSubscriptionResponse();
+		return proto.widgetgrid.v1.RemovePushSubscriptionResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.RemovePushSubscriptionResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		return e;
+	}, proto.widgetgrid.v1.RemovePushSubscriptionResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.RemovePushSubscriptionResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.RemovePushSubscriptionResponse.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ReportActivityRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.ReportActivityRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.ReportActivityRequest.toObject = function(e, n) {
+		var r = {
+			endpoint: t.Message.getFieldWithDefault(n, 1, ""),
+			tabId: t.Message.getFieldWithDefault(n, 2, ""),
+			active: t.Message.getBooleanFieldWithDefault(n, 3, !1)
+		};
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.ReportActivityRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ReportActivityRequest();
+		return proto.widgetgrid.v1.ReportActivityRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.ReportActivityRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readString();
+				e.setEndpoint(n);
+				break;
+			case 2:
+				var n = t.readString();
+				e.setTabId(n);
+				break;
+			case 3:
+				var n = t.readBool();
+				e.setActive(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.ReportActivityRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.ReportActivityRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.ReportActivityRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getEndpoint(), n.length > 0 && t.writeString(1, n), n = e.getTabId(), n.length > 0 && t.writeString(2, n), n = e.getActive(), n && t.writeBool(3, n);
+	}, proto.widgetgrid.v1.ReportActivityRequest.prototype.getEndpoint = function() {
+		return t.Message.getFieldWithDefault(this, 1, "");
+	}, proto.widgetgrid.v1.ReportActivityRequest.prototype.setEndpoint = function(e) {
+		return t.Message.setProto3StringField(this, 1, e);
+	}, proto.widgetgrid.v1.ReportActivityRequest.prototype.getTabId = function() {
+		return t.Message.getFieldWithDefault(this, 2, "");
+	}, proto.widgetgrid.v1.ReportActivityRequest.prototype.setTabId = function(e) {
+		return t.Message.setProto3StringField(this, 2, e);
+	}, proto.widgetgrid.v1.ReportActivityRequest.prototype.getActive = function() {
+		return t.Message.getBooleanFieldWithDefault(this, 3, !1);
+	}, proto.widgetgrid.v1.ReportActivityRequest.prototype.setActive = function(e) {
+		return t.Message.setProto3BooleanField(this, 3, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.ReportActivityResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.ReportActivityResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.ReportActivityResponse.toObject = function(e, t) {
+		var n = {};
+		return e && (n.$jspbMessageInstance = t), n;
+	}), proto.widgetgrid.v1.ReportActivityResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.ReportActivityResponse();
+		return proto.widgetgrid.v1.ReportActivityResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.ReportActivityResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) t.getFieldNumber(), t.skipField();
+		return e;
+	}, proto.widgetgrid.v1.ReportActivityResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.ReportActivityResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.ReportActivityResponse.serializeBinaryToWriter = function(e, t) {}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.SendTestPushRequest.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.SendTestPushRequest.toObject(e, this);
+	}, proto.widgetgrid.v1.SendTestPushRequest.toObject = function(e, n) {
+		var r = { requestedAtMs: t.Message.getFieldWithDefault(n, 1, 0) };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.SendTestPushRequest.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.SendTestPushRequest();
+		return proto.widgetgrid.v1.SendTestPushRequest.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.SendTestPushRequest.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readInt64();
+				e.setRequestedAtMs(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.SendTestPushRequest.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.SendTestPushRequest.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.SendTestPushRequest.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getRequestedAtMs(), n !== 0 && t.writeInt64(1, n);
+	}, proto.widgetgrid.v1.SendTestPushRequest.prototype.getRequestedAtMs = function() {
+		return t.Message.getFieldWithDefault(this, 1, 0);
+	}, proto.widgetgrid.v1.SendTestPushRequest.prototype.setRequestedAtMs = function(e) {
+		return t.Message.setProto3IntField(this, 1, e);
+	}, t.Message.GENERATE_TO_OBJECT && (proto.widgetgrid.v1.SendTestPushResponse.prototype.toObject = function(e) {
+		return proto.widgetgrid.v1.SendTestPushResponse.toObject(e, this);
+	}, proto.widgetgrid.v1.SendTestPushResponse.toObject = function(e, n) {
+		var r = { delivered: t.Message.getFieldWithDefault(n, 1, 0) };
+		return e && (r.$jspbMessageInstance = n), r;
+	}), proto.widgetgrid.v1.SendTestPushResponse.deserializeBinary = function(e) {
+		var n = new t.BinaryReader(e), r = new proto.widgetgrid.v1.SendTestPushResponse();
+		return proto.widgetgrid.v1.SendTestPushResponse.deserializeBinaryFromReader(r, n);
+	}, proto.widgetgrid.v1.SendTestPushResponse.deserializeBinaryFromReader = function(e, t) {
+		for (; t.nextField() && !t.isEndGroup();) switch (t.getFieldNumber()) {
+			case 1:
+				var n = t.readInt32();
+				e.setDelivered(n);
+				break;
+			default: t.skipField();
+		}
+		return e;
+	}, proto.widgetgrid.v1.SendTestPushResponse.prototype.serializeBinary = function() {
+		var e = new t.BinaryWriter();
+		return proto.widgetgrid.v1.SendTestPushResponse.serializeBinaryToWriter(this, e), e.getResultBuffer();
+	}, proto.widgetgrid.v1.SendTestPushResponse.serializeBinaryToWriter = function(e, t) {
+		var n = void 0;
+		n = e.getDelivered(), n !== 0 && t.writeInt32(1, n);
+	}, proto.widgetgrid.v1.SendTestPushResponse.prototype.getDelivered = function() {
+		return t.Message.getFieldWithDefault(this, 1, 0);
+	}, proto.widgetgrid.v1.SendTestPushResponse.prototype.setDelivered = function(e) {
+		return t.Message.setProto3IntField(this, 1, e);
+	}, n.object.extend(e, proto.widgetgrid.v1);
+})), require_push_grpc_web_pb = /* @__PURE__ */ __commonJSMin(((e, t) => {
+	var n = {};
+	n.web = require_grpc_web();
+	var r = {};
+	r.widgetgrid = {}, r.widgetgrid.v1 = require_push_pb(), r.widgetgrid.v1.PushServiceClient = function(e, t, r) {
+		r ||= {}, r.format = "text", this.client_ = new n.web.GrpcWebClientBase(r), this.hostname_ = e.replace(/\/+$/, "");
+	}, r.widgetgrid.v1.PushServicePromiseClient = function(e, t, r) {
+		r ||= {}, r.format = "text", this.client_ = new n.web.GrpcWebClientBase(r), this.hostname_ = e.replace(/\/+$/, "");
+	};
+	var i = new n.web.MethodDescriptor("/widgetgrid.v1.PushService/GetPushConfig", n.web.MethodType.UNARY, r.widgetgrid.v1.GetPushConfigRequest, r.widgetgrid.v1.GetPushConfigResponse, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.GetPushConfigResponse.deserializeBinary);
+	r.widgetgrid.v1.PushServiceClient.prototype.getPushConfig = function(e, t, n) {
+		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.PushService/GetPushConfig", e, t || {}, i, n);
+	}, r.widgetgrid.v1.PushServicePromiseClient.prototype.getPushConfig = function(e, t) {
+		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.PushService/GetPushConfig", e, t || {}, i);
+	};
+	var o = new n.web.MethodDescriptor("/widgetgrid.v1.PushService/RegisterPushSubscription", n.web.MethodType.UNARY, r.widgetgrid.v1.RegisterPushSubscriptionRequest, r.widgetgrid.v1.RegisterPushSubscriptionResponse, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.RegisterPushSubscriptionResponse.deserializeBinary);
+	r.widgetgrid.v1.PushServiceClient.prototype.registerPushSubscription = function(e, t, n) {
+		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.PushService/RegisterPushSubscription", e, t || {}, o, n);
+	}, r.widgetgrid.v1.PushServicePromiseClient.prototype.registerPushSubscription = function(e, t) {
+		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.PushService/RegisterPushSubscription", e, t || {}, o);
+	};
+	var s = new n.web.MethodDescriptor("/widgetgrid.v1.PushService/RemovePushSubscription", n.web.MethodType.UNARY, r.widgetgrid.v1.RemovePushSubscriptionRequest, r.widgetgrid.v1.RemovePushSubscriptionResponse, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.RemovePushSubscriptionResponse.deserializeBinary);
+	r.widgetgrid.v1.PushServiceClient.prototype.removePushSubscription = function(e, t, n) {
+		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.PushService/RemovePushSubscription", e, t || {}, s, n);
+	}, r.widgetgrid.v1.PushServicePromiseClient.prototype.removePushSubscription = function(e, t) {
+		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.PushService/RemovePushSubscription", e, t || {}, s);
+	};
+	var c = new n.web.MethodDescriptor("/widgetgrid.v1.PushService/ReportActivity", n.web.MethodType.UNARY, r.widgetgrid.v1.ReportActivityRequest, r.widgetgrid.v1.ReportActivityResponse, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.ReportActivityResponse.deserializeBinary);
+	r.widgetgrid.v1.PushServiceClient.prototype.reportActivity = function(e, t, n) {
+		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.PushService/ReportActivity", e, t || {}, c, n);
+	}, r.widgetgrid.v1.PushServicePromiseClient.prototype.reportActivity = function(e, t) {
+		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.PushService/ReportActivity", e, t || {}, c);
+	};
+	var l = new n.web.MethodDescriptor("/widgetgrid.v1.PushService/SendTestPush", n.web.MethodType.UNARY, r.widgetgrid.v1.SendTestPushRequest, r.widgetgrid.v1.SendTestPushResponse, function(e) {
+		return e.serializeBinary();
+	}, r.widgetgrid.v1.SendTestPushResponse.deserializeBinary);
+	r.widgetgrid.v1.PushServiceClient.prototype.sendTestPush = function(e, t, n) {
+		return this.client_.rpcCall(this.hostname_ + "/widgetgrid.v1.PushService/SendTestPush", e, t || {}, l, n);
+	}, r.widgetgrid.v1.PushServicePromiseClient.prototype.sendTestPush = function(e, t) {
+		return this.client_.unaryCall(this.hostname_ + "/widgetgrid.v1.PushService/SendTestPush", e, t || {}, l);
+	}, t.exports = r.widgetgrid.v1;
+})), import_push_pb = require_push_pb(), import_push_grpc_web_pb = require_push_grpc_web_pb(), client = new import_push_grpc_web_pb.PushServicePromiseClient("http://localhost:8080"), HEARTBEAT_MS = 1e4;
+function startActivityReporter() {
+	if (!("serviceWorker" in navigator) || !("PushManager" in window)) return () => {};
+	let e = crypto.randomUUID(), t = !1, n = null, r = Promise.resolve();
+	async function i(t) {
+		if (getIdentity()?.role !== "owner") return;
+		let n = await (await navigator.serviceWorker.getRegistration())?.pushManager.getSubscription();
+		if (!n) return;
+		let r = new import_push_pb.ReportActivityRequest();
+		r.setEndpoint(n.endpoint), r.setTabId(e), r.setActive(t), await client.reportActivity(r, await authMetadata());
+	}
+	function o(e) {
+		t = e, r = r.then(() => i(e)).catch(() => {});
+	}
+	function s() {
+		document.visibilityState === "visible" && document.hasFocus() ? (o(!0), n ||= setInterval(() => o(!0), HEARTBEAT_MS)) : (clearInterval(n), n = null, t && o(!1));
+	}
+	function c() {
+		clearInterval(n), n = null, t && o(!1);
+	}
+	function l() {
+		t = !1, s();
+	}
+	return document.addEventListener("visibilitychange", s), window.addEventListener("focus", s), window.addEventListener("blur", s), window.addEventListener("pageshow", s), window.addEventListener("pagehide", c), window.addEventListener("widgetgrid:identity-changed", l), window.addEventListener("widgetgrid:push-changed", l), s(), () => {
+		document.removeEventListener("visibilitychange", s), window.removeEventListener("focus", s), window.removeEventListener("blur", s), window.removeEventListener("pageshow", s), window.removeEventListener("pagehide", c), window.removeEventListener("widgetgrid:identity-changed", l), window.removeEventListener("widgetgrid:push-changed", l), c();
+	};
+}
+//#endregion
+//#region src/MainWidget.vue
+var SCROLL_THRESHOLD = 10, GAME_ENTRIES = [
+	{
+		view: "lastnaming",
+		title: "The Last Naming",
+		description: "High summer at Oktul, where the Gordun graze their raks below the Kagdun spring."
+	},
+	{
+		view: "solitaire",
+		title: "Solitaire",
+		description: "Klondike solitaire: seven columns, four suits, ace to king."
+	},
+	{
+		view: "embuscade",
+		title: "Embuscade",
+		description: "A tank shooter in a maze, with powerups. Play online against friends or AI opponents."
+	}
+], ACCOUNT_VIEWS = [
+	"login",
+	"register",
+	"account"
+], isLhoraireAdmin = () => !!getIdentity()?.groups.includes("anonyme admins"), isOwner = () => getIdentity()?.role === "owner", _sfc_main = {
 	name: "MainWidget",
+	components: { SectionPage: SectionPage_default },
 	props: {
 		data: {
 			type: Object,
@@ -6378,18 +7234,32 @@ var _plugin_vue_export_helper_default = (e, t) => {
 	},
 	data() {
 		return {
-			view: "blog",
+			view: null,
+			post: null,
 			blogComponent: null,
 			solitaireComponent: null,
 			chatComponent: null,
 			embuscadeComponent: null,
+			lastNamingComponent: null,
+			lhoraireComponent: null,
+			subscribeComponent: null,
+			accountComponent: null,
+			boardComponent: null,
+			board: null,
 			collapsed: !1,
 			railHidden: !1,
-			blogReloadKey: 0
+			authorComponent: null,
+			draft: null,
+			blogReloadKey: 0,
+			isLhoraireAdmin: isLhoraireAdmin(),
+			isOwner: isOwner(),
+			signedIn: !!getIdentity()
 		};
 	},
 	created() {
-		window.addEventListener("widgetgrid:navigate", this.onNavigate), import(
+		window.addEventListener(ROUTE_EVENT, this.onRoute), this.onRoute({ detail: currentSiteRoute() }), featureFlags().then(() => {
+			this.viewShown(this.view) ? this.loadLastNaming() : navigate("/", { replace: !0 });
+		}), import(
 			/* @vite-ignore */
 			"/widgets/blog.js"
 ).then((e) => {
@@ -6399,20 +7269,77 @@ var _plugin_vue_export_helper_default = (e, t) => {
 		}), this.unsubscribeChatEvents = subscribeChatEvents((e) => {
 			window.dispatchEvent(new CustomEvent("widgetgrid:chat-event", { detail: e }));
 		}), this.onIdentityChanged = () => {
-			this.unsubscribeChatEvents(), this.unsubscribeChatEvents = subscribeChatEvents((e) => {
+			this.isLhoraireAdmin = isLhoraireAdmin(), this.isOwner = isOwner(), this.signedIn = !!getIdentity(), this.unsubscribeChatEvents(), this.unsubscribeChatEvents = subscribeChatEvents((e) => {
 				window.dispatchEvent(new CustomEvent("widgetgrid:chat-event", { detail: e }));
 			});
-		}, window.addEventListener("widgetgrid:identity-changed", this.onIdentityChanged);
+		}, window.addEventListener("widgetgrid:identity-changed", this.onIdentityChanged), this.stopActivityReporter = startActivityReporter();
 	},
 	beforeUnmount() {
-		window.removeEventListener("widgetgrid:navigate", this.onNavigate), window.removeEventListener("widgetgrid:identity-changed", this.onIdentityChanged), this.unsubscribeNewPosts(), this.unsubscribeChatEvents();
+		window.removeEventListener(ROUTE_EVENT, this.onRoute), window.removeEventListener("widgetgrid:identity-changed", this.onIdentityChanged), this.unsubscribeNewPosts(), this.unsubscribeChatEvents(), this.stopActivityReporter();
 	},
-	computed: { topbarMode() {
-		return TOPBAR_MODE[this.view] ?? "scroll";
-	} },
+	computed: {
+		topbarMode() {
+			return viewChrome(this.view).topbar;
+		},
+		isAccountView() {
+			return ACCOUNT_VIEWS.includes(this.view);
+		},
+		gameEntries() {
+			return GAME_ENTRIES.filter((e) => this.viewShown(e.view));
+		},
+		siteEntries() {
+			let e = [
+				this.signedIn ? {
+					view: "account",
+					title: "Your account",
+					description: "Your username and email, and logging out."
+				} : {
+					view: "login",
+					title: "Log in or register",
+					description: "An account lets you post on the message boards."
+				},
+				{
+					view: "subscribe",
+					title: "Email updates",
+					description: "An email whenever a new blog post goes up."
+				},
+				{
+					view: "messages",
+					title: "Message boards",
+					description: "Feedback and discussion about the games and the site."
+				}
+			];
+			return this.isOwner && e.push({
+				view: "write",
+				title: "Write",
+				description: "Draft, preview and publish blog posts."
+			}), this.isLhoraireAdmin && e.push({
+				view: "lhoraire",
+				title: "l'horaire",
+				description: "Projects, issues and workflows."
+			}), e;
+		}
+	},
 	methods: {
-		onNavigate(e) {
-			this.view = e.detail.view, this.view === "solitaire" && !this.solitaireComponent && import(
+		viewShown(e) {
+			let t = viewFlag(e);
+			return !t || isEnabled(t);
+		},
+		loadLastNaming() {
+			this.view === "lastnaming" && !this.lastNamingComponent && this.viewShown("lastnaming") && import(
+				/* @vite-ignore */
+				"/widgets/lastnaming.js"
+).then((e) => {
+				this.lastNamingComponent = e.default ?? e;
+			});
+		},
+		onRoute(e) {
+			let { view: t, post: n = null, board: r = null, draft: i = null, forceReload: o = !1 } = e.detail;
+			if (flagsLoaded() && !this.viewShown(t)) {
+				navigate("/", { replace: !0 });
+				return;
+			}
+			this.post = n, this.draft = i, t === "messages" && this.view === "messages" && JSON.stringify(r) !== JSON.stringify(this.board) && this.$el && (this.$el.scrollTop = 0), this.board = r, o && (this.blogReloadKey += 1), t !== this.view && (this.view = t, this.view === "solitaire" && !this.solitaireComponent && import(
 				/* @vite-ignore */
 				"/widgets/solitaire.js"
 ).then((e) => {
@@ -6422,15 +7349,46 @@ var _plugin_vue_export_helper_default = (e, t) => {
 				"/widgets/chat.js"
 ).then((e) => {
 				this.chatComponent = e.default ?? e;
+			}), this.view === "lhoraire" && !this.lhoraireComponent && import(
+				/* @vite-ignore */
+				"/widgets/lhoraire.js"
+).then((e) => {
+				this.lhoraireComponent = e.default ?? e;
+			}), this.view === "messages" && !this.boardComponent && import(
+				/* @vite-ignore */
+				"/widgets/board.js"
+).then((e) => {
+				this.boardComponent = e.default ?? e;
+			}), ACCOUNT_VIEWS.includes(this.view) && !this.accountComponent && import(
+				/* @vite-ignore */
+				"/widgets/account.js"
+).then((e) => {
+				this.accountComponent = e.default ?? e;
+			}), this.view === "write" && !this.authorComponent && import(
+				/* @vite-ignore */
+				"/widgets/author.js"
+).then((e) => {
+				this.authorComponent = e.default ?? e;
+			}), this.view === "subscribe" && !this.subscribeComponent && import(
+				/* @vite-ignore */
+				"/widgets/subscribe.js"
+).then((e) => {
+				this.subscribeComponent = e.default ?? e;
 			}), this.view === "embuscade" && !this.embuscadeComponent && import(
 				/* @vite-ignore */
 				"/widgets/embuscade.js"
 ).then((e) => {
 				this.embuscadeComponent = e.default ?? e;
-			}), e.detail.forceReload && (this.blogReloadKey += 1), this.$el.scrollTop = 0, this.setCollapsed(this.topbarMode === "collapsed"), this.setRailHidden(RAIL_HIDDEN_VIEWS.has(this.view));
+			}), this.loadLastNaming(), this.$el && (this.$el.scrollTop = 0), this.setCollapsed(this.topbarMode === "collapsed"), this.setRailHidden(viewChrome(this.view).railHidden));
 		},
 		onScroll(e) {
-			this.topbarMode === "scroll" && this.setCollapsed(e.target.scrollTop > SCROLL_THRESHOLD);
+			if (this.topbarMode !== "scroll") return;
+			let t = e.target;
+			if (this.collapsed) t.scrollTop <= 0 && this.setCollapsed(!1);
+			else {
+				let e = t.scrollTop > 0 && t.scrollTop + t.clientHeight >= t.scrollHeight - 1;
+				(t.scrollTop > SCROLL_THRESHOLD || e) && this.setCollapsed(!0);
+			}
 		},
 		setRailHidden(e) {
 			e !== this.railHidden && (this.railHidden = e, window.dispatchEvent(new CustomEvent("widgetgrid:rail", { detail: { hidden: e } })));
@@ -6451,20 +7409,39 @@ var _plugin_vue_export_helper_default = (e, t) => {
 }, _hoisted_4 = {
 	key: 6,
 	class: "main-status"
+}, _hoisted_5 = {
+	key: 8,
+	class: "main-status"
+}, _hoisted_6 = {
+	key: 12,
+	class: "main-status"
+}, _hoisted_7 = {
+	key: 14,
+	class: "main-status"
+}, _hoisted_8 = {
+	key: 16,
+	class: "main-status"
+}, _hoisted_9 = {
+	key: 18,
+	class: "main-status"
+}, _hoisted_10 = {
+	key: 20,
+	class: "main-status"
 };
 function _sfc_render(e, t, n, r, i, o) {
+	let s = resolveComponent("SectionPage");
 	return openBlock(), createElementBlock("div", {
 		class: normalizeClass(["widget widget-main", {
 			"main-collapsed": i.collapsed,
 			"main-no-rail": i.railHidden
 		}]),
 		onScroll: t[0] ||= (...e) => o.onScroll && o.onScroll(...e)
-	}, [
+	}, [createElementVNode("div", { class: normalizeClass(["main-inner", { "main-inner-held": i.collapsed && o.topbarMode === "scroll" }]) }, [
 		i.view === "blog" && !i.blogComponent ? (openBlock(), createElementBlock("p", _hoisted_1, "Loading…")) : i.view === "blog" ? (openBlock(), createBlock(resolveDynamicComponent(i.blogComponent), {
 			key: i.blogReloadKey,
-			data: {},
+			data: { post: i.post },
 			title: ""
-		})) : i.view === "solitaire" && !i.solitaireComponent ? (openBlock(), createElementBlock("p", _hoisted_2, "Loading…")) : i.view === "solitaire" ? (openBlock(), createBlock(resolveDynamicComponent(i.solitaireComponent), {
+		}, null, 8, ["data"])) : i.view === "solitaire" && !i.solitaireComponent ? (openBlock(), createElementBlock("p", _hoisted_2, "Loading…")) : i.view === "solitaire" ? (openBlock(), createBlock(resolveDynamicComponent(i.solitaireComponent), {
 			key: 3,
 			data: {},
 			title: ""
@@ -6478,9 +7455,49 @@ function _sfc_render(e, t, n, r, i, o) {
 			key: 7,
 			data: {},
 			title: ""
-		})) : createCommentVNode("", !0)
-	], 34);
+		})) : createCommentVNode("", !0),
+		i.view === "lastnaming" && !i.lastNamingComponent ? (openBlock(), createElementBlock("p", _hoisted_5, "Loading…")) : i.view === "lastnaming" ? (openBlock(), createBlock(resolveDynamicComponent(i.lastNamingComponent), {
+			key: 9,
+			data: {},
+			title: ""
+		})) : createCommentVNode("", !0),
+		i.view === "games" ? (openBlock(), createBlock(s, {
+			key: 10,
+			heading: "Games",
+			entries: o.gameEntries
+		}, null, 8, ["entries"])) : createCommentVNode("", !0),
+		i.view === "site" ? (openBlock(), createBlock(s, {
+			key: 11,
+			heading: "Site",
+			entries: o.siteEntries
+		}, null, 8, ["entries"])) : createCommentVNode("", !0),
+		i.view === "messages" && !i.boardComponent ? (openBlock(), createElementBlock("p", _hoisted_6, "Loading…")) : i.view === "messages" ? (openBlock(), createBlock(resolveDynamicComponent(i.boardComponent), {
+			key: 13,
+			data: { board: i.board },
+			title: ""
+		}, null, 8, ["data"])) : createCommentVNode("", !0),
+		o.isAccountView && !i.accountComponent ? (openBlock(), createElementBlock("p", _hoisted_7, "Loading…")) : o.isAccountView ? (openBlock(), createBlock(resolveDynamicComponent(i.accountComponent), {
+			key: 15,
+			data: { view: i.view },
+			title: ""
+		}, null, 8, ["data"])) : createCommentVNode("", !0),
+		i.view === "subscribe" && !i.subscribeComponent ? (openBlock(), createElementBlock("p", _hoisted_8, "Loading…")) : i.view === "subscribe" ? (openBlock(), createBlock(resolveDynamicComponent(i.subscribeComponent), {
+			key: 17,
+			data: {},
+			title: ""
+		})) : createCommentVNode("", !0),
+		i.view === "lhoraire" && !i.lhoraireComponent ? (openBlock(), createElementBlock("p", _hoisted_9, "Loading…")) : i.view === "lhoraire" ? (openBlock(), createBlock(resolveDynamicComponent(i.lhoraireComponent), {
+			key: 19,
+			data: {},
+			title: ""
+		})) : createCommentVNode("", !0),
+		i.view === "write" && !i.authorComponent ? (openBlock(), createElementBlock("p", _hoisted_10, "Loading…")) : i.view === "write" ? (openBlock(), createBlock(resolveDynamicComponent(i.authorComponent), {
+			key: 21,
+			data: { draft: i.draft },
+			title: ""
+		}, null, 8, ["data"])) : createCommentVNode("", !0)
+	], 2)], 34);
 }
-var MainWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-6cfd8118"]]);
+var MainWidget_default = /*#__PURE__*/ _plugin_vue_export_helper_default(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-553e3f0d"]]);
 //#endregion
 export { MainWidget_default as default };
