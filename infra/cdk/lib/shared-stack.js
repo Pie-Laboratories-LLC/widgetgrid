@@ -52,10 +52,20 @@ export class SharedStack extends Stack {
       removalPolicy: RemovalPolicy.RETAIN,
     });
 
+    // Its conversation service (~/GIT/c-libraries/grammar/xbar, DESIGN.md
+    // "Service"): built from that directory's own Dockerfile.service-grammar
+    // (see infra/eks/deploy.sh).
+    this.grammarRepository = new ecr.Repository(this, 'GrammarRepository', {
+      repositoryName: 'service-grammar',
+      imageScanOnPush: true,
+      removalPolicy: RemovalPolicy.RETAIN,
+    });
+
     new CfnOutput(this, 'ServerRepositoryUri', { value: this.serverRepository.repositoryUri });
     new CfnOutput(this, 'StaticRepositoryUri', { value: this.staticRepository.repositoryUri });
     new CfnOutput(this, 'EmbuscadeRepositoryUri', { value: this.embuscadeRepository.repositoryUri });
     new CfnOutput(this, 'LhoraireRepositoryUri', { value: this.lhoraireRepository.repositoryUri });
     new CfnOutput(this, 'CreaturesRepositoryUri', { value: this.creaturesRepository.repositoryUri });
+    new CfnOutput(this, 'GrammarRepositoryUri', { value: this.grammarRepository.repositoryUri });
   }
 }

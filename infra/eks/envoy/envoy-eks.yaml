@@ -38,6 +38,10 @@
 # as the site, so no CORS, here or in the service (it runs with CORS=non).
 # 60s: a cold /bake takes about a second; a stuck one shouldn't hang the
 # page forever.
+# /grammar/ (the conversation service, infra/eks/manifests/service-grammar.yaml):
+# the same arrangement -- prefix cut off (/grammar/ask -> /ask), same
+# origin, no CORS (CORS=non). 10s: the service answers 503 itself past its
+# own 5 s limit.
 static_resources:
   listeners:
     - name: public_listener
@@ -86,6 +90,8 @@ static_resources:
                           route: { cluster: embuscade_backend, timeout: 0s }
                         - match: { prefix: "/creatures/" }
                           route: { cluster: creatures_backend, prefix_rewrite: "/", timeout: 60s }
+                        - match: { prefix: "/grammar/" }
+                          route: { cluster: grammar_backend, prefix_rewrite: "/", timeout: 10s }
                         # Everything else: the static SPA/widget bundles,
                         # served by static-server.
                         - match: { prefix: "/" }
@@ -180,6 +186,20 @@ static_resources:
               - endpoint:
                   address:
                     socket_address: { address: 127.0.0.1, port_value: 5180 }
+
+    # HTTP/1.1, plain requests and replies: the conversation service (see
+    # infra/eks/manifests/service-grammar.yaml).
+    - name: grammar_backend
+      connect_timeout: 5s
+      type: STATIC
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: grammar_backend
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address: { address: 127.0.0.1, port_value: 5190 }
 
 admin:
   address:

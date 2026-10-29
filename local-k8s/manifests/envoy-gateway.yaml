@@ -25,9 +25,10 @@ spec:
         # correct: the sidecar Consul injects into *this* pod binds that
         # address locally and securely forwards to the real
         # widgetgrid-server service over the mesh. Likewise 127.0.0.1:8082
-        # for embuscade-server (see embuscade-server.yaml), and 127.0.0.1:5180
-        # for service-creatures (service-creatures.yaml).
-        consul.hashicorp.com/connect-service-upstreams: "widgetgrid-server:50051,embuscade-server:8082,service-creatures:5180"
+        # for embuscade-server (see embuscade-server.yaml), 127.0.0.1:5180
+        # for service-creatures (service-creatures.yaml), and 127.0.0.1:5190
+        # for service-grammar (service-grammar.yaml).
+        consul.hashicorp.com/connect-service-upstreams: "widgetgrid-server:50051,embuscade-server:8082,service-creatures:5180,service-grammar:5190"
         # Transparent proxy is cluster-default (connectInject.transparentProxy
         # in local-k8s/consul-values.yaml), which also intercepts *inbound*
         # traffic on this pod's port and requires mesh mTLS -- fine for

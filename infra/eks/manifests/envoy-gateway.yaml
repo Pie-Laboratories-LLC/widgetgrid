@@ -34,7 +34,7 @@ spec:
         app: envoy-gateway
       annotations:
         consul.hashicorp.com/connect-inject: "true"
-        consul.hashicorp.com/connect-service-upstreams: "widgetgrid-server:50051,static-server:8081,embuscade-server:8082,lhoraire-server:50061,service-creatures:5180"
+        consul.hashicorp.com/connect-service-upstreams: "widgetgrid-server:50051,static-server:8081,embuscade-server:8082,lhoraire-server:50061,service-creatures:5180,service-grammar:5190"
         # Transparent proxy is cluster-default (connectInject.transparentProxy
         # in infra/eks/consul-values.yaml), which also intercepts *inbound*
         # traffic on this pod's port and requires mesh mTLS -- fine for
