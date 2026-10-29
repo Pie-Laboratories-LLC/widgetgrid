@@ -28,6 +28,10 @@ widgets/solitaire/.vendor-src/
 widgets/embuscade/.vendor-src/
 widgets/lastnaming/.vendor-src/
 
+# The Last Naming's build (private repo, and ~10 MB of models), copied in
+# by packages/web-app/scripts/copy-widgets.mjs -- never committed.
+packages/web-app/public/widgets/the-last-naming-vendor/
+
 # vim <3
 .*.sw?
 *.sw?
