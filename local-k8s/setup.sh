@@ -111,6 +111,22 @@ else
 fi
 
 echo
+echo "== service-grammar image =="
+# The Last Naming's conversation service: SWI-Prolog, in the same repo under
+# grammar/xbar, built from its own Dockerfile.service-grammar with that
+# directory as the context (its .dockerignore keeps only the Prolog
+# sources). Seconds to build -- no compilation. Optional too.
+GRAMMAR_DIR="$C_LIBRARIES_REPO_DIR/grammar/xbar"
+if [ -f "$GRAMMAR_DIR/Dockerfile.service-grammar" ]; then
+  docker build -f "$GRAMMAR_DIR/Dockerfile.service-grammar" -t service-grammar:local "$GRAMMAR_DIR"
+  kind load docker-image service-grammar:local --name "$CLUSTER_NAME"
+  HAVE_GRAMMAR=1
+else
+  echo "no $GRAMMAR_DIR/Dockerfile.service-grammar -- skipping the conversation service (set C_LIBRARIES_REPO_DIR if it lives elsewhere)"
+  HAVE_GRAMMAR=
+fi
+
+echo
 echo "== applying manifests =="
 kubectl apply -f local-k8s/manifests/namespace.yaml
 # Tells Consul's connect-inject webhook widgetgrid-server speaks gRPC, and
@@ -156,6 +172,11 @@ if [ -n "$HAVE_CREATURES" ]; then
   # Same reason as embuscade-server above: a fixed :local tag.
   kubectl rollout restart deployment/service-creatures -n widgetgrid
 fi
+if [ -n "$HAVE_GRAMMAR" ]; then
+  kubectl apply -f local-k8s/manifests/service-grammar.yaml
+  # Same reason again: a fixed :local tag.
+  kubectl rollout restart deployment/service-grammar -n widgetgrid
+fi
 kubectl apply -f local-k8s/manifests/envoy-gateway.yaml
 # The gateway's config lives in a ConfigMap (envoy-local.yaml), read at
 # start: a new route -- /creatures/ -- needs a restart to take effect.
@@ -169,6 +190,9 @@ if [ -n "$HAVE_EMBUSCADE" ]; then
 fi
 if [ -n "$HAVE_CREATURES" ]; then
   kubectl rollout status deployment/service-creatures -n widgetgrid --timeout=180s
+fi
+if [ -n "$HAVE_GRAMMAR" ]; then
+  kubectl rollout status deployment/service-grammar -n widgetgrid --timeout=180s
 fi
 # Not a pod wait: the restart above leaves the old pod terminating, and a
 # pod wait races with it (infra/eks/deploy.sh does the same)
@@ -189,6 +213,11 @@ see local-k8s/README.md.)
 The creature service (if built) is at http://localhost:8080/creatures/ --
   curl localhost:8080/creatures/health
   and the game's VITE_CREATURE_SERVICE=http://localhost:8080/creatures.
+
+The conversation service (if built) is at http://localhost:8080/grammar/ --
+  curl localhost:8080/grammar/health
+  curl -X POST localhost:8080/grammar/ask -d '{"npc":"kalo","text":"who holds the torch?"}'
+  and the game's VITE_CONVERSATION_SERVICE=http://localhost:8080/grammar.
 
 Useful commands:
   kubectl get pods -n widgetgrid

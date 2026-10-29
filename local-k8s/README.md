@@ -94,6 +94,21 @@ points elsewhere. It's reached at `http://localhost:8080/creatures/`
 CORS for it; build the game with
 `VITE_CREATURE_SERVICE=http://localhost:8080/creatures` to use it. On EKS
 the same route is same-origin: `VITE_CREATURE_SERVICE=/creatures`.)
+(Its conversation service -- the NPCs' dialogue, in SWI-Prolog -- comes
+from the same repo, `grammar/xbar/Dockerfile.service-grammar`, with that
+directory as the context; it builds in seconds. It's reached at
+`http://localhost:8080/grammar/` (`curl localhost:8080/grammar/health`
+answers `{"ok":true}`; `POST /grammar/ask` with
+`{"npc":"kalo","text":"who holds the torch?"}` answers), the gateway again
+answering CORS. The game's `VITE_CONVERSATION_SERVICE` is
+`http://localhost:8080/grammar`. It's stateless -- the game sends the
+conversation state with each request and keeps what comes back
+(grammar/xbar's DESIGN.md, "Service") -- so it runs two replicas, and a
+replaced pod is ready about 3 s after it's created, Consul's init
+container included, while the other one keeps answering. On EKS
+`infra/eks/deploy.sh` builds and deploys it with the creature service --
+both required -- at the same-origin `VITE_CONVERSATION_SERVICE=/grammar`;
+the smoke check asks `/grammar/health` and one `/grammar/ask`.)
 (Embuscade needs ~/GIT/embuscade's `packages/client` built first --
 see widgets/embuscade/scripts/vendor-embuscade.mjs. setup.sh builds and
 deploys its server from the same repo, or skips it if it isn't there.)

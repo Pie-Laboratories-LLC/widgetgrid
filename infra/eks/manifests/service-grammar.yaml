@@ -1,0 +1,86 @@
+# The Last Naming's conversation service (~/GIT/c-libraries/grammar/xbar,
+# DESIGN.md "Service"): the NPCs' dialogue, an X' parser in SWI-Prolog --
+# POST /ask, POST /think, GET /health. Image built and pushed to ECR by
+# infra/eks/deploy.sh from that directory's own Dockerfile.service-grammar.
+# Same Consul Connect pattern as infra/eks/manifests/service-creatures.yaml:
+# envoy-gateway reaches it through its own connect-service-upstreams entry
+# (127.0.0.1:5190), and routes /grammar/... to it
+# (infra/eks/envoy/envoy-eks.yaml).
+#
+# HOTE stays 127.0.0.1 (the image's default): only this pod's sidecar,
+# which forwards inbound mesh traffic to localhost, can reach it. The HTTP
+# probes go through the sidecar's exposed path, as for service-creatures.
+#
+# CORS=non: the site and the service share one origin through Envoy;
+# no browser request here is cross-origin, so nothing answers CORS.
+#
+# Stateless by design: the game sends the conversation state with each
+# request and keeps what comes back. Hence replicas: 2 -- any replica can
+# answer any turn, and a restart (or a node roll) loses nothing. It loads in
+# under a second and uses about 20 MiB (the parser never loads WordNet).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-grammar
+  namespace: widgetgrid
+  labels:
+    app: service-grammar
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: service-grammar
+  template:
+    metadata:
+      labels:
+        app: service-grammar
+      annotations:
+        consul.hashicorp.com/connect-inject: "true"
+    spec:
+      containers:
+        - name: service-grammar
+          image: ${GRAMMAR_IMAGE}
+          imagePullPolicy: Always
+          env:
+            - { name: PORT, value: "5190" }
+            - { name: HOTE, value: "127.0.0.1" }
+            - { name: CORS, value: "non" }
+            - { name: TEMPS_LIMITE, value: "5" }  # seconds per request before a 503
+          ports:
+            - containerPort: 5190
+              name: http
+          resources:
+            requests: { cpu: 100m, memory: 64Mi }
+            limits: { memory: 256Mi }
+          readinessProbe:
+            httpGet: { path: /health, port: 5190 }
+            initialDelaySeconds: 1
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /health, port: 5190 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-grammar
+  namespace: widgetgrid
+spec:
+  selector:
+    app: service-grammar
+  ports:
+    - port: 5190
+      targetPort: 5190
+      name: http
+---
+# protocol: http -- plain HTTP/1.1 requests and replies. The mesh hop's
+# default 15s route timeout is ample: the service answers 503 itself past
+# its own 5 s limit.
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: service-grammar
+  namespace: widgetgrid
+spec:
+  protocol: http

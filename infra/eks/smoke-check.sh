@@ -58,6 +58,14 @@ if [ "$code" = 101 ]; then pass "embuscade websocket upgrade"; else fail "embusc
 body=$(curl -s --max-time 15 "$BASE/creatures/health" || true)
 if [ "$body" = ok ]; then pass "creature service health"; else fail "creature service health" "got '${body:0:60}'"; fi
 
+# The conversation service, the same way -- and a real answer, which means
+# the world and lexicon loaded and the request reached a replica's parser.
+body=$(curl -s --max-time 15 "$BASE/grammar/health" || true)
+if [ "$body" = '{"ok":true}' ]; then pass "conversation service health"; else fail "conversation service health" "got '${body:0:60}'"; fi
+body=$(curl -s --max-time 15 -X POST -H 'Content-Type: application/json' \
+  -d '{"npc":"kalo","text":"who holds the torch?"}' "$BASE/grammar/ask" || true)
+if echo "$body" | grep -q '"reply":"Pak Ronkag."'; then pass "conversation service ask"; else fail "conversation service ask" "got '${body:0:80}'"; fi
+
 echo "== gRPC-web =="
 # GetPageLayout { slug: "home" }
 s=$(grpc_web widgetgrid.v1.PageService/GetPageLayout '\x00\x00\x00\x00\x06\x0a\x04home')
