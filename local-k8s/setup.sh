@@ -216,7 +216,7 @@ The creature service (if built) is at http://localhost:8080/creatures/ --
 
 The conversation service (if built) is at http://localhost:8080/grammar/ --
   curl localhost:8080/grammar/health
-  curl -X POST localhost:8080/grammar/ask -d '{"npc":"gnak","text":"who won the battle?"}'
+  curl -X POST localhost:8080/grammar/ask -d '{"npc":"kalo","text":"who holds the torch?"}'
   and the game's VITE_CONVERSATION_SERVICE=http://localhost:8080/grammar.
 
 Useful commands:

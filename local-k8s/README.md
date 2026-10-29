@@ -99,7 +99,7 @@ from the same repo, `grammar/xbar/Dockerfile.service-grammar`, with that
 directory as the context; it builds in seconds. It's reached at
 `http://localhost:8080/grammar/` (`curl localhost:8080/grammar/health`
 answers `{"ok":true}`; `POST /grammar/ask` with
-`{"npc":"gnak","text":"who won the battle?"}` answers), the gateway again
+`{"npc":"kalo","text":"who holds the torch?"}` answers), the gateway again
 answering CORS. The game's `VITE_CONVERSATION_SERVICE` is
 `http://localhost:8080/grammar`. It's stateless -- the game sends the
 conversation state with each request and keeps what comes back

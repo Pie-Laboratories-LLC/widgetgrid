@@ -63,8 +63,8 @@ if [ "$body" = ok ]; then pass "creature service health"; else fail "creature se
 body=$(curl -s --max-time 15 "$BASE/grammar/health" || true)
 if [ "$body" = '{"ok":true}' ]; then pass "conversation service health"; else fail "conversation service health" "got '${body:0:60}'"; fi
 body=$(curl -s --max-time 15 -X POST -H 'Content-Type: application/json' \
-  -d '{"npc":"gnak","text":"who won the battle?"}' "$BASE/grammar/ask" || true)
-if echo "$body" | grep -q '"reply":"Rena Harmdrum."'; then pass "conversation service ask"; else fail "conversation service ask" "got '${body:0:80}'"; fi
+  -d '{"npc":"kalo","text":"who holds the torch?"}' "$BASE/grammar/ask" || true)
+if echo "$body" | grep -q '"reply":"Pak Ronkag."'; then pass "conversation service ask"; else fail "conversation service ask" "got '${body:0:80}'"; fi
 
 echo "== gRPC-web =="
 # GetPageLayout { slug: "home" }
