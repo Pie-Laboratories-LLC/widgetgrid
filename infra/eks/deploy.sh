@@ -158,14 +158,14 @@ MIGRATE_IMAGE="${SERVER_REPO}:migrate-${IMAGE_TAG}"  # shares the server repo --
 aws ecr get-login-password --region "$REGION" | \
   docker login --username AWS --password-stdin "${SERVER_REPO%%/*}"
 
-# The EKS nodes are x86-64 (t3.medium, see infra/cdk/lib/prod-eks-stack.js).
-# Without an explicit platform, Docker builds for the host's own
-# architecture -- arm64 on an Apple Silicon Mac -- and those images fail
-# on the nodes with "exec format error" (the static image doesn't even
-# build there: grpc-web publishes no linux-arm64 protoc plugin). Docker
-# Desktop emulates amd64, so this works from either kind of machine, just
-# slower on a Mac.
-IMAGE_PLATFORM=linux/amd64
+# The EKS nodes are Graviton, arm64 (t4g.medium, see
+# infra/cdk/lib/prod-eks-stack.js): built natively on an Apple Silicon Mac,
+# with the same layer cache as local-k8s/setup.sh's builds. From an Intel
+# machine Docker Desktop emulates arm64 -- it works, slowly, as amd64 did
+# on a Mac. The platform stays explicit either way: an image built for the
+# host's own architecture on an Intel machine would fail on the nodes with
+# "exec format error".
+IMAGE_PLATFORM=linux/arm64
 docker build --platform "$IMAGE_PLATFORM" -f packages/server/Dockerfile -t "$SERVER_IMAGE" .
 docker push "$SERVER_IMAGE"
 docker build --platform "$IMAGE_PLATFORM" -f packages/lhoraire-server/Dockerfile -t "$LHORAIRE_IMAGE" .
@@ -241,10 +241,10 @@ docker push "$EMBUSCADE_IMAGE"
 # (~/GIT/c-libraries), built from its own Dockerfile.service-creatures with
 # that repo as the context -- its submodules checked out (git submodule
 # update --init). Not optional here, unlike local-k8s/setup.sh: the edge
-# routes /creatures/ to it. Built for amd64 like the rest -- on an
-# Apple Silicon Mac that's emulated, and the first build (all of its
-# third-party C/C++ libraries) is slow; Docker's layer cache keeps that part
-# until third-party/ changes.
+# routes /creatures/ to it. Built for arm64 like the rest -- natively on an
+# Apple Silicon Mac, sharing local-k8s/setup.sh's layer cache: its
+# third-party C/C++ libraries are compiled once and kept until they change
+# (Dockerfile.service-creatures).
 C_LIBRARIES_SRC_DIR="${C_LIBRARIES_REPO_DIR:-../c-libraries}"
 if [ ! -f "${C_LIBRARIES_SRC_DIR}/Dockerfile.service-creatures" ]; then
   echo "Missing ${C_LIBRARIES_SRC_DIR}/Dockerfile.service-creatures -- clone c-libraries beside this repo (or set C_LIBRARIES_REPO_DIR)." >&2

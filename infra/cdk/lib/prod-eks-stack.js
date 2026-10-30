@@ -1,4 +1,5 @@
 import { Stack, RemovalPolicy, CfnOutput } from 'aws-cdk-lib';
+import * as autoscaling from 'aws-cdk-lib/aws-autoscaling';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as eks from 'aws-cdk-lib/aws-eks';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
@@ -78,12 +79,28 @@ export class ProdEksStack extends Stack {
 
     // Self-managed, not eks.Nodegroup -- same ALB-target-group-attachment
     // reason as dev's cluster (see eks-stack.js's identical comment).
-    const nodeGroup = cluster.addAutoScalingGroupCapacity('NodeGroup', {
-      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MEDIUM),
+    // Graviton (arm64): t4g.medium, not t3.medium -- the images are built
+    // linux/arm64 (infra/eks/deploy.sh), natively on an Apple Silicon Mac
+    // instead of emulated, and the nodes cost about a fifth less. Made here
+    // rather than by cluster.addAutoScalingGroupCapacity, which builds
+    // Bottlerocket's image for x86_64 whatever the instance type
+    // (aws-eks's BottleRocketImage reads .../x86_64/latest/image_id): the
+    // same AutoScalingGroup it would make -- scoped to the cluster, same id,
+    // so CloudFormation updates it in place -- with Bottlerocket's arm64
+    // image, connected to the cluster the way it would connect it. A
+    // rolling update replaces the running nodes, one at a time, keeping one
+    // in service; without one, only nodes launched later would change.
+    const nodeGroup = new autoscaling.AutoScalingGroup(cluster, 'NodeGroup', {
+      vpc,
+      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T4G, ec2.InstanceSize.MEDIUM),
+      machineImage: ec2.MachineImage.fromSsmParameter(`/aws/service/bottlerocket/aws-k8s-${K8S_VERSION}/arm64/latest/image_id`),
       minCapacity: 2,
       maxCapacity: 2,
       vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
       securityGroup: nodeSecurityGroup,
+      updatePolicy: autoscaling.UpdatePolicy.rollingUpdate({ maxBatchSize: 1, minInstancesInService: 1 }),
+    });
+    cluster.connectAutoScalingGroupCapacity(nodeGroup, {
       mapRole: false,
       machineImageType: eks.MachineImageType.BOTTLEROCKET,
     });

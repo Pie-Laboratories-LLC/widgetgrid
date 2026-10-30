@@ -106,7 +106,7 @@ console/script steps, in order:
    login path now.
 7. `npm run deploy --workspace infra/cdk -- WidgetgridEksStack`, then
    `npm run deploy --workspace infra/cdk -- WidgetgridRdsStack`. Cost-minimized
-   dev tier throughout: single Consul server, 2×t3.medium EKS nodes,
+   dev tier throughout: single Consul server, 2×t4g.medium (Graviton) EKS nodes,
    single-AZ `db.t4g.micro`, 1 NAT gateway -- see `eks-stack.js`/`rds-stack.js`
    for the reasoning. `WidgetgridEksStack` prints `EnvoyTargetGroupArn`,
    needed in step 9.
@@ -136,10 +136,33 @@ kubectl get pods -n widgetgrid             # after infra/eks/deploy.sh
 grpcurl -plaintext ... # see local-k8s/README.md's example, adapted to hit the real host through the mesh from inside the cluster
 ```
 
+## Graviton nodes
+
+The EKS nodes are Graviton (arm64, `t4g.medium`, Bottlerocket's arm64 image),
+and `infra/eks/deploy.sh` builds every image `linux/arm64`: natively on an
+Apple Silicon Mac, sharing `local-k8s/setup.sh`'s layer cache, and about a
+fifth cheaper than `t3.medium`. From an Intel machine Docker emulates arm64,
+as it used to emulate amd64 on a Mac.
+
+Moving an existing cluster from `t3.medium`: the node group is updated in
+place and its nodes replaced one at a time (a rolling update). The images
+already running are amd64, and fail on the new nodes with "exec format
+error" until `deploy.sh` pushes arm64 ones, so do the two back to back,
+expecting a few minutes' outage:
+
+1. `npm run deploy --workspace infra/cdk -- WidgetgridProdEksStack
+   --exclusively` (and `WidgetgridEksStack`, when dev is up): the Graviton
+   nodes. `--exclusively` matters: without it CDK also redeploys the
+   gateway stack it depends on, without its `prodEnvoyTargetGroupArn`
+   context, and the site answers the ALB's placeholder ("nothing deployed
+   here yet") until the gateway is deployed again with it.
+2. `infra/eks/deploy.sh prod`: the arm64 images.
+3. `infra/eks/smoke-check.sh`.
+
 ## Cost note
 
 The recurring bill for `WidgetgridEksStack` + `WidgetgridRdsStack`: EKS's
-flat ~$0.10/hr control plane, 2×t3.medium, 1 NAT gateway, `db.t4g.micro`,
+flat ~$0.10/hr control plane, 2×t4g.medium, 1 NAT gateway, `db.t4g.micro`,
 plus the existing ALB. `infra/eks/teardown.sh` drops the workloads (cheap to
 redo via `infra/eks/deploy.sh`) without touching the cluster/RDS
 themselves; `cdk destroy WidgetgridEksStack WidgetgridRdsStack` is the actual

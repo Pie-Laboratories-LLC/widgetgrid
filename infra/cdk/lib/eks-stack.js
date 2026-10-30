@@ -1,4 +1,5 @@
 import { Stack, RemovalPolicy, CfnOutput } from 'aws-cdk-lib';
+import * as autoscaling from 'aws-cdk-lib/aws-autoscaling';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as eks from 'aws-cdk-lib/aws-eks';
 import * as s3 from 'aws-cdk-lib/aws-s3';
@@ -57,7 +58,7 @@ export class EksStack extends Stack {
     // machinery isn't avoided entirely, just never exercised by this code.
     const cluster = new eks.Cluster(this, 'Cluster', {
       clusterName: 'widgetgrid-dev',
-      // Nodes run Bottlerocket (see addAutoScalingGroupCapacity below), not
+      // Nodes run Bottlerocket (see the NodeGroup below), not
       // the EKS-optimized Amazon Linux 2 AMI: AWS stopped publishing AL2 EKS
       // AMIs after 1.32, which is what originally pinned this cluster there.
       version: eks.KubernetesVersion.of(K8S_VERSION),
@@ -72,7 +73,7 @@ export class EksStack extends Stack {
       // own AccessEntry (below) is what covers the human's own
       // kubectl/helm afterward, since those are different principals.
       bootstrapClusterCreatorAdminPermissions: true,
-      // No default managed node group -- addAutoScalingGroupCapacity below
+      // No default managed node group -- the self-managed NodeGroup below
       // is what actually adds capacity, specifically because its ASG (and
       // only its ASG) can be attached to the ALB target group.
       defaultCapacity: 0,
@@ -93,8 +94,8 @@ export class EksStack extends Stack {
       ],
     });
 
-    // Created explicitly (rather than letting addAutoScalingGroupCapacity
-    // make its own) so RdsStack and DevGatewayStack can both reference the
+    // Created explicitly (rather than letting the node group make its
+    // own) so RdsStack and DevGatewayStack can both reference the
     // exact same security group without reaching into the ASG's connections
     // after the fact.
     const nodeSecurityGroup = new ec2.SecurityGroup(this, 'NodeSecurityGroup', {
@@ -115,12 +116,28 @@ export class EksStack extends Stack {
     // mapRole: false since this cluster has no aws-auth ConfigMap to patch
     // under authenticationMode: API -- the EC2_LINUX AccessEntry below is
     // what actually authenticates the node role instead.
-    const nodeGroup = cluster.addAutoScalingGroupCapacity('NodeGroup', {
-      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MEDIUM),
+    // Graviton (arm64): t4g.medium, not t3.medium -- the images are built
+    // linux/arm64 (infra/eks/deploy.sh), natively on an Apple Silicon Mac
+    // instead of emulated, and the nodes cost about a fifth less. Made here
+    // rather than by cluster.addAutoScalingGroupCapacity, which builds
+    // Bottlerocket's image for x86_64 whatever the instance type
+    // (aws-eks's BottleRocketImage reads .../x86_64/latest/image_id): the
+    // same AutoScalingGroup it would make -- scoped to the cluster, same id,
+    // so CloudFormation updates it in place -- with Bottlerocket's arm64
+    // image, connected to the cluster the way it would connect it. A
+    // rolling update replaces the running nodes, one at a time, keeping one
+    // in service; without one, only nodes launched later would change.
+    const nodeGroup = new autoscaling.AutoScalingGroup(cluster, 'NodeGroup', {
+      vpc,
+      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T4G, ec2.InstanceSize.MEDIUM),
+      machineImage: ec2.MachineImage.fromSsmParameter(`/aws/service/bottlerocket/aws-k8s-${K8S_VERSION}/arm64/latest/image_id`),
       minCapacity: 2,
       maxCapacity: 2,
       vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
       securityGroup: nodeSecurityGroup,
+      updatePolicy: autoscaling.UpdatePolicy.rollingUpdate({ maxBatchSize: 1, minInstancesInService: 1 }),
+    });
+    cluster.connectAutoScalingGroupCapacity(nodeGroup, {
       mapRole: false,
       machineImageType: eks.MachineImageType.BOTTLEROCKET,
     });

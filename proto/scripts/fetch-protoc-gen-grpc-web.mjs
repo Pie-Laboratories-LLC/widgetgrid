@@ -24,6 +24,8 @@ const DEST = path.join(DEST_DIR, 'protoc-gen-grpc-web');
 
 const PLATFORM_ASSETS = {
   'linux-x64': `protoc-gen-grpc-web-${VERSION}-linux-x86_64`,
+  // the static image's build stage on Graviton (infra/eks/deploy.sh)
+  'linux-arm64': `protoc-gen-grpc-web-${VERSION}-linux-aarch64`,
   'darwin-x64': `protoc-gen-grpc-web-${VERSION}-darwin-x86_64`,
   'darwin-arm64': `protoc-gen-grpc-web-${VERSION}-darwin-aarch64`,
   'win32-x64': `protoc-gen-grpc-web-${VERSION}-windows-x86_64.exe`,
