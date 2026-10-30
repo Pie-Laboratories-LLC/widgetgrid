@@ -61,11 +61,21 @@ export class SharedStack extends Stack {
       removalPolicy: RemovalPolicy.RETAIN,
     });
 
+    // Its magic service (~/GIT/c-libraries/magie/service,
+    // docs/service-magie.md): built from Dockerfile.service-magie (see
+    // infra/eks/deploy.sh).
+    this.magieRepository = new ecr.Repository(this, 'MagieRepository', {
+      repositoryName: 'service-magie',
+      imageScanOnPush: true,
+      removalPolicy: RemovalPolicy.RETAIN,
+    });
+
     new CfnOutput(this, 'ServerRepositoryUri', { value: this.serverRepository.repositoryUri });
     new CfnOutput(this, 'StaticRepositoryUri', { value: this.staticRepository.repositoryUri });
     new CfnOutput(this, 'EmbuscadeRepositoryUri', { value: this.embuscadeRepository.repositoryUri });
     new CfnOutput(this, 'LhoraireRepositoryUri', { value: this.lhoraireRepository.repositoryUri });
     new CfnOutput(this, 'CreaturesRepositoryUri', { value: this.creaturesRepository.repositoryUri });
     new CfnOutput(this, 'GrammarRepositoryUri', { value: this.grammarRepository.repositoryUri });
+    new CfnOutput(this, 'MagieRepositoryUri', { value: this.magieRepository.repositoryUri });
   }
 }

@@ -175,12 +175,13 @@ Dev isn't kept running. To test something in AWS before prod (as was done
      and take the dev block back out of `bin/app.js`.
 
 The ECR repos -- `widgetgrid-server`, `widgetgrid-static`, `embuscade-server`,
-`lhoraire-server`, and The Last Naming's `service-creatures` and
-`service-grammar` -- live in `WidgetgridSharedStack` (RETAIN), used by both
-environments, so tearing down either environment's stacks leaves every image
-in place. `deploy.sh` pushes to them but doesn't create them: after adding
-one (as `service-grammar` was), `npm run deploy --workspace infra/cdk --
-WidgetgridSharedStack` once before the next `deploy.sh`, or its push fails.
+`lhoraire-server`, and The Last Naming's `service-creatures`,
+`service-grammar` and `service-magie` -- live in `WidgetgridSharedStack`
+(RETAIN), used by both environments, so tearing down either environment's
+stacks leaves every image in place. `deploy.sh` pushes to them but doesn't
+create them: after adding one (as `service-magie` was), `npm run deploy
+--workspace infra/cdk -- WidgetgridSharedStack` once before the next
+`deploy.sh`, or its push fails.
 
 Staying on a Kubernetes minor past its standard-support date bills EKS
 extended support: $0.60/hr per cluster instead of $0.10/hr. That ran

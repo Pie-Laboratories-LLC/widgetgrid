@@ -56,6 +56,7 @@ EMBUSCADE_REPO="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/embuscade-server"
 LHORAIRE_REPO="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/lhoraire-server"
 CREATURES_REPO="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/service-creatures"
 GRAMMAR_REPO="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/service-grammar"
+MAGIE_REPO="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/service-magie"
 
 rds_outputs=$(aws cloudformation describe-stacks --region "$REGION" --stack-name "$RDS_STACK" --query 'Stacks[0].Outputs' --output json)
 DB_SECRET_ARN=$(echo "$rds_outputs" | jq -r '.[] | select(.OutputKey=="DbSecretArn") | .OutputValue')
@@ -97,7 +98,7 @@ REGISTRATION_CLIENT_SECRET=$(aws cognito-idp describe-user-pool-client --region 
 # with a blank BLOG_ASSETS_BASE_URL and broken image links, no error
 # anywhere in the chain. Failing loudly here, before that template ever
 # gets rendered, is cheap insurance against the same mistake recurring.
-for var in CLUSTER_NAME SERVER_REPO STATIC_REPO EMBUSCADE_REPO CREATURES_REPO GRAMMAR_REPO TARGET_GROUP_ARN BLOG_S3_BUCKET BLOG_ASSETS_BASE_URL MEDIA_S3_BUCKET DB_SECRET_ARN; do
+for var in CLUSTER_NAME SERVER_REPO STATIC_REPO EMBUSCADE_REPO CREATURES_REPO GRAMMAR_REPO MAGIE_REPO TARGET_GROUP_ARN BLOG_S3_BUCKET BLOG_ASSETS_BASE_URL MEDIA_S3_BUCKET DB_SECRET_ARN; do
   if [ -z "${!var}" ]; then
     echo "Missing/empty required value: $var (check WidgetgridEksStack/WidgetgridRdsStack outputs)" >&2
     exit 1
@@ -151,6 +152,7 @@ EMBUSCADE_IMAGE="${EMBUSCADE_REPO}:${IMAGE_TAG}"
 LHORAIRE_IMAGE="${LHORAIRE_REPO}:${IMAGE_TAG}"
 CREATURES_IMAGE="${CREATURES_REPO}:${IMAGE_TAG}"
 GRAMMAR_IMAGE="${GRAMMAR_REPO}:${IMAGE_TAG}"
+MAGIE_IMAGE="${MAGIE_REPO}:${IMAGE_TAG}"
 MIGRATE_IMAGE="${SERVER_REPO}:migrate-${IMAGE_TAG}"  # shares the server repo -- one-off, not worth its own ECR repo
 
 aws ecr get-login-password --region "$REGION" | \
@@ -267,6 +269,16 @@ echo
 echo "== service-grammar image (from ${GRAMMAR_SRC_DIR}'s Dockerfile.service-grammar) =="
 docker build --platform "$IMAGE_PLATFORM" -f "${GRAMMAR_SRC_DIR}/Dockerfile.service-grammar" -t "$GRAMMAR_IMAGE" "$GRAMMAR_SRC_DIR"
 docker push "$GRAMMAR_IMAGE"
+
+# Its magic service, from the same repo too: Dockerfile.service-magie, with
+# the repo as the context. Required -- the edge routes /magie/ to it, and the
+# game pauses without it once it's configured (VITE_MAGIC_SERVICE=/magie in
+# the game's build). Nothing third-party to compile: seconds, under a minute
+# emulated.
+echo
+echo "== service-magie image (from ${C_LIBRARIES_SRC_DIR}'s Dockerfile.service-magie) =="
+docker build --platform "$IMAGE_PLATFORM" -f "${C_LIBRARIES_SRC_DIR}/Dockerfile.service-magie" -t "$MAGIE_IMAGE" "$C_LIBRARIES_SRC_DIR"
+docker push "$MAGIE_IMAGE"
 
 echo
 echo "== applying cluster-scoped manifests =="
@@ -403,13 +415,14 @@ kubectl get jobs -n widgetgrid -o name | grep '^job.batch/seed-' | grep -v "$SEE
 
 echo
 echo "== applying app manifests =="
-export SERVER_IMAGE STATIC_IMAGE EMBUSCADE_IMAGE LHORAIRE_IMAGE CREATURES_IMAGE GRAMMAR_IMAGE BLOG_S3_BUCKET BLOG_ASSETS_BASE_URL MEDIA_S3_BUCKET SITE_ORIGIN
+export SERVER_IMAGE STATIC_IMAGE EMBUSCADE_IMAGE LHORAIRE_IMAGE CREATURES_IMAGE GRAMMAR_IMAGE MAGIE_IMAGE BLOG_S3_BUCKET BLOG_ASSETS_BASE_URL MEDIA_S3_BUCKET SITE_ORIGIN
 envsubst < infra/eks/manifests/widgetgrid-server.yaml | kubectl apply -f -
 envsubst < infra/eks/manifests/static-server.yaml | kubectl apply -f -
 envsubst < infra/eks/manifests/embuscade-server.yaml | kubectl apply -f -
 envsubst < infra/eks/manifests/lhoraire-server.yaml | kubectl apply -f -
 envsubst < infra/eks/manifests/service-creatures.yaml | kubectl apply -f -
 envsubst < infra/eks/manifests/service-grammar.yaml | kubectl apply -f -
+envsubst < infra/eks/manifests/service-magie.yaml | kubectl apply -f -
 kubectl apply -f infra/eks/manifests/envoy-gateway.yaml
 # Pick up a rebuilt image on re-runs: the tag changes every run (unlike
 # local-k8s/setup.sh's fixed :local), so this is normally implicit via the
@@ -427,6 +440,7 @@ kubectl wait --for=condition=ready pod -l app=embuscade-server -n widgetgrid --t
 kubectl wait --for=condition=ready pod -l app=lhoraire-server -n widgetgrid --timeout=180s
 kubectl rollout status deployment/service-creatures -n widgetgrid --timeout=180s
 kubectl rollout status deployment/service-grammar -n widgetgrid --timeout=180s
+kubectl rollout status deployment/service-magie -n widgetgrid --timeout=180s
 kubectl rollout status deployment/envoy-gateway -n widgetgrid --timeout=180s
 # No separate pod wait for envoy-gateway: rollout status above already
 # means ready, and a pod wait races with superseded pods when this run

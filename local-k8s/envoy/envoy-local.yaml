@@ -34,6 +34,7 @@
 # read each build's stage timings. 60s: a cold /bake takes about a second;
 # a stuck one shouldn't hang the page forever.
 #
+# /magie/... is the magic service (service-magie.yaml), the same again.
 # /grammar/... is the conversation service (service-grammar.yaml), the
 # same arrangement as /creatures/: prefix cut off (/grammar/ask -> /ask),
 # CORS answered here (the service runs with CORS=non), Server-Timing
@@ -82,6 +83,20 @@ static_resources:
                         - match: { prefix: "/grammar/" }
                           route:
                             cluster: grammar_backend
+                            prefix_rewrite: "/"
+                            timeout: 10s
+                            cors:
+                              allow_origin_string_match:
+                                - safe_regex: { regex: ".*" }
+                              allow_methods: "GET, POST, OPTIONS"
+                              allow_headers: "content-type"
+                              expose_headers: "server-timing"
+                              max_age: "1728000"
+                          response_headers_to_add:
+                            - header: { key: timing-allow-origin, value: "*" }
+                        - match: { prefix: "/magie/" }
+                          route:
+                            cluster: magie_backend
                             prefix_rewrite: "/"
                             timeout: 10s
                             cors:
@@ -194,6 +209,19 @@ static_resources:
               - endpoint:
                   address:
                     socket_address: { address: 127.0.0.1, port_value: 5190 }
+
+    # HTTP/1.1, plain requests and replies: the magic service.
+    - name: magie_backend
+      connect_timeout: 5s
+      type: STATIC
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: magie_backend
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address: { address: 127.0.0.1, port_value: 5183 }
 
 admin:
   address:

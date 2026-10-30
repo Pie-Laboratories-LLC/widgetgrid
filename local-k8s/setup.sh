@@ -127,6 +127,20 @@ else
 fi
 
 echo
+echo "== service-magie image =="
+# The Last Naming's magic service: the maze model of magic, in the same repo
+# (magie/service), built from Dockerfile.service-magie with the repo as the
+# context. Nothing third-party to compile -- about 35 s. Optional too.
+if [ -f "$C_LIBRARIES_REPO_DIR/Dockerfile.service-magie" ]; then
+  docker build -f "$C_LIBRARIES_REPO_DIR/Dockerfile.service-magie" -t service-magie:local "$C_LIBRARIES_REPO_DIR"
+  kind load docker-image service-magie:local --name "$CLUSTER_NAME"
+  HAVE_MAGIE=1
+else
+  echo "no $C_LIBRARIES_REPO_DIR/Dockerfile.service-magie -- skipping the magic service (set C_LIBRARIES_REPO_DIR if it lives elsewhere)"
+  HAVE_MAGIE=
+fi
+
+echo
 echo "== applying manifests =="
 kubectl apply -f local-k8s/manifests/namespace.yaml
 # Tells Consul's connect-inject webhook widgetgrid-server speaks gRPC, and
@@ -177,6 +191,11 @@ if [ -n "$HAVE_GRAMMAR" ]; then
   # Same reason again: a fixed :local tag.
   kubectl rollout restart deployment/service-grammar -n widgetgrid
 fi
+if [ -n "$HAVE_MAGIE" ]; then
+  kubectl apply -f local-k8s/manifests/service-magie.yaml
+  # Same reason again: a fixed :local tag.
+  kubectl rollout restart deployment/service-magie -n widgetgrid
+fi
 kubectl apply -f local-k8s/manifests/envoy-gateway.yaml
 # The gateway's config lives in a ConfigMap (envoy-local.yaml), read at
 # start: a new route -- /creatures/ -- needs a restart to take effect.
@@ -193,6 +212,9 @@ if [ -n "$HAVE_CREATURES" ]; then
 fi
 if [ -n "$HAVE_GRAMMAR" ]; then
   kubectl rollout status deployment/service-grammar -n widgetgrid --timeout=180s
+fi
+if [ -n "$HAVE_MAGIE" ]; then
+  kubectl rollout status deployment/service-magie -n widgetgrid --timeout=180s
 fi
 # Not a pod wait: the restart above leaves the old pod terminating, and a
 # pod wait races with it (infra/eks/deploy.sh does the same)
@@ -218,6 +240,11 @@ The conversation service (if built) is at http://localhost:8080/grammar/ --
   curl localhost:8080/grammar/health
   curl -X POST localhost:8080/grammar/ask -d '{"npc":"kalo","text":"who holds the torch?"}'
   and the game's VITE_CONVERSATION_SERVICE=http://localhost:8080/grammar.
+
+The magic service (if built) is at http://localhost:8080/magie/ --
+  curl localhost:8080/magie/health
+  curl -X POST localhost:8080/magie/mage -d '{"graine":7}'
+  and the game's VITE_MAGIC_SERVICE=http://localhost:8080/magie.
 
 Useful commands:
   kubectl get pods -n widgetgrid

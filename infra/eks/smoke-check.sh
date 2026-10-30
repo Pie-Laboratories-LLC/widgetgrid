@@ -66,6 +66,12 @@ body=$(curl -s --max-time 15 -X POST -H 'Content-Type: application/json' \
   -d '{"npc":"kalo","text":"who holds the torch?"}' "$BASE/grammar/ask" || true)
 if echo "$body" | grep -q '"reply":"Pak Ronkag."'; then pass "conversation service ask"; else fail "conversation service ask" "got '${body:0:80}'"; fi
 
+# The magic service, the same way -- and a mage born to the maze.
+body=$(curl -s --max-time 15 "$BASE/magie/health" || true)
+if [ "$body" = ok ]; then pass "magic service health"; else fail "magic service health" "got '${body:0:60}'"; fi
+body=$(curl -s --max-time 15 -X POST -H 'Content-Type: application/json' -d '{"graine":7}' "$BASE/magie/mage" || true)
+if echo "$body" | grep -q '"départ"'; then pass "magic service mage"; else fail "magic service mage" "got '${body:0:80}'"; fi
+
 echo "== gRPC-web =="
 # GetPageLayout { slug: "home" }
 s=$(grpc_web widgetgrid.v1.PageService/GetPageLayout '\x00\x00\x00\x00\x06\x0a\x04home')
