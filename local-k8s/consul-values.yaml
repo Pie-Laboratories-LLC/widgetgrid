@@ -22,6 +22,13 @@ connectInject:
   # namespace by default -- safer default for a cluster you might also use
   # for other experiments later.
   default: false
+  # The init container it injects, requests equal to limits (the chart's
+  # default requests less than it allows): a pod can only be Guaranteed
+  # QoS if every container in it is -- see widgetgrid-server.yaml.
+  initContainer:
+    resources:
+      requests: { cpu: 50m, memory: 150Mi }
+      limits: { cpu: 50m, memory: 150Mi }
 
 # CRD-based service configuration (ServiceDefaults, ServiceIntentions,
 # etc.) -- not strictly required for this test (no CRDs are applied here),
