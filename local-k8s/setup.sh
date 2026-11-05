@@ -49,6 +49,9 @@ helm upgrade --install consul hashicorp/consul \
   --values local-k8s/consul-values.yaml \
   --version "$CONSUL_CHART_VERSION" \
   --wait --timeout 5m
+# The injector's webhook certificate lasts 24 hours and isn't rotated here:
+# renewed every 12 (manifests/consul-cert-renewal.yaml).
+kubectl apply -f local-k8s/manifests/consul-cert-renewal.yaml
 
 echo
 echo "== site configuration (Consul key config/widgetgrid) =="

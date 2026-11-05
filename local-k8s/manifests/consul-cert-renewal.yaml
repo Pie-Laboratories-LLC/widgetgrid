@@ -1,0 +1,93 @@
+# Renews the Consul injector's webhook certificate, twice a day.
+#
+# consul-webhook-cert-manager issues a 24-hour certificate for the
+# connect-injector's mutating webhook when it starts, and then -- in this
+# kind cluster, at least -- never rotates it. Once it expires, every new pod
+# in a namespace the webhook covers fails to be created ("x509: certificate
+# has expired"), so rollouts hang with their old pods still serving.
+# Restarting the cert manager issues a fresh one, and restarting the
+# injector, once the cert manager is back, picks it up (one after the
+# other: init containers, since the kubectl image has no shell). Every 12
+# hours, so a certificate never reaches its 24; startingDeadlineSeconds
+# lets a run missed while the laptop slept happen when it wakes.
+#
+# The job's pod is labelled app: consul: the injector's webhook skips those
+# (its objectSelector), so the job still starts when the certificate has
+# already expired -- which is when it's needed.
+#
+# By hand, the same thing:
+#   kubectl -n consul rollout restart deploy/consul-webhook-cert-manager
+#   kubectl -n consul rollout status deploy/consul-webhook-cert-manager
+#   kubectl -n consul rollout restart deploy/consul-connect-injector
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: consul-cert-renewal
+  namespace: consul
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: consul-cert-renewal
+  namespace: consul
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    resourceNames: ["consul-webhook-cert-manager", "consul-connect-injector"]
+    verbs: ["get", "list", "watch", "patch"]
+  - apiGroups: ["apps"]
+    resources: ["replicasets"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: consul-cert-renewal
+  namespace: consul
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: consul-cert-renewal
+subjects:
+  - kind: ServiceAccount
+    name: consul-cert-renewal
+    namespace: consul
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: consul-cert-renewal
+  namespace: consul
+spec:
+  schedule: "0 */12 * * *"
+  startingDeadlineSeconds: 43200
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            app: consul
+            component: cert-renewal
+        spec:
+          serviceAccountName: consul-cert-renewal
+          restartPolicy: Never
+          initContainers:
+            - name: restart-cert-manager
+              image: registry.k8s.io/kubectl:v1.37.0
+              args: ["--namespace=consul", "rollout", "restart", "deployment/consul-webhook-cert-manager"]
+              resources: &resources
+                requests: { cpu: 10m, memory: 32Mi }
+                limits: { cpu: 100m, memory: 64Mi }
+            - name: wait-cert-manager
+              image: registry.k8s.io/kubectl:v1.37.0
+              args: ["--namespace=consul", "rollout", "status", "deployment/consul-webhook-cert-manager", "--timeout=180s"]
+              resources: *resources
+          containers:
+            - name: restart-injector
+              image: registry.k8s.io/kubectl:v1.37.0
+              args: ["--namespace=consul", "rollout", "restart", "deployment/consul-connect-injector"]
+              resources: *resources
